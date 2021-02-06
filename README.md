@@ -1,2 +1,2 @@
 <img src="logo.png">
-# WISE HOUSE
+<b>WISE HOUSE</b>
