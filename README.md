@@ -1,2 +1,4 @@
+<h1>WISE HOUSE</h1>
 <img src="logo.png">
-<b>WISE HOUSE</b>
+<img src="logo_2.png">
+
