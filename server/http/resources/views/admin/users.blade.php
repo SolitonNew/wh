@@ -1,6 +1,11 @@
-@extends('index')
+@extends('admin.admin')
 
-@section('body')
+@section('content')
+<div>
+</div>
+
+
+
 <form method="POST" action="{{ route('users') }}" class="modal-dialog">
     {{ csrf_field() }}
     <div class="modal-content">

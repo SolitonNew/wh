@@ -27,6 +27,14 @@ Route::group(['middleware'=>'auth'], function () {
 });
 
 Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
+    Route::get('/', 'Admin\VariablesController@index')->name('variables');
+    
+    Route::get('/scripts', 'Admin\ScriptsController@index')->name('scripts');
+    
+    Route::get('/statistics', 'Admin\StatisticsController@index')->name('statistics');
+    
     Route::get('/users', 'Admin\UsersController@index')->name('users');
     Route::post('/users', 'Admin\UsersController@append')->name('users');
+    
+    Route::get('/ow-manager', 'Admin\OwManagerController@index')->name('ow-manager');
 });

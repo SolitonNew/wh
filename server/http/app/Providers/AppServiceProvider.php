@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Blade::directive('activeMenu', function ($page) {
+            return '<?php 
+                        echo (Request::segment(2) == '.$page.') ? "active" : "";
+                     ?>';
+        });
     }
 }

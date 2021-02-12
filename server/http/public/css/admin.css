@@ -1,0 +1,20 @@
+.main-container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    min-height: 100vh;
+}
+
+.main-left-panel {
+    width: 200px;
+    border-right: 1px solid rgba(0,0,0,.125);
+}
+
+.main-left-panel > .list-group {
+    margin-right: -1px;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 1rem;
+}
