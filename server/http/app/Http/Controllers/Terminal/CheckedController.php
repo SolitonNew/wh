@@ -83,7 +83,7 @@ class CheckedController extends Controller
                 
                 $charts[] = (object)[
                     'ID' => $row->data->ID,
-                    'data' => join($chartData, ', '),
+                    'data' => implode($chartData, ', '),
                     'color' => $color,
                 ];
             }
@@ -92,7 +92,7 @@ class CheckedController extends Controller
         return view('terminal.checked', [
             'rows' => $rows,
             'charts' => $charts,
-            'varSteps' => join(', ', $varSteps),
+            'varSteps' => implode(', ', $varSteps),
         ]);
     }
     
@@ -116,7 +116,7 @@ class CheckedController extends Controller
             }
         }
         
-        $app_controls_ids = join(',', $app_controls_ids);
+        $app_controls_ids = implode(',', $app_controls_ids);
         
         $checks = explode(',',  PropertysModel::getWebChecks());
         
@@ -167,7 +167,7 @@ class CheckedController extends Controller
         
         if (!in_array($id, $a)) {
             $a[] = $id;
-            $s = join(',', $a);
+            $s = implode(',', $a);
             DB::update("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
             return 'OK';
         }
@@ -192,7 +192,7 @@ class CheckedController extends Controller
         $i = array_search($id, $a);
         if ($i > -1) {
             array_splice($a, $i, 1);
-            $s = join(',', $a);
+            $s = implode(',', $a);
             DB::update("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
             return 'OK';
         }
@@ -263,7 +263,7 @@ class CheckedController extends Controller
                 $t = $a[$i - 1];
                 $a[$i - 1] = $a[$i];
                 $a[$i] = $t;
-                $s = join(',', $a);
+                $s = implode(',', $a);
                 DB::update("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
                 return 'OK';
             }
@@ -291,7 +291,7 @@ class CheckedController extends Controller
                 $t = $a[$i + 1];
                 $a[$i + 1] = $a[$i];
                 $a[$i] = $t;
-                $s = join(',', $a);
+                $s = implode(',', $a);
                 DB::update("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
                 return 'OK';
             }

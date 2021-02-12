@@ -76,7 +76,7 @@ class RoomController extends Controller
                 
                 $charts[] = (object)[
                     'ID' => $row->data->ID,
-                    'data' => join($chartData, ', '),
+                    'data' => implode($chartData, ', '),
                     'color' => $color,
                 ];
             }
@@ -86,7 +86,7 @@ class RoomController extends Controller
             'roomTitle' => $roomTitle,
             'rows' => $rows,
             'charts' => $charts,
-            'varSteps' => join(', ', $varSteps),
+            'varSteps' => implode(', ', $varSteps),
         ]);
     }
 }
