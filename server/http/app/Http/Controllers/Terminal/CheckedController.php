@@ -96,7 +96,11 @@ class CheckedController extends Controller
         ]);
     }
     
-    
+    /**
+     * 
+     * @param type $selKey
+     * @return type
+     */
     public function editAdd($selKey = 0) {        
         $selKey = (int)$selKey;
         
@@ -147,6 +151,11 @@ class CheckedController extends Controller
         ]);
     }
     
+    /**
+     * 
+     * @param type $id
+     * @return string
+     */
     public function editAdd_ADD($id) {
         $id = (int)$id;
         $p = PropertysModel::getWebChecks();
@@ -166,6 +175,11 @@ class CheckedController extends Controller
         return 'ERROR';
     }
     
+    /**
+     * 
+     * @param type $id
+     * @return string
+     */
     public function editAdd_DEL($id) {
         $id = (int)$id;
         $p = PropertysModel::getWebChecks();
@@ -186,6 +200,10 @@ class CheckedController extends Controller
         return 'ERROR';
     }
     
+    /**
+     * 
+     * @return type
+     */
     public function editOrder() {
         $checks = PropertysModel::getWebChecks();
         
@@ -226,6 +244,11 @@ class CheckedController extends Controller
         ]);
     }
     
+    /**
+     * 
+     * @param type $id
+     * @return string
+     */
     public function editOrder_UP($id) {
         $id = (int)$id;
         $p = PropertysModel::getWebChecks();
@@ -249,6 +272,11 @@ class CheckedController extends Controller
         return 'ERROR';
     }
     
+    /**
+     * 
+     * @param type $id
+     * @return string
+     */
     public function editOrder_DOWN($id) {
         $id = (int)$id;
         $p = PropertysModel::getWebChecks();
@@ -272,7 +300,10 @@ class CheckedController extends Controller
         return 'ERROR';
     }
 
-    
+    /**
+     * 
+     * @return type
+     */
     public function editColor() {
         $data = PropertysModel::getWebColors();
         return view('terminal.checked-edit-color', [
@@ -281,6 +312,12 @@ class CheckedController extends Controller
         ]);
     }
     
+    /**
+     * 
+     * @param Request $request
+     * @param type $action
+     * @return string
+     */
     public function editColor_ACTION(Request $request, $action) {
         $keyword = $request->post('keyword');
         $color = $request->post('color');

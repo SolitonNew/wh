@@ -23,7 +23,7 @@ return [
         14 => 'ТОК',
     ],
     
-    'btn_append' => 'Добавить',
-    'btn_update' => 'Обновить',
-    'btn_delete' => 'Удалить',
+    'btn_append' => 'ДОБАВИТЬ',
+    'btn_update' => 'ОБНОВИТЬ',
+    'btn_delete' => 'УДАЛИТЬ',
 ];

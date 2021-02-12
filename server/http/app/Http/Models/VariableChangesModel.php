@@ -9,8 +9,16 @@ class VariableChangesModel extends Model
 {
     protected $table = 'core_variable_changes_mem';
     
+    /**
+     *
+     * @var type 
+     */
     static private $_lastVariableID = -1;
     
+    /**
+     * 
+     * @return type
+     */
     static public function lastVariableID() {
         if (self::$_lastVariableID == -1) {
             $res = DB::select('select max(ID) MAX_ID from core_variable_changes_mem');

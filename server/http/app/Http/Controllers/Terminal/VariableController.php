@@ -8,6 +8,11 @@ use \Illuminate\Support\Facades\DB;
 
 class VariableController extends Controller
 {
+    /**
+     * 
+     * @param type $variableID
+     * @return string
+     */
     public function index($variableID) {
         $sql = "select p.NAME GROUP_TITLE, v.COMM VARIABLE_TITLE, v.APP_CONTROL, v.GROUP_ID, v.VALUE ".
                "  from core_variables v, plan_parts p ".
@@ -39,6 +44,11 @@ class VariableController extends Controller
         }
     }
     
+    /**
+     * 
+     * @param type $lastID
+     * @return type
+     */
     public function variableChanges($lastID) {
         $lastID = (int)$lastID;
         if ($lastID > 0) {
@@ -53,6 +63,12 @@ class VariableController extends Controller
         }
     }
     
+    /**
+     * 
+     * @param type $varID
+     * @param type $varValue
+     * @return string
+     */
     public function variableSet($varID, $varValue) {
         $varID = (int)$varID;
         $varValue = (int)$varValue;

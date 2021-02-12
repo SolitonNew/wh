@@ -8,6 +8,10 @@ class PropertysModel extends Model
 {
     protected $table = 'core_propertys';
     
+    /**
+     * 
+     * @return type
+     */
     static public function getWebColors() {
         $row = self::whereName('WEB_COLOR')->first();
         if ($row) {
@@ -17,6 +21,10 @@ class PropertysModel extends Model
         }
     }
     
+    /**
+     * 
+     * @return type
+     */
     static public function getWebChecks() {
         $row = self::whereName('WEB_CHECKED')->first();
         if ($row) {

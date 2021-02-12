@@ -8,6 +8,11 @@ class VariablesModel extends Model
 {
     protected $table = 'core_variables';
     
+    /**
+     * 
+     * @param type $app_control
+     * @return type
+     */
     static public function decodeAppControl($app_control) {
         $control = '';
         $typ = -1; // 1-label; 2-switch; 3-track;
@@ -77,6 +82,13 @@ class VariablesModel extends Model
         ];
     }
     
+    /**
+     * 
+     * @param type $groupName
+     * @param type $variableName
+     * @param type $appControlLabel
+     * @return type
+     */
     static public function groupVariableName($groupName, $variableName, $appControlLabel) {
         $resLabel = '';
         if ($appControlLabel != '') {

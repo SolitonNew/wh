@@ -7,6 +7,11 @@ use App\Http\Controllers\Controller;
 
 class RoomController extends Controller
 {
+    /**
+     * 
+     * @param type $roomID
+     * @return type
+     */
     public function index($roomID) {
         $roomID = (int)$roomID;
         

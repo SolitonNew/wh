@@ -4,17 +4,27 @@ namespace App\Http\Controllers\Terminal;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Auth;
 
 class RoomsController extends Controller
 {   
+    /**
+     *
+     * @var type 
+     */
     private $_groups = [];
+    
+    /**
+     *
+     * @var type 
+     */
     private $_variables = [];
     
     /**
      * 
      * @return type
      */
-    public function index() {
+    public function index() {       
         $this->_groups = \App\Http\Models\PlanPartsModel::orderBy('NAME', 'asc')
                             ->orderBy('ORDER_NUM', 'asc')
                             ->get();
@@ -127,6 +137,4 @@ class RoomsController extends Controller
         }
         return $res;
     }
-    
-    
 }
