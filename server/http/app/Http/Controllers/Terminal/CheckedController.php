@@ -83,7 +83,7 @@ class CheckedController extends Controller
                 
                 $charts[] = (object)[
                     'ID' => $row->data->ID,
-                    'data' => implode($chartData, ', '),
+                    'data' => implode(', ', $chartData),
                     'color' => $color,
                 ];
             }
