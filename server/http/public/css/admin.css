@@ -16,5 +16,33 @@
 
 .main-content {
     flex-grow: 1;
+}
+
+.main-content > div {
     padding: 1rem;
+}
+
+.table {
+    width: auto;
+}
+
+.table thead tr {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table th {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.table td {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.table td a {
+    margin-top: -0.3rem;
+    margin-bottom: -0.1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
 }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class VariablesModel extends Model
 {
     protected $table = 'core_variables';
+    public $timestamps = false;
     
     /**
      * 

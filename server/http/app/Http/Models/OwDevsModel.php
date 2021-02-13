@@ -4,8 +4,8 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PlanVideoModel extends Model
+class OwDevsModel extends Model
 {
-    protected $table = 'plan_video';
+    protected $table = 'core_ow_devs';
     public $timestamps = false;
 }

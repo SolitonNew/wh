@@ -39,6 +39,9 @@ Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
     Route::get('/statistics', 'Admin\StatisticsController@index')->name('statistics');
     
     Route::get('/users', 'Admin\UsersController@index')->name('users');
+    Route::match(['get', 'post'], '/user-edit/{id}', 'Admin\UsersController@edit')->name('user-edit');
+    Route::get('/user-delete/{id}', 'Admin\USersController@delete')->name('user-delete');
+    
     Route::post('/users', 'Admin\UsersController@append')->name('users');
     
     Route::get('/ow-manager', 'Admin\OwManagerController@index')->name('ow-manager');

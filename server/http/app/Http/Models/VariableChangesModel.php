@@ -8,6 +8,7 @@ use \Illuminate\Support\Facades\DB;
 class VariableChangesModel extends Model
 {
     protected $table = 'core_variable_changes_mem';
+    public $timestamps = false;
     
     /**
      *
