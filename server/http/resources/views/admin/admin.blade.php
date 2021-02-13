@@ -34,6 +34,9 @@
     <div class="main-content">
         @yield('content')
     </div>
+    <div id="logList" class="main-right-panel">
+    @include('admin.log')
+    </div>
 </div>
 
 <div class="modal fade" id="dialog_window" tabindex="-1" role="dialog" aria-hidden="true">
@@ -61,6 +64,9 @@
                 dialogAfterHandler();
             }
         });
+        
+        calcLastVariableID();
+        loadVariableChanges();
     });
     
     function dialog(url, beforeHandler) {
@@ -96,6 +102,25 @@
             clearTimeout(globalWaiter);
         }
         $('#globalWaiter').hide();
+    }
+    
+    let lastVariableID = -1;
+    
+    function calcLastVariableID() {
+        let ls = $('.log-row');
+        if (ls.length > 0) {
+            lastVariableID = $(ls[0]).attr('data-id');
+        }
+    }
+    
+    function loadVariableChanges() {
+       $.ajax('{{ route("variable-changes", "") }}/' + lastVariableID).done((data) => {
+           $('#logList').prepend(data);
+           calcLastVariableID();
+           setTimeout(loadVariableChanges, {{ config("app.admin_log_update_interval") }});
+           
+           $('.log-row:gt({{ config("app.admin_log_lines_count") }})').remove();
+       });
     }
 
 </script>
