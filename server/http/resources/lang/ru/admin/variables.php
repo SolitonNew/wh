@@ -39,4 +39,17 @@ return [
         13 => 'mm',
         14 => 'A',        
     ],
+    
+    'table_id' => 'ID',
+    'table_controller' => 'Контроллер',
+    'table_typ' => 'Тип',
+    'table_readonly' => 'Только чтение',
+    'table_name' => 'Идентификатор',
+    'table_comm' => 'Описание',
+    'table_app_control' => 'Устройство',
+    'table_value' => 'Значение',
+    'table_channel' => 'Канал',
+    
+    'variable_edit' => 'Изменить',
+    'variable_delete' => 'Удалить',
 ];

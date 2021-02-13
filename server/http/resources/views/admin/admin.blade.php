@@ -31,7 +31,7 @@
             </a>
         </div>
     </div>
-    <div class="main-content">
+    <div class="main-content" style="max-height: 100vh;overflow-y: auto;">
         @yield('content')
     </div>
     <div id="logList" class="main-right-panel">
