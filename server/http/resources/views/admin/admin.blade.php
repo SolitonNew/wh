@@ -6,46 +6,53 @@
 @endsection
 
 @section('body')
-<div class="main-container">
-    <div class="main-left-panel">
-        <nav class="navbar">
-            <a class="btn btn-light strong" href="{{ route('home') }}" style="width: 100%;margin-right: 0;">WISE HOUSE</a>
-        </nav>
-        <div class="main-left-panel-container">
-            <div style="height: 130px;padding: 0.5rem;text-align: center;">
-                <img src="/img/logo.png" height="100%">
+<div class="body-container">
+    <div class="body-content">
+        <div class="main-menu">
+            <nav class="navbar">
+                <div class="logo">WISE HOUSE</div>
+                @yield('top-menu')
+            </nav>
+        </div>
+        <div class="main-container">
+            <div class="main-left-panel">
+                <div class="main-left-panel-container">
+                    <div style="height: 130px;padding: 0.5rem;text-align: center;">
+                        <img src="/img/logo.png" height="100%">
+                    </div>
+                    <div class="list-group">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('')" href="{{ route('variables') }}">
+                            @lang('admin/variables.menu')
+                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VariablesModel::count() }}</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('scripts')" href="{{ route('scripts') }}">
+                            @lang('admin/scripts.menu')
+                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\ScriptsModel::count() }}</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('statistics')" href="{{ route('statistics') }}">
+                            @lang('admin/statistics.menu')
+                        </a>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('users')" href="{{ route('users') }}">
+                            @lang('admin/users.menu')
+                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\UsersModel::count() }}</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('ow-manager')" href="{{ route('ow-manager') }}">
+                            @lang('admin/ow-manager.menu')
+                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\OwDevsModel::count() }}</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('schedule')" href="{{ route('schedule') }}">
+                            @lang('admin/schedule.menu')
+                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\SchedulerModel::count() }}</span>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('')" href="{{ route('variables') }}">
-                    @lang('admin/variables.menu')
-                    <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VariablesModel::count() }}</span>
-                </a>
-                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('scripts')" href="{{ route('scripts') }}">
-                    @lang('admin/scripts.menu')
-                    <span class="badge badge-primary badge-pill">{{ \App\Http\Models\ScriptsModel::count() }}</span>
-                </a>
-                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('statistics')" href="{{ route('statistics') }}">
-                    @lang('admin/statistics.menu')
-                </a>
-                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('users')" href="{{ route('users') }}">
-                    @lang('admin/users.menu')
-                    <span class="badge badge-primary badge-pill">{{ \App\Http\Models\UsersModel::count() }}</span>
-                </a>
-                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('ow-manager')" href="{{ route('ow-manager') }}">
-                    @lang('admin/ow-manager.menu')
-                    <span class="badge badge-primary badge-pill">{{ \App\Http\Models\OwDevsModel::count() }}</span>
-                </a>
-                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('schedule')" href="{{ route('schedule') }}">
-                    @lang('admin/schedule.menu')
-                    <span class="badge badge-primary badge-pill">{{ \App\Http\Models\SchedulerModel::count() }}</span>
-                </a>
+            <div class="main-content">
+                @yield('content')
             </div>
         </div>
     </div>
-    <div class="main-content">
-        @yield('content')
-    </div>
-    <div id="logList" class="main-right-panel alert-warning">
+    <div id="logList" class="body-content-log">
     @include('admin.log')
     </div>
 </div>

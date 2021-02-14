@@ -1,18 +1,44 @@
 .navbar {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    justify-content: flex-start;
 }
 
 .navbar .btn {
-    margin-right: 0.5rem;
+    margin: 0 0.5rem;
 }
 
-.main-container {
+.navbar .logo {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 170%;
+    width: 200px;
+    height: 3rem;
+    text-align: center;
+    margin-left: -1rem;
+    line-height: 3rem;
+}
+
+.body-container {
     display: flex;
     flex-direction: row;
     height: 100vh;
     min-height: 100vh;
     width: 100vw;
     max-width: 100vw;
+    overflow: hidden;
+}
+
+.body-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.main-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
     overflow: hidden;
 }
 
@@ -33,28 +59,13 @@
     margin-right: -1px;
 }
 
-.main-right-panel {
+.body-content-log {
     width: 400px;
     min-width: 400px;
     border-left: 1px solid rgba(0,0,0,.125);
 }
 
 .main-content {
-    flex-grow: 1;
-    overflow: hidden;
-}
-
-.main-content-with-bar {
-    display: flex; 
-    flex-direction: column;
-    width: 100%;
-    max-width: 100%;
-    height: 100%;
-    max-height: 100%;
-    overflow: hidden;
-}
-
-.main-content-with-bar-container {
     flex-grow: 1;
     overflow: hidden;
 }
