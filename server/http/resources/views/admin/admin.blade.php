@@ -31,6 +31,10 @@
                 @lang('admin/ow-manager.menu')
                 <span class="badge badge-primary badge-pill">{{ \App\Http\Models\OwDevsModel::count() }}</span>
             </a>
+            <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('schedule')" href="{{ route('schedule') }}">
+                @lang('admin/schedule.menu')
+                <span class="badge badge-primary badge-pill">{{ \App\Http\Models\SchedulerModel::count() }}</span>
+            </a>
             
             <a class="list-group-item list-group-item-action" href="{{ route('home') }}">
                 @lang('admin/admin.menu_home')

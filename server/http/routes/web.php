@@ -50,4 +50,6 @@ Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
     Route::post('/users', 'Admin\UsersController@append')->name('users');
     
     Route::get('/ow-manager', 'Admin\OwManagerController@index')->name('ow-manager');
+    
+    Route::get('/schedule', 'Admin\ScheduleController@index')->name('schedule');
 });
