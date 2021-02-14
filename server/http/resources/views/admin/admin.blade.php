@@ -8,7 +8,9 @@
 @section('body')
 <div class="main-container">
     <div class="main-left-panel">
-        <div style="height: 100px;"></div>
+        <div style="height: 130px;padding: 0.5rem;text-align: center;">
+            <img src="/img/logo.png" height="100%">
+        </div>
         <div class="list-group">
             <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('')" href="{{ route('variables') }}">
                 @lang('admin/variables.menu')
@@ -29,9 +31,13 @@
                 @lang('admin/ow-manager.menu')
                 <span class="badge badge-primary badge-pill">{{ \App\Http\Models\OwDevsModel::count() }}</span>
             </a>
+            
+            <a class="list-group-item list-group-item-action" href="{{ route('home') }}">
+                @lang('admin/admin.menu_home')
+            </a>
         </div>
     </div>
-    <div class="main-content" style="max-height: 100vh;overflow-y: auto;">
+    <div class="main-content">
         @yield('content')
     </div>
     <div id="logList" class="main-right-panel">
@@ -122,6 +128,10 @@
            $('.log-row:gt({{ config("app.admin_log_lines_count") }})').remove();
        });
     }
-
+    
+    
+    function convertTableToScrollGrid($table) {
+        
+    }
 </script>
 @endsection
