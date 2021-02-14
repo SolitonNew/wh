@@ -3,12 +3,12 @@
 @section('content')
 <div class="main-content-with-bar">
     <nav class="navbar">
-        <button class="btn btn-primary" type="button" onclick="userAdd();">@lang('admin\users.user_add')</button>
+        <button class="btn btn-primary" type="button" onclick="variableAdd();">@lang('admin\variables.variable_add')</button>
     </nav>
     <div class="main-content-with-bar-container">
         <div style="display: flex; flex-direction: row; flex-grow: 1;max-height: 100%;">
-            <div style="width: 200px;min-width:200px; overflow: auto;">
-                @for($i = 0; $i < 100; $i++)
+            <div style="width: 200px;min-width:200px; overflow: auto;padding: 1rem;border-right: 1px solid rgba(0,0,0,0.125);">
+                @for($i = 0; $i < 20; $i++)
                 <div>ZZZZZZ</div>
                 @endfor
             </div>
@@ -29,8 +29,8 @@
                     </thead>
                     <tbody>
                         @foreach($data as $row)
-                        <tr id="row_{{ $row->ID }}">
-                            <th scope="row">{{ $row->ID }}</th>
+                        <tr data-id="{{ $row->ID }}">
+                            <td>{{ $row->ID }}</td>
                             <td>{{ $row->CONTROLLER_NAME }}</td>
                             <td>{{ $row->TYP_NAME }}</td>
                             <td>{{ $row->DIRECTION }}</td>
@@ -49,5 +49,15 @@
 </div>
 
 <script>
+    $(document).ready(() => {
+        $('#variable_table tbody tr').on('click', (e) => {
+            let id = $(e.currentTarget).attr('data-id');
+            dialog('{{ route("variable-edit", "") }}/' + id);
+        });
+    });
+    
+    function variableAdd() {
+        dialog('{{ route("variable-edit", -1) }}');
+    }
 </script>
 @endsection

@@ -19,7 +19,7 @@
                 <tbody>
                     @foreach($data as $row)
                     <tr data-id="{{ $row->id }}">
-                        <th scope="row">{{ $row->id }}</th>
+                        <td>{{ $row->id }}</td>
                         <td>{{ $row->login }}</td>
                         <td>{{ $row->email }}</td>
                         <td>@lang('admin\users.table_access_list.'.$row->access)</td>

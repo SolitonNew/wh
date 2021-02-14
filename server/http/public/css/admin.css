@@ -17,12 +17,19 @@
 }
 
 .main-left-panel {
+    display: flex;
+    flex-direction: column;
     width: 200px;
     min-width: 200px;
+}
+
+.main-left-panel-container {
+    flex-grow: 1;
     border-right: 1px solid rgba(0,0,0,.125);
 }
 
-.main-left-panel > .list-group {
+
+.main-left-panel-container > .list-group {
     margin-right: -1px;
 }
 

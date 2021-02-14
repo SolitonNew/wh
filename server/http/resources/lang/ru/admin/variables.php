@@ -50,6 +50,9 @@ return [
     'table_value' => 'Значение',
     'table_channel' => 'Канал',
     
-    'variable_edit' => 'Изменить',
-    'variable_delete' => 'Удалить',
+    'variable_add' => 'Добавить новую переменную',
+    
+    'variable_add_title' => 'Добавить новую переменную',
+    'variable_edit_title' => 'Редактирование переменной',
+
 ];

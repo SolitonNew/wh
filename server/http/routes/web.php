@@ -33,6 +33,8 @@ Route::group(['middleware'=>'auth'], function () {
 
 Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
     Route::get('/', 'Admin\VariablesController@index')->name('variables');
+    Route::match(['get', 'post'], '/variable-edit/{id}', 'Admin\VariablesController@edit')->name('variable-edit');
+    Route::get('/variable-delete/{id}', 'Admin\VariablesController@delete')->name('variable-delete');
     
     Route::get('/variable-changes/{lastID}', function ($lastID) {
         \App\Http\Models\VariableChangesModel::setLastVariableID($lastID);

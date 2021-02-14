@@ -8,6 +8,10 @@ use \Illuminate\Support\Facades\DB;
 
 class VariablesController extends Controller
 {
+    /**
+     * 
+     * @return type
+     */
     public function index() {
         
         $sql = 'select v.ID,
@@ -28,5 +32,56 @@ class VariablesController extends Controller
         return view('admin.variables', [
             'data' => $data,
         ]);
+    }
+    
+    /**
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return string
+     */
+    public function edit(Request $request, int $id) {
+        $item = \App\Http\Models\VariablesModel::find($id);
+        
+        if ($request->method() == 'POST') {
+            if (!$item) {
+                $item = new \App\Http\Models\VariablesModel();
+                
+                try {
+                    
+                    return 'OK';
+                } catch (\Exception $ex) {
+                    return response()->json([
+                        'error' => [$ex->errorInfo],
+                    ]);
+                }
+            }
+        } else {
+            if (!$item) {
+                $item = (object)[
+                    'ID' => -1,
+                    
+                ];
+            }
+            
+            return view('admin.variable-edit', [
+                'item' => $item,
+            ]);            
+        }
+    }
+    
+    /**
+     * 
+     * @param int $id
+     * @return string
+     */
+    public function delete(int $id) {
+        $item = \App\Http\Models\VariablesModel::find($id);
+        if ($item) {
+            $item->delete();
+            return 'OK';
+        }
+        
+        return 'ERROR';
     }
 }
