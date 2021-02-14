@@ -68,6 +68,8 @@
 
 <script>
     $('document').ready(() => {
+        convertTableToScrollGrid($('.table-fixed-header'));
+        
         $('#dialog_window').on('hidden.bs.modal', function (e) {
             $('#dialog_content').html('');
             if (dialogAfterHandler) {
@@ -134,8 +136,31 @@
     }
     
     
-    function convertTableToScrollGrid($table) {
+    function convertTableToScrollGrid(table) {
+        let header = $('<table><thead>' + $('thead', table).html() + '</thead></table>');
+        header.attr('class', table.attr('class') + ' table-scroll-header');
+        header.insertAfter(table);
         
+        let parent = $(table.parent());
+        parent.on('scroll', (e) => {
+            header.css({
+                top: parent.scrollTop() + 'px',
+            });
+        })
+                
+        $(window).on('resize', () => {
+            header.width(table.width());
+            
+            let th_p = $('thead tr th', table);
+            let th_h = $('thead tr th', header);
+
+            for (let i = 0; i < th_p.length; i++) {
+                let w = $(th_p[i]).width() + 2 + 'px';
+                $(th_h[i]).css({
+                    'width': w,
+                });
+            }
+        }).trigger('resize');
     }
 </script>
 @endsection

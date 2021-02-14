@@ -7,13 +7,13 @@
     </nav>
     <div class="main-content-with-bar-container">
         <div class="content-body">
-            <table id="userList" class="table table-sm table-hover table-bordered">
+            <table id="userList" class="table table-sm table-hover table-bordered table-fixed-header">
                 <thead>
                     <tr>
-                        <th scope="col" style="width: 50px;">@lang('admin\users.table_id')</th>
-                        <th scope="col" style="width: 150px;">@lang('admin\users.table_login')</th>
-                        <th scope="col" style="width: 250px;">@lang('admin\users.table_email')</th>
-                        <th scope="col" style="width: 100px;">@lang('admin\users.table_access')</th>
+                        <th scope="col" style="width: 50px;"><span>@lang('admin\users.table_id')</span></th>
+                        <th scope="col" style="width: 150px;"><span>@lang('admin\users.table_login')</span></th>
+                        <th scope="col" style="width: 250px;"><span>@lang('admin\users.table_email')</span></th>
+                        <th scope="col" style="width: 100px;"><span>@lang('admin\users.table_access')</span></th>
                     </tr>
                 </thead>
                 <tbody>

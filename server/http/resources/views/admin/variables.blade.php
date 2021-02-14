@@ -13,19 +13,18 @@
                 @endfor
             </div>
             <div class="content-body">
-                <table id="variable_table" class="table table-sm table-hover table-bordered">
+                <table id="variable_table" class="table table-sm table-hover table-bordered table-fixed-header">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 50px;">@lang('admin\variables.table_id')</th>
-                            <th scope="col" style="width: 130px;">@lang('admin\variables.table_controller')</th>
-                            <th scope="col" style="width: 50px;">@lang('admin\variables.table_typ')</th>
-                            <th scope="col" style="width: 50px;">@lang('admin\variables.table_readonly')</th>
-                            <th scope="col" style="width: 50px;">@lang('admin\variables.table_name')</th>
-                            <th scope="col" style="width: 50px;">@lang('admin\variables.table_comm')</th>
-                            <th scope="col" style="width: 50px;">@lang('admin\variables.table_app_control')</th>
-                            <th scope="col" style="width: 50px;">@lang('admin\variables.table_value')</th>
-                            <th scope="col" style="width: 50px;">@lang('admin\variables.table_channel')</th>
-                            <th scope="col" style="width: 50px;"></th>
+                            <th scope="col" style="width: 60px;"><span>@lang('admin\variables.table_id')</span></th>
+                            <th scope="col" style="width: 150px;"><span>@lang('admin\variables.table_controller')</span></th>
+                            <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_typ')</span></th>
+                            <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_readonly')</span></th>
+                            <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_name')</span></th>
+                            <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_comm')</span></th>
+                            <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_app_control')</span></th>
+                            <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_value')</span></th>
+                            <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_channel')</span></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,10 +39,6 @@
                             <td>{{ $row->APP_CONTROL }}</td>
                             <td>{{ $row->VALUE }}</td>
                             <td>{{ $row->CHANNEL }}</td>
-                            <td class="nowrap">
-                                <a href="#" class="btn btn-sm btn-outline-primary" onclick="userEdit({{ $row->ID }}); return false;">@lang('admin\variables.variable_edit')</a>
-                                <a href="#" class="btn btn-sm btn-danger" onclick="userDelete({{ $row->ID }}); return false;">@lang('admin\variables.variable_delete')</a>
-                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -54,8 +49,5 @@
 </div>
 
 <script>
-    $(document).ready(() => {
-        convertTableToScrollGrid($('#variable_table'));
-    });
 </script>
 @endsection

@@ -53,6 +53,7 @@
 }
 
 .main-content .content-body {
+    position: relative;
     flex-grow: 1; 
     overflow: auto;
 }
@@ -63,6 +64,19 @@
     width: auto;
 }
 
+.table.table-scroll-header {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    border-top: 1rem solid #ffffff;
+    margin-top: 0px;
+}
+
+.table thead {
+    background-color: #ffffff;
+}
+
 .table thead tr {
     background-color: rgba(0, 0, 0, 0.05);
 }
@@ -70,9 +84,15 @@
 .table thead th,
 .table tbody th {
     text-align: center;
-    padding: 0.5rem;
+    padding: 0px;
     line-height: 1.2rem;
     vertical-align: middle;
+    margin: 0.5rem;
+}
+
+.table thead th span {
+    display: block;
+    padding: 0.5rem;
 }
 
 .table td {
