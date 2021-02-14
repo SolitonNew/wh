@@ -11,6 +11,7 @@ return [
     'btn_no' => 'Нет',
     'btn_close' => 'Закрыть',
     'btn_save' => 'Сохранить',
+    'btn_delete' => 'Удалить',
     
     'table_empty' => 'Записи не найдены',
     

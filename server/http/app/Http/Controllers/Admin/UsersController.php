@@ -53,7 +53,9 @@ class UsersController extends Controller
                 $item->save();
                 return 'OK';
             } catch (\Exception $ex) {
-                return $ex;
+                return response()->json([
+                    'error' => [$ex->errorInfo],
+                ]);
             }
         } else {
             $item = \App\Http\Models\UsersModel::find($id);

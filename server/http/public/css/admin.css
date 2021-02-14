@@ -2,6 +2,10 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
 }
 
+.navbar .btn {
+    margin-right: 0.5rem;
+}
+
 .main-container {
     display: flex;
     flex-direction: row;
@@ -76,6 +80,7 @@
     padding: 0.5rem;
     line-height: 1.2rem;
     vertical-align: middle;
+    cursor: pointer;
 }
 
 .table td a {

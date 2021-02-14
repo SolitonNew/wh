@@ -73,6 +73,10 @@
 @endsection
 
 @section('buttons')
+    @if($item->id > 0 && Auth::user()->id != $item->id)
+    <button type="button" class="btn btn-danger" onclick="userDelete()">@lang('dialogs.btn_delete')</button>
+    <div style="flex-grow: 1"></div>
+    @endif
     <button type="button" class="btn btn-primary" onclick="userEditOK()">@lang('dialogs.btn_save')</button>
     <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('dialogs.btn_cancel')</button>
 @endsection
@@ -94,5 +98,20 @@
     function userEditOK() {
         $('#user_edit_form').submit();
     }
+    
+    function userDelete() {
+        if (confirm('@lang("admin\users.user-delete-confirm")')) {
+            $.ajax('{{ route("user-delete", $item->id) }}').done((data) => {
+                if (data == 'OK') {
+                    dialogHide(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    
+                }
+            });
+        }
+    }
+    
 </script>
 @endsection
