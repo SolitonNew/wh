@@ -36,6 +36,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
         return redirect(route('variables'));
     });
     
+    Route::get('/rooms/{partID?}', 'Admin\RoomsController@index')->name('parts');
+    
     Route::get('/variables/{partID?}', 'Admin\VariablesController@index')->name('variables');
     Route::match(['get', 'post'], '/variable-edit/{id}', 'Admin\VariablesController@edit')->name('variable-edit');
     Route::get('/variable-delete/{id}', 'Admin\VariablesController@delete')->name('variable-delete');
