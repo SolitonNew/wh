@@ -22,18 +22,11 @@ class UsersController extends Controller
     public function edit(Request $request, int $id) {
         if ($request->method() == 'POST') {
             try {
-                if ($id == -1) {
-                    $this->validate($request, [
-                        'login' => 'required|string',
-                        'password' => 'required|string',
-                        'email' => 'nullable|email|string',
-                    ]);
-                } else {
-                    $this->validate($request, [
-                        'login' => 'required|string',
-                        'email' => 'nullable|string',
-                    ]);
-                }
+                $this->validate($request, [
+                    'login' => 'required|string|unique:web_users,login,'.($id > 0 ? $id : ''),
+                    'password' => 'string|'.($id > 0 ? 'nullable' : 'required'),
+                    'email' => 'nullable|email|string',
+                ]);
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
             }
