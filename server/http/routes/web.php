@@ -39,6 +39,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
     Route::get('/rooms/{partID?}', 'Admin\RoomsController@index')->name('parts');
     
     Route::get('/variables/{partID?}', 'Admin\VariablesController@index')->name('variables');
+    Route::get('/variables-ow-list/{controller}', 'Admin\VariablesController@owList')->name('variables-ow-list');
+    Route::get('/variables-channel-list/{rom}/{ow_id?}', 'Admin\VariablesController@channelList')->name('variables-channel-list');
     Route::match(['get', 'post'], '/variable-edit/{id}', 'Admin\VariablesController@edit')->name('variable-edit');
     Route::get('/variable-delete/{id}', 'Admin\VariablesController@delete')->name('variable-delete');
     

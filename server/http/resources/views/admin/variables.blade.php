@@ -5,8 +5,8 @@
 @endsection
 
 @section('content')
-<div style="display: flex; flex-direction: row; flex-grow: 1;max-height: 100%;">
-    <div style="width: 200px;min-width:200px; overflow: auto;border-right: 1px solid rgba(0,0,0,0.125);">
+<div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
+    <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);">
         @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
         <a href="{{ route('variables', $row->ID) }}" 
            class="tree-item {{ $row->ID == $partID ? 'active' : '' }}" style="padding-left: {{ $row->level + 1 }}rem">{{ $row->NAME }}</a>
@@ -32,11 +32,11 @@
                 <tr data-id="{{ $row->ID }}">
                     <td>{{ $row->ID }}</td>
                     <td>{{ $row->CONTROLLER_NAME }}</td>
-                    <td>{{ $row->TYP_NAME }}</td>
-                    <td>{{ $row->DIRECTION }}</td>
+                    <td>{{ $row->ROM }}</td>
+                    <td>{{ Lang::get('admin\variables.table_readonly_list.'.$row->DIRECTION) }}</td>
                     <td>{{ $row->NAME }}</td>
                     <td>{{ $row->COMM }}</td>
-                    <td>{{ $row->APP_CONTROL }}</td>
+                    <td>{{ Lang::get('admin\variables.app_control.'.$row->APP_CONTROL) }}</td>
                     <td>{{ $row->VALUE }}</td>
                     <td>{{ $row->CHANNEL }}</td>
                 </tr>

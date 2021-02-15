@@ -21,7 +21,7 @@ class VariablesController extends Controller
         
         $sql = 'select v.ID,
                        c.NAME CONTROLLER_NAME,
-                       0 TYP_NAME,
+                       v.ROM,
                        v.DIRECTION,
                        v.NAME,
                        v.COMM,
@@ -67,14 +67,100 @@ class VariablesController extends Controller
             if (!$item) {
                 $item = (object)[
                     'ID' => -1,
-                    
+                    'CONTROLLER_ID' => -1,
+                    'ROM' => 'ow',
+                    'OW_ID' => '',
+                    'DIRECTION' => 0,
+                    'NAME' => '',
+                    'COMM' => '',
+                    'GROUP_ID' => 1,
+                    'APP_CONTROL' => 0,
+                    'VALUE' => 0,
+                    'CHANNEL' => 0,
                 ];
             }
             
+            $typs = [
+                'ow' => 'ow',
+                'pyb' => 'pyb',
+                'variable' => 'variable',
+            ];
+            
             return view('admin.variable-edit', [
                 'item' => $item,
+                'typs' => $typs,
             ]);            
         }
+    }
+    
+    /**
+     * Список OW устройств для диалога свойств переменной
+     * 
+     * @param int $controller
+     * @return type
+     */
+    public function owList(int $controller) {
+        $data = DB::select("select d.ID, d.ROM_1, d.ROM_2, d.ROM_3, d.ROM_4, d.ROM_5, d.ROM_6, d.ROM_7, d.ROM_8,
+                                   (select count(1)
+                                      from core_variables v 
+                                     where v.OW_ID = d.ID) NUM
+                              from core_ow_devs d
+                             where d.CONTROLLER_ID = $controller
+                            order by d.ROM_1, d.ROM_2, d.ROM_3, d.ROM_4, d.ROM_5, d.ROM_6, d.ROM_7, d.ROM_8");
+        return response()->json($data);
+    }
+    
+    /**
+     * Список каналов для диалога свойств переменной
+     * 
+     * @param type $rom
+     * @param int $ow_id
+     * @return type
+     */
+    public function channelList($rom, int $ow_id = null) {
+        switch ($rom) {
+            case 'pyb':
+                $data = [
+                    'X1', 
+                    'X2', 
+                    'X3',
+                    'X4',
+                    'X5', 
+                    'X6',
+                    'X7',
+                    'X8',
+                    'X9',
+                    'X10',
+                    'X11',
+                    'X12',
+                    'Y1',
+                    'Y2',
+                    'Y3',
+                    'Y4',
+                    'Y5',
+                    'Y6',
+                    'Y7',
+                    'Y8'];
+                break;
+            case 'ow':
+                if ($ow_id) {
+                    $c = DB::select('select t.CHANNELS
+                                       from core_ow_devs d, core_ow_types t
+                                      where d.ROM_1 = t.CODE
+                                        and d.ID = '.$ow_id);
+                    if (count($c)) {
+                        $data = explode(',', $c[0]->CHANNELS);
+                    } else {
+                        $data = [];
+                    }
+                } else {
+                    $data = [];
+                }
+                break;
+            default:
+                $data = [];
+        }
+        return response()->json($data);
     }
     
     /**

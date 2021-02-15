@@ -6,7 +6,7 @@
 @endsection
 
 @section('body')
-<div class="body-container">
+<div class="body-container" style="opacity: 0;">
     <div class="body-content">
         <div class="main-menu">
             <nav class="navbar">
@@ -91,6 +91,8 @@
         
         calcLastVariableID();
         loadVariableChanges();
+        
+        $('.body-container').css({opacity: 1});
     });
     
     function dialog(url, beforeHandler) {

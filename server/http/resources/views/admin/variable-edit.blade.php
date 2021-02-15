@@ -9,11 +9,11 @@
 @endsection
 
 @section('content')
-<form id="variable_edit_form" class="container" method="POST" action="{{ route('user-edit', $item->ID) }}">
+<form id="variable_edit_form" class="container" method="POST" action="{{ route('variable-edit', $item->ID) }}">
     {{ csrf_field() }}
     @if($item->ID > 0)
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="form-label">@lang('admin\variables.table_id')</div>
         </div>
         <div class="col-sm-3">
@@ -23,78 +23,112 @@
     </div>
     @endif
     <div class="row">
-        <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin\variables.table_controller')</div>
+        <div class="col-sm-4">
+            <div class="form-label">@lang('admin\variables.table_controller')</div>
         </div>
         <div class="col-sm-6">
-            <select class="form-control" name="controller">
+            <select class="form-control" name="CONTROLLER_ID">
             @foreach(\App\Http\Models\ControllersModel::orderBy('name', 'asc')->get() as $row)
-            <option value="{{ $row->ID }}" {{ $row->ID == $item->ID ? 'selected' : '' }}>{{ $row->NAME }}</option>
+            <option value="{{ $row->ID }}" {{ $row->ID == $item->CONTROLLER_ID ? 'selected' : '' }}>{{ $row->NAME }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin\variables.table_typ')</div>
+        <div class="col-sm-4">
+            <div class="form-label">@lang('admin\variables.table_typ')</div>
         </div>
-        <div class="col-sm-6">
-            <input class="form-control" type="text" name="TYP" value="" required="">
+        <div class="col-sm-4">
+            <select class="form-control" name="ROM">
+                @foreach($typs as $key => $val)
+                <option value="{{ $key }}" {{ $key == $item->ROM ? 'selected' : '' }}>{{ $val }}</option>
+                @endforeach
+            </select>
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+    <div class="row" id="ow_id">
+        <div class="col-sm-4">
+            <div class="form-label">@lang('admin\variables.table_ow')</div>
+        </div>
+        <div class="col-sm-8">
+            <select class="form-control" name="OW_ID" data-value="{{ $item->OW_ID }}"></select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin\variables.table_readonly')</div>
+        <div class="col-sm-4">
+            <div class="form-label">@lang('admin\variables.table_readonly')</div>
         </div>
-        <div class="col-sm-6">
-            <input class="form-control" type="text" name="DIRECTION" value="{{ $item->DIRECTION }}" required="">
+        <div class="col-sm-3">
+            <select class="form-control" name="DIRECTION">
+                @foreach(Lang::get('admin\variables.table_readonly_list') as $key => $val)
+                <option value="{{ $key }}" {{ $key == $item->DIRECTION ? 'selected' : '' }}>{{ $val }}</option>
+                @endforeach
+            </select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="form-label strong">@lang('admin\variables.table_name')</div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-8">
             <input class="form-control" type="text" name="NAME" value="{{ $item->NAME }}" required="">
             <div class="invalid-feedback"></div>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin\variables.table_comm')</div>
+        <div class="col-sm-4">
+            <div class="form-label">@lang('admin\variables.table_comm')</div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-8">
             <input class="form-control" type="text" name="COMM" value="{{ $item->COMM }}" required="">
             <div class="invalid-feedback"></div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin\variables.table_app_control')</div>
+    <div class="row" id="channel">
+        <div class="col-sm-4">
+            <div class="form-label">@lang('admin\variables.table_channel')</div>
         </div>
-        <div class="col-sm-6">
-            <input class="form-control" type="text" name="APP_CONTROL" value="{{ $item->APP_CONTROL }}" required="">
+        <div class="col-sm-4">
+            <select class="form-control" name="CHANNEL" data-value="{{ $item->CHANNEL }}"></select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-4">
+            <div class="form-label">@lang('admin\variables.table_group')</div>
+        </div>
+        <div class="col-sm-8">
+            <select class="form-control" name="GROUP_ID">
+                @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
+                <option value="{{ $row->ID }}" {{ $row->ID == $item->GROUP_ID ? 'selected' : '' }}>{!! str_repeat('&nbsp;', $row->level * 4) !!}  {{ $row->NAME }}</option>
+                @endforeach
+            </select>
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-label">@lang('admin\variables.table_app_control')</div>
+        </div>
+        <div class="col-sm-8">
+            <select class="form-control" name="APP_CONTROL">
+                @foreach(Lang::get('admin\variables.app_control') as $key => $val)
+                <option value="{{ $key }}" {{ $key == $item->APP_CONTROL ? 'selected' : '' }}>{{ $val }}</option>
+                @endforeach
+            </select>
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+    <div class="row" id="value">
+        <div class="col-sm-4">
             <div class="form-label strong">@lang('admin\variables.table_value')</div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <input class="form-control" type="text" name="VALUE" value="{{ $item->VALUE }}" required="">
-            <div class="invalid-feedback"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin\variables.table_channel')</div>
-        </div>
-        <div class="col-sm-6">
-            <input class="form-control" type="text" name="CHANNEL" value="{{ $item->CHANNEL }}" required="">
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -111,7 +145,7 @@
 @endsection
 
 @section('script')
-<script>
+<script>   
     $(document).ready(() => {
         $('#variable_edit_form').ajaxForm((data) => {
             if (data == 'OK') {
@@ -122,7 +156,102 @@
                 dialogShowErrors(data);
             }
         });
+        
+        $('#variable_edit_form select[name="CONTROLLER_ID"]').on('change', () => {
+            reloadOwList();
+            reloadChannels();
+        });
+        
+        $('#variable_edit_form select[name="ROM"]').on('change', () => {
+            reloadOwList();
+            reloadChannels();
+            reloadDirection();
+        });
+        
+        $('#variable_edit_form select[name="OW_ID"]').on('change', (e) => {
+            let l = $(e.currentTarget);
+            l.attr('data-value', l.val());
+            reloadChannels();
+        });
+        
+        $('#variable_edit_form select[name="DIRECTION"]').on('change', (e) => {
+            reloadDirection();
+        });
+        
+        reloadOwList();
+        reloadChannels();
+        reloadDirection();
     });
+    
+    function reloadOwList() {
+        let controller = $('#variable_edit_form select[name="CONTROLLER_ID"]').val();
+        $.ajax('{{ route("variables-ow-list", "") }}/' + controller).done((data) => {
+            let rom = $('#variable_edit_form select[name="ROM"]').val();
+            if (rom == 'ow') {
+                let owList = $('#variable_edit_form select[name="OW_ID"]');
+                let selValue = owList.attr('data-value');
+                owList.html('');
+                owList.append('<option value="">-//-</option>');
+                for (let i = 0; i < data.length; i++) {
+                    let sel = '';
+                    let s = '[' + data[i]['NUM'] + '] ';
+                    for (k = 1; k <= 7; k++) {
+                        let h = data[i]['ROM_' + k].toString(16).toUpperCase();
+                        if (h.length < 2) {
+                            h = '0' + h;
+                        }
+                        s += 'x' + h + ' ';
+                    }
+                    
+                    if (data[i]['ID'] == selValue) {
+                        sel = 'selected';
+                    }
+                    
+                    owList.append('<option value="' + data[i]['ID'] + '" ' + sel + '>' + s + '</option>');
+                }
+                $('#ow_id').show(250);
+            } else {
+                $('#ow_id').hide(250);
+            }
+        });
+    }
+    
+    function reloadChannels() {
+        let rom = $('#variable_edit_form select[name="ROM"]').val();
+        let ow_id = $('#variable_edit_form select[name="OW_ID"]').val();
+        if (ow_id == null) ow_id = '';
+        
+        $.ajax('{{ route("variables-channel-list", ["", ""]) }}/' + rom + '/' + ow_id).done((data) => {
+            let rom = $('#variable_edit_form select[name="ROM"]').val();
+            if (((rom == 'ow') && (ow_id > 0)) || (rom == 'pyb')) {
+                let chanList = $('#variable_edit_form select[name="CHANNEL"]');
+                let selValue = chanList.attr('data-value');
+                chanList.html('');
+                for (let i = 0; i < data.length; i++) {
+                    let sel = '';
+                    let s = data[i];
+                    if (data[i] == selValue) {
+                        sel = 'selected';
+                    }
+                    chanList.append('<option value="' + s + '" ' + sel + '>' + s + '</option>');
+                }
+                $('#channel').show(250);
+            } else {
+                $('#channel').hide(250);
+            }
+        });
+    }
+    
+    function reloadDirection() {
+        let l = $('#variable_edit_form select[name="DIRECTION"]').val();
+        let rom = $('#variable_edit_form select[name="ROM"]').val();
+        
+        if ((rom == 'variable') || (l == '1')) {
+            $('#value').show(250);
+        } else {
+            $('#value').hide(250);
+        }
+    }
     
     function variableEditOK() {
         $('#variable_edit_form').submit();

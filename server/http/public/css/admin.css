@@ -32,6 +32,8 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -63,10 +65,12 @@
     width: 400px;
     min-width: 400px;
     border-left: 1px solid rgba(0,0,0,.125);
+    overflow: hidden;
 }
 
 .main-content {
     flex-grow: 1;
+    width: 100%;
     overflow: hidden;
 }
 
@@ -106,6 +110,10 @@
     line-height: 1.2rem;
     vertical-align: middle;
     margin: 0.5rem;
+}
+
+.table thead th {
+    border-bottom-width: 1px;
 }
 
 .table thead th span {
@@ -150,9 +158,16 @@
     
 }
 
+.tree {
+    background-color: rgba(0, 0, 0, 0.03);
+    overflow: auto;
+    padding: 1rem;
+}
+
 .tree-item {
     display: block;
     padding: 0.25rem;
+    border-radius: 5px;    
 }
 
 .tree-item:hover {
@@ -161,6 +176,6 @@
 }
 
 .tree-item.active {
-    background-color: #007bff;
-    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.125);
+    color: #000000;
 }
