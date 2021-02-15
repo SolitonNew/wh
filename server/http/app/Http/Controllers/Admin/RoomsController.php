@@ -9,7 +9,7 @@ class RoomsController extends Controller
 {
     public function index(int $partID = 1) {
         return view('admin.rooms', [
-            
+            'partID' => $partID,
         ]);
     }
 }

@@ -12,7 +12,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-3">
-                            <div class="form-label">@lang('auth.login_login'):</div>
+                            <div class="form-label">@lang('auth.login_login')</div>
                         </div>
                         <div class="col-sm-7">
                             <input class="form-control" type="text" name="login" value="">
@@ -20,7 +20,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-3">
-                            <div class="form-label">@lang('auth.login_password'):</div>
+                            <div class="form-label">@lang('auth.login_password')</div>
                         </div>
                         <div class="col-sm-7">
                             <input class="form-control" type="password" name="password" value="">
