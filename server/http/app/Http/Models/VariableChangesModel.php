@@ -47,13 +47,13 @@ class VariableChangesModel extends Model
      */
     static public function getLastVariables() {
         if (self::$_lastVariableID > 0) {
-            $sql = 'select m.ID, m.CHANGE_DATE, m.VALUE, v.COMM, v.APP_CONTROL
+            $sql = 'select m.ID, m.CHANGE_DATE, m.VALUE, v.COMM, v.APP_CONTROL, m.VARIABLE_ID
                       from core_variable_changes_mem m, core_variables v
                      where m.VARIABLE_ID = v.ID
                        and m.ID > '.self::$_lastVariableID.'
                     order by m.ID desc';
         } else {
-            $sql = 'select m.ID, m.CHANGE_DATE, m.VALUE, v.COMM, v.APP_CONTROL
+            $sql = 'select m.ID, m.CHANGE_DATE, m.VALUE, v.COMM, v.APP_CONTROL, m.VARIABLE_ID
                       from core_variable_changes_mem m, core_variables v
                      where m.VARIABLE_ID = v.ID
                     order by m.ID desc 

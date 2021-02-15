@@ -140,13 +140,32 @@
     }
     
     function loadVariableChanges() {
-       $.ajax('{{ route("variable-changes", "") }}/' + lastVariableID).done((data) => {
-           $('#logList').prepend(data);
-           calcLastVariableID();
-           setTimeout(loadVariableChanges, {{ config("app.admin_log_update_interval") }});
+        $.ajax('{{ route("variable-changes", "") }}/' + lastVariableID).done((data) => {
+            $('#logList').prepend(data);
+            calcLastVariableID();
            
-           $('.log-row:gt({{ config("app.admin_log_lines_count") }})').remove();
-       });
+            /*  Вызываем обработчик, если он зарегистрирован на странице  */
+            if (window.variableChangesHandler) {
+                variableChangesHandler(data);
+            }           
+            /*  --------------------------------------------------------  */
+           
+            setTimeout(loadVariableChanges, {{ config("app.admin_log_update_interval") }});
+           
+            $('.log-row:gt({{ config("app.admin_log_lines_count") }})').remove();
+        });
+    }
+    
+    function variableChangesParse(data) {
+        let res = new Array();
+        $(data).each(() => {
+            let o = $(this);
+            res.push({
+                varID: o.attr('data-varID'),
+                value: o.attr('data-value'),
+            });
+        });
+        return res;
     }
     
     
