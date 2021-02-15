@@ -6,6 +6,10 @@
     margin-bottom: 1rem;
 }
 
+.form-label::after {
+    content: ':';
+}
+
 @media(min-width: 576px) {
     .form-label {
         display: flex;

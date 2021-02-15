@@ -31,7 +31,7 @@ class VariablesController extends Controller
                   from core_variables v, core_controllers c
                  where v.controller_id = c.id
                    '.$where.'
-                order by v.name';
+                order by 2, v.name';
         
         $data = DB::select($sql);
         
@@ -53,14 +53,14 @@ class VariablesController extends Controller
         if ($request->method() == 'POST') {
             try {
                 $this->validate($request, [
-                    'NAME' => 'required|string',
+                    'NAME' => 'required|string|unique:core_variables,NAME,'.($id > 0 ? $id : ''),
                     'COMM' => 'required|string',
                 ]);
                 if ($request->post('ROM') == 'variable' || $request->post('DIRECTION') == '0') {
                     $this->validate($request, [
                         'VALUE' => 'required|numeric',
                     ]);
-                }                
+                }
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
             }
