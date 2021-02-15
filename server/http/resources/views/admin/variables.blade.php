@@ -6,10 +6,11 @@
 
 @section('content')
 <div style="display: flex; flex-direction: row; flex-grow: 1;max-height: 100%;">
-    <div style="width: 200px;min-width:200px; overflow: auto;padding: 1rem;border-right: 1px solid rgba(0,0,0,0.125);">
-        @for($i = 0; $i < 200; $i++)
-        <div>ZZZZZZ</div>
-        @endfor
+    <div style="width: 200px;min-width:200px; overflow: auto;border-right: 1px solid rgba(0,0,0,0.125);">
+        @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
+        <a href="{{ route('variables', $row->ID) }}" 
+           class="tree-item {{ $row->ID == $partID ? 'active' : '' }}" style="padding-left: {{ $row->level + 1 }}rem">{{ $row->NAME }}</a>
+        @endforeach
     </div>
     <div class="content-body">
         <table id="variable_table" class="table table-sm table-hover table-bordered table-fixed-header">

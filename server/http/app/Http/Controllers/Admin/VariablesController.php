@@ -12,7 +12,12 @@ class VariablesController extends Controller
      * 
      * @return type
      */
-    public function index() {
+    public function index(int $partID = 1) {
+        $where = '';
+        if ($partID > 1) {
+            $ids = \App\Http\Models\PlanPartsModel::genIDsForGroupAtParent($partID);
+            $where = 'and v.GROUP_ID in ('.$ids.')';
+        }
         
         $sql = 'select v.ID,
                        c.NAME CONTROLLER_NAME,
@@ -25,11 +30,13 @@ class VariablesController extends Controller
                        v.CHANNEL
                   from core_variables v, core_controllers c
                  where v.controller_id = c.id
+                   '.$where.'
                 order by v.name';
         
         $data = DB::select($sql);
         
         return view('admin.variables', [
+            'partID' => $partID,
             'data' => $data,
         ]);
     }

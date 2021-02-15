@@ -149,3 +149,18 @@
 .log-text {
     
 }
+
+.tree-item {
+    display: block;
+    padding: 0.25rem;
+}
+
+.tree-item:hover {
+    background-color: #f8f9fa;
+    text-decoration: none;
+}
+
+.tree-item.active {
+    background-color: #007bff;
+    color: #ffffff;
+}

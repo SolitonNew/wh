@@ -32,7 +32,11 @@ Route::group(['middleware'=>'auth'], function () {
 });
 
 Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
-    Route::get('/', 'Admin\VariablesController@index')->name('variables');
+    Route::get('/', function () {
+        return redirect(route('variables'));
+    });
+    
+    Route::get('/variables/{partID?}', 'Admin\VariablesController@index')->name('variables');
     Route::match(['get', 'post'], '/variable-edit/{id}', 'Admin\VariablesController@edit')->name('variable-edit');
     Route::get('/variable-delete/{id}', 'Admin\VariablesController@delete')->name('variable-delete');
     

@@ -21,7 +21,7 @@
                         <img src="/img/logo.png" height="100%">
                     </div>
                     <div class="list-group">
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('')" href="{{ route('variables') }}">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('variables')" href="{{ route('variables') }}">
                             @lang('admin/variables.menu')
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VariablesModel::count() }}</span>
                         </a>
