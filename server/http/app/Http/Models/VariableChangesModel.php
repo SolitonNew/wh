@@ -9,6 +9,7 @@ class VariableChangesModel extends Model
 {
     protected $table = 'core_variable_changes_mem';
     public $timestamps = false;
+    protected $primaryKey = 'ID';
     
     /**
      *

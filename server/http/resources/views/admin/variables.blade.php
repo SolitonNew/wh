@@ -47,6 +47,8 @@
 </div>
 
 <script>
+    let currentPartID = '{{ $partID }}';
+    
     $(document).ready(() => {
         $('#variable_table tbody tr').on('click', (e) => {
             let id = $(e.currentTarget).attr('data-id');

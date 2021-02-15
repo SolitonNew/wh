@@ -8,6 +8,7 @@ class PlanPartsModel extends Model
 {
     protected $table = 'plan_parts';
     public $timestamps = false;
+    protected $primaryKey = 'ID';
     
     /**
      *  Формирует набор данных для дерева помещений

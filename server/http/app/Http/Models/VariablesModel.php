@@ -8,6 +8,8 @@ class VariablesModel extends Model
 {
     protected $table = 'core_variables';
     public $timestamps = false;
+    protected $primaryKey = 'ID';
+    
     
     /**
      * 

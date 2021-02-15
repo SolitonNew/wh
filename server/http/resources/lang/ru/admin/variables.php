@@ -79,5 +79,7 @@ return [
     
     'variable_add_title' => 'Добавить новую переменную',
     'variable_edit_title' => 'Редактирование переменной',
+    
+    'variable_delete_confirm' => 'Удалить выбранную переменную?',
 
 ];

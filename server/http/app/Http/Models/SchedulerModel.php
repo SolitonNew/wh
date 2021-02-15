@@ -8,4 +8,6 @@ class SchedulerModel extends Model
 {
     protected $table = 'core_scheduler';
     public $timestamps = false;
+    protected $primaryKey = 'ID';
+    
 }

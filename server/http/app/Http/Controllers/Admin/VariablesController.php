@@ -51,17 +51,41 @@ class VariablesController extends Controller
         $item = \App\Http\Models\VariablesModel::find($id);
         
         if ($request->method() == 'POST') {
+            try {
+                $this->validate($request, [
+                    'NAME' => 'required|string',
+                    'COMM' => 'required|string',
+                ]);
+                if ($request->post('ROM') == 'variable' || $request->post('DIRECTION') == '0') {
+                    $this->validate($request, [
+                        'VALUE' => 'required|numeric',
+                    ]);
+                }                
+            } catch (\Illuminate\Validation\ValidationException $ex) {
+                return response()->json($ex->validator->errors());
+            }
+            
             if (!$item) {
                 $item = new \App\Http\Models\VariablesModel();
-                
-                try {
-                    
-                    return 'OK';
-                } catch (\Exception $ex) {
-                    return response()->json([
-                        'error' => [$ex->errorInfo],
-                    ]);
-                }
+            }
+            
+            try {
+                $item->CONTROLLER_ID = $request->post('CONTROLLER_ID');
+                $item->ROM = $request->post('ROM');
+                $item->OW_ID = $request->post('OW_ID');
+                $item->DIRECTION = $request->post('DIRECTION');
+                $item->NAME = $request->post('NAME');
+                $item->COMM = $request->post('COMM');
+                $item->CHANNEL = $request->post('CHANNEL');
+                $item->VALUE = $request->post('VALUE');
+                $item->GROUP_ID = $request->post('GROUP_ID');
+                $item->APP_CONTROL = $request->post('APP_CONTROL');
+                $item->save();
+                return 'OK';
+            } catch (\Exception $ex) {
+                return response()->json([
+                    'error' => [$ex->errorInfo],
+                ]);
             }
         } else {
             if (!$item) {

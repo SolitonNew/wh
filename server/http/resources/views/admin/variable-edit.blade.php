@@ -81,7 +81,7 @@
     </div>
     <div class="row">
         <div class="col-sm-4">
-            <div class="form-label">@lang('admin\variables.table_comm')</div>
+            <div class="form-label strong">@lang('admin\variables.table_comm')</div>
         </div>
         <div class="col-sm-8">
             <input class="form-control" type="text" name="COMM" value="{{ $item->COMM }}" required="">
@@ -147,6 +147,11 @@
 @section('script')
 <script>   
     $(document).ready(() => {
+        @if($item->ID == -1)
+        $('#variable_edit_form select[name="GROUP_ID"] option').removeAttr('selected');
+        $('#variable_edit_form select[name="GROUP_ID"] option[value="' + currentPartID + '"]').attr('selected', 'true');        
+        @endif
+        
         $('#variable_edit_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
@@ -258,7 +263,7 @@
     }
     
     function variableDelete() {
-        if (confirm('@lang("admin\variables.variable-delete-confirm")')) {
+        if (confirm("@lang('admin\variables.variable_delete_confirm')")) {
             $.ajax('{{ route("variable-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
