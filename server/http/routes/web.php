@@ -37,6 +37,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
     });
     
     Route::get('/rooms/{partID?}', 'Admin\RoomsController@index')->name('parts');
+    Route::match(['get', 'post'], '/room-edit/{id}', 'Admin\RoomsController@edit')->name('room-edit');
+    Route::get('/room-delete/{id}', 'Admin\RoomsController@delete')->name('room-delete');
     
     Route::get('/variables/{partID?}', 'Admin\VariablesController@index')->name('variables');
     Route::get('/variables-ow-list/{controller}', 'Admin\VariablesController@owList')->name('variables-ow-list');
@@ -59,7 +61,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
     
     Route::post('/users', 'Admin\UsersController@append')->name('users');
     
-    Route::get('/ow-manager', 'Admin\OwManagerController@index')->name('ow-manager');
+    Route::get('/ow-manager/{controllerID?}', 'Admin\OwManagerController@index')->name('ow-manager');
     
     Route::get('/schedule', 'Admin\ScheduleController@index')->name('schedule');
 });

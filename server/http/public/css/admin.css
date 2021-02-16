@@ -76,7 +76,8 @@
 
 .main-content .content-body {
     position: relative;
-    flex-grow: 1; 
+    flex-grow: 1;
+    height: 100%;
     overflow: auto;
 }
 

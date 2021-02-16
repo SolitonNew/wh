@@ -1,7 +1,7 @@
 @extends('admin.admin')
 
 @section('top-menu')
-BUTTONS
+<button class="btn btn-primary" type="button" onclick="roomAdd();">@lang('admin\rooms.room_add')</button>
 @endsection
 
 @section('content')
@@ -16,4 +16,11 @@ BUTTONS
         
     </div>
 </div>
+
+<script>
+
+    function roomAdd() {
+        dialog('{{ route("room-edit", -1) }}');
+    }
+</script>
 @endsection
