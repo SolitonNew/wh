@@ -8,6 +8,7 @@
     <option value="{{ $row->ID }}" {{ $row->ID == $controllerID ? 'selected' : '' }}>{{ $row->NAME }}</option>
     @endforeach
 </select>
+<button class="btn btn-primary" type="button" onclick="runOwScan();">@lang('admin\ow-manager.run_ow_scan')</button>
 @endsection
 
 @section('content')
@@ -54,14 +55,22 @@
             }
         });
         
-        $('#owList tbody tr').on('click', (e) => {
+        $('#owList tbody tr').on('click', function (e) {
             if ($(e.target).is('a')) return ;
-            alert('OK');
+            showInfo($(this).attr('data-id'));
         });
     });
     
     function showVariable(id) {
         dialog('{{ route("variable-edit", "") }}/' + id);
+    }
+    
+    function runOwScan() {
+        
+    }
+    
+    function showInfo(id) {
+        dialog('{{ route("ow-manager-info", "") }}/' + id);
     }
 </script>
 @endsection

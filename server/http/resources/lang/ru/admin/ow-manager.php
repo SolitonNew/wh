@@ -13,4 +13,10 @@ return [
     
     'menu_controller' => 'Контроллер',
     'menu_controller_all' => 'Показать все',
+    
+    'info_title' => 'Свойства OW устройства',
+    'ow-manager-delete-confirm' => 'Удалить выбранное OW устройство?',
+    
+    'run_ow_scan' => 'Запустить сканирование устройств',
+    'generate_ow_vars' => 'Создать переменные для свободных OW устройств',
 ];

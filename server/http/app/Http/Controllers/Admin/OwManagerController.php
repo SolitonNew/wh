@@ -8,6 +8,11 @@ use \Illuminate\Support\Facades\DB;
 
 class OwManagerController extends Controller
 {
+    /**
+     * 
+     * @param int $controllerID
+     * @return type
+     */
     public function index(int $controllerID = null) {
         $where = '';
         if ($controllerID) {
@@ -46,5 +51,32 @@ class OwManagerController extends Controller
             'controllerID' => $controllerID,
             'data' => $data,
         ]);
+    }
+    
+    /**
+     * 
+     * @param int $id
+     * @return type
+     */
+    public function info(int $id) {
+        $item = \App\Http\Models\OwDevsModel::find($id);
+        return view('admin.ow-manager-info', [
+            'item' => $item,
+        ]);
+    }
+    
+    /**
+     * 
+     * @param int $id
+     * @return string
+     */
+    public function delete(int $id) {
+        try {
+            $item = \App\Http\Models\OwDevsModel::find($id);
+            $item->delete();            
+            return 'OK';
+        } catch (\Exception $ex) {
+            return 'ERROR';
+        }
     }
 }

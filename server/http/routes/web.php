@@ -62,6 +62,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
     Route::post('/users', 'Admin\UsersController@append')->name('users');
     
     Route::get('/ow-manager/{controllerID?}', 'Admin\OwManagerController@index')->name('ow-manager');
+    Route::get('/ow-manager-info/{id}', 'Admin\OwManagerController@info')->name('ow-manager-info');
+    Route::get('/ow-manager-delete/{id}', 'Admin\OwManagerController@delete')->name('ow-manager-delete');
     
     Route::get('/schedule', 'Admin\ScheduleController@index')->name('schedule');
 });
