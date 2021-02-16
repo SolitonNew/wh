@@ -159,7 +159,7 @@
 }
 
 .tree {
-    background-color: rgba(0, 0, 0, 0.03);
+    #background-color: rgba(0, 0, 0, 0.03);
     overflow: auto;
     padding: 1rem;
 }
@@ -167,15 +167,16 @@
 .tree-item {
     display: block;
     padding: 0.25rem;
-    border-radius: 5px;    
+    border-radius: 5px;
+    color: #212529;
 }
 
 .tree-item:hover {
-    background-color: #f8f9fa;
+    background-color: rgba(0,0,0,0.075);
     text-decoration: none;
 }
 
 .tree-item.active {
-    background-color: rgba(0, 0, 0, 0.125);
+    background-color: rgba(0, 0, 0, 0.15);
     color: #000000;
 }

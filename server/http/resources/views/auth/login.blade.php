@@ -9,12 +9,12 @@
                 <h5 class="modal-title">@Lang('auth.login_title')</h5>
             </div>
             <div class="modal-body">
-                <div class="container-fluid">
+                <div class="container">
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-label">@lang('auth.login_login')</div>
                         </div>
-                        <div class="col-sm-7">
+                        <div class="col-sm-6">
                             <input class="form-control" type="text" name="login" value="">
                         </div>
                     </div>
@@ -22,7 +22,7 @@
                         <div class="col-sm-3">
                             <div class="form-label">@lang('auth.login_password')</div>
                         </div>
-                        <div class="col-sm-7">
+                        <div class="col-sm-6">
                             <input class="form-control" type="password" name="password" value="">
                         </div>
                     </div>
