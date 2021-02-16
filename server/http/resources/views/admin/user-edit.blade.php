@@ -11,6 +11,7 @@
 @section('content')
 <form id="user_edit_form" class="container" method="POST" action="{{ route('user-edit', $item->id) }}">
     {{ csrf_field() }}
+    <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
     <div class="row">
         <div class="col-sm-3">
