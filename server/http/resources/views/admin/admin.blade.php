@@ -10,7 +10,15 @@
     <div class="body-content">
         <div class="main-menu">
             <nav class="navbar">
-                <div class="logo">WISE HOUSE</div>
+                <div class="logo">WISE HOUSE</div>        
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" 
+                            data-toggle="dropdown" aria-haspopup="true" style="margin: 0px;"
+                            aria-expanded="false">@lang('admin\admin.menu_actions')</button>
+                    <div class="dropdown-menu">
+                        @yield('down-menu')
+                    </div>
+                </div>
                 @yield('top-menu')
             </nav>
         </div>
@@ -63,7 +71,7 @@
 
 <div class="modal fade" id="dialog_window" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content" id="dialog_content">AAAAAAAAAA</div>
+        <div class="modal-content" id="dialog_content"></div>
     </div>
 </div>
 

@@ -1,7 +1,10 @@
 @extends('admin.admin')
 
 @section('top-menu')
-<button class="btn btn-primary" type="button" onclick="variableAdd();">@lang('admin\variables.variable_add')</button>
+@endsection
+
+@section('down-menu')
+<a href="#" class="dropdown-item" onclick="variableAdd(); return false;">@lang('admin\variables.variable_add')</a>
 @endsection
 
 @section('content')

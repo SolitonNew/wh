@@ -1,7 +1,10 @@
 @extends('admin.admin')
 
 @section('top-menu')
-BUTTONS
+@endsection
+
+@section('down-menu')
+<a href="#" class="dropdown-item" onclick="scriptAdd(); return false;">@lang('admin\scripts.script_add')</a>
 @endsection
 
 @section('content')
@@ -16,4 +19,15 @@ BUTTONS
         <div style="font-family: 'Courier New'; padding: 1rem;">{!! $sourceCode !!}</div>
     </div>
 </div>
+
+<script>
+    $(document).ready(() => {
+        
+    });
+    
+    function scriptAdd() {
+        alert('ADD SCRIPT');
+    }
+</script>
+
 @endsection

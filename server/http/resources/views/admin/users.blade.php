@@ -1,7 +1,10 @@
 @extends('admin.admin')
 
 @section('top-menu')
-<button class="btn btn-primary" type="button" onclick="userAdd();">@lang('admin\users.user_add')</button>
+@endsection
+
+@section('down-menu')
+<a href="#" class="dropdown-item" onclick="userAdd(); return false;">@lang('admin\users.user_add')</a>
 @endsection
 
 @section('content')

@@ -1,7 +1,10 @@
 @extends('admin.admin')
 
 @section('top-menu')
-<button class="btn btn-primary" type="button" onclick="roomAdd();">@lang('admin\rooms.room_add')</button>
+@endsection
+
+@section('down-menu')
+<a href="#" class="dropdown-item" onclick="roomAdd(); return false;">@lang('admin\rooms.room_add')</a>
 @endsection
 
 @section('content')

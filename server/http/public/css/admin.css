@@ -62,10 +62,11 @@
 }
 
 .body-content-log {
-    width: 400px;
-    min-width: 400px;
+    width: 370px;
+    min-width: 370px;
     border-left: 1px solid rgba(0,0,0,.125);
     overflow: hidden;
+    padding: 0.5rem 1rem;
 }
 
 .main-content {
@@ -148,11 +149,10 @@
 .log-row {
     display: flex;
     flex-direction: row;
-    padding: 0 0.5rem;
 }
 
 .log-time {
-    padding-right: 0.5rem;
+    padding-right: 0.25rem;
 }
 
 .log-text {
@@ -186,4 +186,8 @@
 .code-keyword {
     font-weight: bold;
     color: #0000ff;
+}
+
+.dropdown-menu {
+    box-shadow: 0 0 10px rgba(0,0,0,0.35);
 }

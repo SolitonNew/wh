@@ -8,7 +8,12 @@
     <option value="{{ $row->ID }}" {{ $row->ID == $controllerID ? 'selected' : '' }}>{{ $row->NAME }}</option>
     @endforeach
 </select>
-<button class="btn btn-primary" type="button" onclick="runOwScan();">@lang('admin\ow-manager.run_ow_scan')</button>
+@endsection
+
+@section('down-menu')
+<a href="#" class="dropdown-item" onclick="runOwScan(); return false;">@lang('admin\ow-manager.run_ow_scan')</a>
+<div class="dropdown-divider"></div>
+<a href="#" class="dropdown-item" onclick="generateVariablesForOW(); return false;">@lang('admin\ow-manager.generate_ow_vars')</a>
 @endsection
 
 @section('content')
@@ -66,7 +71,11 @@
     }
     
     function runOwScan() {
-        
+        alert('RUN OW SCAN');
+    }
+    
+    function generateVariablesForOW() {
+        alert('GEN VARIABLES');
     }
     
     function showInfo(id) {
