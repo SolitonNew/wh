@@ -52,15 +52,19 @@ class VariablesController extends Controller
         
         if ($request->method() == 'POST') {
             try {
-                $this->validate($request, [
-                    'NAME' => 'required|string|unique:core_variables,NAME,'.($id > 0 ? $id : ''),
-                    'COMM' => 'required|string',
-                ]);
-                if ($request->post('ROM') == 'variable' || $request->post('DIRECTION') == '0') {
-                    $this->validate($request, [
-                        'VALUE' => 'required|numeric',
-                    ]);
+                $rules = [];
+                $rules['NAME'] = 'required|string|unique:core_variables,NAME,'.($id > 0 ? $id : '');
+                $rules['COMM'] = 'required|string';
+                
+                if ($request->post('ROM') == 'ow') {
+                    $rules['OW_ID'] = 'required|numeric';
                 }
+                
+                if ($request->post('ROM') == 'variable' || $request->post('DIRECTION') == '0') {
+                    $rules['VALUE'] = 'required|numeric';
+                }
+                
+                $this->validate($request, $rules);
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
             }

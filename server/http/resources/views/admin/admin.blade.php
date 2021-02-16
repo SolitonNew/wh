@@ -93,6 +93,19 @@
         loadVariableChanges();
         
         $('.body-container').css({opacity: 1});
+        
+        $('div[scroll-store]').each(function () {
+            let name = $(this).attr('scroll-store');
+            let t = getCookie(name);
+            if (t > 0) {
+                $(this).scrollTop(t);
+            }
+            
+            $(this).on('scroll', (e) => {
+                let o = $(this);
+                document.cookie = name + '=' + o.scrollTop() + '; path=/admin; max-age=3600';
+            }).trigger('scroll');
+        });
     });
     
     function dialog(url, beforeHandler) {
@@ -195,5 +208,13 @@
             }
         }).trigger('resize');
     }
+    
+    function getCookie(name) {
+        let matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+    
 </script>
 @endsection

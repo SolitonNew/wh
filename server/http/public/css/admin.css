@@ -169,6 +169,7 @@
     padding: 0.25rem;
     border-radius: 5px;
     color: #212529;
+    padding-left: 1rem;
 }
 
 .tree-item:hover {
@@ -179,4 +180,9 @@
 .tree-item.active {
     background-color: rgba(0, 0, 0, 0.15);
     color: #000000;
+}
+
+.code-keyword {
+    font-weight: bold;
+    color: #0000ff;
 }

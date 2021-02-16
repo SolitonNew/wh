@@ -27,7 +27,7 @@
             <div class="form-label">@lang('admin\variables.table_controller')</div>
         </div>
         <div class="col-sm-6">
-            <select class="form-control" name="CONTROLLER_ID">
+            <select class="custom-select" name="CONTROLLER_ID">
             @foreach(\App\Http\Models\ControllersModel::orderBy('name', 'asc')->get() as $row)
             <option value="{{ $row->ID }}" {{ $row->ID == $item->CONTROLLER_ID ? 'selected' : '' }}>{{ $row->NAME }}</option>
             @endforeach
@@ -40,7 +40,7 @@
             <div class="form-label">@lang('admin\variables.table_typ')</div>
         </div>
         <div class="col-sm-4">
-            <select class="form-control" name="ROM">
+            <select class="custom-select" name="ROM">
                 @foreach($typs as $key => $val)
                 <option value="{{ $key }}" {{ $key == $item->ROM ? 'selected' : '' }}>{{ $val }}</option>
                 @endforeach
@@ -50,10 +50,10 @@
     </div>
     <div class="row" id="ow_id">
         <div class="col-sm-4">
-            <div class="form-label">@lang('admin\variables.table_ow')</div>
+            <div class="form-label strong">@lang('admin\variables.table_ow')</div>
         </div>
         <div class="col-sm-8">
-            <select class="form-control" name="OW_ID" data-value="{{ $item->OW_ID }}"></select>
+            <select class="custom-select" name="OW_ID" data-value="{{ $item->OW_ID }}"></select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -62,7 +62,7 @@
             <div class="form-label">@lang('admin\variables.table_readonly')</div>
         </div>
         <div class="col-sm-3">
-            <select class="form-control" name="DIRECTION">
+            <select class="custom-select" name="DIRECTION">
                 @foreach(Lang::get('admin\variables.table_readonly_list') as $key => $val)
                 <option value="{{ $key }}" {{ $key == $item->DIRECTION ? 'selected' : '' }}>{{ $val }}</option>
                 @endforeach
@@ -93,7 +93,7 @@
             <div class="form-label">@lang('admin\variables.table_channel')</div>
         </div>
         <div class="col-sm-4">
-            <select class="form-control" name="CHANNEL" data-value="{{ $item->CHANNEL }}"></select>
+            <select class="custom-select" name="CHANNEL" data-value="{{ $item->CHANNEL }}"></select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -102,7 +102,7 @@
             <div class="form-label">@lang('admin\variables.table_group')</div>
         </div>
         <div class="col-sm-8">
-            <select class="form-control" name="GROUP_ID">
+            <select class="custom-select" name="GROUP_ID">
                 @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
                 <option value="{{ $row->ID }}" {{ $row->ID == $item->GROUP_ID ? 'selected' : '' }}>{!! str_repeat('&nbsp;', $row->level * 4) !!}  {{ $row->NAME }}</option>
                 @endforeach
@@ -115,7 +115,7 @@
             <div class="form-label">@lang('admin\variables.table_app_control')</div>
         </div>
         <div class="col-sm-8">
-            <select class="form-control" name="APP_CONTROL">
+            <select class="custom-select" name="APP_CONTROL">
                 @foreach(Lang::get('admin\variables.app_control') as $key => $val)
                 <option value="{{ $key }}" {{ $key == $item->APP_CONTROL ? 'selected' : '' }}>{{ $val }}</option>
                 @endforeach
@@ -183,12 +183,16 @@
             reloadDirection();
         });
         
-        reloadOwList();
-        reloadChannels();
+        reloadOwList(() => {
+            reloadChannels(() => {
+                //
+            });
+        });
+        
         reloadDirection();
     });
     
-    function reloadOwList() {
+    function reloadOwList(afterHandle = null) {
         let controller = $('#variable_edit_form select[name="CONTROLLER_ID"]').val();
         $.ajax('{{ route("variables-ow-list", "") }}/' + controller).done((data) => {
             let rom = $('#variable_edit_form select[name="ROM"]').val();
@@ -218,10 +222,14 @@
             } else {
                 $('#ow_id').hide(250);
             }
+            
+            if (afterHandle) {
+                afterHandle();
+            }
         });
     }
     
-    function reloadChannels() {
+    function reloadChannels(afterHandle = null) {
         let rom = $('#variable_edit_form select[name="ROM"]').val();
         let ow_id = $('#variable_edit_form select[name="OW_ID"]').val();
         if (ow_id == null) ow_id = '';
@@ -243,6 +251,10 @@
                 $('#channel').show(250);
             } else {
                 $('#channel').hide(250);
+            }
+            
+            if (afterHandle) {
+                afterHandle();
             }
         });
     }

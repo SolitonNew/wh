@@ -6,13 +6,13 @@
 
 @section('content')
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
-    <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);">
+    <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="variablesRoomList">
         @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
         <a href="{{ route('variables', $row->ID) }}" 
            class="tree-item {{ $row->ID == $partID ? 'active' : '' }}" style="padding-left: {{ $row->level + 1 }}rem">{{ $row->NAME }}</a>
         @endforeach
     </div>
-    <div class="content-body">
+    <div class="content-body" scroll-store="variablesList">
         <table id="variable_table" class="table table-sm table-hover table-bordered table-fixed-header">
             <thead>
                 <tr>

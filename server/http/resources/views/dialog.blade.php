@@ -24,7 +24,7 @@
         for (key in data) {
             let o = data[key];
             let s = o.join('<br>');
-            let contr = $('#dialog_content input[name="' + key + '"]');
+            let contr = $('#dialog_content [name="' + key + '"]');
             if (contr.length) {
                 contr.addClass('is-invalid').next().html(s);
             } else {

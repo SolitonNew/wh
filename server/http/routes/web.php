@@ -49,7 +49,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
         return view('admin.log');
     })->name('variable-changes');
     
-    Route::get('/scripts', 'Admin\ScriptsController@index')->name('scripts');
+    Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('scripts');
     
     Route::get('/statistics', 'Admin\StatisticsController@index')->name('statistics');
     
