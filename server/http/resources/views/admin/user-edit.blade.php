@@ -61,7 +61,7 @@
             <div class="form-label">@lang('admin\users.table_access')</div>
         </div>
         <div class="col-sm-6">
-            <select class="form-control" name="access">
+            <select class="custom-select" name="access">
             @foreach(Lang::get('admin\users.table_access_list') as $key => $val)
                 <option value="{{ $key }}" {{ $item->access == $key ? 'selected' : '' }} >{{ $val }}</option>
             @endforeach
