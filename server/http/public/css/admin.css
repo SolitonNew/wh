@@ -191,3 +191,8 @@
 .dropdown-menu {
     box-shadow: 0 0 10px rgba(0,0,0,0.35);
 }
+
+.active .badge-pill {
+    border: 1.5px solid #ffffff;
+    margin-right: -1.5px;
+}

@@ -56,6 +56,10 @@
                             @lang('admin/schedule.menu')
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\SchedulerModel::count() }}</span>
                         </a>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('cams')" href="{{ route('cams') }}">
+                            @lang('admin/cams.menu')
+                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VideoModel::count() }}</span>
+                        </a>
                     </div>
                 </div>
             </div>

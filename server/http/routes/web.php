@@ -66,4 +66,6 @@ Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function () {
     Route::get('/ow-manager-delete/{id}', 'Admin\OwManagerController@delete')->name('ow-manager-delete');
     
     Route::get('/schedule', 'Admin\ScheduleController@index')->name('schedule');
+    
+    Route::get('/cams', 'Admin\CamsController@index')->name('cams');
 });
