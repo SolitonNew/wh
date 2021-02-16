@@ -8,7 +8,7 @@
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="variablesRoomList">
         @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
-        <a href="{{ route('variables', $row->ID) }}" 
+        <a href="{{ route('variables', $row->ID) }}"
            class="tree-item {{ $row->ID == $partID ? 'active' : '' }}" style="padding-left: {{ $row->level + 1 }}rem">{{ $row->NAME }}</a>
         @endforeach
     </div>
@@ -53,6 +53,12 @@
         $('#variable_table tbody tr').on('click', (e) => {
             let id = $(e.currentTarget).attr('data-id');
             dialog('{{ route("variable-edit", "") }}/' + id);
+        });
+        
+        $('.tree a').on('click', (e) => {
+            if (!$(e.currentTarget).hasClass('active')) {
+                resetScrollStore($('.content-body'));
+            }
         });
     });
     

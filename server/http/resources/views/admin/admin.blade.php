@@ -216,5 +216,12 @@
         return matches ? decodeURIComponent(matches[1]) : undefined;
     }
     
+    function resetScrollStore(obj) {
+        let name = $(obj).attr('scroll-store');
+        if (name) {
+            document.cookie = name + '=0; path=/admin; max-age=3600';
+        }
+    }
+    
 </script>
 @endsection
