@@ -5,6 +5,9 @@
 
 @section('down-menu')
 <a href="#" class="dropdown-item" onclick="scriptAdd(); return false;">@lang('admin\scripts.script_add')</a>
+<a href="#" class="dropdown-item" onclick="scriptEdit(); return false;">@lang('admin\scripts.script_edit')</a>
+<div class="dropdown-divider"></div>
+<a href="#" class="dropdown-item" onclick="scriptAttacheEvent(); return false;">@lang('admin\scripts.script_attache_event')</a>
 @endsection
 
 @section('content')
@@ -27,6 +30,14 @@
     
     function scriptAdd() {
         alert('ADD SCRIPT');
+    }
+    
+    function scriptEdit() {
+        alert('EDIT SCRIPT');
+    }
+    
+    function scriptAttacheEvent() {
+        alert('ATTACHE EVENT');
     }
 </script>
 
