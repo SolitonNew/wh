@@ -12,7 +12,7 @@ class UsersController extends Controller
      * @return type
      */
     public function index() {
-        $data = \App\Http\Models\UsersModel::orderBy('login', 'asc')->get();
+        $data = \App\Http\Models\UsersModel::orderBy('LOGIN', 'asc')->get();
         
         return view('admin.users', [
             'data' => $data,
@@ -23,9 +23,9 @@ class UsersController extends Controller
         if ($request->method() == 'POST') {
             try {
                 $this->validate($request, [
-                    'login' => 'required|string|unique:web_users,login,'.($id > 0 ? $id : ''),
+                    'LOGIN' => 'required|string|unique:web_users,LOGIN,'.($id > 0 ? $id : ''),
                     'password' => 'string|'.($id > 0 ? 'nullable' : 'required'),
-                    'email' => 'nullable|email|string',
+                    'EMAIL' => 'nullable|email|string',
                 ]);
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
@@ -37,12 +37,12 @@ class UsersController extends Controller
                 } else {
                     $item = \App\Http\Models\UsersModel::find($id);
                 }
-                $item->login = $request->post('login');
-                $item->email = $request->post('email');
+                $item->LOGIN = $request->post('LOGIN');
+                $item->EMAIL = $request->post('EMAIL');
                 if ($request->post('password')) {
                     $item->password = bcrypt($request->post('password'));
                 }
-                $item->access = $request->post('access');
+                $item->ACCESS = $request->post('ACCESS');
                 $item->save();
                 return 'OK';
             } catch (\Exception $ex) {
@@ -54,10 +54,10 @@ class UsersController extends Controller
             $item = \App\Http\Models\UsersModel::find($id);
             if (!$item) {
                 $item = (object)[
-                    'id' => -1,
-                    'login' => '',
-                    'email' => '',
-                    'access' => 1,
+                    'ID' => -1,
+                    'LOGIN' => '',
+                    'EMAIL' => '',
+                    'ACCESS' => 1,
                 ];
             }
             return view('admin.user-edit', [
