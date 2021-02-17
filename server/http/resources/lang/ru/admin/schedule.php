@@ -16,6 +16,8 @@ return [
     'table_INTERVAL_VARIABLE' => 'Переменная',
     'table_ENABLE' => 'Включено',
     'table_INTERVAL_TYPE' => 'Повторять',
+    'table_INTERVAL_TIME_OF_DAY' => 'Время дня',
+    'table_INTERVAL_DAY_OF_TYPE' => '',
     
     'enable_list' => [
         0 => 'Не выполнять',
@@ -38,5 +40,5 @@ return [
         3 => 'Дни года',
     ],
     
-    'btn_test' => 'Тест',
+    'btn_test' => 'Тест действия',
 ];

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use \Illuminate\Support\Facades\DB;
 use Lang;
+use Log;
 
 class ScheduleController extends Controller
 {
@@ -58,23 +59,31 @@ class ScheduleController extends Controller
     public function edit(Request $request, int $id) {
         $item = \App\Http\Models\SchedulerModel::find($id);
         if ($request->method() == 'POST') {
+            $typ = $request->post('INTERVAL_TYPE');
             try {
                 $this->validate($request, [
-                    'ACTION' => 'required',
-                    'INTERVAL_TIME_OF_DAY' => 'required',
+                    'COMM' => 'required|string',
+                    'ACTION' => 'required|string',
+                    'INTERVAL_TIME_OF_DAY' => 'required|string',
+                    'INTERVAL_DAY_OF_TYPE' => 'string|'.(in_array($typ, [1, 2, 3]) ? 'required' : 'nullable'),
                 ]);
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
             }
             
             try {
+                if (!$item) {
+                    $item = new \App\Http\Models\SchedulerModel();
+                    $item->TEMP_VARIABLE_ID = 0;
+                }
                 $item->COMM = $request->post('COMM');
                 $item->ACTION = $request->post('ACTION');
                 $item->ACTION_DATETIME = null;
-                $item->INTERVAL_TIME_OF_DAY = $requst->post('INTERVAL_TIME_OF_DAY');
-                $item->INTERVAL_DAY_OF_TYPE = $requst->post('INTERVAL_DAY_OF_TYPE');
-                $item->INTERVAL_TYPE = $requst->post('INTERVAL_TYPE');
+                $item->INTERVAL_TIME_OF_DAY = $request->post('INTERVAL_TIME_OF_DAY');
+                $item->INTERVAL_DAY_OF_TYPE = $request->post('INTERVAL_DAY_OF_TYPE');
+                $item->INTERVAL_TYPE = $request->post('INTERVAL_TYPE');
                 $item->save();
+                return 'OK';
             } catch (\Exception $ex) {
                 return response()->json([
                     'error' => [$ex->errorInfo],

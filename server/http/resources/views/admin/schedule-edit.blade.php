@@ -25,7 +25,7 @@
     @endif
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\schedule.table_COMM')</div>
+            <div class="form-label strong">@lang('admin\schedule.table_COMM')</div>
         </div>
         <div class="col-sm-9">
             <input class="form-control" name="COMM" value="{{ $item->COMM }}">
@@ -34,10 +34,10 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\schedule.table_ACTION')</div>
+            <div class="form-label strong">@lang('admin\schedule.table_ACTION')</div>
         </div>
         <div class="col-sm-9">
-            <textarea class="form-control" name="ACTION">{{ $item->ACTION }}</textarea>
+            <textarea class="form-control" name="ACTION" rows="3" style="font-family: 'Courier New';">{{ $item->ACTION }}</textarea>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -53,8 +53,8 @@
             </select>
             <div class="invalid-feedback"></div>
         </div>
-        <div class="col-sm-4" style="text-align: right;">
-            <button class="btn btn-warning">@lang('admin\schedule.btn_test')</button>
+        <div style="display: inline-block; text-align: right;flex-grow: 1;padding-right: 1rem;">
+            <button class="btn btn-warning nowrap">@lang('admin\schedule.btn_test')</button>
         </div>
     </div>    
     <div class="row">
@@ -70,9 +70,9 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>    
-    <div class="row">
+    <div class="row" id="day_of_type">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\schedule.table_INTERVAL_DAY_OF_TYPE')</div>
+            <div class="form-label strong nowrap">@lang('admin\schedule.table_INTERVAL_DAY_OF_TYPE')</div>
         </div>
         <div class="col-sm-9">
             <textarea class="form-control" name="INTERVAL_DAY_OF_TYPE">{{ $item->INTERVAL_DAY_OF_TYPE }}</textarea>
@@ -81,7 +81,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\schedule.table_INTERVAL_TIME_OF_DAY')</div>
+            <div class="form-label strong nowrap">@lang('admin\schedule.table_INTERVAL_TIME_OF_DAY')</div>
         </div>
         <div class="col-sm-9">
             <textarea class="form-control" name="INTERVAL_TIME_OF_DAY">{{ $item->INTERVAL_TIME_OF_DAY }}</textarea>
@@ -109,9 +109,32 @@
                     window.location.reload();
                 });
             } else {
+                console.log(data);
                 dialogShowErrors(data);
             }
         });
+        
+        $('#schedule_edit_form select[name="INTERVAL_TYPE"]').on('change', function () {
+            let row = $('#day_of_type');
+            let label = $('.form-label', row);
+            switch ($(this).val()) {
+                case '0':
+                    row.hide(250);
+                    break;
+                case '1':
+                    label.text('@lang("admin\schedule.day_of_types.1")');
+                    row.show(250);
+                    break;
+                case '2':
+                    label.text('@lang("admin\schedule.day_of_types.2")');
+                    row.show(250);
+                    break;
+                case '3':
+                    label.text('@lang("admin\schedule.day_of_types.3")');
+                    row.show(250);
+                    break;
+            }
+        }).trigger('change');
     });
     
     function scheduleEditOK() {

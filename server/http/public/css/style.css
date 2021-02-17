@@ -2,6 +2,10 @@
     font-weight: bold;
 }
 
+.nowrap {
+    white-space: nowrap;
+}
+
 .modal-body .row {
     margin-bottom: 1rem;
 }

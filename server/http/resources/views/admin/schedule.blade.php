@@ -26,8 +26,12 @@
                 <td>{{ $row->ID }}</td>
                 <td>{{ $row->COMM }}</td>
                 <td>
+                    @if($row->ACTION_DATETIME)
                     {{ \Carbon\Carbon::parse($row->ACTION_DATETIME)->format('Y-m-d') }}<br>
                     {{ \Carbon\Carbon::parse($row->ACTION_DATETIME)->format('H:i:s') }}
+                    @else
+                    -//-
+                    @endif
                 </td>
                 <td>{!! nl2br($row->ACTION) !!}</td>
                 <td>{!! $row->INTERVAL_TEXT !!}</td>
