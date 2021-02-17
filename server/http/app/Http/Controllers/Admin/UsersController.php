@@ -18,7 +18,13 @@ class UsersController extends Controller
             'data' => $data,
         ]);
     }
-        
+    
+    /**
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return string
+     */
     public function edit(Request $request, int $id) {
         if ($request->method() == 'POST') {
             try {
@@ -66,6 +72,11 @@ class UsersController extends Controller
         }
     }
     
+    /**
+     * 
+     * @param int $id
+     * @return string
+     */
     public function delete(int $id) {
         $item = \App\Http\Models\UsersModel::find($id);
         if ($item) {

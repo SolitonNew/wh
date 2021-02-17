@@ -20,6 +20,8 @@
                     </div>
                 </div>
                 @yield('top-menu')
+                <div style="flex-grow: 1"></div>
+                <a class="btn btn-primary" href="{{ route('logout') }}" style="margin-right: 0;">@lang('admin\admin.menu_logout')</a>
             </nav>
         </div>
         <div class="main-container">
