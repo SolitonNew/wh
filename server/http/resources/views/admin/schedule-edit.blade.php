@@ -54,7 +54,7 @@
             <div class="invalid-feedback"></div>
         </div>
         <div style="display: inline-block; text-align: right;flex-grow: 1;padding-right: 1rem;">
-            <button class="btn btn-warning nowrap">@lang('admin\schedule.btn_test')</button>
+            <a href="#" class="btn btn-warning nowrap" onclick="runTest()">@lang('admin\schedule.btn_test')</a>
         </div>
     </div>    
     <div class="row">
@@ -153,6 +153,11 @@
                 }
             });
         }
+    }
+    
+    function runTest() {
+        let s = $('textarea[name="ACTION"]').val();
+        alert(s);
     }
     
 </script>
