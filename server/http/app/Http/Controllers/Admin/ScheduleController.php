@@ -82,6 +82,7 @@ class ScheduleController extends Controller
                 $item->INTERVAL_TIME_OF_DAY = $request->post('INTERVAL_TIME_OF_DAY');
                 $item->INTERVAL_DAY_OF_TYPE = $request->post('INTERVAL_DAY_OF_TYPE');
                 $item->INTERVAL_TYPE = $request->post('INTERVAL_TYPE');
+                $item->ENABLE = $request->post('ENABLE');
                 $item->save();
                 return 'OK';
             } catch (\Exception $ex) {
