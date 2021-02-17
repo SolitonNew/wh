@@ -168,6 +168,11 @@
     
     function loadVariableChanges() {
         $.ajax('{{ route("variable-changes", "") }}/' + lastVariableID).done((data) => {
+            if (data && (data.substr(0, 15) == '<!DOCTYPE HTML>')) {
+                window.location.reload();
+                return ;
+            }
+
             $('#logList').prepend(data);
             calcLastVariableID();
            

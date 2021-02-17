@@ -205,4 +205,9 @@ class VariablesController extends Controller
         
         return 'ERROR';
     }
+    
+    public function variableChanges(int $lastID) {
+        \App\Http\Models\VariableChangesModel::setLastVariableID($lastID);
+        return view('admin.log');
+    }
 }

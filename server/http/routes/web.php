@@ -26,10 +26,8 @@ Route::group(['middleware'=>'role:rerminal'], function () {
     Route::post('/variable-set/{varID}/{varValue}', 'Terminal\VariableController@variableSet')->name('variable-set');
 });
 
-Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {   
-    Route::get('/', function () {
-        return redirect(route('variables'));
-    });
+Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
+    Route::get('/', 'Admin\IndexController@index');
     
     Route::get('/rooms/{partID?}', 'Admin\RoomsController@index')->name('parts');
     Route::match(['get', 'post'], '/room-edit/{id}', 'Admin\RoomsController@edit')->name('room-edit');
@@ -40,11 +38,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/variables-channel-list/{rom}/{ow_id?}', 'Admin\VariablesController@channelList')->name('variables-channel-list');
     Route::match(['get', 'post'], '/variable-edit/{id}', 'Admin\VariablesController@edit')->name('variable-edit');
     Route::get('/variable-delete/{id}', 'Admin\VariablesController@delete')->name('variable-delete');
-    
-    Route::get('/variable-changes/{lastID}', function ($lastID) {
-        \App\Http\Models\VariableChangesModel::setLastVariableID($lastID);
-        return view('admin.log');
-    })->name('variable-changes');
+    Route::get('/variable-changes/{lastID}', 'Admin\VariablesController@variableChanges')->name('variable-changes');
     
     Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('scripts');
     
@@ -61,6 +55,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/ow-manager-delete/{id}', 'Admin\OwManagerController@delete')->name('ow-manager-delete');
     
     Route::get('/schedule', 'Admin\ScheduleController@index')->name('schedule');
+    Route::match(['get', 'post'], '/schedule-edit/{id}', 'Admin\ScheduleController@edit')->name('schedule-edit');
+    Route::get('/schedule-delete/{id}', 'Admin\ScheduleController@delete')->name('schedule-delete');
     
     Route::get('/cams', 'Admin\CamsController@index')->name('cams');
 });
