@@ -10,11 +10,50 @@
     <button type="submit" style="display: none;"></button>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin\users.table_login')</div>
+            <div class="form-label">@lang('admin\ow-manager.table_ID')</div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-control">{{ $item->ID }}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-label">@lang('admin\ow-manager.table_CONTROLLER')</div>
         </div>
         <div class="col-sm-6">
-            <input class="form-control" type="text" name="login" value="{{ $item->login }}" required="">
-            <div class="invalid-feedback"></div>
+            <div class="form-control">{{ $item->CONTROLLER_NAME }}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-label">@lang('admin\ow-manager.table_ROM')</div>
+        </div>
+        <div class="col-sm-9">
+            <div class="form-control">{{ $item->ROM }}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-label">@lang('admin\ow-manager.table_COMM')</div>
+        </div>
+        <div class="col-sm-9">
+            <div class="form-control">{{ $item->COMM }}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-label">@lang('admin\ow-manager.table_CHANNELS')</div>
+        </div>
+        <div class="col-sm-9">
+            <div class="form-control">{{ $item->CHANNELS }}</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="">@lang('admin\ow-manager.table_VARIABLES') ({{ count($item->VARIABLES) }}):</div>
+        <div class="form-control" style="height: auto;">
+        @foreach($item->VARIABLES as $v)
+        <div>[{{ $v->CHANNEL }}] {{ $v->NAME }}</div>
+        @endforeach    
         </div>
     </div>
 </form>

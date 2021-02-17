@@ -24,7 +24,7 @@
                 <th scope="col" style="width: 50px;"><span>@lang('admin\ow-manager.table_ID')</span></th>
                 <th scope="col" style="width: 150px;"><span>@lang('admin\ow-manager.table_CONTROLLER')</span></th>
                 <th scope="col" style="width: 150px;"><span>@lang('admin\ow-manager.table_COMM')</span></th>
-                <th scope="col" style="width: 300px;"><span>@lang('admin\ow-manager.table_ROOM')</span></th>
+                <th scope="col" style="width: 300px;"><span>@lang('admin\ow-manager.table_ROM')</span></th>
                 <th scope="col" style="width: 150px;"><span>@lang('admin\ow-manager.table_CHANNELS')</span></th>
                 <th scope="col" style="width: 250px;"><span>@lang('admin\ow-manager.table_VARIABLES')</span></th>
             </tr>

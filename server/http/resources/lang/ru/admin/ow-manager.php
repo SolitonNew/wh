@@ -6,7 +6,7 @@ return [
     
     'table_ID' => 'ID',
     'table_CONTROLLER' => 'Контроллер',
-    'table_ROOM' => 'Номер',
+    'table_ROM' => 'Номер',
     'table_COMM' => 'Тип',
     'table_CHANNELS' => 'Каналы',
     'table_VARIABLES' => 'Связанные переменные',

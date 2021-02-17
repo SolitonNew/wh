@@ -59,7 +59,43 @@ class OwManagerController extends Controller
      * @return type
      */
     public function info(int $id) {
-        $item = \App\Http\Models\OwDevsModel::find($id);
+        $sql = 'select d.ID, 
+                       c.NAME CONTROLLER_NAME, 
+                       "" ROM,
+                       d.ROM_1, d.ROM_2, d.ROM_3, d.ROM_4, d.ROM_5, d.ROM_6, d.ROM_7,
+                       t.CHANNELS,
+                       t.COMM,
+                       "" VARIABLES
+                  from core_ow_devs d, core_ow_types t, core_controllers c
+                 where d.CONTROLLER_ID = c.ID
+                   and d.ROM_1 = t.CODE
+                   and d.ID = '.$id.'
+                order by c.NAME, d.ROM_1, d.ROM_2, d.ROM_3, d.ROM_4, d.ROM_5, d.ROM_6, d.ROM_7';
+        $data = DB::select($sql);
+        if (count($data)) {
+            $item = $data[0];
+        } else {
+            abort(404);
+        }
+        
+        $item->ROM = sprintf("x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X", 
+            $item->ROM_1, 
+            $item->ROM_2, 
+            $item->ROM_3, 
+            $item->ROM_4, 
+            $item->ROM_5, 
+            $item->ROM_6, 
+            $item->ROM_7
+        );
+        
+        $sql = 'select v.ID, v.NAME, v.CHANNEL
+                  from core_variables v 
+                 where v.ROM = "ow" 
+                   and v.OW_ID = '.$item->ID.'
+                order by v.CHANNEL';
+                
+        $item->VARIABLES = DB::select($sql);
+        
         return view('admin.ow-manager-info', [
             'item' => $item,
         ]);
