@@ -53,6 +53,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/ow-manager/{controllerID?}', 'Admin\OwManagerController@index')->name('ow-manager');
     Route::get('/ow-manager-info/{id}', 'Admin\OwManagerController@info')->name('ow-manager-info');
     Route::get('/ow-manager-delete/{id}', 'Admin\OwManagerController@delete')->name('ow-manager-delete');
+    Route::get('/ow-manager-gen-vars', 'Admin\OwManagerController@generateVarsForFreeDevs')->name('ow-manager-gen-vars');
     
     Route::get('/schedule', 'Admin\ScheduleController@index')->name('schedule');
     Route::match(['get', 'post'], '/schedule-edit/{id}', 'Admin\ScheduleController@edit')->name('schedule-edit');

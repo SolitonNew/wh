@@ -75,7 +75,15 @@
     }
     
     function generateVariablesForOW() {
-        alert('GEN VARIABLES');
+        if (confirm('@lang("admin\ow-manager.gen_vars_confirm")')) {
+            $.ajax('{{ route("ow-manager-gen-vars") }}').done((data) => {
+                if (data == 'OK') {
+                    window.location.reload();
+                } else {
+                    alert('ERROR');
+                }
+            });
+        }
     }
     
     function showInfo(id) {

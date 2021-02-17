@@ -51,9 +51,11 @@
     <div class="form-group">
         <div class="">@lang('admin\ow-manager.table_VARIABLES') ({{ count($item->VARIABLES) }}):</div>
         <div class="form-control" style="height: auto;">
-        @foreach($item->VARIABLES as $v)
+        @forelse($item->VARIABLES as $v)
         <div>[{{ $v->CHANNEL }}] {{ $v->NAME }}</div>
-        @endforeach    
+        @empty
+        -//-
+        @endforelse    
         </div>
     </div>
 </form>

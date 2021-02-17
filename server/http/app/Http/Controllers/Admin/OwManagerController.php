@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use \Illuminate\Support\Facades\DB;
+use Log;
 
 class OwManagerController extends Controller
 {
@@ -112,6 +113,52 @@ class OwManagerController extends Controller
             $item->delete();            
             return 'OK';
         } catch (\Exception $ex) {
+            return 'ERROR';
+        }
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function generateVarsForFreeDevs() {
+        $devs = DB::select('select d.ID, d.CONTROLLER_ID, t.CHANNELS, t.COMM
+                              from core_ow_devs d, core_ow_types t
+                             where d.ROM_1 = t.CODE');
+        
+        $vars = DB::select('select OW_ID, CHANNEL from core_variables where ROM = "ow"');
+        
+        try {
+            foreach($devs as $dev) {
+                foreach (explode(',', $dev->CHANNELS) as $chan) {
+                    $find = false;
+                    foreach($vars as $var) {
+                        if ($var->OW_ID == $dev->ID && $var->CHANNEL && $var->CHANNEL == $chan) {
+                            $find = true;
+                            break;
+                        }
+                    }
+
+                    if (!$find) {
+                        $item = new \App\Http\Models\VariablesModel();
+                        $item->CONTROLLER_ID = $dev->CONTROLLER_ID;
+                        $item->ROM = 'ow';
+                        $item->DIRECTION = 0;
+                        $item->NAME = 'TEMP FOR OW';
+                        $item->COMM = $dev->COMM;
+                        $item->OW_ID = $dev->ID;
+                        $item->CHANNEL = $chan;
+                        $item->save();
+                        $item->NAME = 'OW_'.$item->ID.'_'.$chan;
+                        $item->save();
+                        
+                        Log::info($item->OW_ID);
+                    }
+                }
+            }
+            return 'OK';
+        } catch (\Exception $ex) {
+            Log::info($ex);
             return 'ERROR';
         }
     }
