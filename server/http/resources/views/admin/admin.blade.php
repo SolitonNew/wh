@@ -27,7 +27,7 @@
         <div class="main-container">
             <div class="main-left-panel">
                 <div class="main-left-panel-container">
-                    <div style="height: 130px;padding: 0.5rem;text-align: center;">
+                    <div style="height: 130px;padding: 0.5rem;text-align: center;background-color: #ffffff;">
                         <img src="/img/logo.png" height="100%">
                     </div>
                     <div class="list-group">
@@ -75,7 +75,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="dialog_window" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="dialog_window" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content" id="dialog_content"></div>
     </div>

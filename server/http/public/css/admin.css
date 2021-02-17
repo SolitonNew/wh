@@ -1,6 +1,9 @@
 .navbar {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
     justify-content: flex-start;
+    background-color: rgba(0,0,0,0.05);
+    #box-shadow: 0 0 10px rgba(0,0,0,0.35);
+    z-index: 1;
 }
 
 .navbar .btn {
@@ -49,6 +52,8 @@
     flex-direction: column;
     width: 200px;
     min-width: 200px;
+    #box-shadow: 0 0 10px rgba(0,0,0,0.35);
+    background-color: rgba(0,0,0,0.05);
 }
 
 .main-left-panel-container {
@@ -67,6 +72,7 @@
     border-left: 1px solid rgba(0,0,0,.125);
     overflow: hidden;
     padding: 0.5rem 1rem;
+    
 }
 
 .main-content {
