@@ -35,11 +35,11 @@
                 <td>{{ $row->ID }}</td>
                 <td>{{ $row->CONTROLLER_NAME }}</td>
                 <td>{{ $row->COMM }}</td>
-                <td>{{ $row->ROM }}</td>
+                <td class="nowrap">{{ $row->ROM }}</td>
                 <td>{{ $row->CHANNELS }}</td>
                 <td>
                     @foreach($row->VARIABLES as $v)
-                    <div><a href="#" onclick="showVariable({{ $v->ID }}); return false;">{{ $v->NAME }}</a></div>
+                    <div><a class="nowrap" href="#" onclick="showVariable({{ $v->ID }}); return false;">[{{ $v->CHANNEL }}] {{ $v->NAME }}</a></div>
                     @endforeach
                 </td>
             </tr>

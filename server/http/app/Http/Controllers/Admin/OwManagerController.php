@@ -45,7 +45,11 @@ class OwManagerController extends Controller
                 $row->ROM_7
             );
             
-            $row->VARIABLES = DB::select('select v.ID, v.NAME from core_variables v where v.ROM = "ow" and v.OW_ID = '.$row->ID);
+            $row->VARIABLES = DB::select('select v.ID, v.NAME, v.CHANNEL
+                                            from core_variables v 
+                                           where v.ROM = "ow" 
+                                             and v.OW_ID = '.$row->ID.'
+                                          order by v.CHANNEL');
         }
         
         return view('admin.ow-manager', [

@@ -11,7 +11,7 @@
         <div class="main-menu">
             <nav class="navbar">
                 <div class="logo">WISE HOUSE</div>        
-                <div class="btn-group">
+                <div class="btn-group" style="margin-left: 1rem;margin-right: 1rem;">
                     <button type="button" class="btn btn-primary dropdown-toggle" 
                             data-toggle="dropdown" aria-haspopup="true" style="margin: 0px;"
                             aria-expanded="false">@lang('admin\admin.menu_actions')</button>
@@ -31,8 +31,8 @@
                         <img src="/img/logo.png" height="100%">
                     </div>
                     <div class="list-group">
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('rooms')" href="{{ route('parts') }}">
-                            @lang('admin/rooms.menu')
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('plan')" href="{{ route('plan') }}">
+                            @lang('admin/plan.menu')
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\PlanPartsModel::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('variables')" href="{{ route('variables') }}">

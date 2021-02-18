@@ -12,6 +12,6 @@ class IndexController extends Controller
      * @return type
      */
     public function index() {
-        return redirect(route('parts'));
+        return redirect(route('plan'));
     }
 }
