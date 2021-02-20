@@ -202,3 +202,29 @@
     border: 1.5px solid #ffffff;
     margin-right: -1.5px;
 }
+
+.plan-parts-content {
+    position: relative;
+    display: inline-block;
+}
+
+.plan-part {
+    position: absolute;
+    display: inline-block;
+    border: 1px solid #000000;
+    background-color: #eeeeee;
+    cursor: pointer;
+    #transition-duration: 0.25s;
+}
+
+.plan-part:hover {
+    background-color: #dddddd;
+}
+
+.plan-part.current {
+    border-width: 2px;
+}
+
+option:disabled {
+    color: #dddddd;
+}

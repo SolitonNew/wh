@@ -40,8 +40,10 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     /* Раздел "Планирование" помещений */
     Route::get('/plan/{id?}', 'Admin\PlanController@index')->name('plan');
-    Route::match(['get', 'post'], '/plan-edit/{id}', 'Admin\PlanController@edit')->name('plan-edit');
+    Route::match(['get', 'post'], '/plan-edit/{id}/{p_id?}', 'Admin\PlanController@edit')->name('plan-edit');
     Route::get('/plan-delete/{id}', 'Admin\PlanController@delete')->name('plan-delete');
+    Route::match(['get', 'post'], '/plan-move-childs/{id}', 'Admin\PlanController@moveChilds')->name('plan-move-childs');
+    Route::match(['get', 'post'], '/plan-order/{id}', 'Admin\PlanController@order')->name('plan-order');
     
     /* Раздел управления переменными системы */
     Route::get('/variables/{partID?}', 'Admin\VariablesController@index')->name('variables');

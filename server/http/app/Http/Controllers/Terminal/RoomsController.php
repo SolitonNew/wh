@@ -25,8 +25,8 @@ class RoomsController extends Controller
      * @return type
      */
     public function index() {       
-        $this->_groups = \App\Http\Models\PlanPartsModel::orderBy('NAME', 'asc')
-                            ->orderBy('ORDER_NUM', 'asc')
+        $this->_groups = \App\Http\Models\PlanPartsModel::orderBy('ORDER_NUM', 'asc')
+                            ->orderBy('NAME', 'asc')
                             ->get();
         
         $this->_variables = \App\Http\Models\VariablesModel::get();

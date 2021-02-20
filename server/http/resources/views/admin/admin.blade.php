@@ -235,10 +235,14 @@
         return matches ? decodeURIComponent(matches[1]) : undefined;
     }
     
+    function setCookie(name, value) {
+        document.cookie = name + '=' + value + '; path=/admin; max-age=3600';
+    }
+    
     function resetScrollStore(obj) {
         let name = $(obj).attr('scroll-store');
         if (name) {
-            document.cookie = name + '=0; path=/admin; max-age=3600';
+            setCookie(name, '0');
         }
     }
     
