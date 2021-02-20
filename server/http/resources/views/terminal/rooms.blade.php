@@ -10,7 +10,7 @@
 </nav>
 
 <div style="display: flex; flex-direction: column; min-height: calc(100vh - 6rem);">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3" style="flex-grow: 1;">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-{{ $columnCount }}" style="flex-grow: 1;">
     @foreach($data as $group)
     <div class="col">
         <div class="list-group list-group-flush main-column" style="margin-bottom: 1rem;">

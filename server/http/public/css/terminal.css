@@ -279,11 +279,24 @@ body {
 }
 
 .video-list-view {
-    border-top: 1px solid rgba(0,0,0,.125);
     margin: 0 -15px;
     margin-top: 2rem;
     background-color: #ffffff;
     text-align: center;
+}
+
+.video-list-title {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 0;
+    padding: 0.25rem 2.25rem;
+}
+
+@media(max-width: 575px) {
+    .video-list-title {
+        padding: 0.25rem 1rem;
+    }
 }
 
 .video-list {

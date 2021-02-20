@@ -62,6 +62,9 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('statistics')" href="{{ route('statistics') }}">
                             @lang('admin/statistics.menu')
                         </a>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{{ route('home') }}" target="_blank">
+                            @lang('admin/admin.menu_home')
+                        </a>
                     </div>
                 </div>
             </div>

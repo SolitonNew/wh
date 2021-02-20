@@ -1,12 +1,11 @@
 <div class="video-list-view">
+    <div class="alert alert-light video-list-title">@lang('terminal.video_title')</div>
     <div class="video-list">
-
-@foreach(\App\Http\Models\PlanVideoModel::orderBy('ORDER_NUM', 'asc')->get() as $row)        
-    <a class="video-list-item" href="#">
-        <video class="video-list-item-content" autoplay="true" poster="img/cams/{{ $row->ID }}.png"></video>
-    </a>
-@endforeach
-
+        @foreach(\App\Http\Models\PlanVideoModel::orderBy('ORDER_NUM', 'asc')->get() as $row)        
+        <a class="video-list-item" href="#">
+            <video class="video-list-item-content" autoplay="true" poster="img/cams/{{ $row->ID }}.png"></video>
+        </a>
+        @endforeach
     </div>
 </div>
 
@@ -27,6 +26,15 @@
             videoItemW = $('.video-list-item').width();
             videoItemW_2 = videoItemW / 2;
             videoViewRecalc();
+            
+            let w = $('.video-list .video-list-item').length * videoItemW;
+            if (w < videoViewW) {
+                $('.video-list-title').css({
+                    width: 'calc(' + (w + 20) + 'px + 6rem)',
+                });
+            } else {
+                $('.video-list-title').width('100%');
+            }
         }).trigger('resize');
         
         $('.video-list').on('touchstart', (e) => {

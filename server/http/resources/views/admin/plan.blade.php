@@ -8,6 +8,7 @@
 @section('down-menu')
 <a href="#" class="dropdown-item" onclick="planAdd(); return false;">@lang('admin\plan.plan_add')</a>
 <a href="#" class="dropdown-item" onclick="planEdit(); return false;">@lang('admin\plan.plan_edit')</a>
+<div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="planMoveChilds(); return false;">@lang('admin\plan.plan_move_childs')</a>
 <a href="#" class="dropdown-item" onclick="planOrder(); return false;">@lang('admin\plan.plan_order')</a>
 @endsection

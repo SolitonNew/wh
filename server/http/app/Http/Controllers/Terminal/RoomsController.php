@@ -33,8 +33,14 @@ class RoomsController extends Controller
         $data = [];
         $this->_makeItems(null, 0, $data);
         
+        $columnCount = count($data);
+        if ($columnCount > 5) {
+            $columnCount = 3;
+        }
+        
         return view('terminal.rooms', [
             'data' => $data,
+            'columnCount' => $columnCount,
         ]);
     }
     

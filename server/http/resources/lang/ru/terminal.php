@@ -5,6 +5,7 @@ return [
     'menu_checked' => 'ИЗБРАННОЕ',
     'menu_checked_edit' => 'НАСТРОЙКИ',
     'menu_back' => 'НАЗАД',
+    'video_title' => 'ВИДЕО',
   
     'app_control_labels' => [
         1 => 'СВЕТ',
