@@ -18,14 +18,21 @@
            class="tree-item {{ $row->ID == $scriptID ? 'active' : '' }}">{{ $row->COMM }}</a>
         @endforeach
     </div>
-    <div class="content-body">
-        <div style="font-family: 'Courier New'; padding: 1rem;">{!! $sourceCode !!}</div>
+    <div class="content-body codeedit">
+        <div class="numbers">000</div>
+        <div class="codetext">{!! $sourceCode !!}</div>
     </div>
 </div>
 
 <script>
     $(document).ready(() => {
-        
+        let s = $('.content-body .codetext').text();
+        let a = s.split('\n');
+        let aa = new Array();
+        for (let i = 1;  i <= a.length; i++) {
+            aa.push(i);
+        }
+        $('.content-body .numbers').html(aa.join('<br>'));
     });
     
     function scriptAdd() {

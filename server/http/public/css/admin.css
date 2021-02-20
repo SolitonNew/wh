@@ -228,3 +228,24 @@
 option:disabled {
     color: #dddddd;
 }
+
+.content-body.codeedit {
+    display: flex; 
+    padding: 0;
+}
+
+.codeedit .numbers {
+    width: 60px;
+    border-right: 1px solid rgba(0,0,0,0.125);
+    background-color: rgba(0,0,0,0.0125);
+    padding: 1rem;
+    padding-right: 0.5rem;
+    text-align: right;
+    font-family: 'Courier New';
+}
+
+.codeedit .codetext {
+    flex-grow: 1; 
+    font-family: 'Courier New';
+    padding: 1rem;
+}
