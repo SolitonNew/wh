@@ -15,7 +15,7 @@
     display: inline-block;
     font-weight: bold;
     font-size: 170%;
-    width: 200px;
+    width: 230px;
     height: 3rem;
     text-align: center;
     margin-left: -1rem;
@@ -51,8 +51,8 @@
 .main-left-panel {
     display: flex;
     flex-direction: column;
-    width: 200px;
-    min-width: 200px;
+    width: 230px;
+    min-width: 230px;
     #box-shadow: 0 0 10px rgba(0,0,0,0.35);
     background-color: rgba(0,0,0,0.05);
 }
@@ -65,6 +65,12 @@
 
 .main-left-panel-container > .list-group {
     margin-right: -1px;
+}
+
+.main-left-panel-container .label {
+    flex-grow: 1;
+    text-aligh: left;
+    margin-left: 1rem;
 }
 
 .body-content-log {

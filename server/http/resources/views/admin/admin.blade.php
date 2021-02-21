@@ -32,38 +32,47 @@
                     </div>
                     <div class="list-group">
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('plan')" href="{{ route('plan') }}">
-                            @lang('admin/plan.menu')
+                            <img src="/img/menus/plans.png">
+                            <span class="label">@lang('admin/plan.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\PlanPartsModel::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('variables')" href="{{ route('variables') }}">
-                            @lang('admin/variables.menu')
+                            <img src="/img/menus/plans.png">
+                            <span class="label">@lang('admin/variables.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VariablesModel::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('scripts')" href="{{ route('scripts') }}">
-                            @lang('admin/scripts.menu')
+                            <img src="/img/menus/plans.png">
+                            <span class="label">@lang('admin/scripts.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\ScriptsModel::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('users')" href="{{ route('users') }}">
-                            @lang('admin/users.menu')
+                            <img src="/img/menus/plans.png">
+                            <span class="label">@lang('admin/users.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\UsersModel::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('ow-manager')" href="{{ route('ow-manager') }}">
-                            @lang('admin/ow-manager.menu')
+                            <img src="/img/menus/plans.png">
+                            <span class="label">@lang('admin/ow-manager.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\OwDevsModel::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('schedule')" href="{{ route('schedule') }}">
-                            @lang('admin/schedule.menu')
+                            <img src="/img/menus/plans.png">
+                            <span class="label">@lang('admin/schedule.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\SchedulerModel::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('cams')" href="{{ route('cams') }}">
-                            @lang('admin/cams.menu')
+                            <img src="/img/menus/plans.png">
+                            <span class="label">@lang('admin/cams.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VideoModel::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('statistics')" href="{{ route('statistics') }}">
-                            @lang('admin/statistics.menu')
+                            <img src="/img/menus/plans.png">
+                            <span class="label">@lang('admin/statistics.menu')</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{{ route('home') }}" target="_blank">
-                            @lang('admin/admin.menu_home')
+                            <img src="/img/menus/plans.png">
+                            <span class="label">@lang('admin/admin.menu_home')</span>
                         </a>
                     </div>
                 </div>
