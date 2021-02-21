@@ -79,6 +79,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     /* УПравление камерами видеонаблюдения */
     Route::get('/cams', 'Admin\CamsController@index')->name('cams');
+    Route::match(['get', 'post'], '/cam-edit/{id}', 'Admin\CamsController@edit')->name('cam-edit');
+    Route::get('/cam-delete/{id}', 'Admin\CamsController@delete')->name('cam-delete');
     
     /* Визуализация статистики системы */
     Route::get('/statistics', 'Admin\StatisticsController@index')->name('statistics');
