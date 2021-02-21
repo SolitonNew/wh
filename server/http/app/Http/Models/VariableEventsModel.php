@@ -4,10 +4,9 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ScriptsModel extends Model
+class VariableEventsModel extends Model
 {
-    protected $table = 'core_scripts';
+    protected $table = 'core_variable_events';
     public $timestamps = false;
     public $primaryKey = 'ID';
-    
 }

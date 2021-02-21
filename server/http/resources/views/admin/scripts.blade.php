@@ -5,17 +5,25 @@
 
 @section('down-menu')
 <a href="#" class="dropdown-item" onclick="scriptAdd(); return false;">@lang('admin\scripts.script_add')</a>
+@if($data)
 <a href="#" class="dropdown-item" onclick="scriptEdit(); return false;">@lang('admin\scripts.script_edit')</a>
 <div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onclick="scriptAttacheEvent(); return false;">@lang('admin\scripts.script_attache_event')</a>
+<a href="#" class="dropdown-item" onclick="scriptAttachEvent(); return false;">@lang('admin\scripts.script_attach_event')</a>
+@endif
 @endsection
 
 @section('content')
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
-    <div class="tree" style="width: 300px;min-width:300px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="scriptsList">
-        @foreach(\App\Http\Models\ScriptsModel::orderBy('COMM', 'asc')->get() as $row)
+    <div class="tree" style="width: 320px;min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="scriptsList">
+        @foreach($list as $row)
         <a href="{{ route('scripts', $row->ID) }}" 
-           class="tree-item {{ $row->ID == $scriptID ? 'active' : '' }}">{{ $row->COMM }}</a>
+            class="tree-item justify-content-between {{ $row->ID == $scriptID ? 'active' : '' }}"
+            style="display: flex; align-items: center;">
+            {{ $row->COMM }}
+            @if($row->VAR_COUNT > 0)
+            <div class="badge badge-pill badge-warning">{{ $row->VAR_COUNT }}</div>
+            @endif
+        </a>
         @endforeach
     </div>
     <div class="content-body codeedit">
@@ -36,15 +44,15 @@
     });
     
     function scriptAdd() {
-        alert('ADD SCRIPT');
+        dialog('{{ route("script-edit", -1) }}');
     }
     
     function scriptEdit() {
-        alert('EDIT SCRIPT');
+        dialog('{{ route("script-edit", $scriptID) }}');
     }
     
-    function scriptAttacheEvent() {
-        alert('ATTACHE EVENT');
+    function scriptAttachEvent() {
+        dialog('{{ route("script-events", $scriptID) }}');
     }
 </script>
 

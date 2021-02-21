@@ -1,8 +1,8 @@
 @extends('admin.admin')
 
 @section('top-menu')
-<button class="btn btn-secondary" onclick="planZoomIn()">ZOOM IN</button>
-<button class="btn btn-secondary" onclick="planZoomOut()">ZOOM OUT</button>
+<button class="btn btn-secondary" onclick="planZoomIn()">@lang('admin\plan.zoom_in')</button>
+<button class="btn btn-secondary" onclick="planZoomOut()">@lang('admin\plan.zoom_out')</button>
 @endsection
 
 @section('down-menu')

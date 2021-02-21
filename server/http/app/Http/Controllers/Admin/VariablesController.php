@@ -27,7 +27,8 @@ class VariablesController extends Controller
                        v.COMM,
                        v.APP_CONTROL,
                        v.VALUE,
-                       v.CHANNEL
+                       v.CHANNEL,
+                       exists(select 1 from core_variable_events e where e.VARIABLE_ID = v.ID) WITH_EVENTS
                   from core_variables v, core_controllers c
                  where v.controller_id = c.id
                    '.$where.'

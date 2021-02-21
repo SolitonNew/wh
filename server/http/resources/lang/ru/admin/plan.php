@@ -26,4 +26,7 @@ return [
     'plan_move_childs_title' => 'Здвинуть подчиненных',
     'plan_order_title' => 'Порядок отображения',
     'plan-delete-confirm' => 'Удалить текущую запись плана?',
+    
+    'zoom_in' => 'Увеличить',
+    'zoom_out' => 'Уменьшить',
 ];

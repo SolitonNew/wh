@@ -77,8 +77,8 @@ return [
     
     'variable_add' => 'Добавить новую переменную...',
     
-    'variable_add_title' => 'Добавить новую переменную',
-    'variable_edit_title' => 'Редактирование переменной',
+    'variable_add_title' => 'Новая переменная',
+    'variable_edit_title' => 'Свойства переменной',
     
     'variable_delete_confirm' => 'Удалить выбранную переменную?',
 

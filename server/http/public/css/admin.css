@@ -7,7 +7,8 @@
 }
 
 .navbar .btn {
-    margin: 0 0.5rem;
+    margin: 0;
+    margin-right: 0.25rem;
 }
 
 .navbar .logo {
@@ -146,6 +147,10 @@
 
 .table td.nowrap {
     white-space: nowrap;
+}
+
+.row-with-events td {
+    background-color: rgba(255, 255, 0, 0.125);
 }
 
 .main-right-panel {

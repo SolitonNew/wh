@@ -5,8 +5,8 @@ return [
     'title' => '',
     
     'schedule_add' => 'Добавить новую запись расписания...',
-    'schedule_add_title' => 'Добавить новую запись расписания',
-    'schedule_edit_title' => 'Параметры записи расписания',
+    'schedule_add_title' => 'Новая запись расписания',
+    'schedule_edit_title' => 'Свойства записи расписания',
     
     'table_ID' => 'ID',
     'table_COMM' => 'Описание',

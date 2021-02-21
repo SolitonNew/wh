@@ -5,10 +5,6 @@
 
 @section('down-menu')
 <a href="#" class="dropdown-item" onclick="variableAdd(); return false;">@lang('admin\variables.variable_add')</a>
-<div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onclick="roomAdd(); return false;">@lang('admin\rooms.room_add')</a>
-<a href="#" class="dropdown-item" onclick="roomEdit(); return false;">@lang('admin\rooms.room_edit')</a>
-<a href="#" class="dropdown-item" onclick="roomOrder(); return false;">@lang('admin\rooms.room_order')</a>
 @endsection
 
 @section('content')
@@ -36,7 +32,7 @@
             </thead>
             <tbody>
                 @foreach($data as $row)
-                <tr data-id="{{ $row->ID }}">
+                <tr data-id="{{ $row->ID }}" class="{{ $row->WITH_EVENTS ? 'row-with-events' : '' }}">
                     <td>{{ $row->ID }}</td>
                     <td>{{ $row->CONTROLLER_NAME }}</td>
                     <td>{{ $row->ROM }}</td>

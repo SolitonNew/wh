@@ -57,6 +57,9 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     /* Управление скриптами (сценариями) системы */
     Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('scripts');
+    Route::match(['get', 'post'], '/script-edit/{id}', 'Admin\ScriptsController@edit')->name('script-edit');
+    Route::get('/script-delete/{id}', 'Admin\ScriptsController@delete')->name('script-delete');
+    Route::match(['get', 'post'], '/script-events/{id}', 'Admin\ScriptsController@attacheEvents')->name('script-events');
     
     /* Управление учетными записями пользователей */
     Route::get('/users', 'Admin\UsersController@index')->name('users');
