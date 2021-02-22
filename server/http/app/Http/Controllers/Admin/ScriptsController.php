@@ -131,6 +131,23 @@ class ScriptsController extends Controller
      * 
      * @param Request $request
      * @param int $id
+     * @return string
+     */
+    public function saveScript(Request $request, int $id) {
+        $item = \App\Http\Models\ScriptsModel::find($id);
+        if ($item) {
+            $item->DATA = $request->post('DATA') ? $request->post('DATA') : 'pass';
+            $item->save();
+            return 'OK';
+        } else {
+            return 'ERROR';
+        }
+    }
+    
+    /**
+     * 
+     * @param Request $request
+     * @param int $id
      * @return type
      */
     public function attacheEvents(Request $request, int $id) {

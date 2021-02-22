@@ -60,6 +60,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::match(['get', 'post'], '/script-edit/{id}', 'Admin\ScriptsController@edit')->name('script-edit');
     Route::get('/script-delete/{id}', 'Admin\ScriptsController@delete')->name('script-delete');
     Route::match(['get', 'post'], '/script-events/{id}', 'Admin\ScriptsController@attacheEvents')->name('script-events');
+    Route::post('/script-save/{id}', 'Admin\ScriptsController@saveScript')->name('script-save');
     
     /* Управление учетными записями пользователей */
     Route::get('/users', 'Admin\UsersController@index')->name('users');

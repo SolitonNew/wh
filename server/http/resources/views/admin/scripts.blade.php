@@ -8,6 +8,8 @@
 @if($data)
 <a href="#" class="dropdown-item" onclick="scriptEdit(); return false;">@lang('admin\scripts.script_edit')</a>
 <div class="dropdown-divider"></div>
+<a href="#" class="dropdown-item" onclick="editorShow(); return false;">@lang('admin\scripts.script_show_editor')</a>
+<div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="scriptAttachEvent(); return false;">@lang('admin\scripts.script_attach_event')</a>
 @endif
 @endsection
@@ -32,6 +34,19 @@
     </div>
 </div>
 
+<div class="script-editor-background">
+    <div class="script-editor-container">
+        <div class="script-editor-body">
+            <div class="script-editor-rownums" data-count="0"></div>
+            <textarea class="script-editor-code">{{ $data->DATA }}</textarea>
+        </div>
+        <div class="script-editor-toolbar">
+            <button class="btn btn-primary" onclick="editorSave()">@lang('dialogs.btn_save')</button>
+            <button class="btn btn-secondary" onclick="editorHide()" >@lang('dialogs.btn_cancel')</button>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(() => {
         let s = $('.content-body .codetext').text();
@@ -41,6 +56,35 @@
             aa.push(i);
         }
         $('.content-body .numbers').html(aa.join('<br>'));
+        
+        $(window).on('resize', () => {
+            let codeedit = $('.codeedit');
+            let codeedit_pos = codeedit.position();
+            let editor = $('.script-editor-container');
+            editor.css({
+                left: codeedit_pos.left + 'px',
+                top: codeedit_pos.top + 'px',
+                width: codeedit.width() + 'px',
+                height: codeedit.height() + 'px',
+            });
+        });
+        
+        $('.script-editor-code').on('input', function () {
+            let s = $(this).val();
+            let n = 0;
+            if (s) {
+                n = s.split('\n').length;
+            }
+            let nums = $('.script-editor-rownums');
+            if (nums.data('count') != n) {
+                let a = new Array(n);
+                for (let i = 0; i < n; i++) {
+                    a[i] = (i + 1);
+                }
+                nums.data('count', n);
+                nums.html(a.join('<br>'));
+            }
+        }).trigger('input');
     });
     
     function scriptAdd() {
@@ -53,6 +97,33 @@
     
     function scriptAttachEvent() {
         dialog('{{ route("script-events", $scriptID) }}');
+    }
+    
+    function editorShow() {
+        $('.script-editor-background').fadeIn(250);
+    }
+    
+    function editorHide(handler) {
+        $('.script-editor-background').fadeOut(250, handler);
+    }
+    
+    function editorSave() {
+        $.post({
+            url: '{{ route("script-save", $scriptID) }}',
+            data: {
+                '_token': '{{ Session::token() }}',
+                DATA: $('.script-editor-code').val(),
+            },
+            success: function (data) {
+                if (data == 'OK') {
+                    editorHide(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    console.log(data);
+                }
+            }
+        });
     }
 </script>
 

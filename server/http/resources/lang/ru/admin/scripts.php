@@ -6,6 +6,7 @@ return [
     
     'script_add' => 'Добавить новый скрипт...',
     'script_edit' => 'Свойства скрипта...',
+    'script_show_editor' => 'Изменить скрипт...',
     'script_attach_event' => 'Назначить как событие на переменную...',
     
     'table_ID' => 'ID',
