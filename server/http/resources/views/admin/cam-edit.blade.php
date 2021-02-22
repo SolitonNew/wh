@@ -88,7 +88,10 @@
     }
     
     function camDelete() {
-        if (confirm('@lang("admin\cams.cam_delete_confirm")')) {
+        confirm("@lang('dialogs.confirm_title')", 
+                "@lang('admin\cams.cam_delete_confirm')", 
+                "@lang('dialogs.btn_yes')", 
+                "@lang('dialogs.btn_no')", () => {
             $.ajax('{{ route("cam-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
@@ -98,7 +101,7 @@
                     
                 }
             });
-        }
+        });
     }
     
 </script>

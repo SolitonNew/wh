@@ -104,7 +104,7 @@
 
 @section('buttons')
     @if($item->ID > 0)
-    <button type="button" class="btn btn-danger" onclick="userDelete()">@lang('dialogs.btn_delete')</button>
+    <button type="button" class="btn btn-danger" onclick="planDelete()">@lang('dialogs.btn_delete')</button>
     <div style="flex-grow: 1"></div>
     @endif
     <button type="button" class="btn btn-primary" onclick="planEditOK()">@lang('dialogs.btn_save')</button>
@@ -130,7 +130,10 @@
     }
     
     function planDelete() {
-        if (confirm('@lang("admin\plan.plan-delete-confirm")')) {
+        confirm('@lang("dialogs.confirm_title")', 
+                '@lang("admin\plan.plan-delete-confirm")', 
+                '@lang("dialogs.btn_yes")', 
+                '@lang("dialogs.btn_no")', () => {
             $.ajax('{{ route("plan-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
@@ -140,7 +143,7 @@
                     
                 }
             });
-        }
+        });
     }
     
 </script>

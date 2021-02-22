@@ -6,6 +6,14 @@
     white-space: nowrap;
 }
 
+.modal-backdrop {
+    background-color: rgba(0,0,0,0);
+}
+
+.dialog-background {
+    background-color: rgba(0,0,0,0.5);
+}
+
 .modal-body .row {
     margin-bottom: 1rem;
 }

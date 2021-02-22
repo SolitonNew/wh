@@ -101,7 +101,10 @@
     }
     
     function userDelete() {
-        if (confirm('@lang("admin\users.user-delete-confirm")')) {
+        confirm("@lang('dialogs.confirm_title')", 
+                "@lang('admin\users.user-delete-confirm')", 
+                "@lang('dialogs.btn_yes')", 
+                "@lang('dialogs.btn_no')", () => {
             $.ajax('{{ route("user-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
@@ -111,7 +114,7 @@
                     
                 }
             });
-        }
+        });
     }
     
 </script>

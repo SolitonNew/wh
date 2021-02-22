@@ -87,19 +87,37 @@
     </div>
 </div>
 
-<div class="modal fade" id="dialog_window" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+<div class="modal fade dialog-background" id="dialog_window" tabindex="-1" role="dialog" 
+     aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content" id="dialog_content"></div>
     </div>
 </div>
 
+<div class="modal fade dialog-background" id="confirm_window" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirm_title" ></h5>
+                <button type="button" class="close" onclick="confirmNo()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm_text"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirm_btn_yes" onclick="confirmYes();"></button>
+                <button type="button" class="btn btn-secondary" id="confirm_btn_no" onclick="confirmNo()"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="globalWaiter" class="form-waiter" style="position:fixed;">
-    <div class="modal-content form-waiter-contaner" style="max-width:350px;width:100%;margin-top: 20vh;padding: 20px 30px">
-        <div class="form-waiter-label">@lang('dialogs.processed')</div>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                 role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" 
-                 style="width: 100%"></div>
+    <div>
+        <div class="spinner-border text-primary" style="width: 5rem;height: 5rem;">
+            <span class="sr-only">Loading...</span>
         </div>
     </div>
 </div>
@@ -151,6 +169,33 @@
         dialogAfterHandler = afterHandler;
         $('#dialog_window').modal('hide');
     }
+    
+    var confirmHandler = false;
+    var confirmNoHandler = false;
+
+    function confirm(title, text, yes, no, handler, noHandler) {
+        confirmHandler = handler;
+        confirmNoHandler = noHandler;
+
+        $('#confirm_title').text(title);
+        $('#confirm_text').html(text);
+        $('#confirm_btn_yes').text(yes);
+        $('#confirm_btn_no').text(no);
+        $('#confirm_window').modal({backdrop: 'static', keyboard: false});
+    }
+
+    function confirmYes() {
+        confirmHandler();
+        $('#confirm_window').modal('hide');
+    }
+
+    function confirmNo() {
+        if (confirmNoHandler) {
+            confirmNoHandler();
+        }
+        $('#confirm_window').modal('hide');
+    }
+
     
     var globalWaiter = false;
 
@@ -256,6 +301,10 @@
         if (name) {
             setCookie(name, '0');
         }
+    }
+    
+    function test() {
+        
     }
     
 </script>
