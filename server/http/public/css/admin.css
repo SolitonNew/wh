@@ -279,3 +279,7 @@ option:disabled {
     align-items: center;
     justify-content: center;
 }
+
+div.form-control {
+    background-color: rgba(0,0,0,0.05);
+}

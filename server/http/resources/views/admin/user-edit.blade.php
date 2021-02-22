@@ -57,6 +57,7 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
+    @if($item->ID != Auth::user()->ID)
     <div class="row">
         <div class="col-sm-3">
             <div class="form-label">@lang('admin\users.table_ACCESS')</div>
@@ -70,6 +71,7 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
+    @endif
 </form>
 @endsection
 
