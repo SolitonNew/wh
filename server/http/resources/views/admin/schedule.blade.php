@@ -30,7 +30,7 @@
                     {{ \Carbon\Carbon::parse($row->ACTION_DATETIME)->format('Y-m-d') }}<br>
                     {{ \Carbon\Carbon::parse($row->ACTION_DATETIME)->format('H:i:s') }}
                     @else
-                    -//-
+                    @lang('admin\schedule.action_datetime_calc')
                     @endif
                 </td>
                 <td>{!! nl2br($row->ACTION) !!}</td>

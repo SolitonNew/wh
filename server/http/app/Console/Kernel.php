@@ -13,7 +13,10 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\RS485Demon::class,
+        Commands\ScheduleDemon::class,
+        Commands\ExecutorDemon::class,
+        Commands\WatcherDemon::class,
     ];
 
     /**

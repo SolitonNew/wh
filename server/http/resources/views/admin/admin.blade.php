@@ -10,7 +10,7 @@
     <div class="body-content">
         <div class="main-menu">
             <nav class="navbar">
-                <div class="logo">WISE HOUSE</div>        
+                <div class="logo">WISE HOUSE</div>
                 <div class="btn-group" style="margin-left: 1rem;margin-right: 1rem;">
                     <button type="button" class="btn btn-primary dropdown-toggle" 
                             data-toggle="dropdown" aria-haspopup="true" style="margin: 0px;"
@@ -19,8 +19,9 @@
                         @yield('down-menu')
                     </div>
                 </div>
+                <div style="display: flex; flex-grow: 1;  align-items: center;justify-content: center;">
                 @yield('top-menu')
-                <div style="flex-grow: 1"></div>
+                </div>
                 <a class="btn btn-primary" href="{{ route('logout') }}" style="margin-right: 0;">@lang('admin\admin.menu_logout')</a>
             </nav>
         </div>

@@ -177,7 +177,7 @@
 }
 
 .tree {
-    #background-color: rgba(0, 0, 0, 0.03);
+    background-color: #ffffff!important;
     overflow: auto;
     padding: 1rem;
 }

@@ -15,12 +15,12 @@ class Main():
         self.db.IUD("update core_scheduler set ACTION_DATETIME = NULL")
         self.db.commit()
         
-        print("-- РџСЂРµРґСЃС‚РѕСЏС‰РёРµ Р·Р°РґР°С‡Рё --")
+        print("-- Предстоящие задачи --")
         for row in self.db.select("select ID, COMM, ACTION, ACTION_DATETIME, INTERVAL_TIME_OF_DAY, INTERVAL_DAY_OF_TYPE, INTERVAL_TYPE, ENABLE from core_scheduler"):
             next_time = self.parse_time(None, str(row[4], "utf-8"), str(row[5], "utf-8"), row[6])
             enable = ""
             if row[7] == 0:
-                enable = "      [РќР• Р’Р«РџРћР›РќРЇРўР¬!!!]"
+                enable = "      [НЕ ВЫПОЛНЯТЬ!!!]"
             print("[%s] %s %s" % (datetime.datetime.fromtimestamp(next_time), str(row[1], "utf-8"), enable))
         print("------------------------")
         self.check_time()
@@ -30,13 +30,13 @@ class Main():
         now = datetime.datetime.now().timestamp()
         for row in self.db.select("select ID, COMM, ACTION, ACTION_DATETIME, INTERVAL_TIME_OF_DAY, INTERVAL_DAY_OF_TYPE, INTERVAL_TYPE, ENABLE from core_scheduler"):
             next_time = None
-            if row[3] == None: # Р­С‚Рѕ РѕР±РЅСѓР»РµРЅРЅР°СЏ РґР°С‚Р° - Р±СѓРґРµС‚ РїРµСЂРµС‰РёС‚Р°РЅР° РІ С…РѕР»РѕСЃС‚СѓСЋ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ С‚РµРєСѓС‰РµР№
+            if row[3] == None: # Это обнуленная дата - будет перещитана в холостую относительно текущей
                 next_time = self.parse_time(None, str(row[4], "utf-8"), str(row[5], "utf-8"), row[6])
-            elif row[3].timestamp() <= now: # Р­С‚Рѕ РґР°С‚Р°, С‡С‚Рѕ РїСЂРёС€Р»Р° РґР»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ. Р’С‹РїРѕР»РЅСЏРµРј Рё РїРµСЂРµС‰РёС‚С‹РІР°РµРј.
+            elif row[3].timestamp() <= now: # Это дата, что пришла для выполнения. Выполняем и перещитываем.
                 next_time = self.parse_time(row[3].timestamp(), str(row[4], "utf-8"), str(row[5], "utf-8"), row[6])
-                if row[7]: # РџСЂРѕРІРµСЂРєР° РЅР° Р’С‹РїРѕР»РЅСЏС‚СЊ/РќРµ РІС‹РїРѕР»РЅСЏС‚СЊ
+                if row[7]: # Проверка на Выполнять/Не выполнять
                     self.execute(str(row[1], "utf-8"), str(row[2], "utf-8"))
-                if row[6] == 4: # РћРґРЅРѕСЂР°Р·РѕРІР°СЏ Р·Р°РґР°С‡Р° РІС‹РїРѕР»РЅРµРЅР°. РЈРґР°Р»СЏРµРј РµРµ Р·Р°РїРёСЃСЊ.
+                if row[6] == 4: # Одноразовая задача выполнена. Удаляем ее запись.
                     self.db.IUD("delete from core_scheduler where ID = %s" % (row[0]))
                     self.db.commit()
             if next_time != None:
@@ -108,9 +108,9 @@ class Main():
 
         if time_type == "Sunrise" or time_type == "Sunset":
             """
-            Р­С‚Рѕ РѕСЃРѕР±С‹Р№ СЃР»СѓС‡Р°Р№ Р±Р»СѓР¶РґР°СЋС‰РµРіРѕ РІСЂРµРјРµРЅРё.
-            РЎР±РѕСЂРєР° РґР°С‚С‹/РІСЂРµРјРµРЅРё РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ Р·РґРµСЃСЊ РѕС‚РґРµР»СЊРЅРѕ Рё РґР°Р»СЊС€Рµ РєРѕРґ
-            РЅРµ РїРѕР№РґРµС‚.
+            Это особый случай блуждающего времени.
+            Сборка даты/времени выполняется здесь отдельно и дальше код
+            не пойдет.
             """
 
             sun_delta = self.parese_sun_delta(time_of_day.upper())
@@ -122,13 +122,13 @@ class Main():
 
             dt.sort()
 
-            # РџСЂРѕРІРµСЂСЏРµРј РєР°РєР°СЏ РґР°С‚Р° РёР· СЂР°СЃРїРёСЃР°РЅРёСЏ РіРѕС‚РѕРІР° Рє РІС‹РїРѕР»РЅРµРЅРёСЋ
+            # Проверяем какая дата из расписания готова к выполнению
             for d in dt:
                 if d > action_datetime:
                     return d
             return None
         else:
-            # РџРѕР»СѓС‡Р°РµРј СЃРїРёСЃРѕРє РІСЂРµРјРµРЅРё РІ СЃРµРєСѓРЅРґР°С…
+            # Получаем список времени в секундах
             for t in time_of_day.split(","):
                 m = t.split(":")
                 hour = int(m[0].strip()) * 60
@@ -146,22 +146,22 @@ class Main():
                 times += [s * 60 + sec]
                 
         if int_type == 0:
-            # РЎРµРіРѕРґРЅСЏС€РЅСЏСЏ РґР°С‚Р° Рё Р·Р°РІС‚СЂР°С€РЅСЏСЏ
+            # Сегодняшняя дата и завтрашняя
             dates += [now.timestamp(), now.timestamp() + 24 * 3600]
         elif int_type == 1:
-            # РџРѕР»СѓС‡Р°РµРј РґР°С‚Сѓ РїРѕРЅРµРґРµР»СЊРЅРёРєР° СЌС‚РѕР№ РЅРµРґРµР»Рё РІ СЃРµРєСѓРЅРґР°С…
+            # Получаем дату понедельника этой недели в секундах
             dw = now.timestamp() - now.weekday() * 24 * 3600
-            # РџРѕР»СѓС‡Р°РµРј РґР°С‚Сѓ РїРѕРЅРµРґРµР»СЊРЅРёРєР° СЃР»РµРґСѓСЋС‰РµР№ РЅРµРґРµР»Рё РІ СЃРµРєСѓРЅРґР°С…
+            # Получаем дату понедельника следующей недели в секундах
             dw_next = dw + 7 * 24 * 3600
-            w = ["РїРЅ", "РІС‚", "СЃСЂ", "С‡С‚", "РїС‚", "СЃР±", "РІСЃ"]
+            w = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"]
             for d in day_of_type.split(","):
                 s = w.index(d.strip().lower())
                 dates += [dw + (s * 24 * 3600)]
                 dates += [dw_next + (s * 24 * 3600)]
         elif int_type == 2:
-            # РџРѕР»СѓС‡Р°РµРј 1 С‡РёСЃР»Рѕ СЌС‚РѕРіРѕ РјРµСЃСЏС†Р° РІ СЃРµРєСѓРЅРґР°С…
+            # Получаем 1 число этого месяца в секундах
             m = datetime.datetime(now.year, now.month, 1).timestamp()
-            # РџРѕР»СѓС‡Р°РµРј 1 С‡РёСЃР»Рѕ СЃР»РµРґСѓСЋС‰РµРіРѕ РјРµСЃСЏС†Р° РІ СЃРµРєСѓРЅРґР°С…
+            # Получаем 1 число следующего месяца в секундах
             if now.month < 12:
                 m_next = datetime.datetime(now.year, now.month, 1).timestamp()
             else:
@@ -172,7 +172,7 @@ class Main():
                 dates += [m + (s * 24 * 3600)]
                 dates += [m_next + (s * 24 * 3600)]
                 
-        elif int_type == 3 or int_type == 4: # Р•Р¶РµРіРѕРґРЅРѕ РёР»Рё РўРѕР»СЊРєРѕ РѕРґРёРЅ СЂР°Р·
+        elif int_type == 3 or int_type == 4: # Ежегодно или Только один раз
             for d in day_of_type.split(","):
                 m = d.split("-")
                 s = datetime.datetime(now.year, int(m[1].strip()), int(m[0].strip())).timestamp()
@@ -182,7 +182,7 @@ class Main():
 
         dt = []
 
-        # РЎРѕР±РёСЂР°РµРј РґР°С‚Сѓ Рё РІСЂРµРјСЏ СЂР°СЃРїРёСЃР°РЅРёСЏ РІ РѕРґРЅРѕ
+        # Собираем дату и время расписания в одно
         for tim in times:
             if len(dates) > 0:
                 for dat in dates:
@@ -190,7 +190,7 @@ class Main():
                 
         dt.sort()
 
-        # РџСЂРѕРІРµСЂСЏРµРј РєР°РєР°СЏ РґР°С‚Р° РёР· СЂР°СЃРїРёСЃР°РЅРёСЏ РіРѕС‚РѕРІР° Рє РІС‹РїРѕР»РЅРµРЅРёСЋ
+        # Проверяем какая дата из расписания готова к выполнению
         for d in dt:
             if d > action_datetime:
                 return d
@@ -200,8 +200,8 @@ class Main():
     def execute(self, comm, action):
         self.db.IUD("insert into core_execute (COMMAND) values ('%s')" % (action))
         self.db.commit()
-        print("[%s] РџСЂРѕРёР·РѕС€Р»Рѕ СЃРѕР±С‹С‚РёРµ \"%s\"" % (time.strftime("%d-%m-%Y %H:%M"), comm))
-        print("                   Рё Р·Р°РїСЂРѕС€РµРЅР° РєРѕРјР°РЅРґР° %s" % (action))
+        print("[%s] Произошло событие \"%s\"" % (time.strftime("%d-%m-%Y %H:%M"), comm))
+        print("                   и запрошена команда %s" % (action))
 
     def run(self):
         while True:
@@ -210,7 +210,7 @@ class Main():
 
 print(
 "=============================================================================\n"
-"                         РњРћР”РЈР›Р¬ Р РђРЎРџРРЎРђРќРРЇ v0.1\n"
+"                         МОДУЛЬ РАСПИСАНИЯ v0.1\n"
 "\n"
 "=============================================================================\n"
 )
