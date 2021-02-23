@@ -66,9 +66,9 @@ class ScheduleDemon extends Command
                         // Выполняем
                         \App\Http\Models\ExecuteModel::command($row->ACTION);
                         echo Lang::get('admin\schedule.demon_info_line', [
-                            'datetime' => $next_time,
+                            'datetime' => Carbon::parse($row->ACTION_DATETIME),
                             'comm' => $row->COMM,
-                            'action' => $row->ACTION
+                            'action' => str_replace("\n", ' ', $row->ACTION),
                         ])."\n";        
                     }
                     

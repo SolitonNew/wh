@@ -78,10 +78,13 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::match(['get', 'post'], '/schedule-edit/{id}', 'Admin\ScheduleController@edit')->name('schedule-edit');
     Route::get('/schedule-delete/{id}', 'Admin\ScheduleController@delete')->name('schedule-delete');
     
-    /* УПравление камерами видеонаблюдения */
+    /* Управление камерами видеонаблюдения */
     Route::get('/cams', 'Admin\CamsController@index')->name('cams');
     Route::match(['get', 'post'], '/cam-edit/{id}', 'Admin\CamsController@edit')->name('cam-edit');
     Route::get('/cam-delete/{id}', 'Admin\CamsController@delete')->name('cam-delete');
+    
+    /* Управление фоновыми процессами */
+    Route::get('/demons/{id?}', 'Admin\DemonsController@index')->name('demons');
     
     /* Визуализация статистики системы */
     Route::get('/statistics', 'Admin\StatisticsController@index')->name('statistics');

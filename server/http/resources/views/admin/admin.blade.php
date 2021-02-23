@@ -14,7 +14,10 @@
                 <div class="btn-group" style="margin-left: 1rem;margin-right: 1rem;">
                     <button type="button" class="btn btn-primary dropdown-toggle" 
                             data-toggle="dropdown" aria-haspopup="true" style="margin: 0px;"
-                            aria-expanded="false">@lang('admin\admin.menu_actions')</button>
+                            aria-expanded="false">
+                        <img src="/img/menus/menu-3x.png?v" style="margin-top: -5px;margin-right: 0.5rem;">
+                        @lang('admin\admin.menu_actions')
+                    </button>
                     <div class="dropdown-menu">
                         @yield('down-menu')
                     </div>
@@ -67,12 +70,16 @@
                             <span class="label">@lang('admin/cams.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VideoModel::count() }}</span>
                         </a>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('demons')" href="{{ route('demons') }}">
+                            <img src="/img/menus/terminal-2x.png">
+                            <span class="label">@lang('admin/demons.menu')</span>
+                        </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('statistics')" href="{{ route('statistics') }}">
                             <img src="/img/menus/bar-chart-2x.png">
                             <span class="label">@lang('admin/statistics.menu')</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{{ route('home') }}" target="_blank">
-                            <img src="/img/menus/monitor-2x.png">
+                            <img src="/img/menus/phone-2x.png">
                             <span class="label">@lang('admin/admin.menu_home')</span>
                         </a>
                     </div>
