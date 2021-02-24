@@ -15,7 +15,7 @@
                     <button type="button" class="btn btn-primary dropdown-toggle" 
                             data-toggle="dropdown" aria-haspopup="true" style="margin: 0px;"
                             aria-expanded="false">
-                        <img src="/img/menus/menu-3x.png?v" style="margin-top: -5px;margin-right: 0.5rem;">
+                        <img src="/img/menus/menu-3x.png" style="margin-left:-3px;margin-top: -5px;margin-right: 0.5rem;">
                         @lang('admin\admin.menu_actions')
                     </button>
                     <div class="dropdown-menu">
@@ -202,6 +202,14 @@
             confirmNoHandler();
         }
         $('#confirm_window').modal('hide');
+    }
+    
+    function confirmYesNo(text, handler, noHandler) {
+        confirm("@lang('dialogs.confirm_title')", 
+                text, 
+                "@lang('dialogs.btn_yes')", 
+                "@lang('dialogs.btn_no')",
+                handler, noHandler);
     }
 
     

@@ -4,21 +4,21 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class WatcherDemon extends Command
+class CommandDemon extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'watcher-demon';
+    protected $signature = 'command-demon';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Наблюдает за состоянием системы';
+    protected $description = 'Выпоняет внутрисистемные комманды';
 
     /**
      * Create a new command instance.

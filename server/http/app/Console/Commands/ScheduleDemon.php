@@ -9,6 +9,8 @@ use \Carbon\Carbon;
 
 class ScheduleDemon extends Command
 {
+    use PrintToDB;
+    
     /**
      * The name and signature of the console command.
      *
@@ -40,10 +42,15 @@ class ScheduleDemon extends Command
      */
     public function handle()
     {
+        
+        
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         DB::update('update core_scheduler set ACTION_DATETIME = null');
         
-        echo Lang::get('admin\schedule.demon_tasks_title')."\n";
+        $this->printLine('');
+        $this->printLine('');
+        $this->printLine('');
+        $this->printLine(Lang::get('admin\schedule.demon_tasks_title'));
         foreach(\App\Http\Models\SchedulerModel::orderBy('COMM', 'asc')->get() as $row) {
             $row->ACTION_DATETIME = $row->makeDateTime();
             $row->save();
@@ -51,9 +58,9 @@ class ScheduleDemon extends Command
             if ($row->ACTION_DATETIME) {
                 $time = Carbon::parse($row->ACTION_DATETIME)->format('Y-m-d H:i:s');
             }
-            echo "[$time] $row->COMM       ".($row->ENABLE ? '' : Lang::get('admin\schedule.demon_task_disabled'))."\n";
+            $this->printLine("[$time] $row->COMM       ".($row->ENABLE ? '' : Lang::get('admin\schedule.demon_task_disabled')));
         }
-        echo "---------------------------------\n";
+        $this->printLine("---------------------------------");
         
         while(1) {
             foreach(\App\Http\Models\SchedulerModel::orderBy('COMM', 'asc')->get() as $row) {
@@ -65,11 +72,11 @@ class ScheduleDemon extends Command
                     if ($row->ENABLE) {
                         // Выполняем
                         \App\Http\Models\ExecuteModel::command($row->ACTION);
-                        echo Lang::get('admin\schedule.demon_info_line', [
+                        $this->printLine(Lang::get('admin\schedule.demon_info_line', [
                             'datetime' => Carbon::parse($row->ACTION_DATETIME),
                             'comm' => $row->COMM,
                             'action' => str_replace("\n", ' ', $row->ACTION),
-                        ])."\n";        
+                        ]));
                     }
                     
                     if ($row->INTERVAL_TYPE == 4) { // Это одноразовая задача

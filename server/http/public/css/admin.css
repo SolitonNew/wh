@@ -183,11 +183,15 @@
 }
 
 .tree-item {
-    display: block;
-    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    padding: 0.45rem 0.25rem;
     border-radius: 5px;
     color: #212529;
     padding-left: 1rem;
+    padding-bottom: 0.55rem;
+    line-height: 1.1rem;
+    justify-content: space-between;
 }
 
 .tree-item:hover {
@@ -209,9 +213,14 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.35);
 }
 
-.active .badge-pill {
+.list-group-item.active .badge-pill {
     border: 1.5px solid #ffffff;
     margin-right: -1.5px;
+}
+
+.tree-item .badge-pill {
+    margin-top: -0.5rem;
+    margin-bottom: -0.5rem;
 }
 
 .plan-parts-content {
@@ -342,4 +351,8 @@ div.form-control {
 
 .script-editor-toolbar > * {
     margin: 0.25rem;
+}
+
+.datetime {
+    color: var(--primary);
 }

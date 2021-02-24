@@ -85,6 +85,12 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     /* Управление фоновыми процессами */
     Route::get('/demons/{id?}', 'Admin\DemonsController@index')->name('demons');
+    Route::get('/demon-data/{id}/{lastID?}', 'Admin\DemonsController@data')->name('demon-data');
+    Route::get('/demon-start/{id}', 'Admin\DemonsController@demonStart')->name('demon-start');
+    Route::get('/demon-stop/{id}', 'Admin\DemonsController@demonStop')->name('demon-stop');
+    Route::get('/demon-restart/{id}', 'Admin\DemonsController@demonRestart')->name('demon-restart');
+    
+    
     
     /* Визуализация статистики системы */
     Route::get('/statistics', 'Admin\StatisticsController@index')->name('statistics');

@@ -19,8 +19,7 @@
     <div class="tree" style="width: 320px;min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="scriptsList">
         @foreach($list as $row)
         <a href="{{ route('scripts', $row->ID) }}" 
-            class="tree-item justify-content-between {{ $row->ID == $scriptID ? 'active' : '' }}"
-            style="display: flex; align-items: center;">
+            class="tree-item {{ $row->ID == $scriptID ? 'active' : '' }}">
             {{ $row->COMM }}
             @if($row->VAR_COUNT > 0)
             <div class="badge badge-pill badge-warning">{{ $row->VAR_COUNT }}</div>
