@@ -1,9 +1,9 @@
 @extends('admin.admin')
 
 @section('top-menu')
-<div class="strong" style="padding: 0 1rem;">@lang('admin\ow-manager.menu_controller'):</div>
+<div class="strong" style="padding: 0 1rem;">@lang('admin/ow-manager.menu_controller'):</div>
 <select id="controller" class="custom-select" style="width: 200px;">
-    <option value="">@lang('admin\ow-manager.menu_controller_all')</option>
+    <option value="">@lang('admin/ow-manager.menu_controller_all')</option>
     @foreach(\App\Http\Models\ControllersModel::orderBy('NAME')->get() as $row)
     <option value="{{ $row->ID }}" {{ $row->ID == $controllerID ? 'selected' : '' }}>{{ $row->NAME }}</option>
     @endforeach
@@ -11,9 +11,9 @@
 @endsection
 
 @section('down-menu')
-<a href="#" class="dropdown-item" onclick="runOwScan(); return false;">@lang('admin\ow-manager.run_ow_scan')</a>
+<a href="#" class="dropdown-item" onclick="runOwScan(); return false;">@lang('admin/ow-manager.run_ow_scan')</a>
 <div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onclick="generateVariablesForOW(); return false;">@lang('admin\ow-manager.generate_ow_vars')</a>
+<a href="#" class="dropdown-item" onclick="generateVariablesForOW(); return false;">@lang('admin/ow-manager.generate_ow_vars')</a>
 @endsection
 
 @section('content')
@@ -21,12 +21,12 @@
     <table id="owList" class="table table-sm table-hover table-bordered table-fixed-header">
         <thead>
             <tr>
-                <th scope="col" style="width: 50px;"><span>@lang('admin\ow-manager.table_ID')</span></th>
-                <th scope="col" style="width: 150px;"><span>@lang('admin\ow-manager.table_CONTROLLER')</span></th>
-                <th scope="col" style="width: 150px;"><span>@lang('admin\ow-manager.table_COMM')</span></th>
-                <th scope="col" style="width: 300px;"><span>@lang('admin\ow-manager.table_ROM')</span></th>
-                <th scope="col" style="width: 150px;"><span>@lang('admin\ow-manager.table_CHANNELS')</span></th>
-                <th scope="col" style="width: 250px;"><span>@lang('admin\ow-manager.table_VARIABLES')</span></th>
+                <th scope="col" style="width: 50px;"><span>@lang('admin/ow-manager.table_ID')</span></th>
+                <th scope="col" style="width: 150px;"><span>@lang('admin/ow-manager.table_CONTROLLER')</span></th>
+                <th scope="col" style="width: 150px;"><span>@lang('admin/ow-manager.table_COMM')</span></th>
+                <th scope="col" style="width: 300px;"><span>@lang('admin/ow-manager.table_ROM')</span></th>
+                <th scope="col" style="width: 150px;"><span>@lang('admin/ow-manager.table_CHANNELS')</span></th>
+                <th scope="col" style="width: 250px;"><span>@lang('admin/ow-manager.table_VARIABLES')</span></th>
             </tr>
         </thead>
         <tbody>
@@ -59,23 +59,23 @@
                 window.location = '{{ route("ow-manager", "") }}';
             }
         });
-        
+
         $('#owList tbody tr').on('click', function (e) {
             if ($(e.target).is('a')) return ;
             showInfo($(this).attr('data-id'));
         });
     });
-    
+
     function showVariable(id) {
         dialog('{{ route("variable-edit", "") }}/' + id);
     }
-    
+
     function runOwScan() {
         alert('RUN OW SCAN');
     }
-    
+
     function generateVariablesForOW() {
-        if (confirm('@lang("admin\ow-manager.gen_vars_confirm")')) {
+        if (confirm('@lang("admin/ow-manager.gen_vars_confirm")')) {
             $.ajax('{{ route("ow-manager-gen-vars") }}').done((data) => {
                 if (data == 'OK') {
                     window.location.reload();
@@ -85,7 +85,7 @@
             });
         }
     }
-    
+
     function showInfo(id) {
         dialog('{{ route("ow-manager-info", "") }}/' + id);
     }

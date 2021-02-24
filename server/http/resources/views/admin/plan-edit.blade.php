@@ -2,9 +2,9 @@
 
 @section('title')
 @if($item->ID == -1)
-    @lang('admin\plan.plan_add_title')
+    @lang('admin/plan.plan_add_title')
 @else
-    @lang('admin\plan.plan_edit_title')
+    @lang('admin/plan.plan_edit_title')
 @endif
 @endsection
 
@@ -15,7 +15,7 @@
     @if($item->ID > 0)
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\plan.table_ID')</div>
+            <div class="form-label">@lang('admin/plan.table_ID')</div>
         </div>
         <div class="col-sm-3">
             <div class="form-control">{{ $item->ID > 0 ? $item->ID : '' }}</div>
@@ -25,13 +25,13 @@
     @endif
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\plan.table_PARENT_ID')</div>
+            <div class="form-label">@lang('admin/plan.table_PARENT_ID')</div>
         </div>
         <div class="col-sm-9">
             <select class="custom-select" name="PARENT_ID">
             <option value="">-//-</option>
             @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
-            <option value="{{ $row->ID }}" 
+            <option value="{{ $row->ID }}"
                 {{ $row->ID == $item->PARENT_ID ? 'selected' : '' }}
                 {{ App\Http\Models\PlanPartsModel::checkIdAsChildOfParentID($row->ID, $item->ID) ? '' : 'disabled' }}
                 >{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->NAME }}</option>
@@ -42,7 +42,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin\plan.table_NAME')</div>
+            <div class="form-label strong">@lang('admin/plan.table_NAME')</div>
         </div>
         <div class="col-sm-9">
             <input class="form-control" type="text" name="NAME" value="{{ $item->NAME }}" required="">
@@ -51,20 +51,20 @@
     </div>
     <div class="row" style="margin-bottom: 0;">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\plan.table_BOUNDS_XY')</div>
+            <div class="form-label">@lang('admin/plan.table_BOUNDS_XY')</div>
         </div>
         <div class="col-sm-9">
             <div class="">
                 <div class="row">
                     <div class="col-sm-2">
-                        <div class="form-label strong">@lang('admin\plan.table_X')</div>
+                        <div class="form-label strong">@lang('admin/plan.table_X')</div>
                     </div>
                     <div class="col-sm-4">
                         <input class="form-control" type="number" name="X" step="0.01" value="{{ $itemBounds->X }}" required="">
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="col-sm-2">
-                        <div class="form-label strong">@lang('admin\plan.table_Y')</div>
+                        <div class="form-label strong">@lang('admin/plan.table_Y')</div>
                     </div>
                     <div class="col-sm-4">
                         <input class="form-control" type="number" name="Y" step="0.01" value="{{ $itemBounds->Y }}" required="">
@@ -76,20 +76,20 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\plan.table_BOUNDS_WH')</div>
+            <div class="form-label">@lang('admin/plan.table_BOUNDS_WH')</div>
         </div>
         <div class="col-sm-9">
             <div class="">
                 <div class="row">
                     <div class="col-sm-2">
-                        <div class="form-label strong">@lang('admin\plan.table_W')</div>
+                        <div class="form-label strong">@lang('admin/plan.table_W')</div>
                     </div>
                     <div class="col-sm-4">
                         <input class="form-control" type="number" name="W" step="0.01" value="{{ $itemBounds->W }}" required="">
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="col-sm-2">
-                        <div class="form-label strong">@lang('admin\plan.table_H')</div>
+                        <div class="form-label strong">@lang('admin/plan.table_H')</div>
                     </div>
                     <div class="col-sm-4">
                         <input class="form-control" type="number" name="H" step="0.01" value="{{ $itemBounds->H }}" required="">
@@ -124,15 +124,15 @@
             }
         });
     });
-    
+
     function planEditOK() {
         $('#plan_edit_form').submit();
     }
-    
+
     function planDelete() {
-        confirm('@lang("dialogs.confirm_title")', 
-                '@lang("admin\plan.plan-delete-confirm")', 
-                '@lang("dialogs.btn_yes")', 
+        confirm('@lang("dialogs.confirm_title")',
+                '@lang("admin/plan.plan-delete-confirm")',
+                '@lang("dialogs.btn_yes")',
                 '@lang("dialogs.btn_no")', () => {
             $.ajax('{{ route("plan-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
@@ -140,11 +140,11 @@
                         window.location.reload();
                     });
                 } else {
-                    
+
                 }
             });
         });
     }
-    
+
 </script>
 @endsection

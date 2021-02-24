@@ -2,9 +2,9 @@
 
 @section('title')
 @if($item->ID == -1)
-    @lang('admin\scripts.script_add_title')
+    @lang('admin/scripts.script_add_title')
 @else
-    @lang('admin\scripts.script_edit_title')
+    @lang('admin/scripts.script_edit_title')
 @endif
 @endsection
 
@@ -15,7 +15,7 @@
     @if($item->ID > 0)
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\scripts.table_ID')</div>
+            <div class="form-label">@lang('admin/scripts.table_ID')</div>
         </div>
         <div class="col-sm-3">
             <div class="form-control">{{ $item->ID > 0 ? $item->ID : '' }}</div>
@@ -25,7 +25,7 @@
     @endif
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin\scripts.table_COMM')</div>
+            <div class="form-label strong">@lang('admin/scripts.table_COMM')</div>
         </div>
         <div class="col-sm-9">
             <input class="form-control" type="text" name="COMM" value="{{ $item->COMM }}" required="">
@@ -57,15 +57,15 @@
             }
         });
     });
-    
+
     function scriptEditOK() {
         $('#script_edit_form').submit();
     }
-    
+
     function scriptDelete() {
-        confirm("@lang('dialogs.confirm_title')", 
-                "@lang('admin\scripts.script_delete_confirm')", 
-                "@lang('dialogs.btn_yes')", 
+        confirm("@lang('dialogs.confirm_title')",
+                "@lang('admin/scripts.script_delete_confirm')",
+                "@lang('dialogs.btn_yes')",
                 "@lang('dialogs.btn_no')", () => {
             $.ajax('{{ route("script-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
@@ -73,11 +73,11 @@
                         window.location.reload();
                     });
                 } else {
-                    
+
                 }
             });
         });
     }
-    
+
 </script>
 @endsection

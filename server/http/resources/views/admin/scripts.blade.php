@@ -4,13 +4,13 @@
 @endsection
 
 @section('down-menu')
-<a href="#" class="dropdown-item" onclick="scriptAdd(); return false;">@lang('admin\scripts.script_add')</a>
+<a href="#" class="dropdown-item" onclick="scriptAdd(); return false;">@lang('admin/scripts.script_add')</a>
 @if($data)
-<a href="#" class="dropdown-item" onclick="scriptEdit(); return false;">@lang('admin\scripts.script_edit')</a>
+<a href="#" class="dropdown-item" onclick="scriptEdit(); return false;">@lang('admin/scripts.script_edit')</a>
 <div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onclick="editorShow(); return false;">@lang('admin\scripts.script_show_editor')</a>
+<a href="#" class="dropdown-item" onclick="editorShow(); return false;">@lang('admin/scripts.script_show_editor')</a>
 <div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onclick="scriptAttachEvent(); return false;">@lang('admin\scripts.script_attach_event')</a>
+<a href="#" class="dropdown-item" onclick="scriptAttachEvent(); return false;">@lang('admin/scripts.script_attach_event')</a>
 @endif
 @endsection
 
@@ -18,7 +18,7 @@
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 320px;min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="scriptsList">
         @foreach($list as $row)
-        <a href="{{ route('scripts', $row->ID) }}" 
+        <a href="{{ route('scripts', $row->ID) }}"
             class="tree-item {{ $row->ID == $scriptID ? 'active' : '' }}">
             {{ $row->COMM }}
             @if($row->VAR_COUNT > 0)
@@ -55,7 +55,7 @@
             aa.push(i);
         }
         $('.content-body .numbers').html(aa.join('<br>'));
-        
+
         $(window).on('resize', () => {
             let codeedit = $('.codeedit');
             let codeedit_pos = codeedit.position();
@@ -67,7 +67,7 @@
                 height: codeedit.height() + 'px',
             });
         });
-        
+
         $('.script-editor-code').on('input', function () {
             let s = $(this).val();
             let n = 0;
@@ -85,27 +85,27 @@
             }
         }).trigger('input');
     });
-    
+
     function scriptAdd() {
         dialog('{{ route("script-edit", -1) }}');
     }
-    
+
     function scriptEdit() {
         dialog('{{ route("script-edit", $scriptID) }}');
     }
-    
+
     function scriptAttachEvent() {
         dialog('{{ route("script-events", $scriptID) }}');
     }
-    
+
     function editorShow() {
         $('.script-editor-background').fadeIn(250);
     }
-    
+
     function editorHide(handler) {
         $('.script-editor-background').fadeOut(250, handler);
     }
-    
+
     function editorSave() {
         $.post({
             url: '{{ route("script-save", $scriptID) }}',

@@ -1,7 +1,7 @@
 @extends('dialog')
 
 @section('title')
-@lang('admin\scripts.script_events_title')
+@lang('admin/scripts.script_events_title')
 @endsection
 
 @section('content')
@@ -14,7 +14,7 @@
     @endforeach
     </select>
     <div style="padding-top: 1rem;">
-        <span>@lang('admin\scripts.variable_count'):</span>
+        <span>@lang('admin/scripts.variable_count'):</span>
         <span id="variable_count" class="strong"></span>
     </div>
 </form>
@@ -37,14 +37,14 @@
                 dialogShowErrors(data);
             }
         });
-        
+
         $('#script_events_form select').on('change', function() {
             $('#variable_count').text($(this).val().length);
         }).trigger('change');
     });
-    
+
     function scriptEventsOK() {
         $('#script_events_form').submit();
-    }    
+    }
 </script>
 @endsection

@@ -1,7 +1,7 @@
 @extends('dialog')
 
 @section('title')
-@lang('admin\plan.plan_order_title')
+@lang('admin/plan.plan_order_title')
 @endsection
 
 @section('content')
@@ -35,7 +35,7 @@
                     res.push($(this).data('id'));
                 });
                 arr.push({
-                    name: 'orderIds', 
+                    name: 'orderIds',
                     value: res.join(',')
                 });
             },
@@ -49,44 +49,44 @@
                 }
             },
         });
-        
+
         $('#plan_order_form .tree-item').on('click', function (e) {
             $('#plan_order_form .tree-item.active').removeClass('active');
             $(this).addClass('active');
             e.preventDefault();
             planOrderRefresh();
         });
-        
+
         planOrderRefresh();
     });
-    
+
     function planOrderOK() {
         $('#plan_order_form').submit();
     }
-    
+
     function planOrderRefresh() {
         let up = false;
         let down = false;
-        
+
         let curr = $('#plan_order_form .tree-item.active');
         if (curr.length) {
             up = (curr.prev().length > 0);
             down = (curr.next().length > 0);
         }
-        
+
         if (up) {
             $('#btnOrderUp').removeAttr('disabled');
         } else {
             $('#btnOrderUp').attr('disabled', 'true');
         }
-        
+
         if (down) {
             $('#btnOrderDown').removeAttr('disabled');
         } else {
             $('#btnOrderDown').attr('disabled', 'true');
         }
     }
-    
+
     function planOrderUp() {
         let curr = $('#plan_order_form .tree-item.active');
         if (curr.length) {

@@ -27,37 +27,37 @@
         @endforeach
     </div>
     <div class="content-body" style="padding: 1rem; font-family: 'Courier New'" scroll-store="demonsContentScroll">
-        
+
     </div>
 </div>
 
 <script>
     let demonLogLastID = -1;
-    
+
     $(document).ready(() => {
         getDemonData();
     });
-    
+
     function demonRun() {
         confirmYesNo("@lang('admin\demons.demon_run_confirm')", () => {
             $.ajax('{{ route("demon-start", $id) }}').done((data) => {
-                
+
             });
         });
     }
-    
+
     function demonStop() {
         confirmYesNo("@lang('admin\demons.demon_stop_confirm')", () => {
             $.ajax('{{ route("demon-stop", $id) }}').done((data) => {
-                
+
             });
         });
     }
-    
+
     function demonReload() {
         confirmYesNo("@lang('admin\demons.demon_reload_confirm')", () => {
             $.ajax('{{ route("demon-restart", $id) }}').done((data) => {
-                
+
             });
         });
     }

@@ -12,11 +12,11 @@
             <nav class="navbar">
                 <div class="logo">WISE HOUSE</div>
                 <div class="btn-group" style="margin-left: 1rem;margin-right: 1rem;">
-                    <button type="button" class="btn btn-primary dropdown-toggle" 
+                    <button type="button" class="btn btn-primary dropdown-toggle"
                             data-toggle="dropdown" aria-haspopup="true" style="margin: 0px;"
                             aria-expanded="false">
                         <img src="/img/menus/menu-3x.png" style="margin-left:-3px;margin-top: -5px;margin-right: 0.5rem;">
-                        @lang('admin\admin.menu_actions')
+                        @lang('admin/admin.menu_actions')
                     </button>
                     <div class="dropdown-menu">
                         @yield('down-menu')
@@ -25,7 +25,7 @@
                 <div style="display: flex; flex-grow: 1;  align-items: center;justify-content: center;">
                 @yield('top-menu')
                 </div>
-                <a class="btn btn-primary" href="{{ route('logout') }}" style="margin-right: 0;">@lang('admin\admin.menu_logout')</a>
+                <a class="btn btn-primary" href="{{ route('logout') }}" style="margin-right: 0;">@lang('admin/admin.menu_logout')</a>
             </nav>
         </div>
         <div class="main-container">
@@ -95,7 +95,7 @@
     </div>
 </div>
 
-<div class="modal fade dialog-background" id="dialog_window" tabindex="-1" role="dialog" 
+<div class="modal fade dialog-background" id="dialog_window" tabindex="-1" role="dialog"
      aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content" id="dialog_content"></div>
@@ -133,33 +133,33 @@
 <script>
     $('document').ready(() => {
         convertTableToScrollGrid($('.table-fixed-header'));
-        
+
         $('#dialog_window').on('hidden.bs.modal', function (e) {
             $('#dialog_content').html('');
             if (dialogAfterHandler) {
                 dialogAfterHandler();
             }
         });
-        
+
         calcLastVariableID();
         loadVariableChanges();
-        
+
         $('.body-container').css({opacity: 1});
-        
+
         $('div[scroll-store]').each(function () {
             let name = $(this).attr('scroll-store');
             let t = getCookie(name);
             if (t > 0) {
                 $(this).scrollTop(t);
             }
-            
+
             $(this).on('scroll', (e) => {
                 let o = $(this);
                 document.cookie = name + '=' + o.scrollTop() + '; path=/admin; max-age=3600';
             }).trigger('scroll');
         });
     });
-    
+
     function dialog(url, beforeHandler) {
         startGlobalWaiter();
         dialogAfterHandler = false;
@@ -177,7 +177,7 @@
         dialogAfterHandler = afterHandler;
         $('#dialog_window').modal('hide');
     }
-    
+
     var confirmHandler = false;
     var confirmNoHandler = false;
 
@@ -203,16 +203,16 @@
         }
         $('#confirm_window').modal('hide');
     }
-    
+
     function confirmYesNo(text, handler, noHandler) {
-        confirm("@lang('dialogs.confirm_title')", 
-                text, 
-                "@lang('dialogs.btn_yes')", 
+        confirm("@lang('dialogs.confirm_title')",
+                text,
+                "@lang('dialogs.btn_yes')",
                 "@lang('dialogs.btn_no')",
                 handler, noHandler);
     }
 
-    
+
     var globalWaiter = false;
 
     function startGlobalWaiter() {
@@ -220,7 +220,7 @@
         $('#globalWaiter').css('opacity', 0);
         globalWaiter = setTimeout(function () {
             $('#globalWaiter').fadeTo(1000, 1);
-        }, 500);            
+        }, 500);
     }
 
     function stopGlobalWaiter() {
@@ -229,16 +229,16 @@
         }
         $('#globalWaiter').hide();
     }
-    
+
     let lastVariableID = -1;
-    
+
     function calcLastVariableID() {
         let ls = $('.log-row');
         if (ls.length > 0) {
             lastVariableID = $(ls[0]).attr('data-id');
         }
     }
-    
+
     function loadVariableChanges() {
         $.ajax('{{ route("variable-changes", "") }}/' + lastVariableID).done((data) => {
             if (data && (data.substr(0, 15) == '<!DOCTYPE HTML>')) {
@@ -248,19 +248,19 @@
 
             $('#logList').prepend(data);
             calcLastVariableID();
-           
+
             /*  Вызываем обработчик, если он зарегистрирован на странице  */
             if (window.variableChangesHandler) {
                 variableChangesHandler(data);
-            }           
+            }
             /*  --------------------------------------------------------  */
-           
+
             setTimeout(loadVariableChanges, {{ config("app.admin_log_update_interval") }});
-           
+
             $('.log-row:gt({{ config("app.admin_log_lines_count") }})').remove();
         });
     }
-    
+
     function variableChangesParse(data) {
         let res = new Array();
         $(data).each(() => {
@@ -272,23 +272,23 @@
         });
         return res;
     }
-    
-    
+
+
     function convertTableToScrollGrid(table) {
         let header = $('<table><thead>' + $('thead', table).html() + '</thead></table>');
         header.attr('class', table.attr('class') + ' table-scroll-header');
         header.insertAfter(table);
-        
+
         let parent = $(table.parent());
         parent.on('scroll', (e) => {
             header.css({
                 top: parent.scrollTop() + 'px',
             });
         })
-                
+
         $(window).on('resize', () => {
             header.width(table.width());
-            
+
             let th_p = $('thead tr th', table);
             let th_h = $('thead tr th', header);
 
@@ -300,28 +300,28 @@
             }
         }).trigger('resize');
     }
-    
+
     function getCookie(name) {
         let matches = document.cookie.match(new RegExp(
             "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
         ));
         return matches ? decodeURIComponent(matches[1]) : undefined;
     }
-    
+
     function setCookie(name, value) {
         document.cookie = name + '=' + value + '; path=/admin; max-age=3600';
     }
-    
+
     function resetScrollStore(obj) {
         let name = $(obj).attr('scroll-store');
         if (name) {
             setCookie(name, '0');
         }
     }
-    
+
     function test() {
-        
+
     }
-    
+
 </script>
 @endsection

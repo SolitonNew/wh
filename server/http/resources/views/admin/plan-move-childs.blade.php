@@ -1,7 +1,7 @@
 @extends('dialog')
 
 @section('title')
-@lang('admin\plan.plan_move_childs_title')
+@lang('admin/plan.plan_move_childs_title')
 @endsection
 
 @section('content')
@@ -10,7 +10,7 @@
     <button type="submit" style="display: none;"></button>
     <div class="row">
         <div class="col-sm-6">
-            <div class="form-label strong">@lang('admin\plan.table_DX')</div>
+            <div class="form-label strong">@lang('admin/plan.table_DX')</div>
         </div>
         <div class="col-sm-3">
             <input class="form-control" type="numeric" name="DX" value="0" step="0.01" required="">
@@ -19,7 +19,7 @@
     </div>
     <div class="row">
         <div class="col-sm-6">
-            <div class="form-label strong">@lang('admin\plan.table_DY')</div>
+            <div class="form-label strong">@lang('admin/plan.table_DY')</div>
         </div>
         <div class="col-sm-3">
             <input class="form-control" type="numeric" name="DY" value="0" step="0.01" required="">
@@ -47,10 +47,10 @@
             }
         });
     });
-    
+
     function planMoveChildsEditOK() {
         $('#plan_move_childs_form').submit();
     }
-    
+
 </script>
 @endsection

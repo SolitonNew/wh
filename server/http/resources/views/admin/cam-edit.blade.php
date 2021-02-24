@@ -2,9 +2,9 @@
 
 @section('title')
 @if($item->ID == -1)
-    @lang('admin\cams.cam_add_title')
+    @lang('admin/cams.cam_add_title')
 @else
-    @lang('admin\cams.cam_edit_title')
+    @lang('admin/cams.cam_edit_title')
 @endif
 @endsection
 
@@ -15,7 +15,7 @@
     @if($item->ID > 0)
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\cams.table_ID')</div>
+            <div class="form-label">@lang('admin/cams.table_ID')</div>
         </div>
         <div class="col-sm-3">
             <div class="form-control">{{ $item->ID > 0 ? $item->ID : '' }}</div>
@@ -25,7 +25,7 @@
     @endif
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin\cams.table_NAME')</div>
+            <div class="form-label strong">@lang('admin/cams.table_NAME')</div>
         </div>
         <div class="col-sm-9">
             <input class="form-control" type="text" name="NAME" value="{{ $item->NAME }}" required="">
@@ -33,22 +33,22 @@
         </div>
     </div>
     <div class="form-group">
-        <div class="strong">@lang('admin\cams.table_URL'):</div>
+        <div class="strong">@lang('admin/cams.table_URL'):</div>
         <textarea class="form-control" name="URL" rows="3">{!! $item->URL !!}</textarea>
         <div class="invalid-feedback"></div>
     </div>
     <div class="form-group">
-        <div class="strong">@lang('admin\cams.table_URL_LOW'):</div>
+        <div class="strong">@lang('admin/cams.table_URL_LOW'):</div>
         <textarea class="form-control" name="URL_LOW" rows="3">{!! $item->URL_LOW !!}</textarea>
         <div class="invalid-feedback"></div>
     </div>
     <div class="form-group">
-        <div class="strong">@lang('admin\cams.table_URL_HIGH'):</div>
+        <div class="strong">@lang('admin/cams.table_URL_HIGH'):</div>
         <textarea class="form-control" name="URL_HIGH" rows="3">{!! $item->URL_HIGH !!}</textarea>
         <div class="invalid-feedback"></div>
     </div>
     <div class="form-group">
-        <div class="strong">@lang('admin\cams.table_ALERT_VAR_ID'):</div>
+        <div class="strong">@lang('admin/cams.table_ALERT_VAR_ID'):</div>
         <select class="custom-select" name="ALERT_VAR_ID">
         <option value="-1">-//-</option>
         @foreach(\App\Http\Models\VAriablesModel::orderBy('NAME')->get() as $row)
@@ -82,15 +82,15 @@
             }
         });
     });
-    
+
     function camEditOK() {
         $('#cam_edit_form').submit();
     }
-    
+
     function camDelete() {
-        confirm("@lang('dialogs.confirm_title')", 
-                "@lang('admin\cams.cam_delete_confirm')", 
-                "@lang('dialogs.btn_yes')", 
+        confirm("@lang('dialogs.confirm_title')",
+                "@lang('admin/cams.cam_delete_confirm')",
+                "@lang('dialogs.btn_yes')",
                 "@lang('dialogs.btn_no')", () => {
             $.ajax('{{ route("cam-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
@@ -98,11 +98,11 @@
                         window.location.reload();
                     });
                 } else {
-                    
+
                 }
             });
         });
     }
-    
+
 </script>
 @endsection

@@ -1,7 +1,7 @@
 @extends('dialog')
 
 @section('title')
-@lang('admin\ow-manager.info_title')
+@lang('admin/ow-manager.info_title')
 @endsection
 
 @section('content')
@@ -10,7 +10,7 @@
     <button type="submit" style="display: none;"></button>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\ow-manager.table_ID')</div>
+            <div class="form-label">@lang('admin/ow-manager.table_ID')</div>
         </div>
         <div class="col-sm-3">
             <div class="form-control">{{ $item->ID }}</div>
@@ -18,7 +18,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\ow-manager.table_CONTROLLER')</div>
+            <div class="form-label">@lang('admin/ow-manager.table_CONTROLLER')</div>
         </div>
         <div class="col-sm-6">
             <div class="form-control">{{ $item->CONTROLLER_NAME }}</div>
@@ -26,7 +26,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\ow-manager.table_ROM')</div>
+            <div class="form-label">@lang('admin/ow-manager.table_ROM')</div>
         </div>
         <div class="col-sm-9">
             <div class="form-control">{{ $item->ROM }}</div>
@@ -34,7 +34,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\ow-manager.table_COMM')</div>
+            <div class="form-label">@lang('admin/ow-manager.table_COMM')</div>
         </div>
         <div class="col-sm-9">
             <div class="form-control">{{ $item->COMM }}</div>
@@ -42,20 +42,20 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin\ow-manager.table_CHANNELS')</div>
+            <div class="form-label">@lang('admin/ow-manager.table_CHANNELS')</div>
         </div>
         <div class="col-sm-9">
             <div class="form-control">{{ $item->CHANNELS }}</div>
         </div>
     </div>
     <div class="form-group">
-        <div class="">@lang('admin\ow-manager.table_VARIABLES') ({{ count($item->VARIABLES) }}):</div>
+        <div class="">@lang('admin/ow-manager.table_VARIABLES') ({{ count($item->VARIABLES) }}):</div>
         <div class="form-control" style="height: auto;">
         @forelse($item->VARIABLES as $v)
         <div>[{{ $v->CHANNEL }}] {{ $v->NAME }}</div>
         @empty
         -//-
-        @endforelse    
+        @endforelse
         </div>
     </div>
 </form>
@@ -72,11 +72,11 @@
     $(document).ready(() => {
         //
     });
-        
+
     function owManagerDelete() {
-        confirm("@lang('dialogs.confirm_title')", 
-                "@lang('admin\ow-manager.ow-manager-delete-confirm')", 
-                "@lang('dialogs.btn_yes')", 
+        confirm("@lang('dialogs.confirm_title')",
+                "@lang('admin/ow-manager.ow-manager-delete-confirm')",
+                "@lang('dialogs.btn_yes')",
                 "@lang('dialogs.btn_no')", () => {
             $.ajax('{{ route("ow-manager-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
@@ -84,11 +84,11 @@
                         window.location.reload();
                     });
                 } else {
-                    
+
                 }
             });
         });
     }
-    
+
 </script>
 @endsection

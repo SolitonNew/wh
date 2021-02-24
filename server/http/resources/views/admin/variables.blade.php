@@ -4,7 +4,7 @@
 @endsection
 
 @section('down-menu')
-<a href="#" class="dropdown-item" onclick="variableAdd(); return false;">@lang('admin\variables.variable_add')</a>
+<a href="#" class="dropdown-item" onclick="variableAdd(); return false;">@lang('admin/variables.variable_add')</a>
 @endsection
 
 @section('content')
@@ -19,15 +19,15 @@
         <table id="variable_table" class="table table-sm table-hover table-bordered table-fixed-header">
             <thead>
                 <tr>
-                    <th scope="col" style="width: 60px;"><span>@lang('admin\variables.table_id')</span></th>
-                    <th scope="col" style="width: 150px;"><span>@lang('admin\variables.table_controller')</span></th>
-                    <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_typ')</span></th>
-                    <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_readonly')</span></th>
-                    <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_name')</span></th>
-                    <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_comm')</span></th>
-                    <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_app_control')</span></th>
-                    <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_value')</span></th>
-                    <th scope="col" style="width: 50px;"><span>@lang('admin\variables.table_channel')</span></th>
+                    <th scope="col" style="width: 60px;"><span>@lang('admin/variables.table_id')</span></th>
+                    <th scope="col" style="width: 150px;"><span>@lang('admin/variables.table_controller')</span></th>
+                    <th scope="col" style="width: 50px;"><span>@lang('admin/variables.table_typ')</span></th>
+                    <th scope="col" style="width: 50px;"><span>@lang('admin/variables.table_readonly')</span></th>
+                    <th scope="col" style="width: 50px;"><span>@lang('admin/variables.table_name')</span></th>
+                    <th scope="col" style="width: 50px;"><span>@lang('admin/variables.table_comm')</span></th>
+                    <th scope="col" style="width: 50px;"><span>@lang('admin/variables.table_app_control')</span></th>
+                    <th scope="col" style="width: 50px;"><span>@lang('admin/variables.table_value')</span></th>
+                    <th scope="col" style="width: 50px;"><span>@lang('admin/variables.table_channel')</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -36,10 +36,10 @@
                     <td>{{ $row->ID }}</td>
                     <td>{{ $row->CONTROLLER_NAME }}</td>
                     <td>{{ $row->ROM }}</td>
-                    <td>{{ Lang::get('admin\variables.table_readonly_list.'.$row->DIRECTION) }}</td>
+                    <td>{{ Lang::get('admin/variables.table_readonly_list.'.$row->DIRECTION) }}</td>
                     <td>{{ $row->NAME }}</td>
                     <td>{{ $row->COMM }}</td>
-                    <td>{{ Lang::get('admin\variables.app_control.'.$row->APP_CONTROL) }}</td>
+                    <td>{{ Lang::get('admin/variables.app_control.'.$row->APP_CONTROL) }}</td>
                     <td>{{ $row->VALUE }}</td>
                     <td>{{ $row->CHANNEL }}</td>
                 </tr>
@@ -51,20 +51,20 @@
 
 <script>
     let currentPartID = '{{ $partID }}';
-    
+
     $(document).ready(() => {
         $('#variable_table tbody tr').on('click', (e) => {
             let id = $(e.currentTarget).attr('data-id');
             dialog('{{ route("variable-edit", "") }}/' + id);
         });
-        
+
         $('.tree a').on('click', (e) => {
             if (!$(e.currentTarget).hasClass('active')) {
                 resetScrollStore($('.content-body'));
             }
         });
     });
-    
+
     function variableAdd() {
         dialog('{{ route("variable-edit", -1) }}');
     }
