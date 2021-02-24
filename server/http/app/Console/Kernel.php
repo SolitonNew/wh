@@ -15,8 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\RS485Demon::class,
         Commands\ScheduleDemon::class,
-        Commands\ExecutorDemon::class,
-        Commands\WatcherDemon::class,
+        Commands\CommandDemon::class,
+        Commands\ObserverDemon::class,
     ];
 
     /**
