@@ -28,9 +28,18 @@ class DemonsController extends Controller
 
         if (!in_array($id, $this->_demons)) return 'ERROR';
 
+        $demonsList = [];
+        foreach($this->_demons as $d) {
+            $demonsList[] = (object)[
+                'ID' => $d,
+                'STATE' => ($this->_getDemonPID($d) > 0),
+            ];
+        }
+
         return view('admin.demons', [
             'id' => $id,
             'demons' => $this->_demons,
+            '$demonsList' => $demonsList,
         ]);
     }
 
@@ -73,14 +82,25 @@ class DemonsController extends Controller
     public function demonStop(string $id) {
         if (!in_array($id, $this->_demons)) return 'ERROR';
 
-
-
-        return 'OK';
+        try {
+            exec('pidof php '.base_path().' '.$id, $pids);
+            foreach($pids as $pid) {
+                exec('kill -9 '.$pid);
+            }
+            return $pids;
+        } catch (\Exception $ex) {
+            return 'ERROR';
+        }
     }
 
     public function demonRestart(string $id) {
         if (!in_array($id, $this->_demons)) return 'ERROR';
 
         return 'OK';
+    }
+
+    private function _getDemonPID(string $id) {
+        exec('pidof php '.base_path().' '.$id, $pids);
+        return count($pids) ? $pids[0] : null;
     }
 }

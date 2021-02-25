@@ -1,10 +1,10 @@
 @extends('admin.admin')
 
 @section('down-menu')
-<a href="#" class="dropdown-item" onclick="demonRun()">@lang('admin\demons.demon_run')</a>
-<a href="#" class="dropdown-item" onclick="demonStop()">@lang('admin\demons.demon_stop')</a>
+<a href="#" class="dropdown-item" onclick="demonStart(); return false">@lang('admin/demons.demon_run')</a>
+<a href="#" class="dropdown-item" onclick="demonStop(); return false;">@lang('admin/demons.demon_stop')</a>
 <div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onclick="demonReload()">@lang('admin\demons.demon_reload')</a>
+<a href="#" class="dropdown-item" onclick="demonReload(); return false;">@lang('admin/demons.demon_reload')</a>
 @endsection
 
 @section('top-menu')
@@ -21,7 +21,7 @@
                     <div class="" style="flex-grow: 1; ">{{ $key }}</div>
                     <div class="badge badge-pill badge-success" style="margin-top: 0; margin-bottom: 0px;">RUN</div>
                 </div>
-                <small class="text-muted">@lang('admin\demons.'.$key)</small>
+                <small class="text-muted">@lang('admin/demons.'.$key)</small>
             </div>
         </a>
         @endforeach
@@ -38,26 +38,26 @@
         getDemonData();
     });
 
-    function demonRun() {
-        confirmYesNo("@lang('admin\demons.demon_run_confirm')", () => {
+    function demonStart() {
+        confirmYesNo("@lang('admin/demons.demon_run_confirm')", () => {
             $.ajax('{{ route("demon-start", $id) }}').done((data) => {
-
+                console.log(data);
             });
         });
     }
 
     function demonStop() {
-        confirmYesNo("@lang('admin\demons.demon_stop_confirm')", () => {
+        confirmYesNo("@lang('admin/demons.demon_stop_confirm')", () => {
             $.ajax('{{ route("demon-stop", $id) }}').done((data) => {
-
+                console.log(data);
             });
         });
     }
 
     function demonReload() {
-        confirmYesNo("@lang('admin\demons.demon_reload_confirm')", () => {
+        confirmYesNo("@lang('admin/demons.demon_reload_confirm')", () => {
             $.ajax('{{ route("demon-restart", $id) }}').done((data) => {
-
+                console.log(data);
             });
         });
     }
