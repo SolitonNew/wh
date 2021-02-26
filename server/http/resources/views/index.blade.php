@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>WISEHOUSE</title>
-        <link rel="shortcut icon" href="/favicon.ico">
+        <link rel="shortcut icon" href="/favicon.ico"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/style.css">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Auth;
 
 class UsersController extends Controller
 {
@@ -48,7 +49,9 @@ class UsersController extends Controller
                 if ($request->post('password')) {
                     $item->password = bcrypt($request->post('password'));
                 }
-                $item->ACCESS = $request->post('ACCESS');
+                if ($id != Auth::user()->ID) {
+                    $item->ACCESS = $request->post('ACCESS');
+                }
                 $item->save();
                 return 'OK';
             } catch (\Exception $ex) {

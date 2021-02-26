@@ -76,7 +76,7 @@ class SchedulerModel extends Model
                 $dw = $now->copy()->addDay(-$now->dayOfWeek);
                 // Получаем дату понедельника следующей недели
                 $dw_next = $dw->copy()->addWeek();
-                $week_days = Lang::get('admin\schedule.week_days');
+                $week_days = Lang::get('admin/schedule.week_days');
                 foreach(explode(',', $this->INTERVAL_DAY_OD_TYPE) as $w) {
                     try {
                         $i = array_search(mb_strtolower(trim($w)), $week_days);

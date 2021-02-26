@@ -29,9 +29,9 @@ class ScheduleController extends Controller
                              where s.TEMP_VARIABLE_ID = 0
                             order by s.COMM');
         
-        $types = Lang::get('admin\schedule.interval');
-        $interval_time = Lang::get('admin\schedule.interval_time');
-        $interval_day = Lang::get('admin\schedule.interval_day');
+        $types = Lang::get('admin/schedule.interval');
+        $interval_time = Lang::get('admin/schedule.interval_time');
+        $interval_day = Lang::get('admin/schedule.interval_day');
         
         foreach($data as &$row) {
             $s = $types[$row->INTERVAL_TYPE];

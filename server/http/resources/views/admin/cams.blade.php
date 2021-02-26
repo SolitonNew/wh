@@ -43,6 +43,8 @@
 
             let id = $(this).data('id');
             dialog('{{ route("variable-edit", "") }}/' + id);
+            
+            return false;
         });
     });
 

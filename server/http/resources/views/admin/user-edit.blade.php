@@ -57,13 +57,12 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
-    @if($item->ID != Auth::user()->ID)
     <div class="row">
         <div class="col-sm-3">
             <div class="form-label">@lang('admin/users.table_ACCESS')</div>
         </div>
         <div class="col-sm-6">
-            <select class="custom-select" name="ACCESS">
+            <select class="custom-select" name="ACCESS" {{ $item->ID == Auth::user()->ID ? 'disabled' : '' }} >
             @foreach(Lang::get('admin/users.table_access_list') as $key => $val)
                 <option value="{{ $key }}" {{ $item->ACCESS == $key ? 'selected' : '' }} >{{ $val }}</option>
             @endforeach
@@ -71,7 +70,6 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
-    @endif
 </form>
 @endsection
 

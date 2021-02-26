@@ -28,18 +28,23 @@ class DemonsController extends Controller
 
         if (!in_array($id, $this->_demons)) return 'ERROR';
 
-        $demonsList = [];
-        foreach($this->_demons as $d) {
-            $demonsList[] = (object)[
-                'ID' => $d,
-                'STATE' => ($this->_getDemonPID($d) > 0),
+        $currStat = 0;
+        $demons = [];
+        foreach($this->_demons as $dem) {
+            $stat = count($this->_getDemonPID($dem)) ? 1 : 0;
+            $demons[] = (object)[
+                'ID' => $dem,
+                'STAT' => $stat,
             ];
+            if ($dem == $id) {
+                $currStat = $stat;
+            }
         }
 
         return view('admin.demons', [
             'id' => $id,
-            'demons' => $this->_demons,
-            '$demonsList' => $demonsList,
+            'stat' => $currStat,
+            'demons' => $demons,
         ]);
     }
 
@@ -72,10 +77,11 @@ class DemonsController extends Controller
         if (!in_array($id, $this->_demons)) return 'ERROR';
 
         try {
-            exec('php '.base_path().'/artisan '.$id);
+            exec('php '.base_path().'/artisan '.$id.'>/dev/null &');
+            sleep(1);
             return 'OK';
         } catch (\Exception $ex) {
-            return 'ERROR';
+            return $ex->getMessage();
         }
     }
 
@@ -83,13 +89,13 @@ class DemonsController extends Controller
         if (!in_array($id, $this->_demons)) return 'ERROR';
 
         try {
-            exec('pidof php '.base_path().' '.$id, $pids);
-            foreach($pids as $pid) {
+            foreach($this->_getDemonPID($id) as $pid) {
                 exec('kill -9 '.$pid);
             }
-            return $pids;
+            sleep(1);
+            return 'OK';
         } catch (\Exception $ex) {
-            return 'ERROR';
+            return $ex->getMessage();
         }
     }
 
@@ -100,7 +106,14 @@ class DemonsController extends Controller
     }
 
     private function _getDemonPID(string $id) {
-        exec('pidof php '.base_path().' '.$id, $pids);
-        return count($pids) ? $pids[0] : null;
+        $pids = [];
+        exec("ps ax | grep $id | grep -v grep | grep -v 'sh -c '", $outs);
+        foreach($outs as $out) {
+            $a = explode(' ', trim($out));
+            if (count($a)) {
+                $pids[] = $a[0];
+            }
+        }
+        return $pids;
     }
 }
