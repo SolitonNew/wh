@@ -11,6 +11,6 @@ abstract class CommandBase {
      */
     public function execute(string $command, &$output) {
         $output = 'LINES';
-        return true;
+        return false;
     }
 }

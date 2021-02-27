@@ -90,7 +90,9 @@ class CommandDemon extends Command
                 $c = new $commandClass();
                 $output = '';
                 if ($c->execute($command, $output)) {
-                    $this->printLine($output);
+                    if ($output != '') {
+                        $this->printLine($output);
+                    }
                     break;
                 }
             } catch (\Exception $ex) {

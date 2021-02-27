@@ -14,5 +14,10 @@ namespace App\Console\Commands\DemonCommands;
  * @author soliton
  */
 class SpeechCommand extends CommandBase {
-    //put your code here
+
+    public function execute(string $command, &$output) {
+        $output = 'LINES';
+        return false;
+    }
+    
 }
