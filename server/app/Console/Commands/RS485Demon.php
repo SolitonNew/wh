@@ -3,9 +3,13 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Lang;
 
 class RS485Demon extends Command
 {
+    use PrintToDB;
+    
     /**
      * The name and signature of the console command.
      *
@@ -37,11 +41,18 @@ class RS485Demon extends Command
      */
     public function handle()
     {
-        $i = 0;
+        DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
+        
+        $lastProcessedID = -1;
+
+        $this->printLine('');
+        $this->printLine('');
+        $this->printLine('');
+        $this->printLine(Lang::get('admin/demons.rs485-demon-title'));
+        
         while(1) {
-            echo "$i\n";
-            $i++;
-            usleep(500000);
+
+            usleep(100000);
         }
     }
 }

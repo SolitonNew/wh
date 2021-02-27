@@ -11,11 +11,15 @@ trait PrintToDB {
      * @param type $text
      */
     public function printLine($text) {
-        $item = new \App\Http\Models\WebLogsModel();
-        $item->DEMON = $this->signature;
-        $item->DATA = $text;
-        $item->save();
-        echo "$text\n";
+        try {
+            $item = new \App\Http\Models\WebLogsModel();
+            $item->DEMON = $this->signature;
+            $item->DATA = $text;
+            $item->save();            
+            echo "$text\n";
+        } catch (\Exception $ex) {
+            echo $ex->getMessage()."\n";
+        }
     }
     
 }

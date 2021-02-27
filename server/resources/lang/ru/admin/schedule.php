@@ -53,9 +53,5 @@ return [
     
     'btn_test' => 'Тест действия',
     'schedule-delete-confirm' => 'Удалить текущую запись расписания?',
-    
-    'demon_tasks_title' => '-- Предстоящие задачи --',
-    'demon_task_disabled' => '[НЕ ВЫПОЛНЯТЬ!!!]',
-    'demon_info_line' => '[:datetime] Произошло событие ":comm" и запрошена команда ":action"',
 
 ];

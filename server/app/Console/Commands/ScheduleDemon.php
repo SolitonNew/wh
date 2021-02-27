@@ -42,15 +42,13 @@ class ScheduleDemon extends Command
      */
     public function handle()
     {
-
-
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         DB::update('update core_scheduler set ACTION_DATETIME = null');
 
         $this->printLine('');
         $this->printLine('');
         $this->printLine('');
-        $this->printLine(Lang::get('admin/schedule.demon_tasks_title'));
+        $this->printLine(Lang::get('admin/demons.schedule-demon-title'));
         foreach(\App\Http\Models\SchedulerModel::orderBy('COMM', 'asc')->get() as $row) {
             $row->ACTION_DATETIME = $row->makeDateTime();
             $row->save();
@@ -58,7 +56,7 @@ class ScheduleDemon extends Command
             if ($row->ACTION_DATETIME) {
                 $time = Carbon::parse($row->ACTION_DATETIME)->format('Y-m-d H:i:s');
             }
-            $this->printLine("[$time] $row->COMM       ".($row->ENABLE ? '' : Lang::get('admin/schedule.demon_task_disabled')));
+            $this->printLine("[$time] $row->COMM       ".($row->ENABLE ? '' : Lang::get('admin/demons.schedule-demon-disabled')));
         }
         $this->printLine("---------------------------------");
 
@@ -72,7 +70,7 @@ class ScheduleDemon extends Command
                     if ($row->ENABLE) {
                         // Выполняем
                         \App\Http\Models\ExecuteModel::command($row->ACTION);
-                        $this->printLine(Lang::get('admin/schedule.demon_info_line', [
+                        $this->printLine(Lang::get('admin/demons.schedule-demon-line', [
                             'datetime' => Carbon::parse($row->ACTION_DATETIME),
                             'comm' => $row->COMM,
                             'action' => str_replace("\n", ' ', $row->ACTION),
