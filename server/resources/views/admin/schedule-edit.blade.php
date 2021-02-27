@@ -159,8 +159,19 @@
     }
 
     function runTest() {
-        let s = $('textarea[name="ACTION"]').val();
-        alert(s);
+        $.post({
+            url: '{{ route("script-test") }}',
+            data: {
+                '_token': '{{ Session::token() }}',
+                'COMMAND': $('textarea[name="ACTION"]').val(),
+            },
+            success: function(data) {
+                alert(data);
+            },
+            error: function () {
+                alert('ERROR');
+            }
+        });
     }
 
 </script>

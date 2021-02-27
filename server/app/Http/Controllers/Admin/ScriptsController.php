@@ -199,4 +199,19 @@ class ScriptsController extends Controller
             ]);
         }
     }
+    
+    /**
+     * 
+     * @param Request $request
+     */
+    public function scriptTest(Request $request) {
+        try {
+            foreach(explode("\n", $request->post('COMMAND')) as $command) {
+                \App\Http\Models\ExecuteModel::command($command);
+            }            
+            return 'OK';
+        } catch (\Exception $ex) {
+            return 'ERROR';
+        }
+    }
 }

@@ -68,7 +68,6 @@ class CommandDemon extends Command
                 }
                 $lastProcessedID = $row->ID;
             }
-                                
             
             usleep(100000);
         }

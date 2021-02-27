@@ -61,11 +61,12 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/script-delete/{id}', 'Admin\ScriptsController@delete')->name('script-delete');
     Route::match(['get', 'post'], '/script-events/{id}', 'Admin\ScriptsController@attacheEvents')->name('script-events');
     Route::post('/script-save/{id}', 'Admin\ScriptsController@saveScript')->name('script-save');
+    Route::post('/script-test', 'Admin\ScriptsController@scriptTest')->name('script-test');
     
     /* Управление учетными записями пользователей */
     Route::get('/users', 'Admin\UsersController@index')->name('users');
     Route::match(['get', 'post'], '/user-edit/{id}', 'Admin\UsersController@edit')->name('user-edit');
-    Route::get('/user-delete/{id}', 'Admin\USersController@delete')->name('user-delete');
+    Route::get('/user-delete/{id}', 'Admin\UsersController@delete')->name('user-delete');
     
     /* Управление сетью OW устройств коньроллеров */
     Route::get('/ow-manager/{controllerID?}', 'Admin\OwManagerController@index')->name('ow-manager');
