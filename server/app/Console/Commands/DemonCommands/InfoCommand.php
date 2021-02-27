@@ -24,7 +24,7 @@ class InfoCommand extends CommandBase {
      * @return boolean
      */
     public function execute(string $command, &$output) {
-        if (strpos('INFO()', strtoupper($command)) !== false) {
+        if (strpos(strtoupper($command), 'INFO()') !== false) {
             $output = '';
 
             // Формируем строку текущего времени  ------------------------------
@@ -76,7 +76,7 @@ class InfoCommand extends CommandBase {
             return true;
         }
          
-        return true;
+        return false;
     }
     
 }

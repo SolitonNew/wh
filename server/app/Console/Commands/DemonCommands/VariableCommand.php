@@ -8,6 +8,9 @@
 
 namespace App\Console\Commands\DemonCommands;
 
+use Log;
+use DB;
+
 /**
  * Description of VariableCommand
  *
@@ -16,7 +19,33 @@ namespace App\Console\Commands\DemonCommands;
 class VariableCommand extends CommandBase {
     
     public function execute(string $command, &$output) {
-        $output = 'LINES';
+        $output = '';
+        $command = strtoupper(trim($command));
+        
+        $keys = [
+            0 => 'OFF(',
+            1 => 'ON(', 
+        ];
+        
+        foreach($keys as $val => $key) {
+            if (strpos($command, $key) === 0) {
+                $varName = substr($command, strlen($key), strlen($command) - strlen($key) - 1);
+                $varName = str_replace('"', '', $varName);
+                $varName = str_replace("'", '', $varName);
+                $varName = trim($varName);
+                
+                $var = \App\Http\Models\VariablesModel::whereName($varName)->first();
+                if ($var) {
+                    try {
+                        DB::select("call CORE_SET_VARIABLE($var->ID, $val, -1)");
+                        return true;
+                    } catch (\Exception $ex) {
+                        Log::error($ex->getMessage());
+                    }
+                }
+            }
+        }
+        
         return false;
     }
 }
