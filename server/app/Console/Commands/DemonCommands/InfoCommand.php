@@ -52,26 +52,29 @@ class InfoCommand extends CommandBase {
             \App\Http\Models\ExecuteModel::command("speech('$text')");
             
             // Формируем строку текущей температуры на улице  ------------------
-            $t_out = -4.56;
-            $t_round = round($t_out);
-            $t_speach = abs($t_round);
-            $t_str = ' '.$t_speach;
-            
-            $text_arr = [];
-            $text_arr[] = Lang::get('admin/demons.command-demon-info-temp', [
-                'temp' => $t_speach,
-            ]);
-            
-            $text_arr[] = Lang::get('admin/demons.command-demon-temps.'.$t_str[strlen($t_str) - 1]);
-            
-            if ($t_round < 0) {
-                $text_arr[] = Lang::get('admin/demons.command-demon-info-temp-znak.0');
-            } elseif ($t_round > 0) {
-                $text_arr[] = Lang::get('admin/demons.command-demon-info-temp-znak.1');
+            $temp_item = \App\Http\Models\VariablesModel::find(config('app.command_info_temp_id'));
+            if ($temp_item) {
+                $t_out = $temp_item->VALUE;
+                $t_round = round($t_out);
+                $t_speach = abs($t_round);
+                $t_str = ' '.$t_speach;
+
+                $text_arr = [];
+                $text_arr[] = Lang::get('admin/demons.command-demon-info-temp', [
+                    'temp' => $t_speach,
+                ]);
+
+                $text_arr[] = Lang::get('admin/demons.command-demon-temps.'.$t_str[strlen($t_str) - 1]);
+
+                if ($t_round < 0) {
+                    $text_arr[] = Lang::get('admin/demons.command-demon-info-temp-znak.0');
+                } elseif ($t_round > 0) {
+                    $text_arr[] = Lang::get('admin/demons.command-demon-info-temp-znak.1');
+                }
+
+                $text = implode(' ', $text_arr);
+                \App\Http\Models\ExecuteModel::command("speech('$text')");
             }
-            
-            $text = implode(' ', $text_arr);
-            \App\Http\Models\ExecuteModel::command("speech('$text')");
 
             return true;
         }

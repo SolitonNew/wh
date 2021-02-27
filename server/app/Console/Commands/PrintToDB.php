@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-
 trait PrintToDB {
     
     /**
@@ -16,10 +15,10 @@ trait PrintToDB {
             $item->DEMON = $this->signature;
             $item->DATA = $text;
             $item->save();            
+            
             echo "$text\n";
         } catch (\Exception $ex) {
             echo $ex->getMessage()."\n";
         }
-    }
-    
+    }    
 }

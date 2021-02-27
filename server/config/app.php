@@ -243,4 +243,24 @@ return [
      */
     'admin_log_lines_count' => 40,
     
+    /*
+     *  Идентификатор переменнойЁ значение которой озвучивается в команде info()
+     */
+    'command_info_temp_id' => env('COMMAND_INFO_TEMP_ID', -1),
+    
+    
+    /*
+     * Географические координаты вашего положенияё Используются для вычисления 
+     * времени восхода/заката
+     */
+    'location_latitude' => env('LOCATION_LATITUDE', 0),
+    'location_longitude' => env('LOCATION_LONGITUDE', 0),
+    
+    /*
+     * Кол-во строк отображаемых в логах процессов
+     */
+    'admin_demons_log_lines_count' => 100,
+    
+    
+    
 ];

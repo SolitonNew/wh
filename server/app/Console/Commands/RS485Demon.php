@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use \Carbon\Carbon;
 use Lang;
 
 class RS485Demon extends Command
@@ -50,9 +51,19 @@ class RS485Demon extends Command
         $this->printLine('');
         $this->printLine(Lang::get('admin/demons.rs485-demon-title'));
         
+        $controllers = \App\Http\Models\ControllersModel::where('ID', '<', 100)
+                            ->orderBy('NAME', 'asc')
+                            ->get();
+        
         while(1) {
-
-            usleep(100000);
+            foreach($controllers as $controller) {
+                $s = '['.now()->format('H:i:s').'] '.$controller->NAME;
+                if (random_int(0, 10) > 7) {
+                    $s .= ' VARIABLES';
+                }
+                $this->printLine($s);
+                usleep(100000);
+            }
         }
     }
 }

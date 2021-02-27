@@ -8,7 +8,7 @@ use Artisan;
 
 class DemonsController extends Controller
 {
-    private $_demons = [
+    static public $demons = [
         'rs485-demon',
         'schedule-demon',
         'command-demon',
@@ -22,15 +22,15 @@ class DemonsController extends Controller
      */
     public function index(string $id = null) {
         if (!$id) {
-            $id = $this->_demons[0];
+            $id = self::$demons[0];
             return redirect(route('demons', $id));
         }
 
-        if (!in_array($id, $this->_demons)) return 'ERROR';
+        if (!in_array($id, self::$demons)) return 'ERROR';
 
         $currStat = 0;
         $demons = [];
-        foreach($this->_demons as $dem) {
+        foreach(self::$demons as $dem) {
             $stat = count($this->_getDemonPID($dem)) ? 1 : 0;
             $demons[] = (object)[
                 'ID' => $dem,
@@ -55,12 +55,12 @@ class DemonsController extends Controller
      * @return string
      */
     public function data(string $id, int $lastID = -1) {
-        if (!in_array($id, $this->_demons)) return 'ERROR';
+        if (!in_array($id, self::$demons)) return 'ERROR';
 
         $data = \App\Http\Models\WebLogsModel::whereDemon($id)
                     ->where('ID', '>', $lastID)
                     ->orderBy('ID', 'desc')
-                    ->limit(100)
+                    ->limit(config("app.admin_demons_log_lines_count"))
                     ->get();
 
         foreach($data as &$row) {
@@ -74,7 +74,7 @@ class DemonsController extends Controller
     }
 
     public function demonStart(string $id) {
-        if (!in_array($id, $this->_demons)) return 'ERROR';
+        if (!in_array($id, self::$demons)) return 'ERROR';
 
         try {
             exec('php '.base_path().'/artisan '.$id.'>/dev/null &');
@@ -86,7 +86,7 @@ class DemonsController extends Controller
     }
 
     public function demonStop(string $id) {
-        if (!in_array($id, $this->_demons)) return 'ERROR';
+        if (!in_array($id, self::$demons)) return 'ERROR';
 
         try {
             foreach($this->_getDemonPID($id) as $pid) {
@@ -100,7 +100,7 @@ class DemonsController extends Controller
     }
 
     public function demonRestart(string $id) {
-        if (!in_array($id, $this->_demons)) return 'ERROR';
+        if (!in_array($id, self::$demons)) return 'ERROR';
 
         return 'OK';
     }

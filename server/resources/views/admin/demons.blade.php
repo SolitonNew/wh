@@ -91,8 +91,10 @@
                 if (data) {
                     $('.content-body').prepend(data);
                     demonLogLastID = $($(data).first()).data('id');
+                    
+                    $('.content-body > div:gt({{ config("app.admin_demons_log_lines_count") }})').remove();
                 }
-                setTimeout(getDemonData, 500);
+                setTimeout(getDemonData, 250);
             },
             error: function () {
                 console.log('ERROR');

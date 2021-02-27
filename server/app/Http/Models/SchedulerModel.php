@@ -149,8 +149,8 @@ class SchedulerModel extends Model
                 }
             } else { // Это восход/закат
                 try {
-                    $latitude = 49.697287;
-                    $longitude = 34.354388;
+                    $latitude = config('app.location_latitude');
+                    $longitude = config('app.location_longitude');
                     $zenith = 90.8333333333333;
                     $times[] = $this->getSunTime($date, $latitude, $longitude, $zenith, $time_type);
                 } catch (\Exception $ex) {
