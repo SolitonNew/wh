@@ -22,7 +22,7 @@
                     @if ($row->STAT)
                     <div class="badge badge-pill badge-success" style="margin-top: 0; margin-bottom: 0px;">RUN</div>
                     @else
-                    <div class="badge badge-pill badge-danger" style="margin-top: 0; margin-bottom: 0px;">STOP</div>
+                    <div class="badge badge-pill badge-warning" style="margin-top: 0; margin-bottom: 0px;">STOP</div>
                     @endif
                 </div>
                 <small class="text-muted">@lang('admin/demons.'.$row->ID)</small>
