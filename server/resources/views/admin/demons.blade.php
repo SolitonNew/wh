@@ -30,7 +30,7 @@
         </a>
         @endforeach
     </div>
-    <div class="content-body" style="padding: 1rem; font-family: 'Courier New'" scroll-store="demonsContentScroll">
+    <div class="content-body demon-log" scroll-store="demonsContentScroll">
 
     </div>
 </div>

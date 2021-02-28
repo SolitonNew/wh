@@ -64,17 +64,7 @@ class DemonsController extends Controller
                     ->get();
 
         foreach($data as &$row) {
-            $str = $row->DATA;
-            
-            $i1 = mb_strpos($str, '-- ');
-            $i2 = mb_strpos($str, ' --');
-            if (($i1 !== false) && ($i2 !== false)) {
-                $str = '<div class="demon-log-header">'.mb_substr($str, $i1 + 3, $i1 + $i2 - 3).'</div>';
-            } else 
-            if (mb_strpos($str, '------') !== false) {
-                $str = '<hr>';
-            }
-            
+            $str = $row->DATA;            
             $str = str_replace('[', '<span class="datetime">[', $str);
             $str = str_replace(']', ']</span>', $str);
             

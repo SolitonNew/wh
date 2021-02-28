@@ -4,6 +4,7 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use \Illuminate\Support\Facades\DB;
+use Lang;
 
 class VariableChangesModel extends Model
 {
@@ -69,7 +70,7 @@ class VariableChangesModel extends Model
      * @return type
      */
     static public function decodeLogValue($app_control, $value) {
-        $dim = \Illuminate\Support\Facades\Lang::get('admin/variables.log_app_control_dim.'.$app_control);
+        $dim = Lang::get('admin/variables.log_app_control_dim.'.$app_control);
         if (is_array($dim)) {
             return $dim[$value];
         } else {

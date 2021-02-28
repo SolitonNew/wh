@@ -357,6 +357,11 @@ div.form-control {
     color: var(--primary);
 }
 
+.demon-log {
+    font-family: 'Ubuntu Mono', 'Consolas', 'Courier New';
+    padding: 1rem;
+}
+
 .demon-log-line {
     white-space: pre;
     min-height: 1rem;
