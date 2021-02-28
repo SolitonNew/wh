@@ -43,16 +43,9 @@
     $('document').ready(() => {
         isMobile = (window.orientation !== undefined);
         
-        let a = window.location.href.split('?');
-        lockScrollLeft = a.length <= 1;
-        
-        switch (currentPage) {
-            case 'checked':
-            case 'checked_edit':
-                lockScrollRight = true;
-                break;
-        }
-        
+        lockScrollLeft = {{ Request::url() == route('home') ? 'true' : 'false' }};
+        lockScrollRight = {{ Request::segment(1) == 'checked' ? 'true' : 'false' }};
+                
         if (!isMobile) {
             $('.body-page-main').css('overflow', 'hidden');
         }
@@ -228,7 +221,7 @@
                             case 'center':
                                 break;
                             case 'right':
-                                window.location = '?page=checked';
+                                window.location = '{{ route("checked") }}';
                                 $('.body-page-main > div').css('opacity', 0);
                                 break;
                         }
