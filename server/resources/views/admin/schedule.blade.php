@@ -22,7 +22,9 @@
         </thead>
         <tbody>
             @foreach($data as $row)
-            <tr data-id="{{ $row->ID }}">
+            <tr data-id="{{ $row->ID }}" 
+                class="{{ (\Carbon\Carbon::parse($row->ACTION_DATETIME)->gt(now()) && 
+                           \Carbon\Carbon::parse($row->ACTION_DATETIME)->lte(now()->startOfDay()->addDay())) ? 'schedule-exec-today' : '' }}">
                 <td>{{ $row->ID }}</td>
                 <td>{{ $row->COMM }}</td>
                 <td>

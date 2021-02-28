@@ -357,6 +357,11 @@ div.form-control {
     color: var(--primary);
 }
 
+.demon-log-line {
+    white-space: pre;
+    min-height: 1rem;
+}
+
 .demon-log-header {
     text-align: center;
     padding: 1rem;
@@ -365,11 +370,15 @@ div.form-control {
     margin: 1rem 0rem;
 }
 
-hr.demon-log-hr {
+.demon-log-line hr {
     display: inline-block;
     width: 100%;
     background-color: #000000;
     margin: 1rem 0rem;
     padding: 0px;
     line-height: 0px;
+}
+
+tr.schedule-exec-today td {
+    background-color: rgba(255, 0, 0, 0.125);
 }

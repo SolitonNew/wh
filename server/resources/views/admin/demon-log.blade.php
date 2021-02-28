@@ -1,3 +1,3 @@
 @foreach($data as $row)
-<div data-id="{{ $row->ID }}">{!! $row->DATA !!}<br></div>
+<div class="demon-log-line" data-id="{{ $row->ID }}">{!! $row->DATA !!}</div>
 @endforeach

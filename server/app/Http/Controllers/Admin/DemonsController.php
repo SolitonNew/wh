@@ -72,9 +72,7 @@ class DemonsController extends Controller
                 $str = '<div class="demon-log-header">'.mb_substr($str, $i1 + 3, $i1 + $i2 - 3).'</div>';
             } else 
             if (mb_strpos($str, '------') !== false) {
-                $str = '<hr class="demon-log-hr">';
-            } else {
-                $str = str_replace('  ', '&nbsp;&nbsp;', $str);
+                $str = '<hr>';
             }
             
             $str = str_replace('[', '<span class="datetime">[', $str);
