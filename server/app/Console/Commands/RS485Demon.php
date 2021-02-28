@@ -57,11 +57,14 @@ class RS485Demon extends Command
         
         while(1) {
             foreach($controllers as $controller) {
-                $s = '['.now()->format('H:i:s').'] '.$controller->NAME;
+                $this->printLine('['.now()->format('H:i:s').'] SYNC. '.$controller->NAME.': OK');
                 if (random_int(0, 10) > 7) {
-                    $s .= ' VARIABLES';
+                    $this->printLine('   >> VARIABLES');
+                } else {
+                    $this->printLine('   >> ');
                 }
-                $this->printLine($s);
+                $this->printLine('   << ');
+                $this->printLine('');
                 usleep(100000);
             }
         }

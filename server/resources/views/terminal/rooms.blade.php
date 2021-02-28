@@ -5,7 +5,7 @@
 <nav aria-label="breadcrumb">
     <ol class="row breadcrumb">
         <li style="flex-grow: 1;">@lang('terminal.menu_home')</li>
-        <li><a href="{{ route('checked') }}">@lang('terminal.menu_checked')</a></li>
+        <li><a href="{{ route('terminal.checked') }}">@lang('terminal.menu_checked')</a></li>
     </ol>
 </nav>
 
@@ -19,7 +19,7 @@
             </div>
             @foreach($group->rooms as $room)
             <div class="list-group-item main-item">
-                <a href="{{ route('room', [$room->id]) }}">{{ $room->titleCrop }}</a>
+                <a href="{{ route('terminal.room', [$room->id]) }}">{{ $room->titleCrop }}</a>
                 @if($room->temperature_id > -1)
                 <div id="variable_{{ $room->temperature_id }}" class="main-item-value" app_control="1">
                     <span class="main-item-value-text">{{ $room->temperature_val }}</span><span class="main-item-value-label">°C</span>

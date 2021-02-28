@@ -68,7 +68,7 @@
             }
             $.ajax({
                 method: "POST",
-                url: "{{ route('variable-set', ['', '']) }}/" + varID + "/" + varVal,
+                url: "{{ route('terminal.variable-set', ['', '']) }}/" + varID + "/" + varVal,
                 data: {_token: '{{ csrf_token() }}'},
             }).done((data)=>{
                 if (data) {
@@ -104,7 +104,7 @@
     let lastVariableID = {{ App\Http\Models\VariableChangesModel::lastVariableID() }};
     
     function loadChanges() {
-        $.ajax({url: '{{ route('variable-changes', ['']) }}/' + lastVariableID, 
+        $.ajax({url: '{{ route("terminal.variable-changes", ['']) }}/' + lastVariableID, 
         success: (data) => {           
             setTimeout(loadChanges, 500);
             
@@ -221,7 +221,7 @@
                             case 'center':
                                 break;
                             case 'right':
-                                window.location = '{{ route("checked") }}';
+                                window.location = '{{ route("terminal.checked") }}';
                                 $('.body-page-main > div').css('opacity', 0);
                                 break;
                         }

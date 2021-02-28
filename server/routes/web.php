@@ -7,31 +7,31 @@ Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::group(['middleware'=>'role:rerminal'], function () {
     /* Отображение сгруппированых данных по комнатам */
     Route::get('/', 'Terminal\RoomsController@index')->name('home');
-    Route::get('/room/{roomID}', 'Terminal\RoomController@index')->name('room');
-    Route::get('/variable/{variableID}', 'Terminal\VariableController@index')->name('variable');
+    Route::get('/room/{roomID}', 'Terminal\RoomController@index')->name('terminal.room');
+    Route::get('/variable/{variableID}', 'Terminal\VariableController@index')->name('terminal.variable');
 
     /* Страница "Избранное" */
-    Route::get('/checked', 'Terminal\CheckedController@index')->name('checked');
+    Route::get('/checked', 'Terminal\CheckedController@index')->name('terminal.checked');
     
     /* Страница выбора переменных для отображения на страницах "Избранное" */
-    Route::get('/checked/edit/add/{selKey?}', 'Terminal\CheckedController@editAdd')->name('checked-edit-add');
-    Route::get('/checked/edit/add-add/{id}', 'Terminal\CheckedController@editAdd_ADD')->name('checked-edit-add-add');
-    Route::get('/checked/edit/add-del/{id}', 'Terminal\CheckedController@editAdd_DEL')->name('checked-edit-add-del');
+    Route::get('/checked/edit/add/{selKey?}', 'Terminal\CheckedController@editAdd')->name('terminal.checked-edit-add');
+    Route::get('/checked/edit/add-add/{id}', 'Terminal\CheckedController@editAdd_ADD')->name('terminal.checked-edit-add-add');
+    Route::get('/checked/edit/add-del/{id}', 'Terminal\CheckedController@editAdd_DEL')->name('terminal.checked-edit-add-del');
 
     /* Страница настройки порядка отображения переменных на странице "Избранное" */
-    Route::get('/checked/edit/order', 'Terminal\CheckedController@editOrder')->name('checked-edit-order');
-    Route::get('/checked/edit/order-up/{id}', 'Terminal\CheckedController@editOrder_UP')->name('checked-edit-order-up');
-    Route::get('/checked/edit/order-down/{id}', 'Terminal\CheckedController@editOrder_DOWN')->name('checked-edit-order-down');
+    Route::get('/checked/edit/order', 'Terminal\CheckedController@editOrder')->name('terminal.checked-edit-order');
+    Route::get('/checked/edit/order-up/{id}', 'Terminal\CheckedController@editOrder_UP')->name('terminal.checked-edit-order-up');
+    Route::get('/checked/edit/order-down/{id}', 'Terminal\CheckedController@editOrder_DOWN')->name('terminal.checked-edit-order-down');
 
     /* Страница настройки цвета переменных по текстовой маске */
-    Route::get('/checked/edit/color', 'Terminal\CheckedController@editColor')->name('checked-edit-color');
-    Route::post('/checked/edit/color-action/{action}', 'Terminal\CheckedController@editColor_ACTION')->name('checked-edit-color-action');
+    Route::get('/checked/edit/color', 'Terminal\CheckedController@editColor')->name('terminal.checked-edit-color');
+    Route::post('/checked/edit/color-action/{action}', 'Terminal\CheckedController@editColor_ACTION')->name('terminal.checked-edit-color-action');
 
     /* Запрос изменений переменных */
-    Route::get('/variable-changes/{lastID}', 'Terminal\VariableController@variableChanges')->name('variable-changes');
+    Route::get('/variable-changes/{lastID}', 'Terminal\VariableController@variableChanges')->name('terminal.variable-changes');
     
     /* Установка значения переменной */
-    Route::post('/variable-set/{varID}/{varValue}', 'Terminal\VariableController@variableSet')->name('variable-set');
+    Route::post('/variable-set/{varID}/{varValue}', 'Terminal\VariableController@variableSet')->name('terminal.variable-set');
 });
 
 Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {

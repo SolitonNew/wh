@@ -30,7 +30,7 @@
             let id = $(e.currentTarget).attr('id').substr(3);
             
             $.ajax({
-                url: '{{ route("checked-edit-order-up", "") }}/' + id,
+                url: '{{ route("terminal.checked-edit-order-up", "") }}/' + id,
             }).done((res) => {
                 if (res == 'OK') {
                     let item = $(e.currentTarget).parent().parent();
@@ -49,7 +49,7 @@
             let id = $(e.currentTarget).attr('id').substr(5);
             
             $.ajax({
-                url: '{{ route("checked-edit-order-down", "") }}/' + id,
+                url: '{{ route("terminal.checked-edit-order-down", "") }}/' + id,
             }).done((res) => {
                 if (res == 'OK') {
                     let item = $(e.currentTarget).parent().parent();

@@ -4,7 +4,7 @@
         <div class="room-item">
             <div class="room-item-name">
                 @if($row->control->typ == 3)
-                <a href="{{ route('variable', $row->data->ID) }}">{{ $row->control->title }}</a>
+                <a href="{{ route('terminal.variable', $row->data->ID) }}">{{ $row->control->title }}</a>
                 @else
                 {{ $row->control->title }}
                 @endif
