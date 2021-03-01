@@ -174,6 +174,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        
+        App\Providers\DemonManagerServiceProvider::class,
 
     ],
 
@@ -225,7 +227,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        
     ],
     
     /*
@@ -244,7 +246,7 @@ return [
     'admin_log_lines_count' => 40,
     
     /*
-     *  Идентификатор переменнойЁ значение которой озвучивается в команде info()
+     *  Идентификатор переменной значение которой озвучивается в команде info()
      */
     'command_info_temp_id' => env('COMMAND_INFO_TEMP_ID', -1),
     

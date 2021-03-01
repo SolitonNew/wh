@@ -98,10 +98,6 @@ return [
     'command-demon-info-temp-znak' => [
         0 => 'мороза',
         1 => 'тепла',
-    ],
-    
-    'observer-demon' => 'Наблюдатель за параметрами системы',
-    'observer-demon-title' => '-- НАБЛЮДАТЕЛЬ ЗА СИСТЕМОЙ --',
-    
+    ],    
     
 ];

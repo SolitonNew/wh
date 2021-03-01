@@ -359,7 +359,6 @@ div.form-control {
 
 .demon-log {
     font-family: 'Ubuntu Mono', 'Consolas', 'Courier New';
-    padding: 1rem;
 }
 
 .demon-log-line {
@@ -382,6 +381,12 @@ div.form-control {
     margin: 1rem 0rem;
     padding: 0px;
     line-height: 0px;
+}
+
+.demon-log-btn-top {
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
 }
 
 tr.schedule-exec-today td {

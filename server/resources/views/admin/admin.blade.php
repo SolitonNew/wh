@@ -231,7 +231,7 @@
     }
 
     let lastVariableID = -1;
-
+    
     function calcLastVariableID() {
         let ls = $('.log-row');
         if (ls.length > 0) {
@@ -246,18 +246,22 @@
                 return ;
             }
 
-            $('#logList').prepend(data);
-            calcLastVariableID();
-
-            /*  Вызываем обработчик, если он зарегистрирован на странице  */
-            if (window.variableChangesHandler) {
-                variableChangesHandler(data);
+            if (data) {
+                let ls = $(data);
+                $('#logList').prepend(ls.hide());
+                ls.slideToggle(250);
+                calcLastVariableID();
+                
+                /*  Вызываем обработчик, если он зарегистрирован на странице  */
+                if (window.variableChangesHandler) {
+                    variableChangesHandler(data);
+                }
+                /*  --------------------------------------------------------  */                
+                
+                $('.log-row:gt({{ config("app.admin_log_lines_count") }})').remove();
             }
-            /*  --------------------------------------------------------  */
 
             setTimeout(loadVariableChanges, {{ config("app.admin_log_update_interval") }});
-
-            $('.log-row:gt({{ config("app.admin_log_lines_count") }})').remove();
         });
     }
 

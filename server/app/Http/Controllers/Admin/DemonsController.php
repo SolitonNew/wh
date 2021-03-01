@@ -5,33 +5,29 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Artisan;
+use App\Classes\DemonManager;
 
 class DemonsController extends Controller
 {
-    static public $demons = [
-        'rs485-demon',
-        'schedule-demon',
-        'command-demon',
-        'observer-demon',
-    ];
-
     /**
      *
      * @param string $id
      * @return type
      */
-    public function index(string $id = null) {
+    public function index(DemonManager $demonManager,  string $id = null) {        
         if (!$id) {
-            $id = self::$demons[0];
+            $id = $demonManager->demons()[0];
             return redirect(route('demons', $id));
         }
-
-        if (!in_array($id, self::$demons)) return 'ERROR';
+        
+        if (!$demonManager->exists($id)) {
+            abort(404);
+        }
 
         $currStat = 0;
         $demons = [];
-        foreach(self::$demons as $dem) {
-            $stat = count($this->_getDemonPID($dem)) ? 1 : 0;
+        foreach($demonManager->demons() as $dem) {
+            $stat = $demonManager->isStarted($dem);
             $demons[] = (object)[
                 'ID' => $dem,
                 'STAT' => $stat,
@@ -54,8 +50,10 @@ class DemonsController extends Controller
      * @param int $lastID
      * @return string
      */
-    public function data(string $id, int $lastID = -1) {
-        if (!in_array($id, self::$demons)) return 'ERROR';
+    public function data(DemonManager $demonManager, string $id, int $lastID = -1) {
+        if (!$demonManager->exists($id)) {
+            abort(404);
+        }
 
         $data = \App\Http\Models\WebLogsModel::whereDemon($id)
                     ->where('ID', '>', $lastID)
@@ -81,12 +79,14 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonStart(string $id) {
-        if (!in_array($id, self::$demons)) return 'ERROR';
+    public function demonStart(DemonManager $demonManager, string $id) {
+        if (!$demonManager->exists($id)) {
+            abort(404);
+        }
 
         try {
-            exec('php '.base_path().'/artisan '.$id.'>/dev/null &');
-            sleep(1);
+            $demonManager->start($id);
+            usleep(250000);
             return 'OK';
         } catch (\Exception $ex) {
             return $ex->getMessage();
@@ -98,14 +98,14 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonStop(string $id) {
-        if (!in_array($id, self::$demons)) return 'ERROR';
+    public function demonStop(DemonManager $demonManager, string $id) {
+        if (!$demonManager->exists($id)) {
+            abort(404);
+        }
 
         try {
-            foreach($this->_getDemonPID($id) as $pid) {
-                exec('kill -9 '.$pid);
-            }
-            sleep(1);
+            $demonManager->stop($id);
+            usleep(250000);
             return 'OK';
         } catch (\Exception $ex) {
             return $ex->getMessage();
@@ -117,47 +117,16 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonRestart(string $id) {
-        if (!in_array($id, self::$demons)) return 'ERROR';
+    public function demonRestart(DemonManager $demonManager, string $id) {
+        if (!$demonManager->exists($id)) {
+            abort(404);
+        }
         
         try {
-            foreach($this->_getDemonPID($id) as $pid) {
-                exec('kill -9 '.$pid);
-            }
-            
-            for ($i = 0; $i < 100; $i++) {
-                if (count($this->_getDemonPID($id)) == 0) {
-                    break;
-                }
-                usleep(50000);
-            }
-            
-            if (count($this->_getDemonPID($id)) == 0) {
-                exec('php '.base_path().'/artisan '.$id.'>/dev/null &');
-                sleep(1);
-            
-                return 'OK';
-            }
-            return 'ERROR';
+            $demonManager->restart($id);
+            return 'OK';
         } catch (\Exception $ex) {
             return $ex->getMessage();
         }
-    }
-
-    /**
-     * 
-     * @param string $id
-     * @return type
-     */
-    private function _getDemonPID(string $id) {
-        $pids = [];
-        exec("ps ax | grep $id | grep -v grep | grep -v 'sh -c '", $outs);
-        foreach($outs as $out) {
-            $a = explode(' ', trim($out));
-            if (count($a)) {
-                $pids[] = $a[0];
-            }
-        }
-        return $pids;
-    }
+    }    
 }
