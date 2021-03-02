@@ -29,5 +29,14 @@ class AppServiceProvider extends ServiceProvider
                         echo (Request::segment(2) == '.$page.') ? "active" : "";
                      ?>';
         });
+        
+        Blade::directive('activeSegment', function ($params) {  // segmend, page
+            $a = explode(', ', $params);
+            $segment = $a[0];
+            $page = trim($a[1]);
+            return '<?php 
+                        echo (Request::segment('.$segment.') == '.$page.') ? "active" : "";
+                     ?>';
+        });
     }
 }
