@@ -6,14 +6,14 @@
  * and open the template in the editor.
  */
 
-namespace App\Console\Commands\DemonCommands;
+namespace App\Library\Demons\Commands;
 
 /**
- * Description of PlayCommand
+ * Description of SpeechCommand
  *
  * @author soliton
  */
-class PlayCommand extends CommandBase {
+class Speech extends CommandBase {
 
     public function execute(string $command, &$output) {
         $output = 'LINES';

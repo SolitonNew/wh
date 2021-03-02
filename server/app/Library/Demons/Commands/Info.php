@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace App\Console\Commands\DemonCommands;
+namespace App\Library\Demons\Commands;
 
 use Lang;
 
@@ -15,7 +15,7 @@ use Lang;
  *
  * @author soliton
  */
-class InfoCommand extends CommandBase {
+class Info extends CommandBase {
     
     /**
      * 

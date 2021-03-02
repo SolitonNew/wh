@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace App\Console\Commands\DemonCommands;
+namespace App\Library\Demons\Commands;
 
 use Log;
 use DB;
@@ -16,7 +16,7 @@ use DB;
  *
  * @author soliton
  */
-class VariableCommand extends CommandBase {
+class Variable extends CommandBase {
     
     public function execute(string $command, &$output) {
         $output = '';

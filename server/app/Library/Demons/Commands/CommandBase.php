@@ -6,18 +6,23 @@
  * and open the template in the editor.
  */
 
-namespace App\Console\Commands\DemonCommands;
+namespace App\Library\Demons\Commands;
 
 /**
- * Description of SpeechCommand
+ * Description of CommandBase
  *
  * @author soliton
  */
-class SpeechCommand extends CommandBase {
-
+abstract class CommandBase {
+    
+    /**
+     * 
+     * @param string $command
+     * @param string $output
+     * @return boolean
+     */
     public function execute(string $command, &$output) {
-        $output = 'LINES';
+        $output = '';
         return false;
     }
-    
 }
