@@ -89,8 +89,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/demon-stop/{id}', 'Admin\DemonsController@demonStop')->name('demon-stop');
     Route::get('/demon-restart/{id}', 'Admin\DemonsController@demonRestart')->name('demon-restart');
     
-    
-    
     /* Визуализация статистики системы */
-    Route::get('/statistics', 'Admin\StatisticsController@index')->name('statistics');
+    Route::get('/statistics/table/{id?}', 'Admin\Statistics\TableController@index')->name('statistics-table');
+    Route::get('/statistics/chart', 'Admin\Statistics\ChartController@index')->name('statistics-chart');
+    Route::get('/statistics/power', 'Admin\Statistics\PowerController@index')->name('statistics-power');
 });

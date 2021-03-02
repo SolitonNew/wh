@@ -1,19 +1,18 @@
 @extends('admin.admin')
 
-@section('top-menu')
-<div class="strong" style="padding: 0 1rem;">@lang('admin/ow-manager.menu_controller'):</div>
-<select id="controller" class="custom-select" style="width: 200px;">
-    <option value="">@lang('admin/ow-manager.menu_controller_all')</option>
-    @foreach(\App\Http\Models\ControllersModel::orderBy('NAME')->get() as $row)
-    <option value="{{ $row->ID }}" {{ $row->ID == $controllerID ? 'selected' : '' }}>{{ $row->NAME }}</option>
-    @endforeach
-</select>
-@endsection
-
 @section('down-menu')
 <a href="#" class="dropdown-item" onclick="runOwScan(); return false;">@lang('admin/ow-manager.run_ow_scan')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="generateVariablesForOW(); return false;">@lang('admin/ow-manager.generate_ow_vars')</a>
+@endsection
+
+@section('top-menu')
+<div class="nav nav-tabs navbar-top-menu-tab">
+    <a class="nav-link {{ !$controllerID ? 'active' : '' }}" href="{{ route('ow-manager', "") }}">@lang('admin/ow-manager.menu_controller_all')</a>
+    @foreach(\App\Http\Models\ControllersModel::orderBy('NAME')->get() as $row)
+    <a class="nav-link {{ $row->ID == $controllerID ? 'active' : '' }}" href="{{ route('ow-manager', $row->ID) }}">{{ $row->NAME }}</a>
+    @endforeach
+</div>
 @endsection
 
 @section('content')
@@ -51,15 +50,6 @@
 
 <script>
     $(document).ready(() => {
-        $('#controller').on('change', function(){
-            let id = $(this).val();
-            if (id) {
-                window.location = '{{ route("ow-manager", "") }}/' + id;
-            } else {
-                window.location = '{{ route("ow-manager", "") }}';
-            }
-        });
-
         $('#owList tbody tr').on('click', function (e) {
             if ($(e.target).is('a')) return ;
             showInfo($(this).attr('data-id'));

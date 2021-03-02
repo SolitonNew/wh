@@ -11,7 +11,7 @@
         <div class="main-menu">
             <nav class="navbar">
                 <div class="logo">WISE HOUSE</div>
-                <div class="btn-group" style="margin-left: 1rem;margin-right: 1rem;">
+                <div class="btn-group" style="margin-left: 1rem;margin-right: 1.5rem;">
                     <button type="button" class="btn btn-primary dropdown-toggle"
                             data-toggle="dropdown" aria-haspopup="true" style="margin: 0px;"
                             aria-expanded="false">
@@ -22,7 +22,7 @@
                         @yield('down-menu')
                     </div>
                 </div>
-                <div style="display: flex; flex-grow: 1;  align-items: center;justify-content: center;">
+                <div style="display: flex; flex-grow: 1; align-items: center;">
                 @yield('top-menu')
                 </div>
                 <a class="btn btn-primary" href="{{ route('logout') }}" style="margin-right: 0;">@lang('admin/admin.menu_logout')</a>
@@ -74,7 +74,7 @@
                             <img src="/img/menus/terminal-2x.png">
                             <span class="label">@lang('admin/demons.menu')</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('statistics')" href="{{ route('statistics') }}">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('statistics')" href="{{ route('statistics-table') }}">
                             <img src="/img/menus/bar-chart-2x.png">
                             <span class="label">@lang('admin/statistics.menu')</span>
                         </a>

@@ -8,28 +8,22 @@
 @endsection
 
 @section('top-menu')
+<div class="nav nav-tabs navbar-top-menu-tab">
+    @foreach($demons as $row)
+    <a class="nav-link {{ $row->ID == $id ? 'active' : '' }}" href="{{ route('demons', $row->ID) }}">
+        <span style="margin-right: 0.5rem">{{ $row->ID }}</span>
+        @if ($row->STAT)
+        <div class="badge badge-pill badge-success" style="margin-top: 0; margin-bottom: 0px;">RUN</div>
+        @else
+        <div class="badge badge-pill badge-warning" style="margin-top: 0; margin-bottom: 0px;">STOP</div>
+        @endif
+    </a>
+    @endforeach
+</div>
 @endsection
 
 @section('content')
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;position: relative;">
-    <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="demonsList">
-        @foreach($demons as $row)
-        <a href="{{ route('demons', $row->ID) }}"
-            class="tree-item {{ $row->ID == $id ? 'active' : '' }}">
-            <div style="flex-grow: 1; display: flex; flex-direction: column;align-items: stretch;">
-                <div style="display: flex; flex-direction: row; justify-content: space-between;">
-                    <div class="" style="flex-grow: 1; ">{{ $row->ID }}</div>
-                    @if ($row->STAT)
-                    <div class="badge badge-pill badge-success" style="margin-top: 0; margin-bottom: 0px;">RUN</div>
-                    @else
-                    <div class="badge badge-pill badge-warning" style="margin-top: 0; margin-bottom: 0px;">STOP</div>
-                    @endif
-                </div>
-                <small class="text-muted">@lang('admin/demons.'.$row->ID)</small>
-            </div>
-        </a>
-        @endforeach
-    </div>
     <div class="content-body" style="padding: 1rem;" scroll-store="demonsContentScroll">
         <div class="demon-log" style="position: relative;">
             <div class="demon-log-offset" style="position: absolute;"></div>
