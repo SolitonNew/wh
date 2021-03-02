@@ -10,7 +10,7 @@
 @section('top-menu')
 <div class="nav nav-tabs navbar-top-menu-tab">
     @foreach($demons as $row)
-    <a class="nav-link {{ $row->ID == $id ? 'active' : '' }}" href="{{ route('demons', $row->ID) }}">
+    <a class="nav-link upper {{ $row->ID == $id ? 'active' : '' }}" href="{{ route('demons', $row->ID) }}">
         <span style="margin-right: 0.5rem">{{ $row->ID }}</span>
         @if ($row->STAT)
         <div class="badge badge-pill badge-success" style="margin-top: 0; margin-bottom: 0px;">RUN</div>

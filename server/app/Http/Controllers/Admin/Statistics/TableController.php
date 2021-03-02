@@ -7,9 +7,9 @@ use App\Http\Controllers\Controller;
 
 class TableController extends Controller
 {
-    public function index() {
+    public function index(int $id = null) {
         return view('admin.statistics.table.statistics-table', [
-            
+            'id' => $id,
         ]);
     }
 }

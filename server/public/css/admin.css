@@ -32,6 +32,11 @@
     border-bottom: 0px;
 }
 
+.navbar-page {
+    background-color: #ffffff;
+    z-index: auto;
+}
+
 .body-container {
     display: flex;
     flex-direction: row;

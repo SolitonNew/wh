@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="{{ App::getLocale() }}">
     <head>
         <title>WISEHOUSE</title>
         <link rel="shortcut icon" href="/favicon.ico"/>
