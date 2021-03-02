@@ -35,7 +35,7 @@
             <div class="demon-log-offset" style="position: absolute;"></div>
         </div>
     </div>
-    <button class="demon-log-btn-top btn btn-primary" style="display: none;" onclick="demonLogScrollTop()">TOP</button>
+    <button class="demon-log-btn-top btn btn-primary" style="display: none;" onclick="demonLogScrollTop()">@lang('admin/demons.demon_btn_top')</button>
 </div>
 
 <script>

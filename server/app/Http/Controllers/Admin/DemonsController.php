@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Artisan;
-use App\Classes\DemonManager;
+use App\Library\DemonManager;
 
 class DemonsController extends Controller
 {

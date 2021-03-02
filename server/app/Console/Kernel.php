@@ -4,7 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use \App\Http\Controllers\Admin\DemonsController;
+use \App\Library\DemonManager;
 use DB;
 use Log;
 
@@ -35,8 +35,8 @@ class Kernel extends ConsoleKernel
         })->everyMinute();
         
         // Прочистка "web_logs"
-        $schedule->call(function () {
-            foreach(DemonsController::$demons as $demon) {
+        $schedule->call(function (DemonManager $demonManager) {           
+            foreach($demonManager->demons() as $demon) {
                 $rows = DB::select('select ID
                                       from web_logs 
                                      where DEMON = "'.$demon.'"

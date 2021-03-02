@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Classes;
+namespace App\Library;
 
 use Log;
 
@@ -29,7 +29,7 @@ class DemonManager {
     }
     
     /**
-     * Проверяет корректность ИД сверя со списком зарегистрированных
+     * Проверяет корректность ИД сверяя со списком зарегистрированных
      * 
      * @param type $id
      * @return type
