@@ -22,7 +22,7 @@ class CamsController extends Controller
         
         $data = DB::select($sql);
         
-        return view('admin.cams', [
+        return view('admin.cams.cams', [
             'data' => $data,
         ]);
     }
@@ -80,7 +80,7 @@ class CamsController extends Controller
                     'ALERT_VAR_ID' => -1,
                 ];
             }
-            return view('admin.cam-edit', [
+            return view('admin.cams.cam-edit', [
                 'item' => $item,
             ]);
         }

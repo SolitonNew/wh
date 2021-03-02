@@ -15,7 +15,7 @@ class UsersController extends Controller
     public function index() {
         $data = \App\Http\Models\UsersModel::orderBy('LOGIN', 'asc')->get();
         
-        return view('admin.users', [
+        return view('admin.users.users', [
             'data' => $data,
         ]);
     }
@@ -69,7 +69,7 @@ class UsersController extends Controller
                     'ACCESS' => 1,
                 ];
             }
-            return view('admin.user-edit', [
+            return view('admin.users.user-edit', [
                 'item' => $item,
             ]);
         }

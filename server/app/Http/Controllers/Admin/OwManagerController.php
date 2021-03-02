@@ -52,7 +52,7 @@ class OwManagerController extends Controller
                                           order by v.CHANNEL');
         }
         
-        return view('admin.ow-manager', [
+        return view('admin.ow-manager.ow-manager', [
             'controllerID' => $controllerID,
             'data' => $data,
         ]);
@@ -101,7 +101,7 @@ class OwManagerController extends Controller
                 
         $item->VARIABLES = DB::select($sql);
         
-        return view('admin.ow-manager-info', [
+        return view('admin.ow-manager.ow-manager-info', [
             'item' => $item,
         ]);
     }

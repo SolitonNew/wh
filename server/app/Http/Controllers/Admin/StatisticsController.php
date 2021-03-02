@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 class StatisticsController extends Controller
 {
     public function index() {
-        return view('admin.statistics', [
+        return view('admin.statistics.statistics', [
             
         ]);
     }

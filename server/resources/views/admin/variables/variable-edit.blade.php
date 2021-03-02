@@ -276,10 +276,7 @@
     }
 
     function variableDelete() {
-        confirm("@lang('dialogs.confirm_title')",
-                "@lang('admin/variables.variable_delete_confirm')",
-                "@lang('dialogs.btn_yes')",
-                "@lang('dialogs.btn_no')", () => {
+        confirmYesNo("@lang('admin/variables.variable_delete_confirm')", () => {
             $.ajax('{{ route("variable-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {

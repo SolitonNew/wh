@@ -37,6 +37,7 @@ Route::group(['middleware'=>'role:rerminal'], function () {
 Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     /* Индексный контроллер */
     Route::get('/', 'Admin\IndexController@index');
+    Route::get('/variable-changes/{lastID}', 'Admin\IndexController@variableChanges')->name('variable-changes');
     
     /* Раздел "Планирование" помещений */
     Route::get('/plan/{id?}', 'Admin\PlanController@index')->name('plan');
@@ -51,9 +52,6 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/variables-channel-list/{rom}/{ow_id?}', 'Admin\VariablesController@channelList')->name('variables-channel-list');
     Route::match(['get', 'post'], '/variable-edit/{id}', 'Admin\VariablesController@edit')->name('variable-edit');
     Route::get('/variable-delete/{id}', 'Admin\VariablesController@delete')->name('variable-delete');
-    
-    /* Запрос изменений переменных */
-    Route::get('/variable-changes/{lastID}', 'Admin\VariablesController@variableChanges')->name('variable-changes');
     
     /* Управление скриптами (сценариями) системы */
     Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('scripts');

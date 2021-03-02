@@ -130,10 +130,7 @@
     }
 
     function planDelete() {
-        confirm('@lang("dialogs.confirm_title")',
-                '@lang("admin/plan.plan-delete-confirm")',
-                '@lang("dialogs.btn_yes")',
-                '@lang("dialogs.btn_no")', () => {
+        confirmYesNo("@lang('admin/plan.plan-delete-confirm')", () => {
             $.ajax('{{ route("plan-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {

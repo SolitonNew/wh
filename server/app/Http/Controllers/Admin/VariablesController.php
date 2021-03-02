@@ -36,7 +36,7 @@ class VariablesController extends Controller
         
         $data = DB::select($sql);
         
-        return view('admin.variables', [
+        return view('admin.variables.variables', [
             'partID' => $partID,
             'data' => $data,
         ]);
@@ -115,7 +115,7 @@ class VariablesController extends Controller
                 'variable' => 'variable',
             ];
             
-            return view('admin.variable-edit', [
+            return view('admin.variables.variable-edit', [
                 'item' => $item,
                 'typs' => $typs,
             ]);            
@@ -205,10 +205,5 @@ class VariablesController extends Controller
         }
         
         return 'ERROR';
-    }
-    
-    public function variableChanges(int $lastID) {
-        \App\Http\Models\VariableChangesModel::setLastVariableID($lastID);
-        return view('admin.log');
     }
 }

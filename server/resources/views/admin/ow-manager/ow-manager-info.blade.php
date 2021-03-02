@@ -74,10 +74,7 @@
     });
 
     function owManagerDelete() {
-        confirm("@lang('dialogs.confirm_title')",
-                "@lang('admin/ow-manager.ow-manager-delete-confirm')",
-                "@lang('dialogs.btn_yes')",
-                "@lang('dialogs.btn_no')", () => {
+        confirmYesNo("@lang('admin/ow-manager.ow-manager-delete-confirm')", () => {
             $.ajax('{{ route("ow-manager-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {

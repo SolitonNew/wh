@@ -29,7 +29,7 @@ class PlanController extends Controller
             $row->H = $v->H;
         }
         
-        return view('admin.plan', [
+        return view('admin.plan.plan', [
             'partID' => $id,
             'data' => $data,
         ]);
@@ -108,7 +108,7 @@ class PlanController extends Controller
                 ]);
             }
             
-            return view('admin.plan-edit', [
+            return view('admin.plan.plan-edit', [
                 'item' => $item,
                 'itemBounds' => json_decode($item->BOUNDS),
             ]);
@@ -151,7 +151,7 @@ class PlanController extends Controller
                 ]);
             }
         } else {
-            return view('admin.plan-move-childs', [
+            return view('admin.plan.plan-move-childs', [
                 'partID' => $id,
             ]);
         }
@@ -169,7 +169,7 @@ class PlanController extends Controller
         } else {
             $data = DB::select("select p.* from plan_parts p where p.PARENT_ID = $id order by p.ORDER_NUM");
             
-            return view('admin.plan-order', [
+            return view('admin.plan.plan-order', [
                 'partID' => $id,
                 'data' => $data,
             ]);

@@ -14,4 +14,14 @@ class IndexController extends Controller
     public function index() {
         return redirect(route('plan'));
     }
+    
+    /**
+     * 
+     * @param int $lastID
+     * @return type
+     */
+    public function variableChanges(int $lastID) {
+        \App\Http\Models\VariableChangesModel::setLastVariableID($lastID);
+        return view('admin.log');
+    }
 }

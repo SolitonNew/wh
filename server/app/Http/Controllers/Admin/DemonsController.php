@@ -37,7 +37,7 @@ class DemonsController extends Controller
             }
         }
 
-        return view('admin.demons', [
+        return view('admin.demons.demons', [
             'id' => $id,
             'stat' => $currStat,
             'demons' => $demons,
@@ -69,7 +69,7 @@ class DemonsController extends Controller
             $row->DATA = $str;
         }
 
-        return view('admin.demon-log', [
+        return view('admin.demons.demon-log', [
             'data' => $data,
         ]);
     }

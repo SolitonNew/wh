@@ -142,10 +142,7 @@
     }
 
     function scheduleDelete() {
-        confirm("@lang('dialogs.confirm_title')",
-                "@lang('admin/schedule.schedule-delete-confirm')",
-                "@lang('dialogs.btn_yes')",
-                "@lang('dialogs.btn_no')", () => {
+        confirmYesNo("@lang('admin/schedule.schedule-delete-confirm')", () => {
             $.ajax('{{ route("schedule-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {

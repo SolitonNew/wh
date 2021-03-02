@@ -60,7 +60,7 @@ class ScriptsController extends Controller
             $sourceCode = '';
         }
         
-        return view('admin.scripts', [
+        return view('admin.scripts.scripts', [
             'scriptID' => $scriptID,
             'list' => $list,
             'data' => $item,
@@ -106,7 +106,7 @@ class ScriptsController extends Controller
                  ];
             }
             
-            return view('admin.script-edit', [
+            return view('admin.scripts.script-edit', [
                 'item' => $item,
             ]);
         }
@@ -193,7 +193,7 @@ class ScriptsController extends Controller
                 $data[] = $row->VARIABLE_ID;
             }
             
-            return view('admin.script-events', [
+            return view('admin.scripts.script-events', [
                 'id' => $id,
                 'data' => $data,
             ]);

@@ -51,7 +51,7 @@ class ScheduleController extends Controller
             $row->INTERVAL_TEXT = $s;
         }
         
-        return view('admin.schedule', [
+        return view('admin.schedule.schedule', [
             'data' => $data,
         ]);
     }
@@ -102,7 +102,7 @@ class ScheduleController extends Controller
                     'ENABLE' => 0,
                 ];
             }
-            return view('admin.schedule-edit', [
+            return view('admin.schedule.schedule-edit', [
                 'item' => $item,
             ]);
         }

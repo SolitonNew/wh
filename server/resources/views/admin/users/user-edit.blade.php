@@ -101,10 +101,7 @@
     }
 
     function userDelete() {
-        confirm("@lang('dialogs.confirm_title')",
-                "@lang('admin/users.user-delete-confirm')",
-                "@lang('dialogs.btn_yes')",
-                "@lang('dialogs.btn_no')", () => {
+        confirmYesNo("@lang('admin/users.user-delete-confirm')", () => {
             $.ajax('{{ route("user-delete", $item->ID) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
