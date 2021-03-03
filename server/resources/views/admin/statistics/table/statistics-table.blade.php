@@ -25,7 +25,7 @@
         </form>
     </div>
     <div style="flex-grow: 1; overflow: hidden;">
-        <div style="display: flex; flex-direction: row; height: 100%;">
+        <div style="position:relative; display: flex; flex-direction: row; height: 100%;">
             <div class="tree" style="width: 320px; min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" 
                  scroll-store="statisticsTabVarList">
                 @foreach(\App\Http\Models\VariablesModel::orderBy('NAME')->get() as $row)
@@ -52,7 +52,7 @@
                                     <span class="text-primary">({{ count($data) }})</span>    
                                 </span>
                             </th>
-                            <th scope="col" style="width: 200px;"><span>@lang('admin/statistics.table_CHANGE_DATE')</span></th>
+                            <th scope="col" style="width: 180px;"><span>@lang('admin/statistics.table_CHANGE_DATE')</span></th>
                             <th scope="col" style="width: 100px;"><span>@lang('admin/statistics.table_VALUE')</span></th>
                         </tr>
                     </thead>
@@ -67,10 +67,17 @@
                     </tbody>
                 </table>
             </div>
+            <div class="statistics-table-right">
+                <div class="statistics-table-chart">
+                    <canvas id="statisticsTableChart" style="width: 100%; height: 100%;"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<script type="text/javascript" src="/js/Chart.min.js"></script>
+<script type="text/javascript" src="/js/Chart.bundle.min.js"></script>
 <script>
     $(document).ready(() => {
         $('#varFiltr').val(getCookie('statisticsVarFiltr'));
@@ -110,7 +117,50 @@
         
         $('#statisticsVarList tbody tr').on('click', function () {
             dialog('{{ route("statistics-table-value-view", "") }}/' + $(this).data('id'));
-        });
+        });        
+        
+        initStatisticsTableChart();
     });
+    
+    function initStatisticsTableChart() {
+        var ctx = document.getElementById('statisticsTableChart');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    data: [
+                    @foreach($data as $row)
+                    {x: '{{ $row->CHANGE_DATE }}', y: {{ $row->VALUE }} },
+                    @endforeach
+                    ],
+                    lineTension: 0,
+                }]
+            },
+            options: {
+                legend: {display: false},
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            unit: 'hour',
+                            displayFormats: {
+                                hour: 'HH:mm',
+                            }
+                        },
+                        position: 'bottom',
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            stepSize: 1.0,
+                        }
+                    }]
+                },
+                tooltips: {
+                    enabled: false,
+                }
+            }
+        });
+    }
+    
 </script>
 @endsection

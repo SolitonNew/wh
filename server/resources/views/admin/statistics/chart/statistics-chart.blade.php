@@ -7,5 +7,10 @@
 @endsection
 
 @section('page-content')
-CHART
+<div style="height: 100%; overflow-y: auto;" scroll-store="statisticsChartList">
+    @foreach($panels as $panel)
+    <div class="statistics-chart-panel" style="height: 250px;">
+    </div>
+    @endforeach
+</div>
 @endsection

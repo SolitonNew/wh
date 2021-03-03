@@ -420,3 +420,18 @@ div.form-control {
 tr.schedule-exec-today td {
     background-color: rgba(255, 0, 0, 0.125);
 }
+
+.statistics-chart-panel {
+    border-bottom: 1px solid rgba(0,0,0,0.125);
+}
+.statistics-table-right {
+    width: 540px;
+    border-left: 1px solid rgba(0,0,0,0.125);
+}
+
+.statistics-table-chart {
+    height: 280px;
+    border-bottom: 1px solid rgba(0,0,0,0.125);
+    padding: 1rem;
+    padding-left: 0.5rem;
+}
