@@ -101,7 +101,7 @@
         $('.body-page-main > div').css('opacity', 1);
     });
     
-    let lastVariableID = {{ App\Http\Models\VariableChangesModel::lastVariableID() }};
+    let lastVariableID = {{ App\Http\Models\VariableChangesMemModel::lastVariableID() }};
     
     function loadChanges() {
         $.ajax({url: '{{ route("terminal.variable-changes", ['']) }}/' + lastVariableID, 

@@ -15,9 +15,9 @@
         <form class="navbar-page-group" method="POST" action="{{ route('statistics-table', $id) }}">
             {{ csrf_field() }}
             <span class="strong">@lang('admin/statistics.page-table-date-filtr'):</span>
-            <input type="date" class="form-control" style="width: auto;" name="DATE" value="{{ old('DATE') }}">
-            <span class="strong">@lang('admin/statistics.page-table-sql-filtr'):</span>
-            <input type="text" class="form-control" style="width: auto;" name="SQL" value="{{ old('SQL') }}">
+            <input type="date" class="form-control" style="width: auto;" name="DATE" value="{{ Session::get('DATE') }}" required="true">
+            <span>@lang('admin/statistics.page-table-sql-filtr'):</span>
+            <input type="text" class="form-control" style="width: auto;" name="SQL" value="{{ Session::get('SQL') }}">
             <button class="btn btn-primary">@lang('admin/statistics.page-table-show')</button>
         </form>
     </div>
@@ -40,7 +40,24 @@
                 @endforeach
             </div>
             <div class="content-body">
-
+                <table id="statisticsVarList" class="table table-sm table-hover table-bordered table-fixed-header">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 50px;"><span>@lang('admin/statistics.table_ID')</span></th>
+                            <th scope="col" style="width: 200px;"><span>@lang('admin/statistics.table_CHANGE_DATE')</span></th>
+                            <th scope="col" style="width: 100px;"><span>@lang('admin/statistics.table_VALUE')</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($data as $row)
+                        <tr data-id="{{ $row->ID }}">
+                            <td>{{ $row->ID }}</td>
+                            <td>{{ $row->CHANGE_DATE }}</td>
+                            <td>{{ $row->VALUE }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

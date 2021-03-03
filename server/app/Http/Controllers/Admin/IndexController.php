@@ -21,7 +21,7 @@ class IndexController extends Controller
      * @return type
      */
     public function variableChanges(int $lastID) {
-        \App\Http\Models\VariableChangesModel::setLastVariableID($lastID);
+        \App\Http\Models\VariableChangesMemModel::setLastVariableID($lastID);
         return view('admin.log');
     }
 }
