@@ -16,20 +16,28 @@ class TableController extends Controller
             Session::put('SQL', $request->post('SQL'));
         }
         
-        $data = \App\Http\Models\VariableChangesModel::whereVariableId($id);
+        $query = \App\Http\Models\VariableChangesModel::whereVariableId($id);
         
         if (Session::get('DATE')) {
             $d = Carbon::parse(Session::get('DATE'))->startOfDay();
-            $data->whereBetween('CHANGE_DATE', [$d, $d->copy()->addDay()]);
+            $query->whereBetween('CHANGE_DATE', [$d, $d->copy()->addDay()]);
         }
         
         if (Session::get('SQL')) {
-            $data->whereRaw('VALUE '.Session::get('SQL'));
+            $query->whereRaw('VALUE '.Session::get('SQL'));
+        }
+        
+        $errors = [];
+        try {
+            $data = $query->orderBy('ID', 'asc')->get();
+        } catch (\Exception $ex) {
+            $errors['SQL'] = $ex->getMessage();
+            $data = [];
         }
         
         return view('admin.statistics.table.statistics-table', [
             'id' => $id,
-            'data' => $data->orderBy('ID', 'asc')->get(),
-        ]);
+            'data' => $data,
+        ])->withErrors($errors);
     }
 }

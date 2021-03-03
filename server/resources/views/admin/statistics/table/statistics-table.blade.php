@@ -17,7 +17,10 @@
             <span class="strong">@lang('admin/statistics.page-table-date-filtr'):</span>
             <input type="date" class="form-control" style="width: auto;" name="DATE" value="{{ Session::get('DATE') }}" required="true">
             <span>@lang('admin/statistics.page-table-sql-filtr'):</span>
-            <input type="text" class="form-control" style="width: auto;" name="SQL" value="{{ Session::get('SQL') }}">
+            <div>
+                <input type="text" class="form-control {{ $errors->first('SQL') ? 'is-invalid' : '' }}" 
+                       style="width: auto;" name="SQL" value="{{ Session::get('SQL') }}">
+            </div>
             <button class="btn btn-primary">@lang('admin/statistics.page-table-show')</button>
         </form>
     </div>
@@ -65,6 +68,8 @@
 
 <script>
     $(document).ready(() => {
+        $('#varFiltr').val(getCookie('statisticsVarFiltr'));
+        
         $('#varFiltr').on('input', function () {
             let s = $(this).val().toUpperCase();
             if (s == '') {
@@ -93,6 +98,9 @@
                     }
                 });
             }
+            
+            setCookie('statisticsVarFiltr', $(this).val());
+            
         }).trigger('input');
     });
 </script>
