@@ -37,6 +37,17 @@
     z-index: auto;
 }
 
+.navbar-page-group {
+    display: flex; 
+    flex-direction: row; 
+    align-items: center; 
+    padding: 0px 1rem;
+}
+
+.navbar-page-group * {
+    margin-right: 1rem;
+}
+
 .body-container {
     display: flex;
     flex-direction: row;

@@ -90,7 +90,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/demon-restart/{id}', 'Admin\DemonsController@demonRestart')->name('demon-restart');
     
     /* Визуализация статистики системы */
-    Route::get('/statistics/table/{id?}', 'Admin\Statistics\TableController@index')->name('statistics-table');
+    Route::match(['get', 'post'], '/statistics/table/{id?}', 'Admin\Statistics\TableController@index')->name('statistics-table');
     Route::get('/statistics/chart', 'Admin\Statistics\ChartController@index')->name('statistics-chart');
     Route::get('/statistics/power', 'Admin\Statistics\PowerController@index')->name('statistics-power');
 });

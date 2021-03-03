@@ -14,7 +14,7 @@
             <tr>
                 <th scope="col" style="width: 50px;"><span>@lang('admin/cams.table_ID')</span></th>
                 <th scope="col" style="width: 100px;"><span>@lang('admin/cams.table_NAME')</span></th>
-                <th scope="col" style="width: 300px;"><span>@lang('admin/cams.table_URL')</span></th>
+                <th scope="col" style="width: 800px;"><span>@lang('admin/cams.table_URL')</span></th>
                 <th scope="col" style="width: 100px;"><span>@lang('admin/cams.table_ALERT_VAR_ID')</span></th>
             </tr>
         </thead>
