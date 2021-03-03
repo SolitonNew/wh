@@ -42,11 +42,16 @@
                 </a>
                 @endforeach
             </div>
-            <div class="content-body">
+            <div class="content-body" scroll-store="statisticsTabVarValues">
                 <table id="statisticsVarList" class="table table-sm table-hover table-bordered table-fixed-header">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 50px;"><span>@lang('admin/statistics.table_ID')</span></th>
+                            <th scope="col" style="width: 100px;">
+                                <span>
+                                    <span>@lang('admin/statistics.table_ID')</span>
+                                    <span class="text-primary">({{ count($data) }})</span>    
+                                </span>
+                            </th>
                             <th scope="col" style="width: 200px;"><span>@lang('admin/statistics.table_CHANGE_DATE')</span></th>
                             <th scope="col" style="width: 100px;"><span>@lang('admin/statistics.table_VALUE')</span></th>
                         </tr>
@@ -102,6 +107,10 @@
             setCookie('statisticsVarFiltr', $(this).val());
             
         }).trigger('input');
+        
+        $('#statisticsVarList tbody tr').on('click', function () {
+            dialog('{{ route("statistics-table-value-view", "") }}/' + $(this).data('id'));
+        });
     });
 </script>
 @endsection

@@ -10,9 +10,11 @@ return [
     'page-table-sql-filtr' => 'SQL выражение',
     'page-table-show' => 'Применить',
     
+    'table_view_title' => 'Свойства записи',
     'table_ID' => 'ID',
     'table_CHANGE_DATE' => 'Дата/Время',
     'table_VALUE' => 'Значение',
+    'table-value-delete-confirm' => 'Удалить текущую запись?',
     
     'page-chart' => 'График',
     'page-power' => 'Потребление',

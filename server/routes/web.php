@@ -91,6 +91,9 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     /* Визуализация статистики системы */
     Route::match(['get', 'post'], '/statistics/table/{id?}', 'Admin\Statistics\TableController@index')->name('statistics-table');
+    Route::get('/statistics/table-value-view/{id}', 'Admin\Statistics\TableController@valueView')->name('statistics-table-value-view');
+    Route::get('/statistics/table-value-delete/{id}', 'Admin\Statistics\TableController@valueDelete')->name('statistics-table-value-delete');
+    
     Route::get('/statistics/chart', 'Admin\Statistics\ChartController@index')->name('statistics-chart');
     Route::get('/statistics/power', 'Admin\Statistics\PowerController@index')->name('statistics-power');
 });

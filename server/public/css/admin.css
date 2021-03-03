@@ -159,7 +159,7 @@
     border-bottom-width: 1px;
 }
 
-.table thead th span {
+.table thead th > span {
     display: block;
     padding: 0.5rem;
 }

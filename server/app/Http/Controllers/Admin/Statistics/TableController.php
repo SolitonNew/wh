@@ -9,6 +9,12 @@ use Session;
 
 class TableController extends Controller
 {
+    /**
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return type
+     */
     public function index(Request $request, int $id = null) {
         
         if ($request->method() == 'POST') {
@@ -39,5 +45,33 @@ class TableController extends Controller
             'id' => $id,
             'data' => $data,
         ])->withErrors($errors);
+    }
+    
+    /**
+     * 
+     * @param int $id
+     * @return type
+     */
+    public function valueView(int $id) {
+        $item = \App\Http\Models\VariableChangesModel::find($id);
+        
+        return view('admin/statistics/table/statistics-table-value', [
+            'item' => $item,
+        ]);
+    }
+    
+    /**
+     * 
+     * @param int $id
+     * @return string
+     */
+    public function valueDelete(int $id) {
+        try {
+            $item = \App\Http\Models\VariableChangesModel::find($id);
+            $item->delete();
+            return 'OK';
+        } catch (\Exception $ex) {
+            return 'ERROR';
+        }
     }
 }
