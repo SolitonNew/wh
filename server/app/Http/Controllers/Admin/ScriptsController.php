@@ -206,9 +206,7 @@ class ScriptsController extends Controller
      */
     public function scriptTest(Request $request) {
         try {
-            foreach(explode("\n", $request->post('COMMAND')) as $command) {
-                \App\Http\Models\ExecuteModel::command($command);
-            }            
+            \App\Http\Models\ExecuteModel::command($request->post('COMMAND'));
             return 'OK';
         } catch (\Exception $ex) {
             return 'ERROR';
