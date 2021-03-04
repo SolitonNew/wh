@@ -15,11 +15,11 @@
         <form class="navbar-page-group" method="POST" action="{{ route('statistics-table', $id) }}">
             {{ csrf_field() }}
             <span class="strong">@lang('admin/statistics.page-table-date-filtr'):</span>
-            <input type="date" class="form-control" style="width: auto;" name="DATE" value="{{ Session::get('DATE') }}" required="true">
+            <input type="date" class="form-control" style="width: auto;" name="DATE" value="{{ Session::get('STATISTICS-TABLE-DATE') }}" required="true">
             <span>@lang('admin/statistics.page-table-sql-filtr'):</span>
             <div>
                 <input type="text" class="form-control {{ $errors->first('SQL') ? 'is-invalid' : '' }}" 
-                       style="width: auto;" name="SQL" value="{{ Session::get('SQL') }}">
+                       style="width: auto;" name="SQL" value="{{ Session::get('STATISTICS-TABLE-SQL') }}">
             </div>
             <button class="btn btn-primary">@lang('admin/statistics.page-table-show')</button>
         </form>
@@ -67,11 +67,13 @@
                     </tbody>
                 </table>
             </div>
+            @if(count($data))
             <div class="statistics-table-right">
                 <div class="statistics-table-chart">
                     <canvas id="statisticsTableChart" style="width: 100%; height: 100%;"></canvas>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>
@@ -119,7 +121,9 @@
             dialog('{{ route("statistics-table-value-view", "") }}/' + $(this).data('id'));
         });        
         
+        @if(count($data))
         initStatisticsTableChart();
+        @endif
     });
     
     function initStatisticsTableChart() {

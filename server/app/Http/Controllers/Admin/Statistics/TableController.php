@@ -16,21 +16,28 @@ class TableController extends Controller
      * @return type
      */
     public function index(Request $request, int $id = null) {
+        if ($id) {
+            Session::put('STATISTICS-TABLE-ID', $id);
+        } else {
+            if (Session::get('STATISTICS-TABLE-ID')) {
+                return redirect(route('statistics-table', Session::get('STATISTICS-TABLE-ID')));
+            }
+        }
         
         if ($request->method() == 'POST') {
-            Session::put('DATE', $request->post('DATE'));
-            Session::put('SQL', $request->post('SQL'));
+            Session::put('STATISTICS-TABLE-DATE', $request->post('DATE'));
+            Session::put('STATISTICS-TABLE-SQL', $request->post('SQL'));
         }
         
         $query = \App\Http\Models\VariableChangesModel::whereVariableId($id);
         
-        if (Session::get('DATE')) {
-            $d = Carbon::parse(Session::get('DATE'))->startOfDay();
+        if (Session::get('STATISTICS-TABLE-DATE')) {
+            $d = Carbon::parse(Session::get('STATISTICS-TABLE-DATE'))->startOfDay();
             $query->whereBetween('CHANGE_DATE', [$d, $d->copy()->addDay()]);
         }
         
-        if (Session::get('SQL')) {
-            $query->whereRaw('VALUE '.Session::get('SQL'));
+        if (Session::get('STATISTICS-TABLE-SQL')) {
+            $query->whereRaw('VALUE '.Session::get('STATISTICS-TABLE-SQL'));
         }
         
         $errors = [];
