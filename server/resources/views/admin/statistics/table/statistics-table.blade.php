@@ -57,13 +57,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($data as $row)
+                        @forelse($data as $row)
                         <tr data-id="{{ $row->ID }}">
                             <td>{{ $row->ID }}</td>
                             <td>{{ $row->CHANGE_DATE }}</td>
                             <td>{{ $row->VALUE }}</td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr class="table-empty">
+                            <td colspan="3">@lang('dialogs.table_empty')</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -118,6 +122,7 @@
         }).trigger('input');
         
         $('#statisticsVarList tbody tr').on('click', function () {
+            if ($(this).hasClass('table-empty')) return ;
             dialog('{{ route("statistics-table-value-view", "") }}/' + $(this).data('id'));
         });
         

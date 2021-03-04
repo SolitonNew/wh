@@ -29,7 +29,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $row)
+            @forelse($data as $row)
             <tr data-id="{{ $row->ID }}">
                 <td>{{ $row->ID }}</td>
                 <td>{{ $row->CONTROLLER_NAME }}</td>
@@ -42,7 +42,11 @@
                     @endforeach
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr class="table-empty">
+                <td colspan="6">@lang('dialogs.table_empty')</td>
+            </tr>  
+            @endforelse
         </tbody>
     </table>
 </div>
@@ -51,6 +55,7 @@
 <script>
     $(document).ready(() => {
         $('#owList tbody tr').on('click', function (e) {
+            if ($(this).hasClass('table-empty')) return ;
             if ($(e.target).is('a')) return ;
             showInfo($(this).attr('data-id'));
         });

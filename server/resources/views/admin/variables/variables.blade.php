@@ -31,7 +31,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($data as $row)
+                @forelse($data as $row)
                 <tr data-id="{{ $row->ID }}" class="{{ $row->WITH_EVENTS ? 'row-with-events' : '' }}">
                     <td>{{ $row->ID }}</td>
                     <td>{{ $row->CONTROLLER_NAME }}</td>
@@ -43,7 +43,11 @@
                     <td>{{ $row->VALUE }}</td>
                     <td>{{ $row->CHANNEL }}</td>
                 </tr>
-                @endforeach
+                @empty
+                <tr class="table-empty">
+                    <td colspan="9">@lang('dialogs.table_empty')</td>
+                </tr>                
+                @endforelse
             </tbody>
         </table>
     </div>
@@ -53,9 +57,9 @@
     let currentPartID = '{{ $partID }}';
 
     $(document).ready(() => {
-        $('#variable_table tbody tr').on('click', (e) => {
-            let id = $(e.currentTarget).attr('data-id');
-            dialog('{{ route("variable-edit", "") }}/' + id);
+        $('#variable_table tbody tr').on('click', function () {
+            if ($(this).hasClass('table-empty')) return ;
+            dialog('{{ route("variable-edit", "") }}/' + $(this).data('id'));
         });
 
         $('.tree a').on('click', (e) => {

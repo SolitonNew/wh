@@ -183,6 +183,20 @@
     white-space: nowrap;
 }
 
+tr.table-empty {
+    
+}
+
+tr.table-empty td {
+    cursor: default;
+    padding: 1.5rem;
+    font-weight: bold;
+}
+
+tr.table-empty:hover td {
+    background-color: #ffffff;
+}
+
 .row-with-events td {
     background-color: rgba(255, 255, 0, 0.125);
 }
@@ -423,7 +437,7 @@ tr.schedule-exec-today td {
 
 .statistics-table-right {
     position: absolute;
-    width: calc(100% - 790px);
+    width: calc(100% - 800px);
     top: 1rem;
     right: 2.5rem;
 }
