@@ -29,23 +29,27 @@ class TableController extends Controller
             Session::put('STATISTICS-TABLE-SQL', $request->post('SQL'));
         }
         
-        $query = \App\Http\Models\VariableChangesModel::whereVariableId($id);
-        
-        if (Session::get('STATISTICS-TABLE-DATE')) {
-            $d = Carbon::parse(Session::get('STATISTICS-TABLE-DATE'))->startOfDay();
-            $query->whereBetween('CHANGE_DATE', [$d, $d->copy()->addDay()]);
-        }
-        
-        if (Session::get('STATISTICS-TABLE-SQL')) {
-            $query->whereRaw('VALUE '.Session::get('STATISTICS-TABLE-SQL'));
-        }
-        
+        $date = Session::get('STATISTICS-TABLE-DATE');
+        $sql = Session::get('STATISTICS-TABLE-SQL');
         $errors = [];
-        try {
-            $data = $query->orderBy('ID', 'asc')->get();
-        } catch (\Exception $ex) {
-            $errors['SQL'] = $ex->getMessage();
-            $data = [];
+        $data = [];
+        
+        if ($date) {
+            $query = \App\Http\Models\VariableChangesModel::whereVariableId($id);
+
+            $d = Carbon::parse($date)->startOfDay();
+            $query->whereBetween('CHANGE_DATE', [$d, $d->copy()->addDay()]);
+
+            if ($sql) {
+                $query->whereRaw('VALUE '.$sql);
+            }
+
+            try {
+                $data = $query->orderBy('ID', 'asc')->get();
+            } catch (\Exception $ex) {
+                $errors['SQL'] = $ex->getMessage();
+                $data = [];
+            }
         }
         
         return view('admin.statistics.table.statistics-table', [

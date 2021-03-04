@@ -21,7 +21,7 @@
                 <input type="text" class="form-control {{ $errors->first('SQL') ? 'is-invalid' : '' }}" 
                        style="width: auto;" name="SQL" value="{{ Session::get('STATISTICS-TABLE-SQL') }}">
             </div>
-            <button class="btn btn-primary">@lang('admin/statistics.page-table-show')</button>
+            <button id="statisticsTableBtn" class="btn btn-primary" style="display:none;">@lang('admin/statistics.page-table-show')</button>
         </form>
     </div>
     <div style="flex-grow: 1; overflow: hidden;">
@@ -119,7 +119,11 @@
         
         $('#statisticsVarList tbody tr').on('click', function () {
             dialog('{{ route("statistics-table-value-view", "") }}/' + $(this).data('id'));
-        });        
+        });
+        
+        $('input[name="DATE"], input[name="SQL"]').on('input', () => {
+            $('#statisticsTableBtn').fadeIn(250);
+        });
         
         @if(count($data))
         initStatisticsTableChart();
