@@ -35,7 +35,7 @@ class Kernel extends ConsoleKernel
         })->everyMinute();
         
         // Прочистка "web_logs"
-        $schedule->call(function (DemonManager $demonManager) {           
+        $schedule->call(function (DemonManager $demonManager) {
             foreach($demonManager->demons() as $demon) {
                 $rows = DB::select('select ID
                                       from web_logs 
@@ -51,31 +51,40 @@ class Kernel extends ConsoleKernel
         
         // Прочистка "core_variable_changes_mem"
         $schedule->call(function () {
-            DB::delete('delete from core_variable_changes_mem where CHANGE_DATE < CURRENT_TIMESTAMP - interval 1 day');
+            DB::delete('delete from core_variable_changes_mem
+                         where CHANGE_DATE < CURRENT_TIMESTAMP - interval 1 day');
         })->hourly();
         
         // Прочистка "core_execute"
         $schedule->call(function () {
             DB::delete('delete from core_execute
-                         where ID < (select MAX(ID) from core_execute) - 100');
+                         where ID < (select a.maxID 
+                                       from (select (MAX(ID) - 100) maxID 
+                                               from core_execute) a)');
         })->dailyAt('4:00');
         
         // Прочистка "app_control_sess"
         $schedule->call(function () {
             DB::delete('delete from app_control_sess
-                         where ID < (select MAX(ID) from app_control_sess) - 100');
+                         where ID < (select a.maxID 
+                                       from (select (MAX(ID) - 100) maxID 
+                                               from app_control_sess) a)');
         })->dailyAt('4:00');
         
         // Прочистка "app_control_queue"
         $schedule->call(function () {
             DB::delete('delete from app_control_queue
-                         where ID < (select MAX(ID) from app_control_queue) - 100');
+                         where ID < (select a.maxID 
+                                       from (select (MAX(ID) - 100) maxID 
+                                               from app_control_queue) a)');
         })->dailyAt('4:00');
         
         // Прочистка "app_control_exe_queue"
         $schedule->call(function () {
             DB::delete('delete from app_control_exe_queue
-                         where ID < (select MAX(ID) from app_control_exe_queue) - 100');
+                         where ID < (select a.maxID 
+                                       from (select (MAX(ID) - 100) maxID 
+                                               from app_control_exe_queue) a)');
         })->dailyAt('4:00');
         
     }
