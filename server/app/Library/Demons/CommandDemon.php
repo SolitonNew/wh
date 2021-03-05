@@ -18,37 +18,7 @@ use Log;
  *
  * @author soliton
  */
-class CommandDemon extends BaseDemon {
-    
-    use CommandFunctions\FunctionGet,
-        CommandFunctions\FunctionSet,
-        CommandFunctions\FunctionOn,
-        CommandFunctions\FunctionOff,
-        CommandFunctions\FunctionToggle,
-        CommandFunctions\FunctionPlay,
-        CommandFunctions\FunctionSpeech,
-        CommandFunctions\FunctionInfo,
-        CommandFunctions\FunctionPrint;
-    
-    /**
-     * Зарезервированные короткие команды.
-     * В тексте скрипта команды будут заменены на аналогичные присоединенные 
-     * методы спрефиксом $this->function_[command].
-     * 
-     * @var type 
-     */
-    protected $_functions = [
-        'get', 
-        'set',
-        'on',
-        'off',
-        'toggle',
-        'speech',
-        'play',
-        'info',
-        'print',
-    ];
-    
+class CommandDemon extends BaseDemon {    
     /**
      * 
      */
@@ -73,30 +43,17 @@ class CommandDemon extends BaseDemon {
                     'datetime' => Carbon::now(),
                     'command' => $row->COMMAND,
                 ]));
-                $this->_execute($row->COMMAND);
+                
+                $execute = new \App\Library\Script\PhpExecute($row->COMMAND);
+                $res = $execute->run();
+                if ($res) {
+                    $this->printLine($res);
+                }
+                
                 $lastProcessedID = $row->ID;
             }
             
             usleep(100000);
-        }
-    }
-    
-    /**
-     * 
-     * @param string $command
-     */
-    private function _execute(string $command) {        
-        // Готовим команду для использования внутри нашего класса
-        $parser = new \App\Library\ScriptParser($command, $this->_functions);
-        $command = $parser->convertToPhp('$this->function_');
-        // ---------------------
-
-        try {
-            eval($command);
-        } catch (\ParseError $ex) {
-            $this->printLine($ex->getMessage());
-        } catch (\Throwable $ex) {
-            $this->printLine($ex->getMessage());
         }
     }
 }

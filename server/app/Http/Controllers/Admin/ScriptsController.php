@@ -206,10 +206,11 @@ class ScriptsController extends Controller
      */
     public function scriptTest(Request $request) {
         try {
-            \App\Http\Models\ExecuteModel::command($request->post('COMMAND'));
-            return 'OK';
+            $execute = new \App\Library\Script\PhpExecute($request->post('COMMAND'));
+            $res = $execute->run();
+            return $res ? $res : 'OK';
         } catch (\Exception $ex) {
-            return 'ERROR';
+            return $ex->getMessage();
         }
     }
 }

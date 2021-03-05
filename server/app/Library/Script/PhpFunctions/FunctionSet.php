@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Library\Demons\CommandFunctions;
-
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
+namespace App\Library\Script\PhpFunctions;
+
 use DB;
 
-trait FunctionGet {
+trait FunctionSet {
     /**
      * 
      * @param type $name
-     * @return type
+     * @param type $value
      * @throws \Exception
      */
-    public function function_get($name) {
-        $vars = DB::select("select VALUE from core_variables where NAME = '$name'");
+    public function function_set($name, $value) {
+        $vars = DB::select("select ID from core_variables where NAME = '$name'");
         if (count($vars)) {
-            return $vars[0]->VALUE;
+            DB::select('CALL CORE_SET_VARIABLE('.$vars[0]->ID.', '.$value.', null)');
         } else {
             throw new \Exception("Variable '$name' not found");
         }

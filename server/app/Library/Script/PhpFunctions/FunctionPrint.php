@@ -6,13 +6,8 @@
  * and open the template in the editor.
  */
 
-namespace App\Library\Demons\CommandFunctions;
+namespace App\Library\Script\PhpFunctions;
 
-/**
- * Description of FunctionPrint
- *
- * @author soliton
- */
 trait FunctionPrint {
     /**
      * 

@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Library\Demons\CommandFunctions;
-
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-trait FunctionOn {
+namespace App\Library\Script\PhpFunctions;
+
+trait FunctionPlay {
     /**
      * 
-     * @param type $name
+     * @param type $media
      */
-    public function function_on($name) {
-        $this->function_set($name, 1);
+    public function function_play($media) {
+        
     }
 }

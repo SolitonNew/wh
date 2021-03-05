@@ -6,12 +6,9 @@
  * and open the template in the editor.
  */
 
-namespace App\Library;
+namespace App\Library\Script\Translators;
 
-use Log;
-
-
-class ScriptParser {
+class Php implements ITranslator {
     
     // Ключевые слова которые точно не переменные
     protected $_specKeys = [
@@ -26,114 +23,54 @@ class ScriptParser {
     ];
     
     /**
-     *
+     * Зарезервированные короткие команды.
+     * В тексте скрипта команды будут заменены на аналогичные присоединенные 
+     * методы спрефиксом $this->function_[command].
+     * 
      * @var type 
      */
-    protected $_source = '';
+    protected $_keywords = [
+        'get', 
+        'set',
+        'on',
+        'off',
+        'toggle',
+        'speech',
+        'play',
+        'info',
+        'print',
+    ];
     
-    /**
-     *
-     * @var type 
-     */
-    protected $_keywords = [];
+    protected $_funcPrefix = '$this->function_';
     
     /**
      * 
-     * @param type $source
-     * @param type $keywords
-     * @param type $funcPrefix
+     * @param type $parts
+     * @return type
      */
-    public function __construct($source, $keywords) {
-        $this->_source = $source;
-        $this->_keywords = $keywords;
-        $this->_parse();
-    }
-    
-    /**
-     *
-     * @var type 
-     */
-    protected $_parts = [];
-    
-    /**
-     *  Разбираем исходный текст на части. 
-     */
-    protected function _parse() {
-        // Разделитель для фрагментации исходного кода
-        $delimeters = [
-            ' ',
-            ';',
-            ',',
-            '"',
-            "'",
-            '+',
-            '-',
-            '*',
-            '/',
-            '=',
-            '(',
-            ')',
-            '{',
-            '}',
-            ':',
-            ';',
-            '?',
-            '&',
-            '|',
-            '!',
-            '$',
-            chr(10),
-            chr(13),
-            chr(9),  // tab
-        ];
-        
-        $this->_parts = [];
-        
-        $s = '';
-        for($i = 0; $i < strlen($this->_source); $i++) {
-            $c = $this->_source[$i];
-            if (in_array($c, $delimeters)) {
-                if ($s !== '') {
-                    $this->_parts[] = $s;
-                }
-                $s = '';
-                $this->_parts[] = $c;
-            } else {
-                $s .= $c;
-            }
-        }
-        
-        if ($s !== '') {
-            $this->_parts[] = $s;
-        }
-    }
-    
-    /**
-     *  Собираем исходный код на основе структуры с учетом особенностей PHP
-     */
-    public function convertToPhp($funcPrefix) {
+    public function translate(&$parts) {
         $res = [];
         
         // Чистим от коментариев
-        $len = count($this->_parts);
+        $len = count($parts);
         for($i = 0; $i < $len; $i++) {
-            $p = $this->_parts[$i];
+            $p = $parts[$i];
             
             $append = false;
             if ($p === '/') { // Возможно начало коментария
                 if ($i < $len - 1) {
-                    if ($this->_parts[$i + 1] == '*') { // Начало многострочного коментария
+                    if ($parts[$i + 1] == '*') { // Начало многострочного коментария
                         for ($k = $i + 1; $k < $len - 1; $k++) {
-                            if ($this->_parts[$k] === '*' && $this->_parts[$k + 1] === '/') { // Коментарий закончился
+                            if ($parts[$k] === '*' && $parts[$k + 1] === '/') { // Коментарий закончился
                                 $i = $k + 1;
                                 $append = true; // Пометим что уже обработали
                                 break;
                             }
                         }
                     } else
-                    if ($this->_parts[$i + 1] == '/') { // Начало однострочного коментария
+                    if ($parts[$i + 1] == '/') { // Начало однострочного коментария
                         for ($k = $i + 1; $k < $len - 1; $k++) {
-                            if ($this->_parts[$k] == chr(10) || $this->_parts[$k] == chr(13)) { // Коментарий закончился
+                            if ($parts[$k] == chr(10) || $parts[$k] == chr(13)) { // Коментарий закончился
                                 $i = $k;
                                 $append = true; // Пометим что уже обработали
                                 break;
@@ -178,7 +115,7 @@ class ScriptParser {
                     } else
                     if ($res[$k] === '(') { // Нашли функцию
                         if (in_array($p, $this->_keywords)) { // Нашли нашу функцию
-                            $res[$i] = $funcPrefix.$p;
+                            $res[$i] = $this->_funcPrefix.$p;
                         } else {
                             //
                         }
@@ -202,12 +139,5 @@ class ScriptParser {
         }
         
         return implode('', $res);
-    }
-    
-    /**
-     *  Собираем исходный код на основе структуры с учетом особенностей C
-     */
-    public function convertToC($funcPrefix) {
-        
     }
 }
