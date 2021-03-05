@@ -111,13 +111,19 @@
     let lastVariableID = {{ App\Http\Models\VariableChangesMemModel::lastVariableID() }};
     
     function loadChanges() {
-        $.ajax({url: '{{ route("terminal.variable-changes", ['']) }}/' + lastVariableID, 
+        $.ajax({url: '{{ route("terminal.variable-changes", '') }}/' + lastVariableID, 
         success: (data) => {           
             setTimeout(loadChanges, 500);
             
-            if ((typeof(data) == 'string') && (data.substr(0, 9) == 'LAST_ID: ')) {
-                lastVariableID = data.substr(9);
-                console.log('LAST_ID = ' + lastVariableID);
+            if (typeof(data) == 'string') {
+                console.log('string');
+                if ((data.substr(0, 15) == '<!DOCTYPE HTML>')) {
+                    window.location.reload();
+                    return ;
+                } else
+                if (data.substr(0, 9) == 'LAST_ID: ') {
+                    lastVariableID = data.substr(9);             
+                }
             } else {
                 for (let i = 0; i < data.length; i++) {
                     let rec = data[i];
