@@ -35,4 +35,55 @@ class PropertysModel extends Model
             return [];
         }
     }
+    
+    /**
+     * 
+     * @return type
+     */
+    static public function runningDemons() {
+        $item = self::whereName('RUNNING_DEMONS')->first();
+        if ($item) {
+            return explode(';', $item->VALUE);
+        } else {
+            return [];
+        }
+    }
+    
+    /**
+     * 
+     * @param type $demon
+     */
+    static public function setAsRunningDemon($demon) {
+        $a = self::runningDemons();
+        if (!in_array($demon, $a)) {
+            $a[] = $demon;
+            $item = self::whereName('RUNNING_DEMONS')->first();
+            if (!$item) {
+                $item = new PropertysModel();
+                $item->NAME = 'RUNNING_DEMONS';
+                $item->COMM = '';
+            }
+            $item->VALUE = implode(';', $a);
+            $item->save();
+        }
+    }
+    
+    /**
+     * 
+     * @param type $demon
+     */
+    static public function setAsStoppedDemon($demon) {
+        $a = self::runningDemons();
+        if (in_array($demon, $a)) {
+            array_splice($a, array_search($demon, $a));
+            $item = self::whereName('RUNNING_DEMONS')->first();
+            if (!$item) {
+                $item = new PropertysModel();
+                $item->NAME = 'RUNNING_DEMONS';
+                $item->COMM = '';
+            }
+            $item->VALUE = implode(';', $a);
+            $item->save();
+        }
+    }
 }

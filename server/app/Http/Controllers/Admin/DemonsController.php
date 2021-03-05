@@ -85,6 +85,7 @@ class DemonsController extends Controller
         }
 
         try {
+            \App\Http\Models\PropertysModel::setAsRunningDemon($id);
             $demonManager->start($id);
             usleep(250000);
             return 'OK';
@@ -104,6 +105,7 @@ class DemonsController extends Controller
         }
 
         try {
+            \App\Http\Models\PropertysModel::setAsStoppedDemon($id);
             $demonManager->stop($id);
             usleep(250000);
             return 'OK';
@@ -123,6 +125,7 @@ class DemonsController extends Controller
         }
         
         try {
+            \App\Http\Models\PropertysModel::setAsRunningDemon($id);
             $demonManager->restart($id);
             return 'OK';
         } catch (\Exception $ex) {

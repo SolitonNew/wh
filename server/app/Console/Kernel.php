@@ -30,8 +30,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Проверяем работоспособность фоновых процессов. Если кто-то пропал - запускаем
-        $schedule->call(function () {
-            
+        $schedule->call(function (DemonManager $demonManager) {
+            foreach(\App\Http\Models\PropertysModel::runningDemons() as $demon) {
+                if (count($demonManager->findDemonPID($demon)) == 0) {
+                    $demonManager->start($demon);
+                }
+            }
         })->everyMinute();
         
         // Прочистка "web_logs"
