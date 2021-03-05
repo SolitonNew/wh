@@ -15,7 +15,7 @@ trait FunctionToggle {
      * 
      * @param type $name
      */
-    public function function_toggle($name) {
+    public function function_toggle($name, $time = 0) {
         $vars = DB::select("select ID, VALUE from core_variables where NAME = '$name'");
         if (count($vars)) {
             if ($vars[0]->VALUE) {

@@ -14,6 +14,30 @@ class SchedulerModel extends Model
     protected $primaryKey = 'ID';
     
     /**
+     * Создает новую запись расписания для одноразового выполнения.
+     * Это для INTERVAL_TYPE = 4
+     * Настройки минимальны.
+     * 
+     * @param type $comm
+     * @param type $action
+     * @param type $datetime
+     * @param type $variableID
+     */
+    static public function appendFastRecord($comm, $action, $datetime, $variableID) {
+        $item = new SchedulerModel();
+        $item->COMM = $comm;
+        $item->ACTION = $action;
+        $item->ACTION_DATETIME = $datetime;
+        $item->INTERVAL_TIME_OF_DAY = '';
+        $item->INTERVAL_DAY_OF_TYPE = '';
+        $item->INTERVAL_TYPE = 4;
+        $item->TEMP_VARIABLE_ID = $variableID;
+        $item->ENABLE = 1;
+        $item->save();
+    }
+    
+    
+    /**
      * Специальные ключевые слова для переменных временных меток
      * @var type 
      */

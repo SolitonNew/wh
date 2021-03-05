@@ -18,4 +18,6 @@ return [
     'script_delete_confirm' => 'Удалить текущий скрипт?',
     
     'variable_count' => 'Кол-во выбраных переменных',
+    
+    'btn_test' => 'Тест скрипта',
 ];

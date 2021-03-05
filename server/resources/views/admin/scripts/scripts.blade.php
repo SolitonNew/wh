@@ -40,6 +40,8 @@
             <textarea class="script-editor-code">{{ $data->DATA }}</textarea>
         </div>
         <div class="script-editor-toolbar">
+            <button class="btn btn-warning" onclick="editorTest()">@lang('admin/scripts.btn_test')</button>
+            <div style="flex-grow: 1"></div>
             <button class="btn btn-primary" onclick="editorSave()">@lang('dialogs.btn_save')</button>
             <button class="btn btn-secondary" onclick="editorHide()" >@lang('dialogs.btn_cancel')</button>
         </div>
@@ -121,6 +123,22 @@
                 } else {
                     console.log(data);
                 }
+            }
+        });
+    }
+    
+    function editorTest() {
+        $.post({
+            url: '{{ route("script-test") }}',
+            data: {
+                '_token': '{{ Session::token() }}',
+                'COMMAND': $('.script-editor-code').val(),
+            },
+            success: function(data) {
+                alert(data);
+            },
+            error: function () {
+                alert('ERROR');
             }
         });
     }
