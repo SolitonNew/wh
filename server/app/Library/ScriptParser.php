@@ -106,8 +106,6 @@ class ScriptParser {
         if ($s !== '') {
             $this->_parts[] = $s;
         }
-        
-        Log::info($this->_parts);
     }
     
     /**

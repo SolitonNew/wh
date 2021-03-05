@@ -27,7 +27,8 @@ class CommandDemon extends BaseDemon {
         CommandFunctions\FunctionToggle,
         CommandFunctions\FunctionPlay,
         CommandFunctions\FunctionSpeech,
-        CommandFunctions\FunctionInfo;
+        CommandFunctions\FunctionInfo,
+        CommandFunctions\FunctionPrint;
     
     /**
      * Зарезервированные короткие команды.
@@ -45,6 +46,7 @@ class CommandDemon extends BaseDemon {
         'speech',
         'play',
         'info',
+        'print',
     ];
     
     /**
