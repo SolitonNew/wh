@@ -5,33 +5,32 @@
 @endsection
 
 @section('body')
-
-    <div class="body-page-main">
-        <div class="body-page-left">
-            <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-            <br>
-            <div class="alert alert-primary">
-                @lang('terminal.menu_back')
-            </div>
+<div class="body-page-main">
+    <div class="body-page-left">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
-        <div class="body-page-center">
-            <div id="dummyNav"></div>
-            <div id="mainContainer" class="container-fluid" style="overflow: hidden;">
-            @yield('content')
-            </div>
-        </div>
-        <div class="body-page-right">
-            <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-            <br>
-            <div class="alert alert-primary">
-                @lang('terminal.menu_checked')
-            </div>
+        <br>
+        <div class="alert alert-primary">
+            @lang('terminal.menu_back')
         </div>
     </div>
+    <div class="body-page-center">
+        <div id="dummyNav"></div>
+        <div id="mainContainer" class="container-fluid" style="overflow: hidden;">
+        @yield('content')
+        </div>
+    </div>
+    <div class="body-page-right">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <br>
+        <div class="alert alert-primary">
+            @lang('terminal.menu_checked')
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -80,13 +79,21 @@
         loadChanges();
         
         $(window).on('resize', () => {
+            if (!isMobile) {
+                let w = $('nav').width();
+                $('.body-page-main > div').css({
+                    'width': w + 'px',
+                    'min-width': w + 'px',
+                });
+            }
+            
             $('.body-page-main').scrollLeft($('.body-page-left').width());
             
             if ($('nav').length) {
                 $('body').addClass('fixed-nav');
                 $('#dummyNav').height($('nav').height());
             }
-        }).resize();
+        }).trigger('resize');
         
         $(window).scroll((e) => {
             if ($('nav').length) {               
