@@ -66,6 +66,9 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::match(['get', 'post'], '/user-edit/{id}', 'Admin\UsersController@edit')->name('user-edit');
     Route::get('/user-delete/{id}', 'Admin\UsersController@delete')->name('user-delete');
     
+    /* Управление конфигурацией системы */
+    Route::get('/configuration/{id?}', 'Admin\ConfigurationController@index')->name('configuration');
+    
     /* Управление сетью OW устройств коньроллеров */
     Route::get('/ow-manager/{controllerID?}', 'Admin\OwManagerController@index')->name('ow-manager');
     Route::get('/ow-manager-info/{id}', 'Admin\OwManagerController@info')->name('ow-manager-info');

@@ -55,6 +55,11 @@
                             <span class="label">@lang('admin/users.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\UsersModel::count() }}</span>
                         </a>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('configuration')" href="{{ route('configuration', '') }}">
+                            <img src="/img/menus/pulse-2x.png">
+                            <span class="label">@lang('admin/configuration.menu')</span>
+                            <span class="badge badge-danger badge-pill">2</span>
+                        </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('ow-manager')" href="{{ route('ow-manager') }}">
                             <img src="/img/menus/pulse-2x.png">
                             <span class="label">@lang('admin/ow-manager.menu')</span>
