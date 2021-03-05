@@ -68,12 +68,11 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     /* Управление конфигурацией системы */
     Route::get('/configuration/{id?}', 'Admin\ConfigurationController@index')->name('configuration');
-    
-    /* Управление сетью OW устройств коньроллеров */
-    Route::get('/ow-manager/{controllerID?}', 'Admin\OwManagerController@index')->name('ow-manager');
-    Route::get('/ow-manager-info/{id}', 'Admin\OwManagerController@info')->name('ow-manager-info');
-    Route::get('/ow-manager-delete/{id}', 'Admin\OwManagerController@delete')->name('ow-manager-delete');
-    Route::get('/ow-manager-gen-vars', 'Admin\OwManagerController@generateVarsForFreeDevs')->name('ow-manager-gen-vars');
+    Route::match(['get', 'post'], '/configuration-edit/{id}', 'Admin\ConfigurationController@edit')->name('configuration-edit');
+    Route::get('/configuration-delete/{id}', 'Admin\ConfigurationController@delete')->name('configuration-delete');
+    Route::get('/configuration-ow-info/{id}', 'Admin\ConfigurationController@owInfo')->name('configuration-ow-info');
+    Route::get('/configuration-ow-delete/{id}', 'Admin\ConfigurationController@owDelete')->name('configuration-ow-delete');
+    Route::get('/configuration-gen-vars', 'Admin\ConfigurationController@generateVarsForFreeDevs')->name('configuration-gen-vars');
     
     /* Настройка событий системы по расписанию */
     Route::get('/schedule', 'Admin\ScheduleController@index')->name('schedule');

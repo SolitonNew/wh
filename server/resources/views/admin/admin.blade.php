@@ -60,11 +60,6 @@
                             <span class="label">@lang('admin/configuration.menu')</span>
                             <span class="badge badge-danger badge-pill">2</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('ow-manager')" href="{{ route('ow-manager') }}">
-                            <img src="/img/menus/pulse-2x.png">
-                            <span class="label">@lang('admin/ow-manager.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\OwDevsModel::count() }}</span>
-                        </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('schedule')" href="{{ route('schedule') }}">
                             <img src="/img/menus/calendar-2x.png">
                             <span class="label">@lang('admin/schedule.menu')</span>
