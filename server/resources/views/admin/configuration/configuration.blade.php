@@ -99,7 +99,14 @@
     }
     
     function configurationApply() {
-        alert('CONFIGURATION APPLY');
+        $.ajax({
+            url: '{{ route("configuration-apply", "") }}',
+            success: function (data) {
+                if (data != 'OK') {
+                    alert(data);
+                }
+            },
+        })
     }
     
 </script>
