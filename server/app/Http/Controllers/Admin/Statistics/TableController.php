@@ -47,6 +47,7 @@ class TableController extends Controller
             try {
                 $data = $query->orderBy('ID', 'asc')->get();
             } catch (\Exception $ex) {
+                dd('ERRROR');
                 $errors['SQL'] = $ex->getMessage();
                 $data = [];
             }

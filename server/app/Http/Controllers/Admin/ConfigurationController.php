@@ -239,70 +239,13 @@ class ConfigurationController extends Controller
      */
     public function configurationApply(int $id = null) {
         try {
-            $mmcu = 'atmega8a';
-            
-            $path = explode('/', base_path());
-            array_pop($path);
-            $path[] = 'devices/din_master/firmware';
-            $path = implode('/', $path);
-            
-            $path_c = $path.'/din_master.c';
-            
-            if (!file_exists($path.'/Release')) {
-                mkdir($path.'/Release');
+            $firmware = new \App\Library\Firmware();
+            $outs = [];
+            if ($firmware->make($outs)) {
+                return implode("\n", $outs);
+            } else {
+                return 'ERROR'; // implode("\n", $outs);
             }
-            
-            $path_o = $path.'/Release/din_master.o';
-            $path_elf = $path.'/Release/din_master.elf';
-            $path_hex = $path.'/Release/din_master.hex';
-            
-            // Компилируем в объектный файл
-            
-            $command = "avr-gcc -funsigned-char -funsigned-bitfields -Os -fpack-struct "
-                     . "-fshort-enums -Wall -c -std=gnu99 -MD -MP -mmcu=$mmcu "
-                     . "-o $path_o $path_c";
-
-            exec($command.' 2>&1', $outs);
-            
-            if (count($outs)) {
-                $outs = implode("\n", $outs);
-                $outs = str_replace($path, '', $outs);
-                return response()->json($outs);
-            }
-            
-            // Получаем бинарный файл
-            
-            $command = "avr-gcc -o $path_elf $path_o -Wl,-Map=\"din_master.map\" -Wl,-lm -mmcu=$mmcu ";
-            exec($command.' 2>&1', $outs);
-            
-            if (count($outs)) {
-                $outs = implode("\n", $outs);
-                $outs = str_replace($path, '', $outs);
-                return response()->json($outs);
-            }
-            
-            // Получаем прошивку в формате IntelHEX
-            
-            $command = "avr-objcopy -O ihex -R .eeprom -R .fuse -R .lock -R .signature  $path_elf $path_hex";
-            exec($command.' 2>&1', $outs);
-            
-            if (count($outs)) {
-                $outs = implode("\n", $outs);
-                $outs = str_replace($path, '', $outs);
-                return response()->json($outs);
-            }
-            
-            // Получаем параметры новой прошивки
-            $command = "avr-size -C --mcu=$mmcu $path_elf";
-            exec($command.' 2>&1', $outs);
-            
-            if (count($outs)) {
-                $outs = implode("\n", $outs);
-                $outs = str_replace($path, '', $outs);
-                return response()->json($outs);
-            }
-            
-            return 'OK';
         } catch (\Exception $ex) {
             return $ex->getMessage();
         }
