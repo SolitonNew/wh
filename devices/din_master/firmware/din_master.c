@@ -5,12 +5,14 @@
  *  Author: User
  */ 
 
+#define F_CPU 9600000UL
 #include <avr/io.h>
+#include "util/delay.h"
 
 int main(void)
 {
     while(1)
     {
-        //TODO:: Please write your application code 
+        _delay_us(1);
     }
 }
