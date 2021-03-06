@@ -232,4 +232,23 @@ class ConfigurationController extends Controller
         }
     }
     
+    /**
+     * 
+     * @param int $id
+     * @return string
+     */
+    public function configurationApply(int $id = null) {
+        try {
+            $firmware = new \App\Library\Firmware();
+            $outs = [];
+            if ($firmware->make($outs)) {
+                return implode("\n", $outs);
+            } else {
+                return 'ERROR'; // implode("\n", $outs);
+            }
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+    
 }
