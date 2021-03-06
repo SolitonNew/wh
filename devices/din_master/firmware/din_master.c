@@ -13,6 +13,11 @@ int main(void)
 {
     while(1)
     {
+<<<<<<< HEAD
         _delay_us(1);
+=======
+         //TODO:: Please write your application code 
+		 
+>>>>>>> a7d797334e266eb31026cd637a0eb347298f1315
     }
 }
