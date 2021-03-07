@@ -74,6 +74,18 @@
     <Compile Include="din_master.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\ds18b20.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\ds18b20.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\hs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\hs.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="onewire.c">
       <SubType>compile</SubType>
     </Compile>

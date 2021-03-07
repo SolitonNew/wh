@@ -8,20 +8,13 @@
 #define F_CPU 9600000UL
 #include <avr/io.h>
 #include "util/delay.h"
-<<<<<<< HEAD
-//#include "onewire.h"
-#include "_config.h"
-
-
-void command_set(char name[], float value) {
-	
-}
-=======
+#include "onewire.h"
 #include "variables.h"
 #include "rs485.h"
 #include "onewire.h"
 #include "config/scripts.h"
->>>>>>> ab5a208959b97b7e6e50dcb4c9a7438b438c9c2d
+
+unsigned char tmp_roms[80];
 
 int main(void)
 {
@@ -32,11 +25,7 @@ int main(void)
 	
     while(1)
     {
-<<<<<<< HEAD
-=======
-		
-		
->>>>>>> ab5a208959b97b7e6e50dcb4c9a7438b438c9c2d
+		unsigned char num = onewire_alarms(tmp_roms);
         _delay_us(1);
     }
 }
