@@ -1,3 +1,4 @@
 *.bak
 *.skb
 Release
+devices\din_master\firmware\config

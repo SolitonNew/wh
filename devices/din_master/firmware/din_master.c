@@ -8,16 +8,19 @@
 #define F_CPU 9600000UL
 #include <avr/io.h>
 #include "util/delay.h"
+#include "variables.h"
+#include "rs485.h"
+#include "onewire.h"
 
 int main(void)
 {
+	rs485_init();
+	onewire_init();
+	
     while(1)
     {
-<<<<<<< HEAD
+		
+		
         _delay_us(1);
-=======
-         //TODO:: Please write your application code 
-		 
->>>>>>> a7d797334e266eb31026cd637a0eb347298f1315
     }
 }

@@ -59,6 +59,24 @@
     <Compile Include="din_master.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="onewire.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="onewire.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rs485.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rs485.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="variables.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="variables.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
