@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿/*
  * onewire.h
  *
@@ -132,3 +133,30 @@ int getTemp() {
 	return 0;
 }
 
+=======
+/*
+ * onewire.h
+ *
+ * Created: 07.03.2021 13:33:02
+ *  Author: User
+ */ 
+
+#define ONEWIRE_DDR DDRC
+#define ONEWIRE_PORT PORTC
+#define ONEWIRE_PIN PINC
+#define ONEWIRE_BIT 2
+
+#define	ONEWIRE_SEARCH_FIRST	0xFF
+#define	ONEWIRE_PRESENCE_ERR	0xFF
+#define	ONEWIRE_DATA_ERR	    0xFE
+#define ONEWIRE_LAST_DEVICE		0x00
+
+#define ONEWIRE_SEARCH_ROM 0xF0
+#define ONEWIRE_ALARM_SEARCH 0xEC
+#define ONEWIRE_MATCH_ROM 0x55
+#define ONEWIRE_SKIPROM 0xCC
+#define ONEWIRE_READ_DATA 0xA0
+#define ONEWIRE_WRITE_DATA 0xB0
+
+void onewire_init(void);
+>>>>>>> ab5a208959b97b7e6e50dcb4c9a7438b438c9c2d
