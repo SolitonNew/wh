@@ -11,11 +11,14 @@
 #include "variables.h"
 #include "rs485.h"
 #include "onewire.h"
+#include "config/scripts.h"
 
 int main(void)
 {
 	rs485_init();
 	onewire_init();
+	
+	command_set(0, 1, 10);
 	
     while(1)
     {

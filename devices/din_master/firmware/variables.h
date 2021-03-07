@@ -5,12 +5,8 @@
  *  Author: User
  */ 
 
-
-#ifndef VARIABLES_H_
-#define VARIABLES_H_
-
-
-
-
-
-#endif /* VARIABLES_H_ */
+float command_get(int index);
+void command_set(int index, float value, ...);
+void command_toggle(int index);
+void command_on(int index, ...);
+void command_off(int index, ...);

@@ -56,6 +56,21 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="config\devices.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="config\scripts.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="config\scripts.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="config\variables.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="config\variables.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="din_master.c">
       <SubType>compile</SubType>
     </Compile>
@@ -77,6 +92,10 @@
     <Compile Include="variables.h">
       <SubType>compile</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="config" />
+    <Folder Include="drivers" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
