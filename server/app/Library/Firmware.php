@@ -34,13 +34,90 @@ class Firmware {
      * Файл помещается по пути din_master
      */
     public function generateConfig() {
-        $firmwarePath = $this->_firmwarePath();
+        $firmwarePath = $this->_firmwarePath();       
+        
+        // Вычитываем все нужные данные
+        $owList = \App\Http\Models\OwDevsModel::orderBy('ID', 'asc')->get();
+        $varList = \App\Http\Models\VariablesModel::orderBy('ID', 'asc')->get();
+        $scriptList = \App\Http\Models\ScriptsModel::orderBy('ID', 'asc')->get();
         
         // Собираем файл
+        $file = fopen($firmwarePath.'/_config.h', 'w+');
+        fwrite($file, 
+"#include <avr/pgmspace.h>
+
+typedef struct variable {
+    int id;
+    unsigned char controller;
+    unsigned char typ;       // 0-pyb;1-ow;2-variable
+    unsigned char direction; // 0, 1
+    char name[24];
+    int ow_index;            // Порядковый номер в массиве ow_roms
+    unsigned char channel;   // порядковый номе канала
+}\n");
+        fwrite($file, "\n");
         
-        // В процессе скрипты событий конвертируем транслятором
+        // Грузим список OW устройств
+        fwrite($file, "const unsigned char ow_roms[".(count($owList) * 8)."] PROGMEM = {\n");
+        foreach($owList as $row) {
+            $rom = sprintf("0x%'02X, 0x%'02X, 0x%'02X, 0x%'02X, 0x%'02X, 0x%'02X, 0x%'02X, 0x%'02X,", 
+                $row->ROM_1, 
+                $row->ROM_2, 
+                $row->ROM_3, 
+                $row->ROM_4, 
+                $row->ROM_5, 
+                $row->ROM_6, 
+                $row->ROM_7,
+                $row->ROM_8
+            );
+            fwrite($file, "    $rom\n");
+        }
+        fwrite($file, "};\n");
+        fwrite($file, "\n");
         
-        // Сохраняем в файл
+        // Грузим список переменных
+        $typs = [
+            'pyb' => 0,
+            'ow' => 1,
+            'variable' => 2,
+        ];
+        fwrite($file, "const struct variable variables[".(count($varList) * 1)."] PROGMEM = {\n");
+        foreach($varList as $row) {
+            $typ = $typs[$row->ROM];
+            $ow_index = -1;
+            for($i = 0; $i < count($owList); $i++) {
+                if ($owList[$i]->ID === $row->OW_ID) {
+                    $ow_index = $i;
+                    break;
+                }
+            }
+            $channel = 0;
+            fwrite($file, "    $row->ID, $row->CONTROLLER_ID, $typ, $row->DIRECTION, $ow_index, $channel,\n");
+        }
+        fwrite($file, "};\n");
+        fwrite($file, "\n");
+        
+        // Грузим список значений переменных
+        fwrite($file, "float variablesValue[".count($varList)."];\n");
+        fwrite($file, "\n");
+        
+        // Грузим список сценариев
+        
+        $variableNames = [];
+        foreach($varList as $row) {
+            $variableNames[] = $row->NAME;
+        }
+        
+        foreach($scriptList as $row) {
+            fwrite($file, "void script_$row->ID(void) {\n");
+            $translator = new Script\Translate(new Script\Translators\C($variableNames), $row->DATA);
+            fwrite($file, $translator->run());
+            fwrite($file, "}\n");
+            fwrite($file, "\n");
+        }
+        fwrite($file, "\n");
+        
+        fclose($file);
     }
     
     /**

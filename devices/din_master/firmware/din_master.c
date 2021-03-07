@@ -8,16 +8,19 @@
 #define F_CPU 9600000UL
 #include <avr/io.h>
 #include "util/delay.h"
+//#include "onewire.h"
+#include "_config.h"
+
+
+void command_set(char name[], float value) {
+	
+}
 
 int main(void)
 {
     while(1)
     {
-<<<<<<< HEAD
         _delay_us(1);
-=======
-         //TODO:: Please write your application code 
-		 
->>>>>>> a7d797334e266eb31026cd637a0eb347298f1315
     }
 }
+

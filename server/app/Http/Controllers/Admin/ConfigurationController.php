@@ -240,11 +240,14 @@ class ConfigurationController extends Controller
     public function configurationApply(int $id = null) {
         try {
             $firmware = new \App\Library\Firmware();
+            
+            $firmware->generateConfig();
+            
             $outs = [];
             if ($firmware->make($outs)) {
                 return implode("\n", $outs);
             } else {
-                return 'ERROR'; // implode("\n", $outs);
+                return "ERROR \n".implode("\n", $outs);
             }
         } catch (\Exception $ex) {
             return $ex->getMessage();
