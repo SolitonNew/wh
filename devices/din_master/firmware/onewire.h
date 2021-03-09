@@ -5,6 +5,8 @@
  *  Author: User
  */ 
 
+#include <avr/io.h>
+
 #define ONEWIRE_DDR DDRB
 #define ONEWIRE_PORT PORTB
 #define ONEWIRE_PIN PINB
@@ -26,10 +28,10 @@
 #define ONEWIRE_ALARM_LIMIT 10
 
 void onewire_init(void);
-unsigned char onewire_search(unsigned char *roms);
-unsigned char onewire_alarms(unsigned char *roms);
+uint8_t onewire_search(uint8_t *roms);
+uint8_t onewire_alarms(uint8_t *roms);
 
-unsigned char onewire_match_rom(unsigned char *rom);
+uint8_t onewire_match_rom(uint8_t *rom);
 
-float onewire_get_value(unsigned char *rom);
-void onewire_set_value(unsigned char *rom, float value);
+float onewire_get_value(uint8_t *rom);
+void onewire_set_value(uint8_t *rom, float value);

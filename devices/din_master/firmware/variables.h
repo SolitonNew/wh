@@ -5,17 +5,6 @@
  *  Author: User
  */
 
-typedef struct _variable_t {
-	int id;
-	unsigned char ctrl_id;
-	unsigned char typ;
-	unsigned char direction;
-	int ow_index;
-	unsigned char channel;
-} variable_t;
-
-float command_get(int index);
-void command_set(int index, float value, ...);
-void command_toggle(int index);
-void command_on(int index, ...);
-void command_off(int index, ...);
+int get_variable_index(int id);
+float get_variable_value(int index);
+void set_variable_value(int index, float val);

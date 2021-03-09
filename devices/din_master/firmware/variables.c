@@ -5,22 +5,27 @@
  *  Author: User
  */ 
 
-float command_get(int index) {
-	return 0; //i_variables[300];
-}
+#include <avr/pgmspace.h>
+#include "config/devs.h"
+#include "config/scripts.h"
 
-void command_set(int index, float value, ...) {
+int get_variable_index(int id) {
+	uint8_t size = sizeof(variable_t);
+	for (int i = 0; i < variable_count; i++) {
+		int vid = pgm_read_dword(&variables[i]);
+		if (vid == id) {
+			return i;
+		}
+	}
 	
+	return -1;
 }
 
-void command_toggle(int index) {
+float get_variable_value(int index) {
+
+}
+
+void set_variable_value(int index, float val) {	
 	
-}
-
-void command_on(int index, ...) {
-	
-}
-
-void command_off(int index, ...) {
 	
 }

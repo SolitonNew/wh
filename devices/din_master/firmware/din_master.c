@@ -11,13 +11,11 @@
 #include "variables.h"
 #include "rs485.h"
 #include "onewire.h"
-#include "config.h"
 #include "drivers/ds18b20.h"
-#include "config.h"
 
 #include "lcd.h"
 
-unsigned char alarm_roms[ONEWIRE_ALARM_LIMIT * 8]; // 20 ow devs
+uint8_t alarm_roms[ONEWIRE_ALARM_LIMIT * 8]; // 20 ow devs
 
 int main(void)
 {
@@ -31,23 +29,27 @@ int main(void)
     while(1)
     {	
 		int index = 0;
-		unsigned char ow_num = onewire_search(alarm_roms);
-		for (unsigned char i = 0; i < ow_num; i++) {
+		uint8_t ow_num = onewire_search(alarm_roms);
+		for (uint8_t i = 0; i < ow_num; i++) {
 			ds18b20_start_measure(&alarm_roms[index]);
 			index += 8;
 		}
 		
 		_delay_ms(750);
-		unsigned char buff[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 		lcd_clear();
 		index = 0;
-		for (unsigned char i = 0; i < ow_num; i++) {
+		for (uint8_t i = 0; i < ow_num; i++) {
 			lcd_char(':');
-			unsigned char buff[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+			uint8_t buff[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 			sprintf(buff, "%d", (int)onewire_get_value(&alarm_roms[index]));
 			lcd_text(buff, 16);
 			index += 8;
 		}
+		
+		lcd_char(':');
+		uint8_t buff[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+		sprintf(buff, "%d", (int)get_variable_index(282));
+		lcd_text(buff, 16);
 		
 		_delay_ms(10);
     }

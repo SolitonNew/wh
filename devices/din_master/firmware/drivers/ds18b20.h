@@ -8,6 +8,6 @@
 #define ONEWIRE_CONVERTTEMP 0x44
 #define ONEWIRE_RSCRATCHPAD 0xBE
 
-void ds18b20_start_measure(unsigned char *rom);
-float ds18b20_get_value(unsigned char *rom);
-void ds18b20_set_value(unsigned char *rom, float val);
+void ds18b20_start_measure(uint8_t *rom);
+float ds18b20_get_value(uint8_t *rom);
+void ds18b20_set_value(uint8_t *rom, float val);

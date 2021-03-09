@@ -17,6 +17,7 @@
     <RootNamespace>din_master</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <AsfVersion>2.11.1</AsfVersion>
+    <avrtool />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -56,10 +57,16 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="config.c">
+    <Compile Include="commands.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="config.h">
+    <Compile Include="commands.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="config\devs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="config\scripts.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="din_master.c">
@@ -107,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="drivers" />
+    <Folder Include="config" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

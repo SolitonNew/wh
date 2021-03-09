@@ -13,7 +13,7 @@
 #define LCD_DATA 0
 
 void lcd_init(void);
-void lcd_char(unsigned char c);
-void lcd_text(unsigned char *text, unsigned char num);
-void lcd_hex(unsigned char byte);
+void lcd_char(uint8_t c);
+void lcd_text(uint8_t *text, uint8_t num);
+void lcd_hex(uint8_t byte);
 void lcd_clear(void);
