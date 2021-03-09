@@ -11,7 +11,9 @@
 #include "variables.h"
 #include "rs485.h"
 #include "onewire.h"
+#include "config.h"
 #include "drivers/ds18b20.h"
+#include "config.h"
 
 #include "lcd.h"
 

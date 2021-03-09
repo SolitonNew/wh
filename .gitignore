@@ -2,5 +2,4 @@
 *.skb
 Debug
 Release
-devices\din_master\firmware\config.h
-devices/din_master/firmware/config.h
+devices/din_master/firmware/config.c
