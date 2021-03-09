@@ -14,7 +14,7 @@
 #define LCD_W 102
 #define LCD_H 65
 
-const unsigned char font[480] PROGMEM = {
+const uint8_t font[480] PROGMEM = {
 	0x00, 0x00, 0x00, 0x00, 0x00, // 20  
 	0x00, 0x00, 0x5f, 0x00, 0x00, // 21 !
 	0x00, 0x07, 0x00, 0x07, 0x00, // 22 "
@@ -113,13 +113,13 @@ const unsigned char font[480] PROGMEM = {
 	0x78, 0x46, 0x41, 0x46, 0x78  // 7f ?
 };
 
-void lcd_write(unsigned char dc, unsigned char data) {
+void lcd_write(uint8_t dc, uint8_t data) {
 	if (dc) {
 		SPIN(LCD_PORT, LCD_DC);
 	} else {
 		CPIN(LCD_PORT, LCD_DC);
 	}
-	for (unsigned char i = 0; i < 8; i++) {
+	for (uint8_t i = 0; i < 8; i++) {
 		CPIN(LCD_PORT, LCD_SCK);
 		if (data & 0x80) {
 			SPIN(LCD_PORT, LCD_DATA);
@@ -155,24 +155,24 @@ void lcd_init(void) {
 	lcd_clear();
 }
 
-void lcd_char(unsigned char c) {
+void lcd_char(uint8_t c) {
 	if (c < 32) c = 32;
 	
 	int o = (c - 32) * 5;
-	for(unsigned char i = 0; i < 5; i++) {
+	for(uint8_t i = 0; i < 5; i++) {
 		lcd_write(1, pgm_read_byte(&font[o + i]));
 	}
 	lcd_write(1, 0);
 }
 
-void lcd_text(unsigned char *text, unsigned char num) {
+void lcd_text(uint8_t *text, uint8_t num) {
 	for (unsigned int i = 0; i < num; i++) {
 		lcd_char(text[i]);
 	}
 }
 
-void lcd_hex(unsigned char byte) {
-	unsigned char b = (byte & (0xf0)) >> 4;
+void lcd_hex(uint8_t byte) {
+	uint8_t b = (byte & (0xf0)) >> 4;
 	if (b < 10) {
 		lcd_char(0x30 + b);
 	} else {

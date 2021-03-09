@@ -17,10 +17,10 @@ void onewire_init(void) {
 	ONEWIRE_DDR &= ~(1<<ONEWIRE_BIT);
 }
 
-unsigned char onewire_crc_table(unsigned char data) {
-	unsigned char crc = 0x0;
-	unsigned char fb_bit = 0;
-	for (unsigned char b = 0; b < 8; b++) { 
+uint8_t onewire_crc_table(uint8_t data) {
+	uint8_t crc = 0x0;
+	uint8_t fb_bit = 0;
+	for (uint8_t b = 0; b < 8; b++) { 
 		fb_bit = (crc ^ data) & 0x01;
 		if (fb_bit == 0x01)
 			crc = crc ^ 0x18;
@@ -32,7 +32,7 @@ unsigned char onewire_crc_table(unsigned char data) {
 	return crc;
 }
 
-void onewire_set(unsigned char mode) {
+void onewire_set(uint8_t mode) {
 	if (mode) {
 		ONEWIRE_PORT &= ~(1<<ONEWIRE_BIT);
 		ONEWIRE_DDR |= (1<<ONEWIRE_BIT);
@@ -42,8 +42,8 @@ void onewire_set(unsigned char mode) {
 	}
 }
 
-unsigned char onewire_reset(void) {
-	unsigned char status;
+uint8_t onewire_reset(void) {
+	uint8_t status;
 	onewire_set(1);
 	_delay_us(480);
 	onewire_set(0);
@@ -53,7 +53,7 @@ unsigned char onewire_reset(void) {
 	return !status;
 }
 
-void onewire_write_bit(unsigned char bit) {
+void onewire_write_bit(uint8_t bit) {
 	onewire_set(1);
 	_delay_us(1);
 	if(bit) onewire_set(0); 
@@ -61,8 +61,8 @@ void onewire_write_bit(unsigned char bit) {
 	onewire_set(0);
 }
 
-unsigned char onewire_read_bit(void) {
-	unsigned char bit = 0;
+uint8_t onewire_read_bit(void) {
+	uint8_t bit = 0;
 	onewire_set(1);
 	_delay_us(1);	
 	onewire_set(0);
@@ -72,15 +72,15 @@ unsigned char onewire_read_bit(void) {
 	return bit;
 }
 
-void onewire_write_byte(unsigned char byte) {
-	for (unsigned char i = 0; i < 8; i++) {
+void onewire_write_byte(uint8_t byte) {
+	for (uint8_t i = 0; i < 8; i++) {
 		onewire_write_bit(byte & (1<<i));
 	}		
 }
 
-unsigned char onewire_read_byte(void) {
-	unsigned char n = 0;
-	for (unsigned char i = 0; i < 8; i++) {
+uint8_t onewire_read_byte(void) {
+	uint8_t n = 0;
+	for (uint8_t i = 0; i < 8; i++) {
 		if (onewire_read_bit()) {
 			n |= (1<<i);
 		}
@@ -88,19 +88,19 @@ unsigned char onewire_read_byte(void) {
 	return n;
 }
 
-unsigned char onewire_search_rom(unsigned char *last_rom, unsigned char diff, unsigned char cmd) {
+uint8_t onewire_search_rom(uint8_t *last_rom, uint8_t diff, uint8_t cmd) {
 	if (!onewire_reset()) {
 		last_rom[0] = 0;
 		return 0;
 	}
 	onewire_write_byte(cmd);	
-	unsigned char rom[8] = {0,0,0,0,0,0,0,0};
-    unsigned char next_diff = 0;
-    unsigned char i = 64;
-    for (unsigned char byte = 0; byte < 8; byte++) {
-        unsigned char r_b = 0;
-        for (unsigned char bit = 0; bit < 8; bit++) {
-            unsigned char b = onewire_read_bit();
+	uint8_t rom[8] = {0,0,0,0,0,0,0,0};
+    uint8_t next_diff = 0;
+    uint8_t i = 64;
+    for (uint8_t byte = 0; byte < 8; byte++) {
+        uint8_t r_b = 0;
+        for (uint8_t bit = 0; bit < 8; bit++) {
+            uint8_t b = onewire_read_bit();
             if (onewire_read_bit()) {                    
                 if (b) { // There are no devices or there is a mistake on the wire
 					last_rom[0] = 0;
@@ -123,19 +123,19 @@ unsigned char onewire_search_rom(unsigned char *last_rom, unsigned char diff, un
         rom[byte] = r_b;
 	}
 	
-	for (unsigned char i = 0; i < 8; i++) {
+	for (uint8_t i = 0; i < 8; i++) {
 		last_rom[i] = rom[i];
 	}
 		
 	return next_diff;
 }
 
-unsigned char onewire_search_roms(unsigned char cmd, unsigned char *roms, unsigned char limit) {	
-	unsigned char num = 0;
-	unsigned char rom[8] = {0,0,0,0,0,0,0,0};
-	unsigned char diff = 65;
+uint8_t onewire_search_roms(uint8_t cmd, uint8_t *roms, uint8_t limit) {	
+	uint8_t num = 0;
+	uint8_t rom[8] = {0,0,0,0,0,0,0,0};
+	uint8_t diff = 65;
 	
-	for (unsigned char i = 0; i < 0xff; i++) {
+	for (uint8_t i = 0; i < 0xff; i++) {
 		diff = onewire_search_rom(rom, diff, cmd);
 		if (rom[0]) {
 			memcpy(&roms[num * 8], rom, 8);
@@ -148,23 +148,23 @@ unsigned char onewire_search_roms(unsigned char cmd, unsigned char *roms, unsign
 	return num;
 }
 
-unsigned char onewire_match_rom(unsigned char *rom) {
+uint8_t onewire_match_rom(uint8_t *rom) {
 	onewire_write_byte(ONEWIRE_MATCH_ROM);	
-	for (unsigned char i = 0; i < 8; i++) {
+	for (uint8_t i = 0; i < 8; i++) {
 		onewire_write_byte(rom[i]);
 	}		
 	return 1;
 }
 
-unsigned char onewire_search(unsigned char *roms) {
+uint8_t onewire_search(uint8_t *roms) {
 	return onewire_search_roms(ONEWIRE_SEARCH_ROM, roms, 20);
 }
 
-unsigned char onewire_alarms(unsigned char *roms) {
+uint8_t onewire_alarms(uint8_t *roms) {
 	return onewire_search_roms(ONEWIRE_ALARM_SEARCH, roms, 20);
 }
 
-float onewire_get_value(unsigned char *rom) {
+float onewire_get_value(uint8_t *rom) {
 	switch (rom[0]) {
 		case 0x28:
 			return ds18b20_get_value(rom);
@@ -175,7 +175,7 @@ float onewire_get_value(unsigned char *rom) {
 	return 1;
 }
 
-void onewire_set_value(unsigned char *rom, float val) {
+void onewire_set_value(uint8_t *rom, float val) {
 	switch (rom[0]) {
 		case 0x28:
 			ds18b20_set_value(&rom[0], val);

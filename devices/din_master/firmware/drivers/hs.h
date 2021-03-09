@@ -5,5 +5,5 @@
  *  Author: User
  */ 
 
-float hs_get_value(unsigned char *rom);
-void hs_set_value(unsigned char *rom, float val);
+float hs_get_value(uint8_t *rom);
+void hs_set_value(uint8_t *rom, float val);

@@ -5,10 +5,12 @@
  *  Author: User
  */ 
 
-float hs_get_value(unsigned char *rom) {
+#include <avr/io.h>
+
+float hs_get_value(uint8_t *rom) {
 	
 }
 
-void hs_set_value(unsigned char *rom, float val) {
+void hs_set_value(uint8_t *rom, float val) {
 	// readonly
 }
