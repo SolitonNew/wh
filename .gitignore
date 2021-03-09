@@ -1,4 +1,5 @@
 *.bak
 *.skb
+Debug
 Release
-devices\din_master\firmware\config
+devices\din_master\firmware\config.h
