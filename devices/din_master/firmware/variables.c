@@ -6,7 +6,7 @@
  */ 
 
 float command_get(int index) {
-	
+	return 0; //i_variables[300];
 }
 
 void command_set(int index, float value, ...) {

@@ -5,10 +5,10 @@
  *  Author: User
  */ 
 
-#define ONEWIRE_DDR DDRC
-#define ONEWIRE_PORT PORTC
-#define ONEWIRE_PIN PINC
-#define ONEWIRE_BIT 2
+#define ONEWIRE_DDR DDRB
+#define ONEWIRE_PORT PORTB
+#define ONEWIRE_PIN PINB
+#define ONEWIRE_BIT 7
 
 #define	ONEWIRE_SEARCH_FIRST	0xFF
 #define	ONEWIRE_PRESENCE_ERR	0xFF
@@ -22,11 +22,14 @@
 #define ONEWIRE_READ_DATA 0xA0
 #define ONEWIRE_WRITE_DATA 0xB0
 
+#define ONEWIRE_SEARCH_LIMIT = 40
+#define ONEWIRE_ALARM_LIMIT 10
+
 void onewire_init(void);
 unsigned char onewire_search(unsigned char *roms);
 unsigned char onewire_alarms(unsigned char *roms);
 
-unsigned char onewire_matchROM(unsigned char *rom);
+unsigned char onewire_match_rom(unsigned char *rom);
 
 float onewire_get_value(unsigned char *rom);
 void onewire_set_value(unsigned char *rom, float value);

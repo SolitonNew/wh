@@ -56,19 +56,7 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="config\devices.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="config\scripts.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="config\scripts.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="config\variables.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="config\variables.h">
+    <Compile Include="config.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="din_master.c">
@@ -86,6 +74,12 @@
     <Compile Include="drivers\hs.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="lcd.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lcd.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="onewire.c">
       <SubType>compile</SubType>
     </Compile>
@@ -98,6 +92,9 @@
     <Compile Include="rs485.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="globals.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="variables.c">
       <SubType>compile</SubType>
     </Compile>
@@ -106,7 +103,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="config" />
     <Folder Include="drivers" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />

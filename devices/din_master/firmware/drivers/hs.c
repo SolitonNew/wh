@@ -5,10 +5,10 @@
  *  Author: User
  */ 
 
-unsigned char hs_get_value(unsigned char *rom) {
+float hs_get_value(unsigned char *rom) {
 	
 }
 
-void hs_set_value(unsigned char *rom, unsigned char value) {
+void hs_set_value(unsigned char *rom, float val) {
 	// readonly
 }

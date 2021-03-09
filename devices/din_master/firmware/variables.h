@@ -5,6 +5,15 @@
  *  Author: User
  */ 
 
+typedef struct variable {
+	int id;
+	unsigned char ctrl_id;
+	unsigned char typ;
+	unsigned char direction;
+	unsigned int ow_index;
+	unsigned char channel;
+} variable_t;
+
 float command_get(int index);
 void command_set(int index, float value, ...);
 void command_toggle(int index);
