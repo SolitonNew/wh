@@ -66,7 +66,7 @@ class Firmware {
 
         // Пакуем в файл
         $fs = new \Illuminate\Filesystem\Filesystem();
-        $fs->put($this->_firmwarePath().'/config.h', View::make('admin.configuration.config', [
+        $fs->put($this->_firmwarePath().'/config.c', View::make('admin.configuration.config_h', [
             'owList' => $owList,
             'varList' => $varList,
             'scriptList' => $scriptList,

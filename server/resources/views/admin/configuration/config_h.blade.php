@@ -8,13 +8,13 @@ const unsigned char ow_roms[{{ count($owList) * 8 }}] PROGMEM = {
 @endforeach
 };
 
-const struct variable[{{ count($varList) }}] PROGMEM = {
+const variable_t variables[{{ count($varList) }}] PROGMEM = {
 @foreach($varList as $row)
    { {{ $row->ID }}, {{ $row->CONTROLLER_ID }}, {{ $varTyps[$row->ROM] }}, {{ $row->DIRECTION }}, {{ $row->OW_INDEX }}, 0 },
 @endforeach
 };
 
-extern int variable_values[{{ count($varList) }}];
+float variable_values[{{ count($varList) }}];
 
 @foreach($scriptList as $row)
 void script_{{ $row->ID }}(void) {
