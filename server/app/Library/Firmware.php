@@ -39,7 +39,7 @@ class Firmware {
         // Вычитываем все нужные данные
         $owList = \App\Http\Models\OwDevsModel::orderBy('ID', 'asc')->get();
         $varList = \App\Http\Models\VariablesModel::orderBy('ID', 'asc')->get();
-        $scriptList = \App\Http\Models\ScriptsModel::orderBy('ID', 'asc')->get();
+        $scriptList = \App\Http\Models\ScriptsModel::orderBy('ID', 'asc')->limit(10)->get();
         
         // 
         foreach($varList as &$row) {
@@ -64,17 +64,22 @@ class Firmware {
             $row->DATA_TO_C = $translator->run();
         }
 
-        // Пакуем в файл
+        // Пакуем в файл config.c
         $fs = new \Illuminate\Filesystem\Filesystem();
-        $fs->put($this->_firmwarePath().'/config.c', View::make('admin.configuration.config_h', [
+        $fs->put($this->_firmwarePath().'/config/devs.h', View::make('admin.configuration.config.devs_h', [
             'owList' => $owList,
             'varList' => $varList,
-            'scriptList' => $scriptList,
             'varTyps' => [
                 'pyb' => 0,
                 'ow' => 1,
                 'variable' => 2,
             ]
+        ]));
+        
+        // Пакуем в файл config.h
+        $fs = new \Illuminate\Filesystem\Filesystem();
+        $fs->put($this->_firmwarePath().'/config/scripts.h', View::make('admin.configuration.config.scripts_h', [
+            'scriptList' => $scriptList,
         ]));
     }
     

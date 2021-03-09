@@ -1,12 +1,12 @@
-/*
- * config.h
- *
- * Created: 09.03.2021 20:15:36
- *  Author: User
- */ 
-
 #include <avr/pgmspace.h>
 
-extern const unsigned char ow_roms[] PROGMEM;
-extern const variable_t variables[] PROGMEM;
-extern float variable_values[];
+void script_1(void);
+void script_2(void);
+void script_3(void);
+void script_4(void);
+void script_21(void);
+void script_22(void);
+void script_23(void);
+void script_24(void);
+void script_25(void);
+void script_26(void);
