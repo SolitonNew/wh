@@ -10,6 +10,7 @@
 #include "util/delay.h"
 #include "onewire.h"
 #include "drivers/ds18b20.h"
+#include "drivers/hs.h"
 
 #define ONEWIRE_checkIn ONEWIRE_PIN & (1<<ONEWIRE_BIT)
 
