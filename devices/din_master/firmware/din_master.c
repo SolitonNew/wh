@@ -13,7 +13,7 @@
 #include "onewire.h"
 #include "drivers/ds18b20.h"
 
-#include "lcd.h"
+//#include "lcd.h"
 
 uint8_t alarm_roms[ONEWIRE_ALARM_LIMIT * 8]; // 20 ow devs
 
@@ -22,13 +22,13 @@ int main(void)
 	SPIN(DDRC, 5);
 	CPIN(PORTC, 5);
 	
-	lcd_init();		
+	//lcd_init();		
 	rs485_init();
 	onewire_init();
 	
     while(1)
     {	
-		int index = 0;
+		/*int index = 0;
 		uint8_t ow_num = onewire_search(alarm_roms);
 		for (uint8_t i = 0; i < ow_num; i++) {
 			ds18b20_start_measure(&alarm_roms[index]);
@@ -49,7 +49,7 @@ int main(void)
 		lcd_char(':');
 		uint8_t buff[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 		sprintf(buff, "%d", (int)get_variable_index(282));
-		lcd_text(buff, 16);
+		lcd_text(buff, 16); */
 		
 		_delay_ms(10);
     }
