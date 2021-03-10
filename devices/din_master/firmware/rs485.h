@@ -7,3 +7,4 @@
 
 
 void rs485_init(void);
+void rs485_sync(void);

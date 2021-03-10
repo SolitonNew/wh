@@ -168,25 +168,3 @@ uint8_t onewire_search(uint8_t *roms) {
 uint8_t onewire_alarms(uint8_t *roms) {
 	return onewire_search_roms(ONEWIRE_ALARM_SEARCH, roms, 20);
 }
-
-float onewire_get_value(uint8_t *rom) {
-	switch (rom[0]) {
-		case 0x28:
-			return ds18b20_get_value(rom);
-		case 0xf0:
-			return hs_get_value(rom);
-	}
-	
-	return 1;
-}
-
-void onewire_set_value(uint8_t *rom, float val) {
-	switch (rom[0]) {
-		case 0x28:
-			ds18b20_set_value(&rom[0], val);
-			break;
-		case 0xf0:
-			hs_set_value(rom, val);
-			break;
-	}
-}
