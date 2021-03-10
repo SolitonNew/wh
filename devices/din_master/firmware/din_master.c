@@ -22,7 +22,7 @@ int main(void)
 	SPIN(DDRC, 5);
 	CPIN(PORTC, 5);
 	
-	//lcd_init();		
+	lcd_init();
 	rs485_init();
 	onewire_init();
 	
