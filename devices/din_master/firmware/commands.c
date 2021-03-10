@@ -25,14 +25,14 @@ void command_off(int index, ...) {
 	
 }
 
-void command_info() {
+void command_info(void) {
 	
 }
 
-void command_play() {
+void command_play(char *file) {
 	
 }
 
-void command_speech() {
+void command_speech(char *text) {
 	
 }
