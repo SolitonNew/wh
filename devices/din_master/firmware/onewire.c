@@ -135,12 +135,16 @@ uint8_t onewire_search_roms(uint8_t cmd, uint8_t *roms, uint8_t limit) {
 	uint8_t rom[8] = {0,0,0,0,0,0,0,0};
 	uint8_t diff = 65;
 	
+	int rom_index = 0;
 	for (uint8_t i = 0; i < 0xff; i++) {
 		diff = onewire_search_rom(rom, diff, cmd);
 		if (rom[0]) {
-			memcpy(&roms[num * 8], rom, 8);
+			for (uint8_t m = 0; m < 8; m++) {
+				roms[rom_index] = rom[m];
+				rom_index++;
+			}
 			num++;
-			if (num > limit) break;
+			if (num >= limit) break;
 		}
 		if (diff == 0) break;
 	}
