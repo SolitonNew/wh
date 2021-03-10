@@ -5,24 +5,30 @@
  *  Author: User
  */ 
 
+#include "variables.h"
+
 float command_get(int index) {
-	return 0;
+	return get_variable_value(index);
 }
 
 void command_set(int index, float value, ...) {
-	
+	set_variable_value(index, value);
 }
 
 void command_toggle(int index) {
-	
+	if (command_get(index)) {
+		command_set(index, 0);
+	} else {
+		command_set(index, 1);
+	}
 }
 
 void command_on(int index, ...) {
-	
+	command_set(index, 1);
 }
 
 void command_off(int index, ...) {
-	
+	command_set(index, 0);
 }
 
 void command_info(void) {

@@ -21,7 +21,7 @@ int main(void)
 	SPIN(DDRC, 5);
 	CPIN(PORTC, 5);
 	
-	lcd_init();
+	lcd_init(); 
 	rs485_init();
 	onewire_init();
 	
@@ -47,7 +47,10 @@ int main(void)
 		
 		lcd_char(':');
 		uint8_t buff[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-		sprintf(buff, "%d", (int)get_variable_index(282));
+			
+		int ind = get_variable_index(282);
+		set_variable_value(ind, 123);
+		sprintf(buff, "%d", (int)get_variable_value(ind));
 		lcd_text(buff, 16); */
 		
 		_delay_ms(10);
