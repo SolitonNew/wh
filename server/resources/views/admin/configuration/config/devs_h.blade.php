@@ -22,4 +22,5 @@ extern const variable_t variables[{{ count($varList) }}] PROGMEM = {
 @endforeach
 };
 
+extern int variable_count = {{ count($varList) }};
 extern float variable_values[{{ count($varList) }}];
