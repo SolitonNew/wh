@@ -10,9 +10,6 @@
 #include "config/devs.h"
 #include "config/scripts.h"
 
-int variable_count;
-float variable_values[];
-
 int get_variable_index(int id) {
 	for (int i = 0; i < variable_count; i++) {
 		int vid = pgm_read_dword(&variables[i]);
