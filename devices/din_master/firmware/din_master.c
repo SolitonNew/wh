@@ -9,11 +9,10 @@
 #include <avr/io.h>
 #include "util/delay.h"
 #include "variables.h"
+#include "lcd.h"
 #include "rs485.h"
 #include "onewire.h"
 #include "drivers/ds18b20.h"
-
-//#include "lcd.h"
 
 uint8_t alarm_roms[ONEWIRE_ALARM_LIMIT * 8]; // 20 ow devs
 
