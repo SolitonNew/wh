@@ -110,10 +110,23 @@ class Firmware {
             }
         }
         
+        $folders = [];
+        foreach($xml->ItemGroup[1]->Folder as $item) {
+            $folder = (string)$item['Include'];
+            $folders[] = str_replace('\\', '/', $folder);
+        }
+        
         // Проверяем наличие или создаем нужные директории
         $release_path = $firmwarePath.'/Release';
         if (!file_exists($release_path)) {
             mkdir($release_path);
+        }
+        
+        // Проверяем наличе или создаем поддиректории
+        foreach($folders as $folder) {
+            if (!file_exists($release_path.'/'.$folder)) {
+                mkdir($release_path.'/'.$folder);
+            }
         }
         
         $commands = [];
