@@ -63,7 +63,13 @@
     <Compile Include="commands.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="config\devs.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="config\devs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="config\scripts.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="config\scripts.h">
