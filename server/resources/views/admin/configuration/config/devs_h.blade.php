@@ -9,7 +9,8 @@ typedef struct _variable_t {
 	unsigned char channel;
 } variable_t;
     
-extern const uint8_t ow_roms[] PROGMEM;
+extern const int onewire_roms_count;
+extern const uint8_t onewire_roms[] PROGMEM;
 extern const variable_t variables[] PROGMEM;
-extern int variable_count;
+extern const int variable_count;
 extern float variable_values[];
