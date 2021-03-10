@@ -8,7 +8,7 @@
 #include <avr/io.h>
 
 float hs_get_value(uint8_t *rom) {
-	
+	return 0;
 }
 
 void hs_set_value(uint8_t *rom, float val) {
