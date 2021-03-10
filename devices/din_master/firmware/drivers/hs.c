@@ -6,11 +6,8 @@
  */ 
 
 #include <avr/io.h>
+#include "hs.h"
 
-float hs_get_value(uint8_t *rom) {
+uint8_t hs_get_data(uint8_t *rom, hs_data_t *data) {
 	return 0;
-}
-
-void hs_set_value(uint8_t *rom, float val) {
-	// readonly
 }

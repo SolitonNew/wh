@@ -5,14 +5,14 @@
  *  Author: User
  */ 
 
-#include "variables.h"
+#include "core.h"
 
 float command_get(int index) {
-	return get_variable_value(index);
+	return core_get_variable_value(index);
 }
 
 void command_set(int index, float value, ...) {
-	set_variable_value(index, value);
+	core_set_variable_value(index, value);
 }
 
 void command_toggle(int index) {

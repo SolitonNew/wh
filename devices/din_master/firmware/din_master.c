@@ -8,50 +8,44 @@
 #include "globals.h"
 #include <avr/io.h>
 #include "util/delay.h"
-#include "variables.h"
-#include "lcd.h"
-#include "rs485.h"
-#include "onewire.h"
-#include "drivers/ds18b20.h"
+#include "core.h"
+#include "control.h"
 
-uint8_t alarm_roms[ONEWIRE_ALARM_LIMIT * 8]; // 20 ow devs
+#include "lcd.h"
+
+uint8_t controller_id;
+control_btn_states_t control_btn_states = {0, 0, 0, 0};
 
 int main(void)
 {
-	SPIN(DDRC, 5);
-	CPIN(PORTC, 5);
+	controller_id = 1;
 	
+	control_init();
+	core_init();
+
 	lcd_init(); 
-	rs485_init();
-	onewire_init();
 	
     while(1)
     {	
-		/*int index = 0;
-		uint8_t ow_num = onewire_search(alarm_roms);
-		for (uint8_t i = 0; i < ow_num; i++) {
-			ds18b20_start_measure(&alarm_roms[index]);
-			index += 8;
+		core_rs485_processing();
+		core_onewire_alarm_processing();
+		core_schedule_processing();
+		
+		// Обработка кнопок управления
+		control_check_btn(&control_btn_states);
+		if (control_btn_states.btn_1) {
+			control_led_r(1);
 		}
 		
-		_delay_ms(750);
+		// -------------------------------
 		lcd_clear();
-		index = 0;
-		for (uint8_t i = 0; i < ow_num; i++) {
-			lcd_char(':');
-			uint8_t buff[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-			sprintf(buff, "%d", (int)onewire_get_value(&alarm_roms[index]));
-			lcd_text(buff, 16);
-			index += 8;
+		uint8_t buff[8];
+		core_get_variable_rom(1, buff);
+		for (uint8_t i = 0; i < 8; i++) {
+			lcd_hex(buff[i]);
+			lcd_char(' ');
 		}
-		
-		lcd_char(':');
-		uint8_t buff[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-			
-		int ind = get_variable_index(282);
-		set_variable_value(ind, 123);
-		sprintf(buff, "%d", (int)get_variable_value(ind));
-		lcd_text(buff, 16); */
+		// -------------------------------
 		
 		_delay_ms(10);
     }

@@ -35,5 +35,3 @@ uint8_t onewire_read_byte(void);
 uint8_t onewire_match_rom(uint8_t *rom);
 uint8_t onewire_search(uint8_t *roms);
 uint8_t onewire_alarms(uint8_t *roms);
-float onewire_get_value(uint8_t *rom);
-void onewire_set_value(uint8_t *rom, float value);

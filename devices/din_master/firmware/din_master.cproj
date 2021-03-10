@@ -78,6 +78,12 @@
     <Compile Include="din_master.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\dht11.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\dht11.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\ds18b20.c">
       <SubType>compile</SubType>
     </Compile>
@@ -90,10 +96,28 @@
     <Compile Include="drivers\hs.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\mq7.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\mq7.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\ow4rele.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\ow4rele.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="lcd.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="lcd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="control.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="control.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="onewire.c">
@@ -111,10 +135,10 @@
     <Compile Include="globals.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="variables.c">
+    <Compile Include="core.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="variables.h">
+    <Compile Include="core.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

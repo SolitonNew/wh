@@ -14,13 +14,13 @@ void ds18b20_start_measure(uint8_t *rom) {
 	onewire_write_byte(ONEWIRE_CONVERTTEMP);
 }
 
-float ds18b20_get_value(uint8_t *rom) {
+uint8_t ds18b20_get_data(uint8_t *rom, ds18b20_data_t *data) {
 	if (!onewire_reset()) return 0;
 	
-	uint8_t d[9];	
-		
 	onewire_match_rom(rom);
 	onewire_write_byte(ONEWIRE_RSCRATCHPAD);	
+	
+	uint8_t d[9];	
 	for (uint8_t i = 0; i < 9; i++) {
 		d[i] = onewire_read_byte();
 	}		
@@ -31,12 +31,9 @@ float ds18b20_get_value(uint8_t *rom) {
 	}
 	
 	if (crc == 0) {
-		return ((d[1] << 8 | d[0]) / 16.0);
+		data->temp = ((d[1] << 8 | d[0]) / 16.0);
+		return 1;
 	}		
 	
 	return 0;
-}
-
-void ds18b20_set_value(uint8_t *rom, float val) {
-	// readonly
 }
