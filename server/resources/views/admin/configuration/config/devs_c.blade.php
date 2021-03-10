@@ -8,15 +8,6 @@ const uint8_t ow_roms[{{ count($owList) * 8 }}] PROGMEM = {
 @endforeach
 };
 
-typedef struct _variable_t {
-	int id;
-	unsigned char ctrl_id;
-	unsigned char typ;
-	unsigned char direction;
-	int ow_index;
-	unsigned char channel;
-} variable_t;
-
 const variable_t variables[{{ count($varList) }}] PROGMEM = {
 @foreach($varList as $row)
    { {{ $row->ID }}, {{ $row->CONTROLLER_ID }}, {{ $varTyps[$row->ROM] }}, {{ $row->DIRECTION }}, {{ $row->OW_INDEX }}, 0 },
