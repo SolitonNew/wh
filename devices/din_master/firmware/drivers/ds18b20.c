@@ -9,7 +9,7 @@
 #include "ds18b20.h"
 
 void ds18b20_start_measure(uint8_t *rom) {
-	if (!onewire_reset()) return 0;
+	if (!onewire_reset()) return;
 	onewire_match_rom(rom);
 	onewire_write_byte(ONEWIRE_CONVERTTEMP);
 }
