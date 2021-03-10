@@ -28,10 +28,12 @@
 #define ONEWIRE_ALARM_LIMIT 10
 
 void onewire_init(void);
+uint8_t onewire_crc_table(uint8_t data);
+uint8_t onewire_reset(void);
+void onewire_write_byte(uint8_t byte);
+uint8_t onewire_read_byte(void);
+uint8_t onewire_match_rom(uint8_t *rom);
 uint8_t onewire_search(uint8_t *roms);
 uint8_t onewire_alarms(uint8_t *roms);
-
-uint8_t onewire_match_rom(uint8_t *rom);
-
 float onewire_get_value(uint8_t *rom);
 void onewire_set_value(uint8_t *rom, float value);
