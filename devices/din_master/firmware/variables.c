@@ -5,6 +5,7 @@
  *  Author: User
  */ 
 
+#include <avr/io.h>
 #include <avr/pgmspace.h>
 #include "config/devs.h"
 #include "config/scripts.h"
