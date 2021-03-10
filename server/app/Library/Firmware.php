@@ -69,10 +69,15 @@ class Firmware {
         if (!file_exists($this->_firmwarePath().'/config')) {
             mkdir($this->_firmwarePath().'/config');
         }
-
-        // Пакуем в файл config.c
+        
+        // Пакуем в файл devs.c
         $fs = new \Illuminate\Filesystem\Filesystem();
         $fs->put($this->_firmwarePath().'/config/devs.h', View::make('admin.configuration.config.devs_h', [
+        ]));
+
+        // Пакуем в файл devs.c
+        $fs = new \Illuminate\Filesystem\Filesystem();
+        $fs->put($this->_firmwarePath().'/config/devs.c', View::make('admin.configuration.config.devs_c', [
             'owList' => $owList,
             'varList' => $varList,
             'varTyps' => [
@@ -82,9 +87,15 @@ class Firmware {
             ]
         ]));
         
-        // Пакуем в файл config.h
+        // Пакуем в файл scripts.h
         $fs = new \Illuminate\Filesystem\Filesystem();
         $fs->put($this->_firmwarePath().'/config/scripts.h', View::make('admin.configuration.config.scripts_h', [
+            'scriptList' => $scriptList,
+        ]));
+        
+        // Пакуем в файл scripts.c
+        $fs = new \Illuminate\Filesystem\Filesystem();
+        $fs->put($this->_firmwarePath().'/config/scripts.c', View::make('admin.configuration.config.scripts_c', [
             'scriptList' => $scriptList,
         ]));
     }
