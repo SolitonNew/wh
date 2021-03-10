@@ -131,7 +131,6 @@ void core_onewire_alarm_processing(void) {
 	hs_data_t hs_data;
 	dht11_data_t dht11_data;
 	mq7_data_t mq7_data;
-	ow4rele_data_t ow4rele_data;
 	
 	uint8_t num = onewire_alarms(core_onewire_alarm_buff);
 	if (num) {
