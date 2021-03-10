@@ -10,8 +10,9 @@
 #include "config/devs.h"
 #include "config/scripts.h"
 
+int variable_count;
+
 int get_variable_index(int id) {
-	uint8_t size = sizeof(variable_t);
 	for (int i = 0; i < variable_count; i++) {
 		int vid = pgm_read_dword(&variables[i]);
 		if (vid == id) {
@@ -23,7 +24,7 @@ int get_variable_index(int id) {
 }
 
 float get_variable_value(int index) {
-
+	return 0;
 }
 
 void set_variable_value(int index, float val) {	
