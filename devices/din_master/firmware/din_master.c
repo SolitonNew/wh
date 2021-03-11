@@ -15,6 +15,8 @@
 
 uint8_t controller_id;
 control_btn_states_t control_btn_states = {0, 0, 0, 0};
+	
+uint8_t tmp[200];
 
 int main(void)
 {
@@ -23,7 +25,7 @@ int main(void)
 	control_init();
 	core_init();
 
-	lcd_init(); 
+	lcd_init();
 	
     while(1)
     {	
@@ -38,13 +40,13 @@ int main(void)
 		}
 		
 		// -------------------------------
-		lcd_clear();
+		/*lcd_clear();
 		uint8_t buff[8];
 		core_get_variable_rom(1, buff);
 		for (uint8_t i = 0; i < 8; i++) {
 			lcd_hex(buff[i]);
 			lcd_char(' ');
-		}
+		}*/
 		// -------------------------------
 		
 		_delay_ms(10);

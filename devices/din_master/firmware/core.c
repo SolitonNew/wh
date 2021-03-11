@@ -17,6 +17,7 @@
 #include "drivers/hs.h"
 #include "drivers/dht11.h"
 #include "drivers/mq7.h"
+#include "drivers/pc.h"
 #include "drivers/ow4rele.h"
 
 
@@ -131,6 +132,7 @@ void core_onewire_alarm_processing(void) {
 	hs_data_t hs_data;
 	dht11_data_t dht11_data;
 	mq7_data_t mq7_data;
+	pc_data_t pc_data;
 	
 	uint8_t num = onewire_alarms(core_onewire_alarm_buff);
 	if (num) {
@@ -146,24 +148,22 @@ void core_onewire_alarm_processing(void) {
 				case 0x28: // ds18b20
 					if (ds18b20_get_data(&core_onewire_alarm_buff[rom_ind], &ds18b20_data)) {
 						for (uint8_t n = 0; n < vars_count; n++) {
-							if (core_get_variable_controller(vars[n]) == controller_id) {
-								core_set_variable_value(vars[n], ds18b20_data.temp);
-							}
+							if (core_get_variable_controller(vars[n]) == controller_id) continue;
+							core_set_variable_value(vars[n], ds18b20_data.temp);
 						}
 					}
 					break;
 				case 0xf0: // hs
 					if (hs_get_data(&core_onewire_alarm_buff[rom_ind], &hs_data)) {
 						for (uint8_t n = 0; n < vars_count; n++) {
-							if (core_get_variable_controller(vars[n]) == controller_id) {
-								switch (core_get_variable_channel(vars[n])) {
-									case 0:
-										core_set_variable_value(vars[n], hs_data.left);
-										break;
-									case 1:
-										core_set_variable_value(vars[n], hs_data.right);
-										break;
-								}
+							if (core_get_variable_controller(vars[n]) != controller_id) continue; 
+							switch (core_get_variable_channel(vars[n])) {
+								case 0:
+									core_set_variable_value(vars[n], hs_data.left);
+									break;
+								case 1:
+									core_set_variable_value(vars[n], hs_data.right);
+									break;
 							}
 						}
 					}
@@ -171,15 +171,52 @@ void core_onewire_alarm_processing(void) {
 				case 0xf1: // ow_4_rele
 					// not record
 					break;
+				case 0xf2: // pc (pin control)
+					if (pc_get_data(&core_onewire_alarm_buff[rom_ind], &pc_data)) {
+						for (uint8_t n = 0; n < vars_count; n++) {
+							if (core_get_variable_controller(vars[n]) != controller_id) continue; 
+							switch (core_get_variable_channel(vars[n])) {
+								case 0:
+									core_set_variable_value(vars[n], pc_data.p1);
+									break;
+								case 1:
+									core_set_variable_value(vars[n], pc_data.p2);
+									break;
+								case 2:
+									core_set_variable_value(vars[n], pc_data.p3);
+									break;
+								case 3:
+									core_set_variable_value(vars[n], pc_data.p4);
+									break;
+							}
+						}
+					}					
+					break;
 				case 0xf3: // dht11
 					if (dht11_get_data(&core_onewire_alarm_buff[rom_ind], &dht11_data)) {
-						//
+						for (uint8_t n = 0; n < vars_count; n++) {
+							if (core_get_variable_controller(vars[n]) != controller_id) continue; 
+							switch (core_get_variable_channel(vars[n])) {
+								case 0:
+									core_set_variable_value(vars[n], dht11_data.h);
+									break;
+								case 1:
+									core_set_variable_value(vars[n], dht11_data.t);
+									break;
+							}
+						}
 					}
 					break;
 				case 0xf4: // mq7
 					if (mq7_get_data(&core_onewire_alarm_buff[rom_ind], &mq7_data)) {
-						//
+						for (uint8_t n = 0; n < vars_count; n++) {
+							if (core_get_variable_controller(vars[n]) == controller_id) continue;
+							core_set_variable_value(vars[n], mq7_data.co);
+						}
 					}
+					break;
+				case 0xf5: // ampermetr
+					break;
 			}
 			rom_ind += 8;
 		}

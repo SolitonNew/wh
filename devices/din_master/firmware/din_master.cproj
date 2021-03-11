@@ -108,6 +108,12 @@
     <Compile Include="drivers\ow4rele.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\pc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\pc.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="lcd.c">
       <SubType>compile</SubType>
     </Compile>
