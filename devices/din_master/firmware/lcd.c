@@ -14,6 +14,13 @@
 #define LCD_W 102
 #define LCD_H 65
 
+#define LCD_MAX_X 16
+#define LCD_MAX_Y 7
+#define LCD_CHAR_W 5
+
+uint8_t text_x = 0;
+uint8_t text_y = 0;
+
 const uint8_t font[480] PROGMEM = {
 	0x00, 0x00, 0x00, 0x00, 0x00, // 20  
 	0x00, 0x00, 0x5f, 0x00, 0x00, // 21 !
@@ -158,6 +165,12 @@ void lcd_init(void) {
 void lcd_char(uint8_t c) {
 	if (c < 32) c = 32;
 	
+	if (text_x > LCD_MAX_X - 1) {
+		lcd_move(0, text_y + 1);
+	}
+	
+	text_x++;
+	
 	int o = (c - 32) * 5;
 	for(uint8_t i = 0; i < 5; i++) {
 		lcd_write(1, pgm_read_byte(&font[o + i]));
@@ -191,6 +204,18 @@ void lcd_clear(void) {
 	for (int i = 0; i < (LCD_W * (LCD_H / 8 + 1)); i++) {
 		lcd_write(1, 0x0);
 	}
+	lcd_move(0, 0);
+}
+
+void lcd_move(uint8_t x, uint8_t y) {
+	text_x = x;
+	text_y = y;
 	lcd_write(0, 0x80);
-	lcd_write(0, 0x40);
+	lcd_write(0, 0x40 + LCD_MAX_Y - y);
+	lcd_write(0, 0x80 + x * LCD_CHAR_W);
+}
+
+void lcd_nl(void) {
+	if (text_x == 0) return ; 
+	lcd_move(0, text_y + 1);
 }

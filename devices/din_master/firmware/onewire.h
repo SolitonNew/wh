@@ -27,6 +27,8 @@
 #define ONEWIRE_SEARCH_LIMIT = 40
 #define ONEWIRE_ALARM_LIMIT 10
 
+extern int error;
+
 void onewire_init(void);
 uint8_t onewire_crc_table(uint8_t data);
 uint8_t onewire_reset(void);
