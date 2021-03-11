@@ -17,3 +17,5 @@ void lcd_char(uint8_t c);
 void lcd_text(uint8_t *text, uint8_t num);
 void lcd_hex(uint8_t byte);
 void lcd_clear(void);
+void lcd_move(uint8_t x, uint8_t y);
+void lcd_nl(void);

@@ -12,10 +12,13 @@
 #include "drivers/ds18b20.h"
 #include "drivers/hs.h"
 
-#define ONEWIRE_checkIn ONEWIRE_PIN & (1<<ONEWIRE_BIT)
+#define ONEWIRE_CHECK_IN ONEWIRE_PIN & (1<<ONEWIRE_BIT)
+
+int error = 0;
 
 void onewire_init(void) {
-	ONEWIRE_DDR &= ~(1<<ONEWIRE_BIT);
+	CPIN(ONEWIRE_PORT, ONEWIRE_BIT);
+	CPIN(ONEWIRE_DDR, ONEWIRE_BIT);
 }
 
 uint8_t onewire_crc_table(uint8_t data) {
@@ -35,11 +38,9 @@ uint8_t onewire_crc_table(uint8_t data) {
 
 void onewire_set(uint8_t mode) {
 	if (mode) {
-		ONEWIRE_PORT &= ~(1<<ONEWIRE_BIT);
-		ONEWIRE_DDR |= (1<<ONEWIRE_BIT);
+		SPIN(ONEWIRE_DDR, ONEWIRE_BIT);
 	} else {
-		ONEWIRE_PORT &= ~(1<<ONEWIRE_BIT);
-		ONEWIRE_DDR &= ~(1<<ONEWIRE_BIT);
+		CPIN(ONEWIRE_DDR, ONEWIRE_BIT);
 	}
 }
 
@@ -49,27 +50,29 @@ uint8_t onewire_reset(void) {
 	_delay_us(480);
 	onewire_set(0);
 	_delay_us(60);	
-	status = ONEWIRE_checkIn;
+	status = ONEWIRE_CHECK_IN;
 	_delay_us(420);
 	return !status;
 }
 
 void onewire_write_bit(uint8_t bit) {
 	onewire_set(1);
-	_delay_us(1);
-	if(bit) onewire_set(0); 
-	_delay_us(60);	
+	_delay_us(10); // 1
+	if (bit) {
+		onewire_set(0);
+	}		
+	_delay_us(70);	// 60
 	onewire_set(0);
 }
 
 uint8_t onewire_read_bit(void) {
 	uint8_t bit = 0;
 	onewire_set(1);
-	_delay_us(1);	
+	_delay_us(10); // 1
 	onewire_set(0);
-	_delay_us(10);
-	if (ONEWIRE_checkIn) bit = 1;
-	_delay_us(40);
+	_delay_us(10); // 10
+	if (ONEWIRE_CHECK_IN) bit = 1;
+	_delay_us(60); // 40
 	return bit;
 }
 
@@ -80,13 +83,13 @@ void onewire_write_byte(uint8_t byte) {
 }
 
 uint8_t onewire_read_byte(void) {
-	uint8_t n = 0;
+	uint8_t byte = 0;
 	for (uint8_t i = 0; i < 8; i++) {
 		if (onewire_read_bit()) {
-			n |= (1<<i);
+			byte |= (1<<i);
 		}
 	}
-	return n;
+	return byte;
 }
 
 uint8_t onewire_search_rom(uint8_t *last_rom, uint8_t diff, uint8_t cmd) {
@@ -102,14 +105,14 @@ uint8_t onewire_search_rom(uint8_t *last_rom, uint8_t diff, uint8_t cmd) {
         uint8_t r_b = 0;
         for (uint8_t bit = 0; bit < 8; bit++) {
             uint8_t b = onewire_read_bit();
-            if (onewire_read_bit()) {                    
+            if (onewire_read_bit()) {
                 if (b) { // There are no devices or there is a mistake on the wire
 					last_rom[0] = 0;
                     return 0;
 				}					
-            } else {               
+            } else {
                 if (!b) { // Collision. Two devices with different bit meaning
-                    if (diff > i || ((last_rom[byte] & (1 << bit)) && (diff != i))) {
+                    if ((diff > i) || ((last_rom[byte] & (1 << bit)) && (diff != i))) {
                         b = 1;
                         next_diff = i;
 					}					
@@ -119,7 +122,7 @@ uint8_t onewire_search_rom(uint8_t *last_rom, uint8_t diff, uint8_t cmd) {
             if (b) {
                 r_b |= (1 << bit);
 			}				
-            i -= 1;
+            i--;
 		}
         rom[byte] = r_b;
 	}
@@ -162,7 +165,7 @@ uint8_t onewire_match_rom(uint8_t *rom) {
 }
 
 uint8_t onewire_search(uint8_t *roms) {
-	return onewire_search_roms(ONEWIRE_SEARCH_ROM, roms, 20);
+	return onewire_search_roms(ONEWIRE_SEARCH_ROM, roms, 10);
 }
 
 uint8_t onewire_alarms(uint8_t *roms) {
