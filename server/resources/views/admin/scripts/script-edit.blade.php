@@ -1,7 +1,7 @@
 @extends('dialog')
 
 @section('title')
-@if($item->ID == -1)
+@if($item->id == -1)
     @lang('admin/scripts.script_add_title')
 @else
     @lang('admin/scripts.script_edit_title')
@@ -9,16 +9,16 @@
 @endsection
 
 @section('content')
-<form id="script_edit_form" class="container" method="POST" action="{{ route('script-edit', $item->ID) }}">
+<form id="script_edit_form" class="container" method="POST" action="{{ route('script-edit', $item->id) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
-    @if($item->ID > 0)
+    @if($item->id > 0)
     <div class="row">
         <div class="col-sm-3">
             <div class="form-label">@lang('admin/scripts.table_ID')</div>
         </div>
         <div class="col-sm-3">
-            <div class="form-control">{{ $item->ID > 0 ? $item->ID : '' }}</div>
+            <div class="form-control">{{ $item->id > 0 ? $item->id : '' }}</div>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -28,7 +28,7 @@
             <div class="form-label strong">@lang('admin/scripts.table_COMM')</div>
         </div>
         <div class="col-sm-9">
-            <input class="form-control" type="text" name="COMM" value="{{ $item->COMM }}" required="">
+            <input class="form-control" type="text" name="comm" value="{{ $item->comm }}" required="">
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -36,7 +36,7 @@
 @endsection
 
 @section('buttons')
-    @if($item->ID > 0 && Auth::user()->ID != $item->ID)
+    @if($item->id > 0)
     <button type="button" class="btn btn-danger" onclick="scriptDelete()">@lang('dialogs.btn_delete')</button>
     <div style="flex-grow: 1"></div>
     @endif
@@ -64,7 +64,7 @@
 
     function scriptDelete() {
         confirmYesNo("@lang('admin/scripts.script_delete_confirm')", () => {
-            $.ajax('{{ route("script-delete", $item->ID) }}').done((data) => {
+            $.ajax('{{ route("script-delete", $item->id) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
                         window.location.reload();

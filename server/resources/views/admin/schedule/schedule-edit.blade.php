@@ -1,7 +1,7 @@
 @extends('dialog')
 
 @section('title')
-@if($item->ID == -1)
+@if($item->id == -1)
     @lang('admin/schedule.schedule_add_title')
 @else
     @lang('admin/schedule.schedule_edit_title')
@@ -9,16 +9,16 @@
 @endsection
 
 @section('content')
-<form id="schedule_edit_form" class="container" method="POST" action="{{ route('schedule-edit', $item->ID) }}">
+<form id="schedule_edit_form" class="container" method="POST" action="{{ route('schedule-edit', $item->id) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
-    @if($item->ID > 0)
+    @if($item->id > 0)
     <div class="row">
         <div class="col-sm-3">
             <div class="form-label">@lang('admin/schedule.table_ID')</div>
         </div>
         <div class="col-sm-3">
-            <div class="form-control">{{ $item->ID > 0 ? $item->ID : '' }}</div>
+            <div class="form-control">{{ $item->id > 0 ? $item->id : '' }}</div>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -28,7 +28,7 @@
             <div class="form-label strong">@lang('admin/schedule.table_COMM')</div>
         </div>
         <div class="col-sm-9">
-            <input class="form-control" name="COMM" value="{{ $item->COMM }}">
+            <input class="form-control" name="comm" value="{{ $item->comm }}">
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -37,7 +37,7 @@
             <div class="form-label strong">@lang('admin/schedule.table_ACTION')</div>
         </div>
         <div class="col-sm-9">
-            <textarea class="form-control" name="ACTION" rows="3" style="font-family: 'Courier New';">{{ $item->ACTION }}</textarea>
+            <textarea class="form-control" name="action" rows="3" style="font-family: 'Courier New';">{{ $item->action }}</textarea>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -46,9 +46,9 @@
             <div class="form-label">@lang('admin/schedule.table_ENABLE')</div>
         </div>
         <div class="col-sm-5">
-            <select class="custom-select" name="ENABLE">
+            <select class="custom-select" name="enable">
             @foreach(Lang::get('admin/schedule.enable_list') as $key => $val)
-            <option value="{{ $key }}" {{ $key == $item->ENABLE ? 'selected' : '' }}>{{ $val }}</option>
+            <option value="{{ $key }}" {{ $key == $item->enable ? 'selected' : '' }}>{{ $val }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>
@@ -62,9 +62,9 @@
             <div class="form-label">@lang('admin/schedule.table_INTERVAL_TYPE')</div>
         </div>
         <div class="col-sm-5">
-            <select class="custom-select" name="INTERVAL_TYPE">
+            <select class="custom-select" name="interval_type">
             @foreach(Lang::get('admin/schedule.interval') as $key => $val)
-            <option value="{{ $key }}" {{ $key == $item->INTERVAL_TYPE ? 'selected' : '' }}>{{ $val }}</option>
+            <option value="{{ $key }}" {{ $key == $item->interval_type ? 'selected' : '' }}>{{ $val }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>
@@ -75,7 +75,7 @@
             <div class="form-label strong nowrap">@lang('admin/schedule.table_INTERVAL_DAY_OF_TYPE')</div>
         </div>
         <div class="col-sm-9">
-            <textarea class="form-control" name="INTERVAL_DAY_OF_TYPE">{{ $item->INTERVAL_DAY_OF_TYPE }}</textarea>
+            <textarea class="form-control" name="interval_day_of_type">{{ $item->interval_day_of_type }}</textarea>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -84,7 +84,7 @@
             <div class="form-label strong nowrap">@lang('admin/schedule.table_INTERVAL_TIME_OF_DAY')</div>
         </div>
         <div class="col-sm-9">
-            <textarea class="form-control" name="INTERVAL_TIME_OF_DAY">{{ $item->INTERVAL_TIME_OF_DAY }}</textarea>
+            <textarea class="form-control" name="interval_time_of_day">{{ $item->interval_time_of_day }}</textarea>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -92,7 +92,7 @@
 @endsection
 
 @section('buttons')
-    @if($item->ID > 0 && Auth::user()->ID != $item->ID)
+    @if($item->id > 0 && Auth::user()->id != $item->id)
     <button type="button" class="btn btn-danger" onclick="scheduleDelete()">@lang('dialogs.btn_delete')</button>
     <div style="flex-grow: 1"></div>
     @endif
@@ -114,7 +114,7 @@
             }
         });
 
-        $('#schedule_edit_form select[name="INTERVAL_TYPE"]').on('change', function () {
+        $('#schedule_edit_form select[name="interval_type"]').on('change', function () {
             let row = $('#day_of_type');
             let label = $('.form-label', row);
             switch ($(this).val()) {
@@ -143,7 +143,7 @@
 
     function scheduleDelete() {
         confirmYesNo("@lang('admin/schedule.schedule-delete-confirm')", () => {
-            $.ajax('{{ route("schedule-delete", $item->ID) }}').done((data) => {
+            $.ajax('{{ route("schedule-delete", $item->id) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
                         window.location.reload();
@@ -160,7 +160,7 @@
             url: '{{ route("script-test") }}',
             data: {
                 '_token': '{{ Session::token() }}',
-                'COMMAND': $('textarea[name="ACTION"]').val(),
+                'COMMAND': $('textarea[name="action"]').val(),
             },
             success: function(data) {
                 alert(data);

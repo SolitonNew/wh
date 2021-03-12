@@ -18,11 +18,11 @@
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 320px;min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="scriptsList">
         @foreach($list as $row)
-        <a href="{{ route('scripts', $row->ID) }}"
-            class="tree-item {{ $row->ID == $scriptID ? 'active' : '' }}">
-            {{ $row->COMM }}
-            @if($row->VAR_COUNT > 0)
-            <div class="badge badge-pill badge-warning">{{ $row->VAR_COUNT }}</div>
+        <a href="{{ route('scripts', $row->id) }}"
+            class="tree-item {{ $row->id == $scriptID ? 'active' : '' }}">
+            {{ $row->comm }}
+            @if($row->var_count > 0)
+            <div class="badge badge-pill badge-warning">{{ $row->var_count }}</div>
             @endif
         </a>
         @endforeach
@@ -33,11 +33,12 @@
     </div>
 </div>
 
+@if($data)
 <div class="script-editor-background">
     <div class="script-editor-container">
         <div class="script-editor-body">
             <div class="script-editor-rownums" data-count="0"></div>
-            <textarea class="script-editor-code">{{ $data->DATA }}</textarea>
+            <textarea class="script-editor-code">{{ $data->data }}</textarea>
         </div>
         <div class="script-editor-toolbar">
             <button class="btn btn-warning" onclick="editorTest()">@lang('admin/scripts.btn_test')</button>
@@ -47,6 +48,7 @@
         </div>
     </div>
 </div>
+@endif
 
 <script>
     $(document).ready(() => {
@@ -92,6 +94,7 @@
         dialog('{{ route("script-edit", -1) }}');
     }
 
+    @if($scriptID)
     function scriptEdit() {
         dialog('{{ route("script-edit", $scriptID) }}');
     }
@@ -113,7 +116,7 @@
             url: '{{ route("script-save", $scriptID) }}',
             data: {
                 '_token': '{{ Session::token() }}',
-                DATA: $('.script-editor-code').val(),
+                data: $('.script-editor-code').val(),
             },
             success: function (data) {
                 if (data == 'OK') {
@@ -132,7 +135,7 @@
             url: '{{ route("script-test") }}',
             data: {
                 '_token': '{{ Session::token() }}',
-                'COMMAND': $('.script-editor-code').val(),
+                'command': $('.script-editor-code').val(),
             },
             success: function(data) {
                 alert(data);
@@ -142,6 +145,7 @@
             }
         });
     }
+    @endif    
 </script>
 
 @endsection

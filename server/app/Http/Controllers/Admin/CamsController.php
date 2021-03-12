@@ -15,10 +15,10 @@ class CamsController extends Controller
      */
     public function index() {
         $sql = 'select c.*,
-                       v.NAME VAR_NAME
+                       v.name var_name
                   from plan_video c
-                left join core_variables v on c.ALERT_VAR_ID = v.ID
-                order by c.NAME';
+                left join core_variables v on c.alert_var_id = v.id
+                order by c.name';
         
         $data = DB::select($sql);
         
@@ -38,10 +38,10 @@ class CamsController extends Controller
         if ($request->method() == 'POST') {
             try {
                 $this->validate($request, [
-                    'NAME' => 'required|string|unique:plan_video,NAME,'.($id > 0 ? $id : ''),
-                    'URL' => 'required|string',
-                    'URL_LOW' => 'required|string',
-                    'URL_HIGH' => 'required|string',
+                    'name' => 'required|string|unique:plan_video,name,'.($id > 0 ? $id : ''),
+                    'url' => 'required|string',
+                    'url_low' => 'required|string',
+                    'url_high' => 'required|string',
                 ]);
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
@@ -52,14 +52,14 @@ class CamsController extends Controller
                     $item = new \App\Http\Models\PlanVideoModel();
                 }
                 
-                $item->NAME = $request->post('NAME');
-                $item->URL = $request->post('URL');
-                $item->URL_LOW = $request->post('URL_LOW');
-                $item->URL_HIGH = $request->post('URL_HIGH');
-                $item->ALERT_VAR_ID = $request->post('ALERT_VAR_ID');
+                $item->name = $request->post('name');
+                $item->url = $request->post('url');
+                $item->url_low = $request->post('url_low');
+                $item->url_high = $request->post('url_high');
+                $item->alert_var_id = $request->post('alert_var_id');
                 $item->save();
                 if ($id == -1) {
-                    $item->ORDER_NUM = $item->ID;
+                    $item->order_num = $item->id;
                     $item->save();
                 }
                 return 'OK';
@@ -72,12 +72,12 @@ class CamsController extends Controller
         } else {
             if (!$item) {
                 $item = (object)[
-                    'ID' => -1,
-                    'NAME' => '',
-                    'URL' => '',
-                    'URL_LOW' => '',
-                    'URL_HIGH' => '',
-                    'ALERT_VAR_ID' => -1,
+                    'id' => -1,
+                    'name' => '',
+                    'url' => '',
+                    'url_low' => '',
+                    'url_high' => '',
+                    'alert_var_id' => -1,
                 ];
             }
             return view('admin.cams.cam-edit', [

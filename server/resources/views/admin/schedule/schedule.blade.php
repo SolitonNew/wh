@@ -22,22 +22,22 @@
         </thead>
         <tbody>
             @foreach($data as $row)
-            <tr data-id="{{ $row->ID }}" 
-                class="{{ (\Carbon\Carbon::parse($row->ACTION_DATETIME)->gt(now()) && 
-                           \Carbon\Carbon::parse($row->ACTION_DATETIME)->lte(now()->startOfDay()->addDay())) ? 'schedule-exec-today' : '' }}">
-                <td>{{ $row->ID }}</td>
-                <td>{{ $row->COMM }}</td>
+            <tr data-id="{{ $row->id }}" 
+                class="{{ (\Carbon\Carbon::parse($row->action_datetime)->gt(now()) && 
+                           \Carbon\Carbon::parse($row->action_datetime)->lte(now()->startOfDay()->addDay())) ? 'schedule-exec-today' : '' }}">
+                <td>{{ $row->id }}</td>
+                <td>{{ $row->comm }}</td>
                 <td>
-                    @if($row->ACTION_DATETIME)
-                    {{ \Carbon\Carbon::parse($row->ACTION_DATETIME)->format('Y-m-d') }}<br>
-                    {{ \Carbon\Carbon::parse($row->ACTION_DATETIME)->format('H:i:s') }}
+                    @if($row->action_datetime)
+                    {{ \Carbon\Carbon::parse($row->action_datetime)->format('Y-m-d') }}<br>
+                    {{ \Carbon\Carbon::parse($row->action_datetime)->format('H:i:s') }}
                     @else
                     @lang('admin/schedule.action_datetime_calc')
                     @endif
                 </td>
-                <td>{!! nl2br($row->ACTION) !!}</td>
-                <td>{!! $row->INTERVAL_TEXT !!}</td>
-                <td>{{ Lang::get('admin/schedule.enable_list.'.$row->ENABLE) }}</td>
+                <td>{!! nl2br($row->action) !!}</td>
+                <td>{!! $row->interval_text !!}</td>
+                <td>{{ Lang::get('admin/schedule.enable_list.'.$row->enable) }}</td>
             </tr>
             @endforeach
         </tbody>
