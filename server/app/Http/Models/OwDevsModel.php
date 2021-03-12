@@ -8,6 +8,5 @@ class OwDevsModel extends Model
 {
     protected $table = 'core_ow_devs';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
     
 }

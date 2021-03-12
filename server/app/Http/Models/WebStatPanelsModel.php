@@ -8,5 +8,5 @@ class WebStatPanelsModel extends Model
 {
     protected $table = 'web_stat_panels';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
+    
 }

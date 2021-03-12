@@ -15,42 +15,42 @@ class ConfigurationController extends Controller
      */
     public function index(int $id = null) {
         if (!$id) {
-            $item = \App\Http\Models\ControllersModel::orderBy('ID', 'asc')->first();
+            $item = \App\Http\Models\ControllersModel::orderBy('id', 'asc')->first();
             if ($item) {
-                return redirect(route('configuration', $item->ID));
+                return redirect(route('configuration', $item->id));
             }
         }
         
-        $sql = 'select d.ID, 
-                       c.NAME CONTROLLER_NAME, 
-                       "" ROM,
-                       d.ROM_1, d.ROM_2, d.ROM_3, d.ROM_4, d.ROM_5, d.ROM_6, d.ROM_7,
-                       t.CHANNELS,
-                       t.COMM,
-                       "" VARIABLES
+        $sql = 'select d.id, 
+                       c.name controller_name, 
+                       "" rom,
+                       d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7,
+                       t.channels,
+                       t.comm,
+                       "" variables
                   from core_ow_devs d, core_ow_types t, core_controllers c
-                 where d.CONTROLLER_ID = c.ID
-                   and d.ROM_1 = t.CODE
-                   and d.CONTROLLER_ID = '.$id.' 
-                order by c.NAME, d.ROM_1, d.ROM_2, d.ROM_3, d.ROM_4, d.ROM_5, d.ROM_6, d.ROM_7';
+                 where d.controller_id = c.id
+                   and d.rom_1 = t.code
+                   and d.controller_id = "'.$id.'" 
+                order by c.name, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7';
         $data = DB::select($sql);
         
         foreach($data as &$row) {
-            $row->ROM = sprintf("x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X", 
-                $row->ROM_1, 
-                $row->ROM_2, 
-                $row->ROM_3, 
-                $row->ROM_4, 
-                $row->ROM_5, 
-                $row->ROM_6, 
-                $row->ROM_7
+            $row->rom = sprintf("x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X", 
+                $row->rom_1, 
+                $row->rom_2, 
+                $row->rom_3, 
+                $row->rom_4, 
+                $row->rom_5, 
+                $row->rom_6, 
+                $row->rom_7
             );
             
-            $row->VARIABLES = DB::select('select v.ID, v.NAME, v.CHANNEL
+            $row->variables = DB::select('select v.id, v.name, v.channel
                                             from core_variables v 
-                                           where v.ROM = "ow" 
-                                             and v.OW_ID = '.$row->ID.'
-                                          order by v.CHANNEL');
+                                           where v.typ = "ow" 
+                                             and v.ow_id = '.$row->id.'
+                                          order by v.channel');
         }
         
         return view('admin.configuration.configuration', [
@@ -69,8 +69,8 @@ class ConfigurationController extends Controller
         if ($request->method() == 'POST') {
             try {
                 $this->validate($request, [
-                    'NAME' => 'string|required',
-                    'COMM' => 'string|required',
+                    'name' => 'string|required',
+                    'comm' => 'string|required',
                 ]);          
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
@@ -81,10 +81,10 @@ class ConfigurationController extends Controller
                 if (!$item) {
                     $item = new \App\Http\Models\ControllersModel();
                 }
-                $item->NAME = $request->post('NAME');
-                $item->COMM = $request->post('COMM');
-                $item->STATUS = 0; 
-                $item->POSITION = '';
+                $item->name = $request->post('name');
+                $item->comm = $request->post('comm');
+                $item->status = 0; 
+                $item->mmcu = 'atmega8a';
                 $item->save();
                 return 'OK';
             } catch (\Exception $ex) {
@@ -96,10 +96,10 @@ class ConfigurationController extends Controller
             $item = \App\Http\Models\ControllersModel::find($id);
             if (!$item) {
                 $item = (object)[
-                    'ID' => -1,
-                    'NAME' => '',
-                    'COMM' => '',
-                    'STATUS' => 0,
+                    'id' => -1,
+                    'name' => '',
+                    'comm' => '',
+                    'status' => 0,
                 ];
             }
             return view('admin.configuration.configuration-edit', [
@@ -129,18 +129,18 @@ class ConfigurationController extends Controller
      * @return type
      */
     public function owInfo(int $id) {
-        $sql = 'select d.ID, 
-                       c.NAME CONTROLLER_NAME, 
-                       "" ROM,
-                       d.ROM_1, d.ROM_2, d.ROM_3, d.ROM_4, d.ROM_5, d.ROM_6, d.ROM_7,
-                       t.CHANNELS,
-                       t.COMM,
-                       "" VARIABLES
+        $sql = 'select d.id, 
+                       c.name controller_name, 
+                       "" rom,
+                       d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7,
+                       t.channels,
+                       t.comm,
+                       "" variables
                   from core_ow_devs d, core_ow_types t, core_controllers c
-                 where d.CONTROLLER_ID = c.ID
-                   and d.ROM_1 = t.CODE
-                   and d.ID = '.$id.'
-                order by c.NAME, d.ROM_1, d.ROM_2, d.ROM_3, d.ROM_4, d.ROM_5, d.ROM_6, d.ROM_7';
+                 where d.controller_id = c.id
+                   and d.rom_1 = t.code
+                   and d.id = '.$id.'
+                order by c.name, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7';
         $data = DB::select($sql);
         if (count($data)) {
             $item = $data[0];
@@ -149,20 +149,20 @@ class ConfigurationController extends Controller
         }
         
         $item->ROM = sprintf("x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X", 
-            $item->ROM_1, 
-            $item->ROM_2, 
-            $item->ROM_3, 
-            $item->ROM_4, 
-            $item->ROM_5, 
-            $item->ROM_6, 
-            $item->ROM_7
+            $item->rom_1, 
+            $item->rom_2, 
+            $item->rom_3, 
+            $item->rom_4, 
+            $item->rom_5, 
+            $item->rom_6, 
+            $item->rom_7
         );
         
-        $sql = 'select v.ID, v.NAME, v.CHANNEL
+        $sql = 'select v.id, v.name, v.channel
                   from core_variables v 
-                 where v.ROM = "ow" 
-                   and v.OW_ID = '.$item->ID.'
-                order by v.CHANNEL';
+                 where v.rom = "ow" 
+                   and v.ow_id = '.$item->id.'
+                order by v.channel';
                 
         $item->VARIABLES = DB::select($sql);
         
@@ -191,18 +191,18 @@ class ConfigurationController extends Controller
      * @return string
      */
     public function generateVarsForFreeDevs() {
-        $devs = DB::select('select d.ID, d.CONTROLLER_ID, t.CHANNELS, t.COMM
+        $devs = DB::select('select d.id, d.controller_id, t.channels, t.comm
                               from core_ow_devs d, core_ow_types t
-                             where d.ROM_1 = t.CODE');
+                             where d.rom_1 = t.code');
         
-        $vars = DB::select('select OW_ID, CHANNEL from core_variables where ROM = "ow"');
+        $vars = DB::select('select ow_id, channel from core_variables where typ = "ow"');
         
         try {
             foreach($devs as $dev) {
                 foreach (explode(',', $dev->CHANNELS) as $chan) {
                     $find = false;
                     foreach($vars as $var) {
-                        if ($var->OW_ID == $dev->ID && $var->CHANNEL && $var->CHANNEL == $chan) {
+                        if ($var->ow_id == $dev->id && $var->channel && $var->channel == $chan) {
                             $find = true;
                             break;
                         }
@@ -210,18 +210,18 @@ class ConfigurationController extends Controller
 
                     if (!$find) {
                         $item = new \App\Http\Models\VariablesModel();
-                        $item->CONTROLLER_ID = $dev->CONTROLLER_ID;
-                        $item->ROM = 'ow';
-                        $item->DIRECTION = 0;
-                        $item->NAME = 'TEMP FOR OW';
-                        $item->COMM = $dev->COMM;
-                        $item->OW_ID = $dev->ID;
-                        $item->CHANNEL = $chan;
+                        $item->controller_id = $dev->controller_id;
+                        $item->typ = 'ow';
+                        $item->direction = 0;
+                        $item->name = 'temp for ow';
+                        $item->comm = $dev->comm;
+                        $item->ow_id = $dev->id;
+                        $item->channel = $chan;
                         $item->save();
-                        $item->NAME = 'OW_'.$item->ID.'_'.$chan;
+                        $item->name = 'ow_'.$item->id.'_'.$chan;
                         $item->save();
                         
-                        Log::info($item->OW_ID);
+                        Log::info($item->ow_id);
                     }
                 }
             }

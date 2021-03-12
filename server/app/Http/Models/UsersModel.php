@@ -12,5 +12,4 @@ class UsersModel extends Authenticatable
     
     protected $table = 'web_users';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
 }

@@ -2,12 +2,14 @@
 
 @section('down-menu')
 <a href="#" class="dropdown-item" onclick="configurationAdd(); return false;">@lang('admin/configuration.controller_add')</a>
+@if($id)
 <a href="#" class="dropdown-item" onclick="configurationEdit(); return false;">@lang('admin/configuration.controller_edit')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="runOwScan(); return false;">@lang('admin/configuration.controller_ow_scan')</a>
 <a href="#" class="dropdown-item" onclick="generateVariablesForOW(); return false;">@lang('admin/configuration.generate_ow_vars')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="configurationApply(); return false;">@lang('admin/configuration.configuration_apply')</a>
+@endif
 @endsection
 
 @section('top-menu')
@@ -17,12 +19,12 @@
 @section('content')
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="configurationContrList">
-        @foreach(\App\Http\Models\ControllersModel::orderBy('ID', 'asc')->get() as $row)
-        <a href="{{ route('configuration', $row->ID) }}"
-            class="tree-item {{ $row->ID == $id ? 'active' : '' }}">
+        @foreach(\App\Http\Models\ControllersModel::orderBy('id', 'asc')->get() as $row)
+        <a href="{{ route('configuration', $row->id) }}"
+            class="tree-item {{ $row->id == $id ? 'active' : '' }}">
             <div>
-                <div>{{ $row->NAME }}</div>
-                <small class="text-muted">{{ $row->COMM }}</small>
+                <div>{{ $row->name }}</div>
+                <small class="text-muted">{{ $row->comm }}</small>
             </div>
         </a>
         @endforeach
@@ -40,14 +42,14 @@
             </thead>
             <tbody>
                 @forelse($data as $row)
-                <tr data-id="{{ $row->ID }}">
-                    <td>{{ $row->ID }}</td>
-                    <td>{{ $row->COMM }}</td>
-                    <td class="nowrap">{{ $row->ROM }}</td>
-                    <td>{{ $row->CHANNELS }}</td>
+                <tr data-id="{{ $row->id }}">
+                    <td>{{ $row->id }}</td>
+                    <td>{{ $row->comm }}</td>
+                    <td class="nowrap">{{ $row->rom }}</td>
+                    <td>{{ $row->channels }}</td>
                     <td>
-                        @foreach($row->VARIABLES as $v)
-                        <div><a class="nowrap" href="#" onclick="showVariable({{ $v->ID }}); return false;">[{{ $v->CHANNEL }}] {{ $v->NAME }}</a></div>
+                        @foreach($row->variables as $v)
+                        <div><a class="nowrap" href="#" onclick="showVariable({{ $v->id }}); return false;">[{{ $v->channel }}] {{ $v->name }}</a></div>
                         @endforeach
                     </td>
                 </tr>
@@ -74,9 +76,11 @@
         dialog('{{ route("configuration-edit", -1) }}');
     }
     
+    @if($id)
     function configurationEdit() {
         dialog('{{ route("configuration-edit", $id) }}');
     }
+    @endif
 
     function showVariable(id) {
         dialog('{{ route("variable-edit", "") }}/' + id);

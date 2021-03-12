@@ -13,7 +13,7 @@ class UsersController extends Controller
      * @return type
      */
     public function index() {
-        $data = \App\Http\Models\UsersModel::orderBy('LOGIN', 'asc')->get();
+        $data = \App\Http\Models\UsersModel::orderBy('login', 'asc')->get();
         
         return view('admin.users.users', [
             'data' => $data,
@@ -30,9 +30,9 @@ class UsersController extends Controller
         if ($request->method() == 'POST') {
             try {
                 $this->validate($request, [
-                    'LOGIN' => 'required|string|unique:web_users,LOGIN,'.($id > 0 ? $id : ''),
+                    'login' => 'required|string|unique:web_users,login,'.($id > 0 ? $id : ''),
                     'password' => 'string|'.($id > 0 ? 'nullable' : 'required'),
-                    'EMAIL' => 'nullable|email|string',
+                    'email' => 'nullable|email|string',
                 ]);
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
@@ -44,13 +44,13 @@ class UsersController extends Controller
                 } else {
                     $item = \App\Http\Models\UsersModel::find($id);
                 }
-                $item->LOGIN = $request->post('LOGIN');
-                $item->EMAIL = $request->post('EMAIL');
+                $item->login = $request->post('login');
+                $item->email = $request->post('email');
                 if ($request->post('password')) {
                     $item->password = bcrypt($request->post('password'));
                 }
-                if ($id != Auth::user()->ID) {
-                    $item->ACCESS = $request->post('ACCESS');
+                if ($id != Auth::user()->id) {
+                    $item->access = $request->post('access');
                 }
                 $item->save();
                 return 'OK';
@@ -63,10 +63,10 @@ class UsersController extends Controller
             $item = \App\Http\Models\UsersModel::find($id);
             if (!$item) {
                 $item = (object)[
-                    'ID' => -1,
-                    'LOGIN' => '',
-                    'EMAIL' => '',
-                    'ACCESS' => 1,
+                    'id' => -1,
+                    'login' => '',
+                    'email' => '',
+                    'access' => 1,
                 ];
             }
             return view('admin.users.user-edit', [

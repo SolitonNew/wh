@@ -8,6 +8,5 @@ class ScriptsModel extends Model
 {
     protected $table = 'core_scripts';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
     
 }

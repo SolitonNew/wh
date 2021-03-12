@@ -16,7 +16,7 @@
                             <div class="form-label">@lang('auth.login_login')</div>
                         </div>
                         <div class="col-sm-6">
-                            <input class="form-control" type="text" name="LOGIN" value="">
+                            <input class="form-control" type="text" name="login" value="">
                         </div>
                     </div>
                     <div class="row">

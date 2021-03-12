@@ -7,11 +7,10 @@ use \Carbon\Carbon;
 use Lang;
 use Log;
 
-class SchedulerModel extends Model
+class ScheduleModel extends Model
 {
-    protected $table = 'core_scheduler';
+    protected $table = 'core_schedule';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
     
     /**
      * Создает новую запись расписания для одноразового выполнения.
@@ -25,14 +24,14 @@ class SchedulerModel extends Model
      */
     static public function appendFastRecord($comm, $action, $datetime, $variableID) {
         $item = new SchedulerModel();
-        $item->COMM = $comm;
-        $item->ACTION = $action;
-        $item->ACTION_DATETIME = $datetime;
-        $item->INTERVAL_TIME_OF_DAY = '';
-        $item->INTERVAL_DAY_OF_TYPE = '';
-        $item->INTERVAL_TYPE = 4;
-        $item->TEMP_VARIABLE_ID = $variableID;
-        $item->ENABLE = 1;
+        $item->comm = $comm;
+        $item->action = $action;
+        $item->action_datetime = $datetime;
+        $item->interval_time_of_day = '';
+        $item->interval_day_of_type = '';
+        $item->interval_type = 4;
+        $item->temp_variable_id = $variableID;
+        $item->enable = 1;
         $item->save();
     }
     
@@ -51,12 +50,12 @@ class SchedulerModel extends Model
      * @return type
      */
     public function makeDateTime() {
-        $action_datetime = Carbon::parse($this->ACTION_DATETIME);
+        $action_datetime = Carbon::parse($this->action_datetime);
         $now = now()->startOfDay();
         
         // Разбираемся с интервалами дат
         $dates = [];
-        switch ($this->INTERVAL_TYPE) {
+        switch ($this->interval_type) {
             case 0: // Каждый день
                 $dates[] = $now;
                 $dates[] = $now->copy()->addDay();
@@ -67,7 +66,7 @@ class SchedulerModel extends Model
                 // Получаем дату понедельника следующей недели
                 $dw_next = $dw->copy()->addWeek();
                 $week_days = Lang::get('admin/schedule.week_days');
-                foreach(explode(',', $this->INTERVAL_DAY_OD_TYPE) as $w) {
+                foreach(explode(',', $this->interval_day_of_type) as $w) {
                     try {
                         $i = array_search(mb_strtolower(trim($w)), $week_days);
                         $dates[] = $dw->copy()->addDay($i);
@@ -82,7 +81,7 @@ class SchedulerModel extends Model
                 $dw = $now->copy()->addDay(-$now->day + 1);
                 // Получаем дату первого дня следующего месяца
                 $dw_next = $dw->copy()->addMonth();
-                foreach(explode(',', $this->INTERVAL_DAY_OF_TYPE) as $n) {
+                foreach(explode(',', $this->interval_day_of_type) as $n) {
                     try {
                         $i = trim($n) - 1;
                         $dates[] = $dw->copy()->addDay($i);
@@ -94,7 +93,7 @@ class SchedulerModel extends Model
                 break;
             case 3: // Каждый год
             case 4: // Одноразово
-                foreach(explode(',', $this->INTERVAL_DAY_OF_TYPE) as $day) {
+                foreach(explode(',', $this->interval_day_of_type) as $day) {
                     $d = explode('-', $day);
                     if (count($d) > 1) {
                         try {
@@ -140,7 +139,7 @@ class SchedulerModel extends Model
      */
     private function _makeTime(Carbon $date) {
         $times = [];
-        $time_of_day = mb_strtoupper($this->INTERVAL_TIME_OF_DAY);
+        $time_of_day = mb_strtoupper($this->interval_time_of_day);
         foreach(explode(',', $time_of_day) as $time_val) {
             $time_type = '';
             $time_str = trim($time_val);

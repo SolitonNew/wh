@@ -10,7 +10,6 @@ class VariableChangesMemModel extends Model
 {
     protected $table = 'core_variable_changes_mem';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
 
     /**
      *
@@ -24,9 +23,9 @@ class VariableChangesMemModel extends Model
      */
     static public function lastVariableID() {
         if (self::$_lastVariableID == -1) {
-            $res = DB::select('select max(ID) MAX_ID from core_variable_changes_mem');
-            if (count($res) && ($res[0]->MAX_ID > 0)) {
-                self::$_lastVariableID = $res[0]->MAX_ID;
+            $res = DB::select('select max(ID) max_id from core_variable_changes_mem');
+            if (count($res) && ($res[0]->max_id > 0)) {
+                self::$_lastVariableID = $res[0]->max_id;
             }
         }
         return self::$_lastVariableID;
@@ -48,16 +47,16 @@ class VariableChangesMemModel extends Model
      */
     static public function getLastVariables() {
         if (self::$_lastVariableID > 0) {
-            $sql = 'select m.ID, m.CHANGE_DATE, m.VALUE, v.COMM, v.APP_CONTROL, m.VARIABLE_ID
+            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.variable_id
                       from core_variable_changes_mem m, core_variables v
-                     where m.VARIABLE_ID = v.ID
-                       and m.ID > '.self::$_lastVariableID.'
-                    order by m.ID desc';
+                     where m.variable_id = v.id
+                       and m.id > '.self::$_lastVariableID.'
+                    order by m.id desc';
         } else {
-            $sql = 'select m.ID, m.CHANGE_DATE, m.VALUE, v.COMM, v.APP_CONTROL, m.VARIABLE_ID
+            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.variable_id
                       from core_variable_changes_mem m, core_variables v
-                     where m.VARIABLE_ID = v.ID
-                    order by m.ID desc
+                     where m.variable_id = v.id
+                    order by m.id desc
                     limit '.config('app.admin_log_lines_count');
         }
         return DB::select($sql);

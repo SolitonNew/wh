@@ -8,5 +8,5 @@ class VideoModel extends Model
 {
     protected $table = 'plan_video';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
+
 }

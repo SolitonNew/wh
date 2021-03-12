@@ -9,12 +9,21 @@ use Log;
 
 class PlanController extends Controller
 {
-    public function index(int $id = 1) {
+    public function index(int $id = -1) {
+        if ($id == -1) {
+            $first = \App\Http\Models\PlanPartsModel::whereParentId(-1)
+                        ->orderBy('order_num', 'asc')
+                        ->first();
+            if ($first) {
+                return redirect(route('plan', $first->id));
+            }
+        }
+        
         $data = \App\Http\Models\PlanPartsModel::generateTree($id);
         
         foreach($data as &$row) {
-            if ($row->BOUNDS) {
-                $v = json_decode($row->BOUNDS);
+            if ($row->bounds) {
+                $v = json_decode($row->bounds);
             } else {
                 $v = (object)[
                     'X' => 0,
@@ -41,7 +50,7 @@ class PlanController extends Controller
         if ($request->method() == 'POST') {
             try {
                 $this->validate($request, [
-                    'NAME' => 'required|string',
+                    'name' => 'required|string',
                     'X' => 'required|numeric',
                     'Y' => 'required|numeric',
                     'W' => 'required|numeric',
@@ -64,8 +73,8 @@ class PlanController extends Controller
                     }
                 }
                 
-                $item->PARENT_ID = $request->post('PARENT_ID');
-                $item->NAME = $request->post('NAME');
+                $item->PARENT_ID = $request->post('parent_id');
+                $item->NAME = $request->post('name');
                 $item->BOUNDS = json_encode([
                     'X' => $request->post('X'),
                     'Y' => $request->post('Y'),
@@ -79,7 +88,7 @@ class PlanController extends Controller
                 }
                 
                 if ($id == -1) {
-                    $item->ORDER_NUM = $item->ID;
+                    $item->order_num = $item->id;
                     $item->save();
                 }
                 return 'OK';
@@ -91,16 +100,16 @@ class PlanController extends Controller
         } else {
             if (!$item) {
                 $item = (object)[
-                    'ID' => -1,
-                    'NAME' => '',
-                    'PARENT_ID' => $p_id,
-                    'ORDER_NUM' => null,
-                    'BOUNDS' => null,
+                    'id' => -1,
+                    'name' => '',
+                    'parent_id' => $p_id,
+                    'order_num' => null,
+                    'bounds' => null,
                 ];
             }
             
-            if (!$item->BOUNDS) {
-                $item->BOUNDS = json_encode([
+            if (!$item->bounds) {
+                $item->bounds = json_encode([
                     'X' => 0,
                     'Y' => 0,
                     'W' => 10,
@@ -110,7 +119,7 @@ class PlanController extends Controller
             
             return view('admin.plan.plan-edit', [
                 'item' => $item,
-                'itemBounds' => json_decode($item->BOUNDS),
+                'itemBounds' => json_decode($item->bounds),
             ]);
         }
     }
@@ -162,12 +171,12 @@ class PlanController extends Controller
             $ids = explode(',', $request->post('orderIds'));
             for ($i = 0; $i < count($ids); $i++) {
                 $item = \App\Http\Models\PlanPartsModel::find($ids[$i]);
-                $item->ORDER_NUM = $i + 1;
+                $item->order_num = $i + 1;
                 $item->save();
             }
             return 'OK';
         } else {
-            $data = DB::select("select p.* from plan_parts p where p.PARENT_ID = $id order by p.ORDER_NUM");
+            $data = DB::select("select p.* from plan_parts p where p.parent_id = $id order by p.order_num");
             
             return view('admin.plan.plan-order', [
                 'partID' => $id,

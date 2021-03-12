@@ -7,18 +7,20 @@
 
 @section('down-menu')
 <a href="#" class="dropdown-item" onclick="planAdd(); return false;">@lang('admin/plan.plan_add')</a>
+@if($partID > 0)
 <a href="#" class="dropdown-item" onclick="planEdit(); return false;">@lang('admin/plan.plan_edit')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="planMoveChilds(); return false;">@lang('admin/plan.plan_move_childs')</a>
 <a href="#" class="dropdown-item" onclick="planOrder(); return false;">@lang('admin/plan.plan_order')</a>
+@endif
 @endsection
 
 @section('content')
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
         @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
-        <a href="{{ route('plan', $row->ID) }}"
-           class="tree-item {{ $row->ID == $partID ? 'active' : '' }}" style="padding-left: {{ $row->level + 1 }}rem">{{ $row->NAME }}</a>
+        <a href="{{ route('plan', $row->id) }}"
+           class="tree-item {{ $row->id == $partID ? 'active' : '' }}" style="padding-left: {{ $row->level + 1 }}rem">{{ $row->name }}</a>
         @endforeach
     </div>
     <div class="content-body" style="display:flex" scroll-store="planContentScroll">
@@ -26,7 +28,7 @@
             <div id="planContent" class="plan-parts-content" style="position:absolute;">
             @foreach($data as $row)
                 @if($row->W > 0 && $row->H > 0)
-                <div class="plan-part {{ $loop->first ? 'current' : '' }}" data-id="{{ $row->ID }}"
+                <div class="plan-part {{ $loop->first ? 'current' : '' }}" data-id="{{ $row->id }}"
                      data-x="{{ $row->X }}" data-y="{{ $row->Y }}" data-w="{{ $row->W }}" data-h="{{ $row->H }}"></div>
                 @endif
             @endforeach
