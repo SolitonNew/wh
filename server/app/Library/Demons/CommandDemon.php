@@ -35,22 +35,22 @@ class CommandDemon extends BaseDemon {
         while(1) {
             $sql = "select *
                       from core_execute 
-                     where ID > $lastProcessedID
-                    order by ID";
+                     where id > $lastProcessedID
+                    order by id";
 
             foreach(DB::select($sql) as $row) {
                 $this->printLine(Lang::get('admin/demons.command-demon-line', [
                     'datetime' => Carbon::now(),
-                    'command' => $row->COMMAND,
+                    'command' => $row->command,
                 ]));
                 
-                $execute = new \App\Library\Script\PhpExecute($row->COMMAND);
+                $execute = new \App\Library\Script\PhpExecute($row->command);
                 $res = $execute->run();
                 if ($res) {
                     $this->printLine($res);
                 }
                 
-                $lastProcessedID = $row->ID;
+                $lastProcessedID = $row->id;
             }
             
             usleep(100000);

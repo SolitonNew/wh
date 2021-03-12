@@ -29,8 +29,8 @@ class DemonsController extends Controller
         foreach($demonManager->demons() as $dem) {
             $stat = $demonManager->isStarted($dem);
             $demons[] = (object)[
-                'ID' => $dem,
-                'STAT' => $stat,
+                'id' => $dem,
+                'stat' => $stat,
             ];
             if ($dem == $id) {
                 $currStat = $stat;
@@ -56,17 +56,17 @@ class DemonsController extends Controller
         }
 
         $data = \App\Http\Models\WebLogsModel::whereDemon($id)
-                    ->where('ID', '>', $lastID)
-                    ->orderBy('ID', 'desc')
+                    ->where('id', '>', $lastID)
+                    ->orderby('id', 'desc')
                     ->limit(config("app.admin_demons_log_lines_count"))
                     ->get();
 
         foreach($data as &$row) {
-            $str = $row->DATA;            
+            $str = $row->data;            
             $str = str_replace('[', '<span class="datetime">[', $str);
             $str = str_replace(']', ']</span>', $str);
             
-            $row->DATA = $str;
+            $row->data = $str;
         }
 
         return view('admin.demons.demon-log', [

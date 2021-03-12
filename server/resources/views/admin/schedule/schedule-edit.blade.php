@@ -160,7 +160,7 @@
             url: '{{ route("script-test") }}',
             data: {
                 '_token': '{{ Session::token() }}',
-                'COMMAND': $('textarea[name="action"]').val(),
+                'command': $('textarea[name="action"]').val(),
             },
             success: function(data) {
                 alert(data);

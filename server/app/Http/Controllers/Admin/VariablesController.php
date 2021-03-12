@@ -77,12 +77,12 @@ class VariablesController extends Controller
             
             try {
                 $item->controller_id = $request->post('controller_id');
-                $item->rom = $request->post('typ');
+                $item->typ = $request->post('typ');
                 $item->ow_id = $request->post('ow_id');
                 $item->direction = $request->post('direction');
                 $item->name = $request->post('name');
                 $item->comm = $request->post('comm');
-                $item->channel = $request->post('channel');
+                $item->channel = $request->post('channel') ?? 0;
                 $item->value = $request->post('value');
                 $item->group_id = $request->post('group_id');
                 $item->app_control = $request->post('app_control');

@@ -105,7 +105,7 @@
         <div class="col-sm-8">
             <select class="custom-select" name="group_id">
                 @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
-                <option value="{{ $row->ID }}" {{ $row->ID == $item->group_id ? 'selected' : '' }}>{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->name }}</option>
+                <option value="{{ $row->id }}" {{ $row->id == $item->group_id ? 'selected' : '' }}>{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->name }}</option>
                 @endforeach
             </select>
             <div class="invalid-feedback"></div>

@@ -34,8 +34,8 @@ class BaseDemon {
     public function printLine($text) {
         try {
             $item = new \App\Http\Models\WebLogsModel();
-            $item->DEMON = $this->_signature;
-            $item->DATA = $text;
+            $item->demon = $this->_signature;
+            $item->data = $text;
             $item->save();
             
             echo "$text\n";

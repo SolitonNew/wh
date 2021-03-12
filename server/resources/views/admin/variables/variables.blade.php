@@ -36,7 +36,7 @@
                     <td>{{ $row->id }}</td>
                     <td>{{ $row->controller_name }}</td>
                     <td>{{ $row->typ }}</td>
-                    <td>{{ lang::get('admin/variables.table_readonly_list.'.$row->direction) }}</td>
+                    <td>{{ Lang::get('admin/variables.table_readonly_list.'.$row->direction) }}</td>
                     <td>{{ $row->name }}</td>
                     <td>{{ $row->comm }}</td>
                     <td>{{ lang::get('admin/variables.app_control.'.$row->app_control) }}</td>
