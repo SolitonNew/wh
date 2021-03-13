@@ -166,4 +166,23 @@ class PlanPartsModel extends Model
         return true;
     }
     
+    /**
+     * 
+     */
+    static public function calcAndStoreMaxLevel() {
+        // Пройдемся по структуре и посчитаем уровни
+        
+        $maxLevel = 0;
+        self::$_all_parts_cache = null;
+        foreach(self::generateTree() as $row) {
+            if ($row->level > $maxLevel) {
+                $maxLevel = $row->level;
+            }
+        }
+        
+        if ($maxLevel > 2) $maxLevel = 2;
+        
+        PropertysModel::setPlanMaxLevel($maxLevel + 1);
+    }
+    
 }

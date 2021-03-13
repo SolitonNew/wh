@@ -98,4 +98,21 @@ class PropertysModel extends Model
             return 1;
         }
     }
+    
+    /**
+     * 
+     * @param type $maxLevel
+     */
+    static public function setPlanMaxLevel($maxLevel) {
+        $item = self::whereName('PLAN_MAX_LEVEL')->first();
+        if ($item) {
+            $item->value = $maxLevel;
+        } else {
+            $item = new PropertysModel();
+            $item->name = 'PLAN_MAX_LEVEL';
+            $item->comm = '';
+            $item->value = $maxLevel;
+        }
+        $item->save();
+    }
 }

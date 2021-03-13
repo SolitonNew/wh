@@ -91,6 +91,10 @@ class PlanController extends Controller
                     $item->order_num = $item->id;
                     $item->save();
                 }
+                
+                // Нужно пересчитать максимальный уровень вложения структуры
+                \App\Http\Models\PlanPartsModel::calcAndStoreMaxLevel();
+                
                 return 'OK';
             } catch (\Exception $ex) {
                 return response()->json([
