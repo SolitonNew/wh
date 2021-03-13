@@ -156,7 +156,7 @@ void lcd_init(void) {
 	lcd_write(0, 0x06); // Set Temp coefficent.
 	lcd_write(0, 0x14); // BIAS  0x15
 	lcd_write(0, 0x20); // LCD Standard Commands, Horizontal addressing mode.
-	lcd_write(0, 0x0c); // LCD in normal mode.        
+	lcd_write(0, 0x0c); // LCD in normal mode.
 	lcd_write(0, 0x1b);
 	
 	lcd_clear();
