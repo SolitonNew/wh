@@ -16,39 +16,39 @@ class ScheduleController extends Controller
      */
     public function index() {
         
-        $data = DB::select('select s.ID,
-                                   s.COMM,
-                                   s.ACTION_DATETIME,
-                                   s.ACTION,
-                                   s.INTERVAL_TIME_OF_DAY,
-                                   s.INTERVAL_DAY_OF_TYPE,
-                                   s.INTERVAL_TYPE,
-                                   "" INTERVAL_TEXT,
-                                   s.ENABLE
-                              from core_scheduler s
-                             where s.TEMP_VARIABLE_ID = 0
-                            order by s.COMM');
+        $data = DB::select('select s.id,
+                                   s.comm,
+                                   s.action_datetime,
+                                   s.action,
+                                   s.interval_time_of_day,
+                                   s.interval_day_of_type,
+                                   s.interval_type,
+                                   "" interval_text,
+                                   s.enable
+                              from core_schedule s
+                             where s.temp_variable_id = 0
+                            order by s.comm');
         
         $types = Lang::get('admin/schedule.interval');
         $interval_time = Lang::get('admin/schedule.interval_time');
         $interval_day = Lang::get('admin/schedule.interval_day');
         
         foreach($data as &$row) {
-            $s = $types[$row->INTERVAL_TYPE];
-            $s .= ' '.$interval_time.': <b>'.$row->INTERVAL_TIME_OF_DAY.'</b>';
+            $s = $types[$row->interval_type];
+            $s .= ' '.$interval_time.': <b>'.$row->interval_time_of_day.'</b>';
             
-            switch($row->INTERVAL_TYPE) {
+            switch($row->interval_type) {
                 case 0: // Каждый день
                     //
                     break;
                 case 1: // Каждую неделю
                 case 2: // Каждый месяц
                 case 3: // Каждый год
-                    $s .= ' '.$interval_day.': <b>'.$row->INTERVAL_DAY_OF_TYPE.'</b>';
+                    $s .= ' '.$interval_day.': <b>'.$row->interval_day_of_type.'</b>';
                     break;
             }
             
-            $row->INTERVAL_TEXT = $s;
+            $row->interval_text = $s;
         }
         
         return view('admin.schedule.schedule', [
@@ -57,15 +57,15 @@ class ScheduleController extends Controller
     }
     
     public function edit(Request $request, int $id) {
-        $item = \App\Http\Models\SchedulerModel::find($id);
+        $item = \App\Http\Models\ScheduleModel::find($id);
         if ($request->method() == 'POST') {
-            $typ = $request->post('INTERVAL_TYPE');
+            $typ = $request->post('interval_type');
             try {
                 $this->validate($request, [
-                    'COMM' => 'required|string',
-                    'ACTION' => 'required|string',
-                    'INTERVAL_TIME_OF_DAY' => 'required|string',
-                    'INTERVAL_DAY_OF_TYPE' => 'string|'.(in_array($typ, [1, 2, 3]) ? 'required' : 'nullable'),
+                    'comm' => 'required|string',
+                    'action' => 'required|string',
+                    'interval_time_of_day' => 'required|string',
+                    'interval_day_of_type' => 'string|'.(in_array($typ, [1, 2, 3]) ? 'required' : 'nullable'),
                 ]);
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
@@ -73,16 +73,16 @@ class ScheduleController extends Controller
             
             try {
                 if (!$item) {
-                    $item = new \App\Http\Models\SchedulerModel();
-                    $item->TEMP_VARIABLE_ID = 0;
+                    $item = new \App\Http\Models\ScheduleModel();
+                    $item->temp_variable_id = 0;
                 }
-                $item->COMM = $request->post('COMM');
-                $item->ACTION = $request->post('ACTION');
-                $item->ACTION_DATETIME = null;
-                $item->INTERVAL_TIME_OF_DAY = $request->post('INTERVAL_TIME_OF_DAY');
-                $item->INTERVAL_DAY_OF_TYPE = $request->post('INTERVAL_DAY_OF_TYPE');
-                $item->INTERVAL_TYPE = $request->post('INTERVAL_TYPE');
-                $item->ENABLE = $request->post('ENABLE');
+                $item->comm = $request->post('comm');
+                $item->action = $request->post('action');
+                $item->action_datetime = null;
+                $item->interval_time_of_day = $request->post('interval_time_of_day');
+                $item->interval_day_of_type = $request->post('interval_day_of_type');
+                $item->interval_type = $request->post('interval_type');
+                $item->enable = $request->post('enable');
                 $item->save();
                 return 'OK';
             } catch (\Exception $ex) {
@@ -93,13 +93,13 @@ class ScheduleController extends Controller
         } else {
             if (!$item) {
                 $item = (object)[
-                    'ID' => -1,
-                    'COMM' => '',
-                    'ACTION' => '',
-                    'INTERVAL_TIME_OF_DAY' => '',
-                    'INTERVAL_DAY_OF_TYPE' => '',
-                    'INTERVAL_TYPE' => 0,
-                    'ENABLE' => 0,
+                    'id' => -1,
+                    'comm' => '',
+                    'action' => '',
+                    'interval_time_of_day' => '',
+                    'interval_day_of_type' => '',
+                    'interval_type' => 0,
+                    'enable' => 0,
                 ];
             }
             return view('admin.schedule.schedule-edit', [
@@ -115,7 +115,7 @@ class ScheduleController extends Controller
      */
     public function delete(int $id) {
         try {
-            $item = \App\Http\Models\SchedulerModel::find($id);
+            $item = \App\Http\Models\ScheduleModel::find($id);
             $item->delete();
             return 'OK';
         } catch (\Exception $ex) {

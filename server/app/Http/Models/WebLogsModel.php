@@ -8,5 +8,5 @@ class WebLogsModel extends Model
 {
     protected $table = 'web_logs';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
+    
 }

@@ -31,9 +31,11 @@ class RS485Demon extends BaseDemon {
         $this->printLine('');
         $this->printLine(Lang::get('admin/demons.rs485-demon-title'));
         
-        $controllers = \App\Http\Models\ControllersModel::where('ID', '<', 100)
-                            ->orderBy('NAME', 'asc')
+        $controllers = \App\Http\Models\ControllersModel::where('id', '<', 100)
+                            ->orderBy('name', 'asc')
                             ->get();
+        
+        if (count($controllers) == 0) return;
         
         while(1) {
             foreach($controllers as $controller) {
@@ -49,7 +51,7 @@ class RS485Demon extends BaseDemon {
                 }                
                 
                 $date = now()->format('H:i:s');
-                $contr = $controller->NAME;
+                $contr = $controller->name;
                 $stat = 'OK';
                 $vars_out_str = '['.implode(', ', $vars_out).']';
                 $vars_in_str = '['.implode(', ', $vars_in).']';

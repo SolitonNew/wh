@@ -12,27 +12,55 @@ class VariablesController extends Controller
      * 
      * @return type
      */
-    public function index(int $partID = 1) {
-        $where = '';
-        if ($partID > 1) {
-            $ids = \App\Http\Models\PlanPartsModel::genIDsForGroupAtParent($partID);
-            $where = 'and v.GROUP_ID in ('.$ids.')';
+    public function index(int $partID = null) {
+        if (!$partID) {
+            $first = \App\Http\Models\PlanPartsModel::whereParentId(null)
+                        ->orderBy('order_num', 'asc')
+                        ->first();
+            if ($first) {
+                return redirect(route('variables', $first->id));
+            }
         }
         
-        $sql = 'select v.ID,
-                       c.NAME CONTROLLER_NAME,
-                       v.ROM,
-                       v.DIRECTION,
-                       v.NAME,
-                       v.COMM,
-                       v.APP_CONTROL,
-                       v.VALUE,
-                       v.CHANNEL,
-                       exists(select 1 from core_variable_events e where e.VARIABLE_ID = v.ID) WITH_EVENTS
+        
+        $where = '';
+        if ($partID) {
+            $ids = \App\Http\Models\PlanPartsModel::genIDsForGroupAtParent($partID);
+            $where = 'and v.group_id in ('.$ids.')';
+        }
+        
+        $sql = 'select v.id,
+                       c.name controller_name,
+                       v.typ,
+                       v.direction,
+                       v.name,
+                       v.comm,
+                       v.app_control,
+                       v.value,
+                       v.channel,
+                       exists(select 1 from core_variable_events e where e.variable_id = v.id) with_events,
+                       0 free_variable
                   from core_variables v, core_controllers c
                  where v.controller_id = c.id
-                   '.$where.'
-                order by 2, v.name';
+                    '.$where.'
+                union all
+                select v.id,
+                       c.name controller_name,
+                       v.typ,
+                       v.direction,
+                       v.name,
+                       v.comm,
+                       v.app_control,
+                       v.value,
+                       v.channel,
+                       exists(select 1 from core_variable_events e where e.variable_id = v.id) with_events,
+                       1 free_variable
+                  from core_variables v, core_controllers c
+                 where v.controller_id = c.id
+                   and not exists(select *
+                                    from plan_parts pp
+                                   where v.group_id = pp.id)
+                order by 11, 2, 5';
         
         $data = DB::select($sql);
         
@@ -54,15 +82,16 @@ class VariablesController extends Controller
         if ($request->method() == 'POST') {
             try {
                 $rules = [];
-                $rules['NAME'] = 'required|string|unique:core_variables,NAME,'.($id > 0 ? $id : '');
-                $rules['COMM'] = 'required|string';
+                $rules['controller_id'] = 'required|numeric';
+                $rules['name'] = 'required|string|unique:core_variables,name,'.($id > 0 ? $id : '');
+                $rules['comm'] = 'required|string';
                 
-                if ($request->post('ROM') == 'ow') {
-                    $rules['OW_ID'] = 'required|numeric';
+                if ($request->post('typ') == 'ow') {
+                    $rules['ow_id'] = 'required|numeric';
                 }
                 
-                if ($request->post('ROM') == 'variable' || $request->post('DIRECTION') == '0') {
-                    $rules['VALUE'] = 'required|numeric';
+                if ($request->post('rom') == 'variable' || $request->post('direction') == '0') {
+                    $rules['value'] = 'required|numeric';
                 }
                 
                 $this->validate($request, $rules);
@@ -75,16 +104,16 @@ class VariablesController extends Controller
             }
             
             try {
-                $item->CONTROLLER_ID = $request->post('CONTROLLER_ID');
-                $item->ROM = $request->post('ROM');
-                $item->OW_ID = $request->post('OW_ID');
-                $item->DIRECTION = $request->post('DIRECTION');
-                $item->NAME = $request->post('NAME');
-                $item->COMM = $request->post('COMM');
-                $item->CHANNEL = $request->post('CHANNEL');
-                $item->VALUE = $request->post('VALUE');
-                $item->GROUP_ID = $request->post('GROUP_ID');
-                $item->APP_CONTROL = $request->post('APP_CONTROL');
+                $item->controller_id = $request->post('controller_id');
+                $item->typ = $request->post('typ');
+                $item->ow_id = $request->post('ow_id');
+                $item->direction = $request->post('direction');
+                $item->name = $request->post('name');
+                $item->comm = $request->post('comm');
+                $item->channel = $request->post('channel') ?? 0;
+                $item->value = $request->post('value');
+                $item->group_id = $request->post('group_id');
+                $item->app_control = $request->post('app_control');
                 $item->save();
                 return 'OK';
             } catch (\Exception $ex) {
@@ -95,23 +124,23 @@ class VariablesController extends Controller
         } else {
             if (!$item) {
                 $item = (object)[
-                    'ID' => -1,
-                    'CONTROLLER_ID' => -1,
-                    'ROM' => 'ow',
-                    'OW_ID' => '',
-                    'DIRECTION' => 0,
-                    'NAME' => '',
-                    'COMM' => '',
-                    'GROUP_ID' => 1,
-                    'APP_CONTROL' => 0,
-                    'VALUE' => 0,
-                    'CHANNEL' => 0,
+                    'id' => -1,
+                    'controller_id' => -1,
+                    'typ' => 'ow',
+                    'ow_id' => '',
+                    'direction' => 0,
+                    'name' => '',
+                    'comm' => '',
+                    'group_id' => 1,
+                    'app_control' => 0,
+                    'value' => 0,
+                    'channel' => 0,
                 ];
             }
             
             $typs = [
+                'din' => 'din',
                 'ow' => 'ow',
-                'pyb' => 'pyb',
                 'variable' => 'variable',
             ];
             
@@ -128,14 +157,14 @@ class VariablesController extends Controller
      * @param int $controller
      * @return type
      */
-    public function owList(int $controller) {
-        $data = DB::select("select d.ID, d.ROM_1, d.ROM_2, d.ROM_3, d.ROM_4, d.ROM_5, d.ROM_6, d.ROM_7, d.ROM_8,
+    public function owList(int $controller = -1) {
+        $data = DB::select("select d.id, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7, d.rom_8,
                                    (select count(1)
                                       from core_variables v 
-                                     where v.OW_ID = d.ID) NUM
+                                     where v.ow_id = d.id) num
                               from core_ow_devs d
-                             where d.CONTROLLER_ID = $controller
-                            order by d.ROM_1, d.ROM_2, d.ROM_3, d.ROM_4, d.ROM_5, d.ROM_6, d.ROM_7, d.ROM_8");
+                             where d.controller_id = $controller
+                            order by d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7, d.rom_8");
         return response()->json($data);
     }
     
@@ -148,37 +177,22 @@ class VariablesController extends Controller
      */
     public function channelList($rom, int $ow_id = null) {
         switch ($rom) {
-            case 'pyb':
+            case 'din':
                 $data = [
-                    'X1', 
-                    'X2', 
-                    'X3',
-                    'X4',
-                    'X5', 
-                    'X6',
-                    'X7',
-                    'X8',
-                    'X9',
-                    'X10',
-                    'X11',
-                    'X12',
-                    'Y1',
-                    'Y2',
-                    'Y3',
-                    'Y4',
-                    'Y5',
-                    'Y6',
-                    'Y7',
-                    'Y8'];
+                    'R1', 
+                    'R2', 
+                    'R3',
+                    'R4',
+                ];
                 break;
             case 'ow':
                 if ($ow_id) {
-                    $c = DB::select('select t.CHANNELS
+                    $c = DB::select('select t.channels
                                        from core_ow_devs d, core_ow_types t
-                                      where d.ROM_1 = t.CODE
-                                        and d.ID = '.$ow_id);
+                                      where d.rom_1 = t.code
+                                        and d.id = '.$ow_id);
                     if (count($c)) {
-                        $data = explode(',', $c[0]->CHANNELS);
+                        $data = explode(',', $c[0]->channels);
                     } else {
                         $data = [];
                     }

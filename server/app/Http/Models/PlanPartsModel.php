@@ -9,7 +9,6 @@ class PlanPartsModel extends Model
 {
     protected $table = 'plan_parts';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
     
     /**
      * 
@@ -36,8 +35,7 @@ class PlanPartsModel extends Model
      */
     static public function getAllPartsCache() {
         if (self::$_all_parts_cache == null) {
-            self::$_all_parts_cache = self::orderBy('ORDER_NUM', 'asc')
-                                            //->orderBy('NAME', 'asc')
+            self::$_all_parts_cache = self::orderBy('order_num', 'asc')
                                             ->get();
         }
         
@@ -53,11 +51,11 @@ class PlanPartsModel extends Model
      */
     static private function _generateTreeLevel($p_id, $level, &$data) {
         foreach(self::getAllPartsCache() as $row) {
-            if ($row->PARENT_ID == $p_id) {
+            if ($row->parent_id == $p_id) {
                 $item = $row;
                 $item->level = $level;
                 $data[] = $item;
-                self::_generateTreeLevel($row->ID, $level + 1, $data);
+                self::_generateTreeLevel($row->id, $level + 1, $data);
             }
         }
     }
@@ -71,7 +69,7 @@ class PlanPartsModel extends Model
         $data = [];
         
         foreach(self::getAllPartsCache() as $row) {
-            if ($row->ID == $id) {
+            if ($row->id == $id) {
                 $data[] = $row;
                 $data[0]->level = 0;
                 break;
@@ -91,9 +89,9 @@ class PlanPartsModel extends Model
      */
     static public function _genLevelIDsForGroupAtParent($p_id, &$data) {
         foreach(self::getAllPartsCache() as $row) {
-            if ($row->PARENT_ID == $p_id) {
-                $data[] = $row->ID;
-                self::_genLevelIDsForGroupAtParent($row->ID, $data);
+            if ($row->parent_id == $p_id) {
+                $data[] = $row->id;
+                self::_genLevelIDsForGroupAtParent($row->id, $data);
             }
         }
     }
@@ -124,12 +122,12 @@ class PlanPartsModel extends Model
      * @param float $dy
      */
     public function moveChilds(float $dx, float $dy) {
-        $ids = explode(',', self::genIDsForGroupAtParent($this->ID));
+        $ids = explode(',', self::genIDsForGroupAtParent($this->id));
         
-        foreach(PlanPartsModel::whereIn('ID', $ids)->cursor() as $row) {
-            if ($row->ID == $this->ID) continue;
+        foreach(PlanPartsModel::whereIn('id', $ids)->cursor() as $row) {
+            if ($row->id == $this->id) continue;
             
-            $bounds = json_decode($row->BOUNDS);
+            $bounds = json_decode($row->bounds);
             if (!$bounds) {
                 $bounds = (object)[
                     'X' => 0,
@@ -140,7 +138,7 @@ class PlanPartsModel extends Model
             }
             $bounds->X += $dx;
             $bounds->Y += $dy;
-            $row->BOUNDS = json_encode($bounds);
+            $row->bounds = json_encode($bounds);
             $row->save();
         }
     }
@@ -155,8 +153,8 @@ class PlanPartsModel extends Model
         $curr_id = $id;
         do {
             foreach($list as $row) {
-                if ($row->ID == $curr_id) {
-                    $curr_id = $row->PARENT_ID;
+                if ($row->id == $curr_id) {
+                    $curr_id = $row->parent_id;
                     if ($curr_id == $parentID) {
                         return false;
                     }
@@ -166,6 +164,25 @@ class PlanPartsModel extends Model
         } while($curr_id != null);
         
         return true;
+    }
+    
+    /**
+     * 
+     */
+    static public function calcAndStoreMaxLevel() {
+        // Пройдемся по структуре и посчитаем уровни
+        
+        $maxLevel = 0;
+        self::$_all_parts_cache = null;
+        foreach(self::generateTree() as $row) {
+            if ($row->level > $maxLevel) {
+                $maxLevel = $row->level;
+            }
+        }
+        
+        if ($maxLevel > 2) $maxLevel = 2;
+        
+        PropertysModel::setPlanMaxLevel($maxLevel + 1);
     }
     
 }

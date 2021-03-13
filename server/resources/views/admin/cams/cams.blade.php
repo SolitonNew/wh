@@ -15,16 +15,16 @@
                 <th scope="col" style="width: 50px;"><span>@lang('admin/cams.table_ID')</span></th>
                 <th scope="col" style="width: 100px;"><span>@lang('admin/cams.table_NAME')</span></th>
                 <th scope="col" style="width: 800px;"><span>@lang('admin/cams.table_URL')</span></th>
-                <th scope="col" style="width: 100px;"><span>@lang('admin/cams.table_ALERT_VAR_ID')</span></th>
+                <th scope="col" style="width: 200px;"><span>@lang('admin/cams.table_ALERT_VAR_ID')</span></th>
             </tr>
         </thead>
         <tbody>
             @foreach($data as $row)
-            <tr data-id="{{ $row->ID }}">
-                <td>{{ $row->ID }}</td>
-                <td>{{ $row->NAME }}</td>
-                <td>{{ $row->URL }}</td>
-                <td><a class="var-link" href="#" data-id="{{ $row->ALERT_VAR_ID }}">{{ $row->VAR_NAME }}</a></td>
+            <tr data-id="{{ $row->id }}">
+                <td>{{ $row->id }}</td>
+                <td>{{ $row->name }}</td>
+                <td>{{ $row->url }}</td>
+                <td><a class="var-link" href="#" data-id="{{ $row->alert_var_id }}">{{ $row->var_name }}</a></td>
             </tr>
             @endforeach
         </tbody>

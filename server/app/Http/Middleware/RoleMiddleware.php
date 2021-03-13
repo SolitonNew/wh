@@ -21,12 +21,12 @@ class RoleMiddleware
         
         switch ($role) {
             case 'terminal':
-                if (auth()->user()->ACCESS < 1) {
+                if (auth()->user()->access < 1) {
                     abort(404);
                 }
                 break;
             case 'admin':
-                if (auth()->user()->ACCESS < 2) {
+                if (auth()->user()->access < 2) {
                     abort(404);
                 }
                 break;

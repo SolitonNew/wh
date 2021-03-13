@@ -1,7 +1,7 @@
 @extends('dialog')
 
 @section('title')
-@if($item->ID == -1)
+@if($item->id == -1)
     @lang('admin/plan.plan_add_title')
 @else
     @lang('admin/plan.plan_edit_title')
@@ -9,16 +9,16 @@
 @endsection
 
 @section('content')
-<form id="plan_edit_form" class="container" method="POST" action="{{ route('plan-edit', $item->ID) }}">
+<form id="plan_edit_form" class="container" method="POST" action="{{ route('plan-edit', $item->id) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
-    @if($item->ID > 0)
+    @if($item->id > 0)
     <div class="row">
         <div class="col-sm-3">
             <div class="form-label">@lang('admin/plan.table_ID')</div>
         </div>
         <div class="col-sm-3">
-            <div class="form-control">{{ $item->ID > 0 ? $item->ID : '' }}</div>
+            <div class="form-control">{{ $item->id > 0 ? $item->id : '' }}</div>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -28,13 +28,13 @@
             <div class="form-label">@lang('admin/plan.table_PARENT_ID')</div>
         </div>
         <div class="col-sm-9">
-            <select class="custom-select" name="PARENT_ID">
+            <select class="custom-select" name="parent_id">
             <option value="">-//-</option>
             @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
-            <option value="{{ $row->ID }}"
-                {{ $row->ID == $item->PARENT_ID ? 'selected' : '' }}
-                {{ App\Http\Models\PlanPartsModel::checkIdAsChildOfParentID($row->ID, $item->ID) ? '' : 'disabled' }}
-                >{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->NAME }}</option>
+            <option value="{{ $row->id }}"
+                {{ $row->id == $item->parent_id ? 'selected' : '' }}
+                {{ App\Http\Models\PlanPartsModel::checkIdAsChildOfParentID($row->id, $item->id) ? '' : 'disabled' }}
+                >{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->name }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>
@@ -45,7 +45,7 @@
             <div class="form-label strong">@lang('admin/plan.table_NAME')</div>
         </div>
         <div class="col-sm-9">
-            <input class="form-control" type="text" name="NAME" value="{{ $item->NAME }}" required="">
+            <input class="form-control" type="text" name="name" value="{{ $item->name }}" required="">
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -103,7 +103,7 @@
 @endsection
 
 @section('buttons')
-    @if($item->ID > 0)
+    @if($item->id > 0)
     <button type="button" class="btn btn-danger" onclick="planDelete()">@lang('dialogs.btn_delete')</button>
     <div style="flex-grow: 1"></div>
     @endif
@@ -131,7 +131,7 @@
 
     function planDelete() {
         confirmYesNo("@lang('admin/plan.plan-delete-confirm')", () => {
-            $.ajax('{{ route("plan-delete", $item->ID) }}').done((data) => {
+            $.ajax('{{ route("plan-delete", $item->id) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
                         window.location.reload();

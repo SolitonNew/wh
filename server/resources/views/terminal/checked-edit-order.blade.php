@@ -10,13 +10,13 @@
         @foreach($data as $row)
         <div class="list-group-item checked-edit-item">
             <div class="checked-edit-item-label">
-                {{ $row->control->label }} {{ $row->data->COMM }}
+                {{ $row->control->label }} {{ $row->data->comm }}
             </div>
             <div class="checked-edit-item-edit" style="white-space: nowrap;">
                 <a class="btn btn-sm btn-outline-primary checked-edit-item-order-up"
-                    id="up_{{ $row->data->ID }}" href="#"><img src="/img/arrow-thick-top-2x.png"></a>
+                    id="up_{{ $row->data->id }}" href="#"><img src="/img/arrow-thick-top-2x.png"></a>
                 <a class="btn btn-sm btn-outline-primary checked-edit-item-order-down"
-                    id="down_{{ $row->data->ID }}" href="#"><img src="/img/arrow-thick-bottom-2x.png"></a>
+                    id="down_{{ $row->data->id }}" href="#"><img src="/img/arrow-thick-bottom-2x.png"></a>
             </div>
         </div>
         @endforeach

@@ -1,7 +1,7 @@
 @extends('dialog')
 
 @section('title')
-@if($item->ID == -1)
+@if($item->id == -1)
     @lang('admin/users.user_add_title')
 @else
     @lang('admin/users.user_edit_title')
@@ -9,16 +9,16 @@
 @endsection
 
 @section('content')
-<form id="user_edit_form" class="container" method="POST" action="{{ route('user-edit', $item->ID) }}">
+<form id="user_edit_form" class="container" method="POST" action="{{ route('user-edit', $item->id) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
-    @if($item->ID > 0)
+    @if($item->id > 0)
     <div class="row">
         <div class="col-sm-3">
             <div class="form-label">@lang('admin/users.table_ID')</div>
         </div>
         <div class="col-sm-3">
-            <div class="form-control">{{ $item->ID > 0 ? $item->ID : '' }}</div>
+            <div class="form-control">{{ $item->id > 0 ? $item->id : '' }}</div>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -28,19 +28,19 @@
             <div class="form-label strong">@lang('admin/users.table_LOGIN')</div>
         </div>
         <div class="col-sm-6">
-            <input class="form-control" type="text" name="LOGIN" value="{{ $item->LOGIN }}" required="">
+            <input class="form-control" type="text" name="login" value="{{ $item->login }}" required="">
             <div class="invalid-feedback"></div>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label {{ $item->ID > 0 ?: 'strong' }}">@lang('admin/users.table_PASSWORD')</div>
+            <div class="form-label {{ $item->id > 0 ?: 'strong' }}">@lang('admin/users.table_PASSWORD')</div>
         </div>
         <div class="col-sm-6">
             <input class="form-control" type="text" name="password">
             <div class="invalid-feedback"></div>
         </div>
-        @if($item->ID > 0)
+        @if($item->id > 0)
         <div class="offset-sm-3 col-sm-9">
             <div class="alert alert-warning" style="margin-top: 0.5rem; margin-bottom: 0;font-size: 90%">
                 @lang('admin/users.password_info')
@@ -53,7 +53,7 @@
             <div class="form-label">@lang('admin/users.table_EMAIL')</div>
         </div>
         <div class="col-sm-9">
-            <input class="form-control" type="text" name="EMAIL" value="{{ $item->EMAIL }}">
+            <input class="form-control" type="text" name="email" value="{{ $item->email }}">
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -62,9 +62,9 @@
             <div class="form-label">@lang('admin/users.table_ACCESS')</div>
         </div>
         <div class="col-sm-6">
-            <select class="custom-select" name="ACCESS" {{ $item->ID == Auth::user()->ID ? 'disabled' : '' }} >
+            <select class="custom-select" name="access" {{ $item->id == Auth::user()->id ? 'disabled' : '' }} >
             @foreach(Lang::get('admin/users.table_access_list') as $key => $val)
-                <option value="{{ $key }}" {{ $item->ACCESS == $key ? 'selected' : '' }} >{{ $val }}</option>
+                <option value="{{ $key }}" {{ $item->access == $key ? 'selected' : '' }} >{{ $val }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>
@@ -74,7 +74,7 @@
 @endsection
 
 @section('buttons')
-    @if($item->ID > 0 && Auth::user()->ID != $item->ID)
+    @if($item->id > 0 && Auth::user()->id != $item->id)
     <button type="button" class="btn btn-danger" onclick="userDelete()">@lang('dialogs.btn_delete')</button>
     <div style="flex-grow: 1"></div>
     @endif
@@ -102,7 +102,7 @@
 
     function userDelete() {
         confirmYesNo("@lang('admin/users.user-delete-confirm')", () => {
-            $.ajax('{{ route("user-delete", $item->ID) }}').done((data) => {
+            $.ajax('{{ route("user-delete", $item->id) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
                         window.location.reload();

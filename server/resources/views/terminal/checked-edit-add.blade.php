@@ -18,13 +18,13 @@
     @foreach($data as $row)
     <div class="list-group-item checked-edit-item">
         <div class="checked-edit-item-label">
-            {{ $row->typLabel }} {{ $row->COMM }}
+            {{ $row->typLabel }} {{ $row->comm }}
         </div>
-        <div class="checked-edit-item-edit {{ in_array($row->ID, $checks) ? 'del' : '' }}">
-            <a class="btn btn-sm btn-outline-primary checked-edit-item-edit-del" id="del_{{ $row->ID }}" href="#">
+        <div class="checked-edit-item-edit {{ in_array($row->id, $checks) ? 'del' : '' }}">
+            <a class="btn btn-sm btn-outline-primary checked-edit-item-edit-del" id="del_{{ $row->id }}" href="#">
                 <img src="/img/check-2x.png">
             </a>
-            <a class="btn btn-sm btn-outline-primary checked-edit-item-edit-add" id="add_{{ $row->ID }}" href="#">
+            <a class="btn btn-sm btn-outline-primary checked-edit-item-edit-add" id="add_{{ $row->id }}" href="#">
                 <img src="/img/check-2x.png" style="opacity: 0;">
             </a>
         </div>

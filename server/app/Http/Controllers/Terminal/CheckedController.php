@@ -31,9 +31,9 @@ class CheckedController extends Controller
         foreach (explode(',', $web_checks) as $key) {
             for ($i = 0; $i < count($vars); $i++) {
                 $row = $vars[$i];
-                if ($row->ID == $key) {
-                    $c = \App\Http\Models\VariablesModel::decodeAppControl($row->APP_CONTROL);
-                    $itemLabel = mb_strtoupper($row->COMM);
+                if ($row->id == $key) {
+                    $c = \App\Http\Models\VariablesModel::decodeAppControl($row->app_control);
+                    $itemLabel = mb_strtoupper($row->comm);
                     $c->title = $c->label.' '.$itemLabel;
 
                     $rows[] = (object)[
@@ -62,22 +62,22 @@ class CheckedController extends Controller
                 }
             }
 
-            $varSteps[] = "{id: ".$row->data->ID.", step: ".$row->control->varStep."}";
+            $varSteps[] = "{id: ".$row->data->id.", step: ".$row->control->varStep."}";
             
             if ($row->control->typ == 1) {
-                $sql = "select UNIX_TIMESTAMP(v.CHANGE_DATE) * 1000 V_DATE, v.VALUE ".
+                $sql = "select UNIX_TIMESTAMP(v.change_date) * 1000 v_date, v.value ".
                        "  from core_variable_changes_mem v ".
-                       " where v.VARIABLE_ID = ".$row->data->ID.
-                       "   and v.VALUE <> 85 ".
-                       "   and v.CHANGE_DATE > (select max(zz.CHANGE_DATE) ".
+                       " where v.variable_id = ".$row->data->ID.
+                       "   and v.value <> 85 ".
+                       "   and v.change_date > (select max(zz.change_date) ".
                        "                          from core_variable_changes_mem zz ".
-                       "                         where zz.VARIABLE_ID = ".$row->data->ID.") - interval 3 hour ".
+                       "                         where zz.variable_id = ".$row->data->ID.") - interval 3 hour ".
                        " order by v.ID ";
                 
                 $chartData = [];
                 foreach(DB::select($sql) as $row) {
-                    $x = $row->V_DATE;
-                    $y = $row->VALUE;
+                    $x = $row->v_date;
+                    $y = $row->value;
                     $data[] = "{x: $x, y: $y}";
                 }
                 
@@ -122,22 +122,22 @@ class CheckedController extends Controller
         
         $where = '';
         if ($selKey > 0) {
-            $where = " and v.APP_CONTROL = $selKey ";
+            $where = " and v.app_control = $selKey ";
         }
 
         $sql = "select v.* ".
                "  from core_variables v ".
-               " where v.APP_CONTROL in ($app_controls_ids) ".
+               " where v.app_control in ($app_controls_ids) ".
                $where.
-               " order by v.COMM";
+               " order by v.comm";
         
         $data = [];
         
         foreach(DB::select($sql) as $row) {
-            $c = \App\Http\Models\VariablesModel::decodeAppControl($row->APP_CONTROL);
+            $c = \App\Http\Models\VariablesModel::decodeAppControl($row->app_control);
             $data[] = (object)[
-                'ID' => $row->ID,
-                'COMM' => $row->COMM,
+                'id' => $row->id,
+                'comm' => $row->comm,
                 'typLabel' => $c->label,
             ];
         }
@@ -168,7 +168,7 @@ class CheckedController extends Controller
         if (!in_array($id, $a)) {
             $a[] = $id;
             $s = implode(',', $a);
-            DB::update("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
+            DB::update("update core_propertys set value = '$s' where name = 'WEB_CHECKED'");
             return 'OK';
         }
         
@@ -193,7 +193,7 @@ class CheckedController extends Controller
         if ($i > -1) {
             array_splice($a, $i, 1);
             $s = implode(',', $a);
-            DB::update("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
+            DB::update("update core_propertys set value = '$s' where name = 'WEB_CHECKED'");
             return 'OK';
         }
         
@@ -224,9 +224,9 @@ class CheckedController extends Controller
         foreach (explode(',', $checks) as $key) {
             for ($i = 0; $i < count($q); $i++) {
                 $row = $q[$i];
-                if ($row->ID == $key) {
-                    $c = \App\Http\Models\VariablesModel::decodeAppControl($row->APP_CONTROL);
-                    $itemLabel = mb_strtoupper($row->COMM);
+                if ($row->id == $key) {
+                    $c = \App\Http\Models\VariablesModel::decodeAppControl($row->app_control);
+                    $itemLabel = mb_strtoupper($row->comm);
                     $c->title = $itemLabel;
                     $data[] = (object)[
                         'data' => $row, 
@@ -264,7 +264,7 @@ class CheckedController extends Controller
                 $a[$i - 1] = $a[$i];
                 $a[$i] = $t;
                 $s = implode(',', $a);
-                DB::update("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
+                DB::update("update core_propertys set value = '$s' where name = 'WEB_CHECKED'");
                 return 'OK';
             }
         }
@@ -292,7 +292,7 @@ class CheckedController extends Controller
                 $a[$i + 1] = $a[$i];
                 $a[$i] = $t;
                 $s = implode(',', $a);
-                DB::update("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
+                DB::update("update core_propertys set value = '$s' where name = 'WEB_CHECKED'");
                 return 'OK';
             }
         }
@@ -357,7 +357,7 @@ class CheckedController extends Controller
                 break;
         }
         
-        DB::update("update core_propertys set VALUE = ? where NAME = 'WEB_COLOR'", [json_encode($colors)]);
+        DB::update("update core_propertys set value = ? where name = 'WEB_COLOR'", [json_encode($colors)]);
         return 'OK';
     }
 }

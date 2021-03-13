@@ -9,7 +9,7 @@ class ChartController extends Controller
 {
     public function index() {
         
-        $panels = \App\Http\Models\WebStatPanelsModel::orderBy('ID', 'asc')->get();
+        $panels = []; // \App\Http\Models\WebStatPanelsModel::orderBy('ID', 'asc')->get();
         
         return view('admin.statistics.chart.statistics-chart', [
             'panels' => $panels,

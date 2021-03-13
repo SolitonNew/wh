@@ -18,18 +18,18 @@ class ScriptsController extends Controller
         $sql = "select s.*, 
                        (select count(*) 
                           from core_variables v, core_variable_events e
-                         where v.ID = e.VARIABLE_ID
-                           and e.SCRIPT_ID = s.ID) VAR_COUNT
+                         where v.id = e.variable_id
+                           and e.script_id = s.id) var_count
                   from core_scripts s
-                order by s.COMM asc";
+                order by s.comm asc";
         $list = DB::select($sql);        
         
         $item = \App\Http\Models\ScriptsModel::find($scriptID);
         
         if (!$item) {
-            $first = \App\Http\Models\ScriptsModel::orderBy('COMM', 'asc')->first();
+            $first = \App\Http\Models\ScriptsModel::orderBy('comm', 'asc')->first();
             if ($first) {
-                return redirect(route('scripts', $first->ID));
+                return redirect(route('scripts', $first->id));
             }
         }
         
@@ -44,7 +44,7 @@ class ScriptsController extends Controller
                 'not' => '@KEY_7@',
             ];
             
-            $sourceCode = $item->DATA;
+            $sourceCode = $item->data;
             $sourceCode = str_replace(' ', '&nbsp;', $sourceCode);
             
             foreach($words as $key => $val) {
@@ -79,7 +79,7 @@ class ScriptsController extends Controller
         if ($request->method() == 'POST') {
             try {
                 $this->validate($request, [
-                    'COMM' => 'required|string|unique:core_scripts,COMM,'.($id > 0 ? $id : ''),
+                    'comm' => 'required|string|unique:core_scripts,comm,'.($id > 0 ? $id : ''),
                 ]);
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
@@ -88,9 +88,9 @@ class ScriptsController extends Controller
             try {
                 if (!$item) {
                     $item = new \App\Http\Models\ScriptsModel();
-                    $item->DATA = 'pass';
+                    $item->data = 'pass';
                 }
-                $item->COMM = $request->post('COMM');
+                $item->comm = $request->post('comm');
                 $item->save();
                 return 'OK';
             } catch (\Exception $ex) {
@@ -101,8 +101,8 @@ class ScriptsController extends Controller
         } else {
             if (!$item) {
                 $item = (object)[
-                    'ID' => -1,
-                    'COMM' => '',
+                    'id' => -1,
+                    'comm' => '',
                  ];
             }
             
@@ -136,7 +136,7 @@ class ScriptsController extends Controller
     public function saveScript(Request $request, int $id) {
         $item = \App\Http\Models\ScriptsModel::find($id);
         if ($item) {
-            $item->DATA = $request->post('DATA') ? $request->post('DATA') : 'pass';
+            $item->data = $request->post('data') ? $request->post('data') : 'pass';
             $item->save();
             return 'OK';
         } else {
@@ -153,30 +153,30 @@ class ScriptsController extends Controller
     public function attacheEvents(Request $request, int $id) {
         if ($request->method() == 'POST') {
             try {
-                $ids = $request->post('VARIABLES');
+                $ids = $request->post('variables');
                 $ids[] = 0;
                 $ids_sql = implode(', ', $ids);
 
                 // Удаляем записи не которые не отмечены
                 $sql = "delete from core_variable_events
-                         where SCRIPT_ID = $id
-                           and not VARIABLE_ID in ($ids_sql)";
-                DB::delete($sql);
+                         where script_id = $id
+                           and not variable_id in ($ids_sql)";
+                db::delete($sql);
                 
-                // Добавляем новые
-                $sql = "select v.ID
+                // добавляем новые
+                $sql = "select v.id
                           from core_variables v
-                         where v.ID in ($ids_sql)
+                         where v.id in ($ids_sql)
                            and not exists(select *
                                             from core_variable_events t
-                                           where t.SCRIPT_ID = $id
-                                             and t.VARIABLE_ID = v.ID)";
+                                           where t.script_id = $id
+                                             and t.variable_id = v.id)";
                 Log::info($sql);
                 foreach(DB::select($sql) as $row) {
                     $rec = new \App\Http\Models\VariableEventsModel();
-                    $rec->EVENT_TYPE = 0;
-                    $rec->VARIABLE_ID = $row->ID;
-                    $rec->SCRIPT_ID = $id;
+                    $rec->event_type = 0;
+                    $rec->variable_id = $row->id;
+                    $rec->script_id = $id;
                     $rec->save();
                 }
                 return 'OK';
@@ -189,8 +189,8 @@ class ScriptsController extends Controller
             }
         } else {
             $data = [];
-            foreach(DB::select('select VARIABLE_ID from core_variable_events where SCRIPT_ID = '.$id) as $row) {
-                $data[] = $row->VARIABLE_ID;
+            foreach(DB::select('select variable_id from core_variable_events where script_id = '.$id) as $row) {
+                $data[] = $row->variable_id;
             }
             
             return view('admin.scripts.script-events', [
@@ -206,7 +206,7 @@ class ScriptsController extends Controller
      */
     public function scriptTest(Request $request) {
         try {
-            $execute = new \App\Library\Script\PhpExecute($request->post('COMMAND'));
+            $execute = new \App\Library\Script\PhpExecute($request->post('command'));
             $res = $execute->run();
             return $res ? $res : 'OK';
         } catch (\Exception $ex) {

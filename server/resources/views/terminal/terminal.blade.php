@@ -116,7 +116,6 @@
             setTimeout(loadChanges, 500);
             
             if (typeof(data) == 'string') {
-                console.log('string');
                 if ((data.substr(0, 15) == '<!DOCTYPE HTML>')) {
                     window.location.reload();
                     return ;

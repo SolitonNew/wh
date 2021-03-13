@@ -20,11 +20,11 @@
         </thead>
         <tbody>
             @foreach($data as $row)
-            <tr data-id="{{ $row->ID }}">
-                <td>{{ $row->ID }}</td>
-                <td>{{ $row->LOGIN }}</td>
-                <td>{{ $row->EMAIL }}</td>
-                <td>@lang('admin/users.table_access_list.'.$row->ACCESS)</td>
+            <tr data-id="{{ $row->id }}">
+                <td>{{ $row->id }}</td>
+                <td>{{ $row->login }}</td>
+                <td>{{ $row->email }}</td>
+                <td>@lang('admin/users.table_access_list.'.$row->access)</td>
             </tr>
             @endforeach
         </tbody>

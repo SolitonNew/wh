@@ -8,16 +8,15 @@ class PropertysModel extends Model
 {
     protected $table = 'core_propertys';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
     
     /**
      * 
      * @return type
      */
     static public function getWebColors() {
-        $row = self::whereName('WEB_COLOR')->first();
-        if ($row) {
-            return json_decode($row->VALUE, true);
+        $item = self::whereName('WEB_COLOR')->first();
+        if ($item && $item->value) {
+            return json_decode($item->value, true);
         } else {
             return [];
         }
@@ -28,11 +27,11 @@ class PropertysModel extends Model
      * @return type
      */
     static public function getWebChecks() {
-        $row = self::whereName('WEB_CHECKED')->first();
-        if ($row) {
-            return $row->VALUE;
+        $item = self::whereName('WEB_CHECKED')->first();
+        if ($item && $item->value) {
+            return $item->value;
         } else {
-            return [];
+            return '';
         }
     }
     
@@ -42,8 +41,8 @@ class PropertysModel extends Model
      */
     static public function runningDemons() {
         $item = self::whereName('RUNNING_DEMONS')->first();
-        if ($item) {
-            return explode(';', $item->VALUE);
+        if ($item && $item->value) {
+            return explode(';', $item->value);
         } else {
             return [];
         }
@@ -60,10 +59,10 @@ class PropertysModel extends Model
             $item = self::whereName('RUNNING_DEMONS')->first();
             if (!$item) {
                 $item = new PropertysModel();
-                $item->NAME = 'RUNNING_DEMONS';
-                $item->COMM = '';
+                $item->name = 'RUNNING_DEMONS';
+                $item->comm = '';
             }
-            $item->VALUE = implode(';', $a);
+            $item->value = implode(';', $a);
             $item->save();
         }
     }
@@ -79,11 +78,41 @@ class PropertysModel extends Model
             $item = self::whereName('RUNNING_DEMONS')->first();
             if (!$item) {
                 $item = new PropertysModel();
-                $item->NAME = 'RUNNING_DEMONS';
-                $item->COMM = '';
+                $item->name = 'RUNNING_DEMONS';
+                $item->comm = '';
             }
-            $item->VALUE = implode(';', $a);
+            $item->value = implode(';', $a);
             $item->save();
         }
+    }
+    
+    /**
+     * 
+     * @return int
+     */
+    static public function getPlanMaxLevel() {
+        $item = self::whereName('PLAN_MAX_LEVEL')->first();
+        if ($item && $item->value) {
+            return $item->value;
+        } else {
+            return 1;
+        }
+    }
+    
+    /**
+     * 
+     * @param type $maxLevel
+     */
+    static public function setPlanMaxLevel($maxLevel) {
+        $item = self::whereName('PLAN_MAX_LEVEL')->first();
+        if ($item) {
+            $item->value = $maxLevel;
+        } else {
+            $item = new PropertysModel();
+            $item->name = 'PLAN_MAX_LEVEL';
+            $item->comm = '';
+            $item->value = $maxLevel;
+        }
+        $item->save();
     }
 }

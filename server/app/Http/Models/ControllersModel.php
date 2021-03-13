@@ -8,6 +8,5 @@ class ControllersModel extends Model
 {
     protected $table = 'core_controllers';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
-    
+
 }

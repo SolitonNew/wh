@@ -25,8 +25,8 @@ class TableController extends Controller
         }
         
         if ($request->method() == 'POST') {
-            Session::put('STATISTICS-TABLE-DATE', $request->post('DATE'));
-            Session::put('STATISTICS-TABLE-SQL', $request->post('SQL'));
+            Session::put('STATISTICS-TABLE-DATE', $request->post('date'));
+            Session::put('STATISTICS-TABLE-SQL', $request->post('sql'));
         }
         
         $date = Session::get('STATISTICS-TABLE-DATE');
@@ -38,17 +38,16 @@ class TableController extends Controller
             $query = \App\Http\Models\VariableChangesModel::whereVariableId($id);
 
             $d = Carbon::parse($date)->startOfDay();
-            $query->whereBetween('CHANGE_DATE', [$d, $d->copy()->addDay()]);
+            $query->whereBetween('change_date', [$d, $d->copy()->addDay()]);
 
             if ($sql) {
-                $query->whereRaw('VALUE '.$sql);
+                $query->whereRaw('value '.$sql);
             }
 
             try {
-                $data = $query->orderBy('ID', 'asc')->get();
+                $data = $query->orderBy('id', 'asc')->get();
             } catch (\Exception $ex) {
-                dd('ERRROR');
-                $errors['SQL'] = $ex->getMessage();
+                $errors['sql'] = $ex->getMessage();
                 $data = [];
             }
         }

@@ -10,7 +10,7 @@
     <button type="submit" style="display: none;"></button>
     <div class="form-control tree" style="height: auto; min-height: 300px;">
     @foreach($data as $row)
-    <a href="#" class="tree-item" data-id="{{ $row->ID }}">{{ $row->NAME }}</a>
+    <a href="#" class="tree-item" data-id="{{ $row->id }}">{{ $row->name }}</a>
     @endforeach
     </div>
 </form>

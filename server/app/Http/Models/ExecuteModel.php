@@ -8,7 +8,6 @@ class ExecuteModel extends Model
 {
     protected $table = 'core_execute';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
     
     /**
      * 
@@ -16,7 +15,7 @@ class ExecuteModel extends Model
      */
     static public function command(string $command) {
         $item = new ExecuteModel();
-        $item->COMMAND = $command;
+        $item->command = $command;
         $item->save();
     }
 }

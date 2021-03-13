@@ -35,6 +35,11 @@
                         <img src="/img/logo.png" height="100%">
                     </div>
                     <div class="list-group">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('configuration')" href="{{ route('configuration', '') }}">
+                            <img src="/img/menus/pulse-2x.png">
+                            <span class="label">@lang('admin/configuration.menu')</span>
+                            <span class="badge badge-danger badge-pill">2</span>
+                        </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('plan')" href="{{ route('plan') }}">
                             <img src="/img/menus/clipboard-2x.png">
                             <span class="label">@lang('admin/plan.menu')</span>
@@ -55,15 +60,10 @@
                             <span class="label">@lang('admin/users.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\UsersModel::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('configuration')" href="{{ route('configuration', '') }}">
-                            <img src="/img/menus/pulse-2x.png">
-                            <span class="label">@lang('admin/configuration.menu')</span>
-                            <span class="badge badge-danger badge-pill">2</span>
-                        </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('schedule')" href="{{ route('schedule') }}">
                             <img src="/img/menus/calendar-2x.png">
                             <span class="label">@lang('admin/schedule.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\SchedulerModel::count() }}</span>
+                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\ScheduleModel::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('cams')" href="{{ route('cams') }}">
                             <img src="/img/menus/video-2x.png">

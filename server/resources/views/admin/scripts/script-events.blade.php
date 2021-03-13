@@ -8,9 +8,9 @@
 <form id="script_events_form" class="container" method="POST" action="{{ route('script-events', $id) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
-    <select class="custom-select" name="VARIABLES[]" multiple="true" style="height: 400px;">
+    <select class="custom-select" name="variables[]" multiple="true" style="height: 400px;">
     @foreach(\App\Http\Models\VariablesModel::orderBy('NAME', 'asc')->get() as $row)
-    <option value="{{ $row->ID }}" {{ in_array($row->ID, $data) ? 'selected' : '' }}>{{ $row->NAME }}</option>
+    <option value="{{ $row->id }}" {{ in_array($row->id, $data) ? 'selected' : '' }}>{{ $row->name }}</option>
     @endforeach
     </select>
     <div style="padding-top: 1rem;">

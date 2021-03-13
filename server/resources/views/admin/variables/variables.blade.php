@@ -11,8 +11,8 @@
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="variablesRoomList">
         @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
-        <a href="{{ route('variables', $row->ID) }}"
-           class="tree-item {{ $row->ID == $partID ? 'active' : '' }}" style="padding-left: {{ $row->level + 1 }}rem">{{ $row->NAME }}</a>
+        <a href="{{ route('variables', $row->id) }}"
+           class="tree-item {{ $row->id == $partID ? 'active' : '' }}" style="padding-left: {{ $row->level + 1 }}rem">{{ $row->name }}</a>
         @endforeach
     </div>
     <div class="content-body" scroll-store="variablesList">
@@ -32,16 +32,16 @@
             </thead>
             <tbody>
                 @forelse($data as $row)
-                <tr data-id="{{ $row->ID }}" class="{{ $row->WITH_EVENTS ? 'row-with-events' : '' }}">
-                    <td>{{ $row->ID }}</td>
-                    <td>{{ $row->CONTROLLER_NAME }}</td>
-                    <td>{{ $row->ROM }}</td>
-                    <td>{{ Lang::get('admin/variables.table_readonly_list.'.$row->DIRECTION) }}</td>
-                    <td>{{ $row->NAME }}</td>
-                    <td>{{ $row->COMM }}</td>
-                    <td>{{ Lang::get('admin/variables.app_control.'.$row->APP_CONTROL) }}</td>
-                    <td>{{ $row->VALUE }}</td>
-                    <td>{{ $row->CHANNEL }}</td>
+                <tr data-id="{{ $row->id }}" class="{{ $row->with_events ? 'row-with-events' : '' }} {{ $row->free_variable ? 'italic' : '' }}">
+                    <td>{{ $row->id }}</td>
+                    <td>{{ $row->controller_name }}</td>
+                    <td>{{ $row->typ }}</td>
+                    <td>{{ Lang::get('admin/variables.table_readonly_list.'.$row->direction) }}</td>
+                    <td>{{ $row->name }}</td>
+                    <td>{{ $row->comm }}</td>
+                    <td>{{ lang::get('admin/variables.app_control.'.$row->app_control) }}</td>
+                    <td>{{ $row->value }}</td>
+                    <td>{{ $row->channel }}</td>
                 </tr>
                 @empty
                 <tr class="table-empty">

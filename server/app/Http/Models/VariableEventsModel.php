@@ -8,5 +8,5 @@ class VariableEventsModel extends Model
 {
     protected $table = 'core_variable_events';
     public $timestamps = false;
-    protected $primaryKey = 'ID';
+
 }

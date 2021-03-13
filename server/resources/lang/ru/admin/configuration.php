@@ -4,18 +4,19 @@ return [
     'menu' => 'Конфигурация',
     'title' => '',
     
-    'controller_add' => 'Добавить щитовой контроллер...',
-    'controller_add_title' => 'Добавить щитовой контроллер',
-    'controller_edit' => 'Свойства щитового контроллера...',
-    'controller_edit_title' => 'Свойства щитового контроллера',
-    'controller-delete-confirm' => 'Удалить текущий щитовой контроллер?',
+    'controller_add' => 'Добавить контроллер...',
+    'controller_add_title' => 'Добавить контроллер',
+    'controller_edit' => 'Свойства контроллера...',
+    'controller_edit_title' => 'Свойства контроллера',
+    'controller-delete-confirm' => 'Удалить текущий контроллер?',
     
-    'controller_ow_scan' => 'Просканировать OW сеть щитового контроллера...',
+    'controller_ow_scan' => 'Просканировать OW сеть контроллера...',
 
     'configuration_apply' => 'Применить конфигурацию',
     
     'controller_ID' => 'ID',
     'controller_NAME' => 'Название',
+    'controller_IS_SERVER' => 'Определить как сервер',
     'controller_COMM' => 'Примечания',
     'controller_STATUS' => 'Статус',
     
