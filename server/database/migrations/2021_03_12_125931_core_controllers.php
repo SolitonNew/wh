@@ -16,8 +16,8 @@ class CoreControllers extends Migration
         Schema::create('core_controllers', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('name');
-            $table->string('comm', 1000);
-            $table->string('mmcu', 30);
+            $table->integer('is_server')->default(0);
+            $table->string('comm', 1000)->nullable();
             $table->integer('status')->default(1);
             $table->string('position', 1000)->nullable();
         });

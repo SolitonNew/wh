@@ -23,7 +23,7 @@
         <a href="{{ route('configuration', $row->id) }}"
             class="tree-item {{ $row->id == $id ? 'active' : '' }}">
             <div>
-                <div>{{ $row->name }}</div>
+                <div class="{{ $row->is_server ? 'strong' : '' }}" >{{ $row->name }}</div>
                 <small class="text-muted">{{ $row->comm }}</small>
             </div>
         </a>

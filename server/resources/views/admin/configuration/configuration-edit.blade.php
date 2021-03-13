@@ -33,14 +33,23 @@
         </div>
     </div>
     <div class="row">
+        <div class="offset-sm-3 col-sm-9">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="isServer" name="is_server" {{ $item->is_server ? 'checked' : '' }}>
+                <label class="custom-control-label" for="isServer">@lang('admin/configuration.controller_IS_SERVER')</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin/configuration.controller_NAME')</div>
+            <div class="form-label">@lang('admin/configuration.controller_COMM')</div>
         </div>
         <div class="col-sm-9">
-            <textarea class="form-control" name="comm" required="">{{ $item->comm }}</textarea>
+            <textarea class="form-control" name="comm">{{ $item->comm }}</textarea>
             <div class="invalid-feedback"></div>
         </div>
     </div>
+    
     
 </form>
 @endsection

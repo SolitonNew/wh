@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
+use Log;
 
 class ConfigurationController extends Controller
 {
@@ -70,7 +71,7 @@ class ConfigurationController extends Controller
             try {
                 $this->validate($request, [
                     'name' => 'string|required',
-                    'comm' => 'string|required',
+                    'comm' => 'string|nullable',
                 ]);          
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
@@ -82,10 +83,11 @@ class ConfigurationController extends Controller
                     $item = new \App\Http\Models\ControllersModel();
                 }
                 $item->name = $request->post('name');
+                $item->is_server = $request->post('is_server') ? 1 : 0;
                 $item->comm = $request->post('comm');
                 $item->status = 0; 
-                $item->mmcu = 'atmega8a';
                 $item->save();
+                
                 return 'OK';
             } catch (\Exception $ex) {
                 return response()->json([
@@ -98,6 +100,7 @@ class ConfigurationController extends Controller
                 $item = (object)[
                     'id' => -1,
                     'name' => '',
+                    'is_server' => 0,
                     'comm' => '',
                     'status' => 0,
                 ];

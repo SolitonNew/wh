@@ -12,7 +12,17 @@ class VariablesController extends Controller
      * 
      * @return type
      */
-    public function index(int $partID = 1) {
+    public function index(int $partID = null) {
+        if (!$partID) {
+            $first = \App\Http\Models\PlanPartsModel::whereParentId(null)
+                        ->orderBy('order_num', 'asc')
+                        ->first();
+            if ($first) {
+                return redirect(route('variables', $first->id));
+            }
+        }
+        
+        
         $where = '';
         if ($partID > 1) {
             $ids = \App\Http\Models\PlanPartsModel::genIDsForGroupAtParent($partID);
