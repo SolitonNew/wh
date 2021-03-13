@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Terminal;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use \Illuminate\Support\Facades\DB;
+use DB;
+use Log;
 
 class VariableController extends Controller
 {
@@ -14,16 +15,16 @@ class VariableController extends Controller
      * @return string
      */
     public function index($variableID) {
-        $sql = "select p.NAME GROUP_TITLE, v.COMM VARIABLE_TITLE, v.APP_CONTROL, v.GROUP_ID, v.VALUE ".
+        $sql = "select p.name group_title, v.comm variable_title, v.app_control, v.group_id, v.value ".
                "  from core_variables v, plan_parts p ".
                " where v.id = $variableID ".
-               "   and p.ID = v.GROUP_ID";        
+               "   and p.id = v.group_id";        
         $row = DB::select($sql)[0];
         
-        $roomID = $row->GROUP_ID;
-        $roomTitle = mb_strtoupper($row->GROUP_TITLE);
-        $variableTitle = $row->VARIABLE_TITLE;
-        $control = \App\Http\Models\VariablesModel::decodeAppControl($row->APP_CONTROL);
+        $roomID = $row->group_id;
+        $roomTitle = mb_strtoupper($row->group_title);
+        $variableTitle = $row->variable_title;
+        $control = \App\Http\Models\VariablesModel::decodeAppControl($row->app_control);
         $variableTitle = \App\Http\Models\VariablesModel::groupVariableName($roomTitle, mb_strtoupper($variableTitle), $control->label);
 
         
@@ -38,7 +39,7 @@ class VariableController extends Controller
                     'roomTitle' => $roomTitle,
                     'variableTitle' => $variableTitle,
                     'variableID' => $variableID,
-                    'variableValue' => $row->VALUE,
+                    'variableValue' => $row->value,
                     'control' => $control,
                 ]);
         }
@@ -52,14 +53,13 @@ class VariableController extends Controller
     public function variableChanges($lastID) {
         $lastID = (int)$lastID;
         if ($lastID > 0) {
-            $res = DB::select("select c.ID, c.VARIABLE_ID, c.VALUE, UNIX_TIMESTAMP(c.CHANGE_DATE) * 1000 CHANGE_DATE ".
+            $res = DB::select("select c.id, c.variable_id, c.value, UNIX_TIMESTAMP(c.change_date) * 1000 change_date ".
                               "  from core_variable_changes_mem c ".
-                              " where c.ID > $lastID ".
-                              "   and c.VALUE <> 85 ".
-                              " order by c.ID");
+                              " where c.id > $lastID ".
+                              " order by c.id");
             return response()->json($res);
         } else {
-            return 'LAST_ID: '.\App\Http\Models\VariableChangesModel::lastVariableID();
+            return 'LAST_ID: '.\App\Http\Models\VariableChangesMemModel::lastVariableID();
         }
     }
     
@@ -76,7 +76,7 @@ class VariableController extends Controller
         try {
             DB::select("CALL CORE_SET_VARIABLE($varID, $varValue, -1)");
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error($e);
+            Log::error($e);
         }
         
         return '';

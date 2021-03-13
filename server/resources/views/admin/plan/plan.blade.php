@@ -7,7 +7,7 @@
 
 @section('down-menu')
 <a href="#" class="dropdown-item" onclick="planAdd(); return false;">@lang('admin/plan.plan_add')</a>
-@if($partID > 0)
+@if($partID)
 <a href="#" class="dropdown-item" onclick="planEdit(); return false;">@lang('admin/plan.plan_edit')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="planMoveChilds(); return false;">@lang('admin/plan.plan_move_childs')</a>
@@ -41,9 +41,11 @@
     var planZoom = 50;
 
     $(document).ready(() => {
+        @if($partID)
         $('div.plan-part').on('click', function (e) {
             dialog('{{ route("plan-edit", "") }}/' + $(this).attr('data-id'));
         });
+        @endif
 
         planZoom = getCookie('planZoom');
         if (planZoom == undefined) {
@@ -135,6 +137,7 @@
         dialog('{{ route("plan-edit", [-1, $partID]) }}');
     }
 
+    @if($partID)
     function planEdit() {
         dialog('{{ route("plan-edit", $partID) }}');
     }
@@ -146,5 +149,6 @@
     function planOrder() {
         dialog('{{ route("plan-order", $partID) }}');
     }
+    @endif
 </script>
 @endsection

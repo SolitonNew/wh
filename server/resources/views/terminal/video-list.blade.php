@@ -1,9 +1,9 @@
 <div class="video-list-view">
     <div class="alert alert-light video-list-title">@lang('terminal.video_title')</div>
     <div class="video-list">
-        @foreach(\App\Http\Models\PlanVideoModel::orderBy('ORDER_NUM', 'asc')->get() as $row)        
+        @foreach(\App\Http\Models\PlanVideoModel::orderBy('order_num', 'asc')->get() as $row)        
         <a class="video-list-item" href="#">
-            <video class="video-list-item-content" autoplay="true" poster="img/cams/{{ $row->ID }}.png"></video>
+            <video class="video-list-item-content" autoplay="true" poster="img/cams/{{ $row->id }}.png"></video>
         </a>
         @endforeach
     </div>

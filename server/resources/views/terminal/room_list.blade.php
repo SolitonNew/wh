@@ -4,32 +4,32 @@
         <div class="room-item">
             <div class="room-item-name">
                 @if($row->control->typ == 3)
-                <a href="{{ route('terminal.variable', $row->data->ID) }}">{{ $row->control->title }}</a>
+                <a href="{{ route('terminal.variable', $row->data->id) }}">{{ $row->control->title }}</a>
                 @else
                 {{ $row->control->title }}
                 @endif
             </div>
             @if($row->control->typ == 1)
-            <div class="room-text-value" id="variable_{{ $row->data->ID }}" app_control="1">
-                <span class="room-item-variable-value">{{ $row->data->VALUE }}</span>
+            <div class="room-text-value" id="variable_{{ $row->data->id }}" app_control="1">
+                <span class="room-item-variable-value">{{ $row->data->value }}</span>
                 <span class="room-item-variable-label">{{ $row->control->resolution }}</span>
             </div>
             @elseif($row->control->typ == 2)
             <div class="custom-control custom-switch">
                 <input type="checkbox" class="custom-control-input" app_control="2"
-                       id="variable_{{ $row->data->ID }}" {{ $row->data->VALUE > 0 ? 'checked=""' : '' }} >
-                <label class="custom-control-label" for="variable_{{ $row->data->ID }}"></label>
+                       id="variable_{{ $row->data->id }}" {{ $row->data->value > 0 ? 'checked=""' : '' }} >
+                <label class="custom-control-label" for="variable_{{ $row->data->id }}"></label>
             </div>
             @elseif($row->control->typ == 3)
-            <div class="room-text-value" id="variable_{{ $row->data->ID }}" app_control="3">
-                <span class="room-item-variable-value">{{ $row->data->VALUE * $row->control->varStep }}</span>
+            <div class="room-text-value" id="variable_{{ $row->data->id }}" app_control="3">
+                <span class="room-item-variable-value">{{ $row->data->value * $row->control->varStep }}</span>
                 <span class="room-item-variable-label">{{ $row->control->resolution }}</span>
             </div>
             @endif
         </div>
         @if($row->control->typ == 1)
         <div class="variable-chart">
-            <canvas id="chart_{{ $row->data->ID }}" height="100"></canvas>
+            <canvas id="chart_{{ $row->data->id }}" height="100"></canvas>
         </div>
         @endif
     </div>

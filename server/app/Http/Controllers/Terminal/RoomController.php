@@ -17,19 +17,19 @@ class RoomController extends Controller
         
         $room = \App\Http\Models\PlanPartsModel::find($roomID);
         
-        $roomTitle = mb_strtoupper($room->NAME);
+        $roomTitle = mb_strtoupper($room->name);
         
         $web_color = \App\Http\Models\PropertysModel::getWebColors();
         
         $sql = "select v.* from core_variables v " .
-               " where v.GROUP_ID = $roomID " .
-               "  and APP_CONTROL in (1, 3, 4, 5, 7, 10, 11, 13, 14) ".
-               " order by v.NAME";    
+               " where v.group_id = $roomID " .
+               "  and app_control in (1, 3, 4, 5, 7, 10, 11, 13, 14) ".
+               " order by v.name";    
        
         $rows = [];
         foreach (\Illuminate\Support\Facades\DB::select($sql) as $row) {
-            $c = \App\Http\Models\VariablesModel::decodeAppControl($row->APP_CONTROL);
-            $itemLabel = \App\Http\Models\VariablesModel::groupVariableName($roomTitle, mb_strtoupper($row->COMM), mb_strtoupper($c->label));
+            $c = \App\Http\Models\VariablesModel::decodeAppControl($row->app_control);
+            $itemLabel = \App\Http\Models\VariablesModel::groupVariableName($roomTitle, mb_strtoupper($row->comm), mb_strtoupper($c->label));
             $c->title = $itemLabel;
 
             $rows[] = (object)[
@@ -55,27 +55,27 @@ class RoomController extends Controller
                 }
             }
 
-            $varSteps[] = "{id: ".$row->data->ID.", step: ".$row->control->varStep."}";
+            $varSteps[] = "{id: ".$row->data->id.", step: ".$row->control->varStep."}";
             
             if ($row->control->typ == 1) {
-                $sql = "select UNIX_TIMESTAMP(v.CHANGE_DATE) * 1000 V_DATE, v.VALUE ".
+                $sql = "select UNIX_TIMESTAMP(v.change_date) * 1000 v_date, v.value ".
                        "  from core_variable_changes_mem v ".
-                       " where v.VARIABLE_ID = ".$row->data->ID.
-                       "   and v.VALUE <> 85 ".
-                       "   and v.CHANGE_DATE > (select max(zz.CHANGE_DATE) ".
+                       " where v.variable_id = ".$row->data->ID.
+                       "   and v.value <> 85 ".
+                       "   and v.change_date > (select max(zz.change_date) ".
                        "                          from core_variable_changes_mem zz ".
-                       "                         where zz.VARIABLE_ID = ".$row->data->ID.") - interval 3 hour ".
+                       "                         where zz.variable_id = ".$row->data->id.") - interval 3 hour ".
                        " order by v.ID ";
                 
                 $chartData = [];
                 foreach(\Illuminate\Support\Facades\DB::select($sql) as $row) {
-                    $x = $row->V_DATE;
-                    $y = $row->VALUE;
+                    $x = $row->v_date;
+                    $y = $row->value;
                     $data[] = "{x: $x, y: $y}";
                 }
                 
                 $charts[] = (object)[
-                    'ID' => $row->data->ID,
+                    'id' => $row->data->id,
                     'data' => implode(', ', $chartData),
                     'color' => $color,
                 ];

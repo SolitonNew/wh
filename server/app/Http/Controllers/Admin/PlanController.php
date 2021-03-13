@@ -9,9 +9,9 @@ use Log;
 
 class PlanController extends Controller
 {
-    public function index(int $id = -1) {
-        if ($id == -1) {
-            $first = \App\Http\Models\PlanPartsModel::whereParentId(-1)
+    public function index(int $id = null) {
+        if (!$id) {
+            $first = \App\Http\Models\PlanPartsModel::whereParentId(null)
                         ->orderBy('order_num', 'asc')
                         ->first();
             if ($first) {

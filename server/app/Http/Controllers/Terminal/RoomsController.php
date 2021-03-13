@@ -25,8 +25,8 @@ class RoomsController extends Controller
      * @return type
      */
     public function index() {       
-        $this->_groups = \App\Http\Models\PlanPartsModel::orderBy('ORDER_NUM', 'asc')
-                            ->orderBy('NAME', 'asc')
+        $this->_groups = \App\Http\Models\PlanPartsModel::orderBy('order_num', 'asc')
+                            ->orderBy('name', 'asc')
                             ->get();
         
         $this->_variables = \App\Http\Models\VariablesModel::get();
@@ -57,20 +57,20 @@ class RoomsController extends Controller
         
         for ($i = 0; $i < count($this->_groups); $i++) {
             $row = $this->_groups[$i];
-            if ($row->PARENT_ID == $parentID) {
+            if ($row->parent_id == $parentID) {
                 switch ($level) {
                     case 0:
                         break;
                     case 1:
                         $data[] = (object)[
-                            'title' => mb_strtoupper($row->NAME),  
+                            'title' => mb_strtoupper($row->name),  
                             'rooms' => [],
                         ];
                         break;
                     case 2:
                         $room = $data[count($data) - 1];
-                        $titleUpper = mb_strtoupper($row->NAME);
-                        $vars = $this->_findVariable($row->ID, $titleUpper);
+                        $titleUpper = mb_strtoupper($row->name);
+                        $vars = $this->_findVariable($row->id, $titleUpper);
                         
                         $temperature_id = -1;
                         $temperature_val = 0;
@@ -82,22 +82,22 @@ class RoomsController extends Controller
                         $switch_2_val = 0;
                         
                         foreach ($vars as $v) {
-                            switch ($v['APP_CONTROL']) {
+                            switch ($v['app_control']) {
                                 case 4:                       
-                                    if (mb_strtoupper($v['COMM']) == $titleUpper) {
-                                        $temperature_id = $v['ID'];
-                                        $temperature_val = $v['VALUE'];
+                                    if (mb_strtoupper($v['comm']) == $titleUpper) {
+                                        $temperature_id = $v['id'];
+                                        $temperature_val = $v['value'];
                                     }
                                     break;
                                 case 1:
-                                    if (mb_strtoupper($v['COMM']) == $titleUpper) {
-                                        $switch_1_id = $v['ID'];
-                                        $switch_1_val = $v['VALUE'];
+                                    if (mb_strtoupper($v['comm']) == $titleUpper) {
+                                        $switch_1_id = $v['id'];
+                                        $switch_1_val = $v['value'];
                                     } else {
                                         for ($n = 0; $n < count($switches_2); $n++) {
-                                            if (mb_strtoupper($v['COMM']) == $titleUpper.$switches_2[$n]) {
-                                                $switch_2_id = $v['ID'];
-                                                $switch_2_val = $v['VALUE'];
+                                            if (mb_strtoupper($v['comm']) == $titleUpper.$switches_2[$n]) {
+                                                $switch_2_id = $v['id'];
+                                                $switch_2_val = $v['value'];
                                                 break;
                                             }
                                         }
@@ -107,8 +107,8 @@ class RoomsController extends Controller
                         }
                         
                         $room->rooms[] = (object)[
-                            'id' => $row->ID,
-                            'title' => mb_strtoupper($row->NAME),
+                            'id' => $row->id,
+                            'title' => mb_strtoupper($row->name),
                             'titleCrop' => str_replace($room->title, '', $titleUpper),
                             'temperature_id' => $temperature_id,
                             'temperature_val' => $temperature_val,
@@ -120,7 +120,7 @@ class RoomsController extends Controller
                         
                         break;
                 }                
-                $this->_makeItems($row->ID, $level + 1, $data);
+                $this->_makeItems($row->id, $level + 1, $data);
             }            
         }        
     }
@@ -135,8 +135,8 @@ class RoomsController extends Controller
         $res = [];
         for ($i = 0; $i < count($this->_variables); $i++) {
             $var = $this->_variables[$i];
-            if ($var->GROUP_ID == $roomID) {
-                if (mb_strtoupper(mb_substr($var->COMM, 0, mb_strlen($roomNameUpper))) == $roomNameUpper) {
+            if ($var->group_id == $roomID) {
+                if (mb_strtoupper(mb_substr($var->comm, 0, mb_strlen($roomNameUpper))) == $roomNameUpper) {
                     $res[] = $var;
                 }
             }

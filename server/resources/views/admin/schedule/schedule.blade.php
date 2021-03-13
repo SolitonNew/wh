@@ -14,7 +14,7 @@
             <tr>
                 <th scope="col" style="width: 40px;"><span>@lang('admin/schedule.table_ID')</span></th>
                 <th scope="col" style="width: 200px;"><span>@lang('admin/schedule.table_COMM')</span></th>
-                <th scope="col" style="width: 90px; max-width: 90px;"><span>@lang('admin/schedule.table_ACTION_DATETIME')</span></th>
+                <th scope="col" style="width: 100px; max-width: 90px;"><span>@lang('admin/schedule.table_ACTION_DATETIME')</span></th>
                 <th scope="col" style="width: 300px;"><span>@lang('admin/schedule.table_ACTION')</span></th>
                 <th scope="col" style="width: 300px;"><span>@lang('admin/schedule.table_INTERVAL')</span></th>
                 <th scope="col" style="width: 105px;"><span>@lang('admin/schedule.table_ENABLE')</span></th>
