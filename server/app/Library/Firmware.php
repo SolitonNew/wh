@@ -22,6 +22,10 @@ class Firmware {
     protected $_mmcu = 'atmega8a';
     protected $_rel_path = 'devices/din_master/firmware';
     
+    public function __construct() {
+        $this->_mmcu = config('firmware.mmcu');
+    }
+    
     /**
      * Абсолютный путь к директории прошивки
      */
