@@ -90,7 +90,7 @@ class ScriptsController extends Controller
                     $item = new \App\Http\Models\ScriptsModel();
                     $item->data = 'pass';
                 }
-                $item->COMM = $request->post('comm');
+                $item->comm = $request->post('comm');
                 $item->save();
                 return 'OK';
             } catch (\Exception $ex) {
@@ -136,7 +136,7 @@ class ScriptsController extends Controller
     public function saveScript(Request $request, int $id) {
         $item = \App\Http\Models\ScriptsModel::find($id);
         if ($item) {
-            $item->DATA = $request->post('data') ? $request->post('data') : 'pass';
+            $item->data = $request->post('data') ? $request->post('data') : 'pass';
             $item->save();
             return 'OK';
         } else {
@@ -153,7 +153,7 @@ class ScriptsController extends Controller
     public function attacheEvents(Request $request, int $id) {
         if ($request->method() == 'POST') {
             try {
-                $ids = $request->post('VARIABLES');
+                $ids = $request->post('variables');
                 $ids[] = 0;
                 $ids_sql = implode(', ', $ids);
 
