@@ -60,7 +60,7 @@ class VariablesController extends Controller
                    and not exists(select *
                                     from plan_parts pp
                                    where v.group_id = pp.id)
-                order by 2, 5';
+                order by 11, 2, 5';
         
         $data = DB::select($sql);
         
