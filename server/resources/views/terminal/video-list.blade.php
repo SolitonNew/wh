@@ -3,7 +3,7 @@
     <div class="video-list">
         @foreach(\App\Http\Models\PlanVideoModel::orderBy('order_num', 'asc')->get() as $row)        
         <a class="video-list-item" href="#">
-            <video class="video-list-item-content" autoplay="true" poster="img/cams/{{ $row->id }}.png"></video>
+            <video class="video-list-item-content" autoplay="true" poster="img/cams/{{ $row->name }}.png"></video>
         </a>
         @endforeach
     </div>
