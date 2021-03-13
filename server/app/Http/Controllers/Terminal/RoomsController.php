@@ -31,8 +31,21 @@ class RoomsController extends Controller
         
         $this->_variables = \App\Http\Models\VariablesModel::get();
         $data = [];
-        $this->_makeItems(null, 0, $data);
         
+        switch (\App\Http\Models\PropertysModel::getPlanMaxLevel()) {
+            case 1:
+                $data[] = (object)[
+                    'title' => '',
+                ];
+                $this->_makeItems(null, 2, $data);
+                break;
+            case 2:
+                $this->_makeItems(null, 1, $data);
+                break;
+            default:
+                $this->_makeItems(null, 0, $data);
+        }
+                
         $columnCount = count($data);
         if ($columnCount > 5) {
             $columnCount = 3;

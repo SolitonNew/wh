@@ -60,12 +60,12 @@ class RoomController extends Controller
             if ($row->control->typ == 1) {
                 $sql = "select UNIX_TIMESTAMP(v.change_date) * 1000 v_date, v.value ".
                        "  from core_variable_changes_mem v ".
-                       " where v.variable_id = ".$row->data->ID.
+                       " where v.variable_id = ".$row->data->id.
                        "   and v.value <> 85 ".
                        "   and v.change_date > (select max(zz.change_date) ".
                        "                          from core_variable_changes_mem zz ".
                        "                         where zz.variable_id = ".$row->data->id.") - interval 3 hour ".
-                       " order by v.ID ";
+                       " order by v.id ";
                 
                 $chartData = [];
                 foreach(\Illuminate\Support\Facades\DB::select($sql) as $row) {

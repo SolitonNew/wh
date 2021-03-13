@@ -32,7 +32,7 @@
             </thead>
             <tbody>
                 @forelse($data as $row)
-                <tr data-id="{{ $row->id }}" class="{{ $row->with_events ? 'row-with-events' : '' }}">
+                <tr data-id="{{ $row->id }}" class="{{ $row->with_events ? 'row-with-events' : '' }} {{ $row->free_variable ? 'italic' : '' }}">
                     <td>{{ $row->id }}</td>
                     <td>{{ $row->controller_name }}</td>
                     <td>{{ $row->typ }}</td>

@@ -48,7 +48,7 @@
     var chartMinTime = chartMaxTime - chartTimeRange;
     
     @foreach($charts as $chart)
-    var ctx = document.getElementById("chart_{{ $chart->ID }}");
+    var ctx = document.getElementById("chart_{{ $chart->id }}");
     var chart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -90,7 +90,7 @@
     });
     
     chartList.push({
-        id: {{ $chart->ID }},
+        id: {{ $chart->id }},
         chart: chart
     });
     

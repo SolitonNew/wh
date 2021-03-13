@@ -24,7 +24,7 @@ class VariablesController extends Controller
         
         
         $where = '';
-        if ($partID > 1) {
+        if ($partID) {
             $ids = \App\Http\Models\PlanPartsModel::genIDsForGroupAtParent($partID);
             $where = 'and v.group_id in ('.$ids.')';
         }
@@ -38,11 +38,29 @@ class VariablesController extends Controller
                        v.app_control,
                        v.value,
                        v.channel,
-                       exists(select 1 from core_variable_events e where e.variable_id = v.id) with_events
+                       exists(select 1 from core_variable_events e where e.variable_id = v.id) with_events,
+                       0 free_variable
                   from core_variables v, core_controllers c
                  where v.controller_id = c.id
-                   '.$where.'
-                order by 2, v.name';
+                    '.$where.'
+                union all
+                select v.id,
+                       c.name controller_name,
+                       v.typ,
+                       v.direction,
+                       v.name,
+                       v.comm,
+                       v.app_control,
+                       v.value,
+                       v.channel,
+                       exists(select 1 from core_variable_events e where e.variable_id = v.id) with_events,
+                       1 free_variable
+                  from core_variables v, core_controllers c
+                 where v.controller_id = c.id
+                   and not exists(select *
+                                    from plan_parts pp
+                                   where v.group_id = pp.id)
+                order by 2, 5';
         
         $data = DB::select($sql);
         

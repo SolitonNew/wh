@@ -85,4 +85,17 @@ class PropertysModel extends Model
             $item->save();
         }
     }
+    
+    /**
+     * 
+     * @return int
+     */
+    static public function getPlanMaxLevel() {
+        $item = self::whereName('PLAN_MAX_LEVEL')->first();
+        if ($item && $item->value) {
+            return $item->value;
+        } else {
+            return 1;
+        }
+    }
 }
