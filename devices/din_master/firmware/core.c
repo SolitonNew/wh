@@ -107,6 +107,12 @@ float core_get_variable_value(int index) {
 void core_set_variable_value(int index, float value) {
 	if ((index < 0) || (index >= variable_count)) return ;
 	variable_values[index] = value;
+	
+	// Если переменная нашего контроллера мы должны попытаться 
+	// выполнить скрипт, если он назначен для переменной
+	if (core_get_variable_controller(index) == controller_id) {
+		script_run_event_for_variable(index);
+	}	
 }
 
 void core_init(void) {
