@@ -1,3 +1,8 @@
-@foreach($scriptList as $row)
-void script_{{ $row->ID }}(void);
-@endforeach
+// ---------------------------------------
+//
+//     Этот файл создан автоматически
+//
+// ---------------------------------------
+
+
+void runEventScriptForVariable(int index);

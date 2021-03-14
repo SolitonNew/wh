@@ -42,17 +42,18 @@ class Firmware {
      */
     public function generateConfig() {
         // Вычитываем все нужные данные
-        $owList = \App\Http\Models\OwDevsModel::orderBy('ID', 'asc')->get();
-        $varList = \App\Http\Models\VariablesModel::orderBy('ID', 'asc')->get();
-        $scriptList = \App\Http\Models\ScriptsModel::orderBy('ID', 'asc')->limit(10)->get();
+        $owList = \App\Http\Models\OwDevsModel::orderBy('id', 'asc')->get();
+        $varList = \App\Http\Models\VariablesModel::orderBy('id', 'asc')->get();
+        $scriptList = \App\Http\Models\ScriptsModel::orderBy('id', 'asc')->limit(10)->get();
+        $eventList = \App\Http\Models\VariableEventsModel::orderBy('variable_id', 'asc')->get();
         
         // 
         foreach($varList as &$row) {
-            $row->OW_INDEX = -1;
-            if ($row->OW_ID) {
+            $row->ow_index = -1;
+            if ($row->ow_id) {
                 for ($i = 0; $i < count($owList); $i++) {
-                    if ($row->OW_ID == $owList[$i]->ID) {
-                        $row->OW_INDEX = $i;
+                    if ($row->ow_id == $owList[$i]->id) {
+                        $row->ow_index = $i;
                         break;
                     }
                 }
@@ -61,12 +62,24 @@ class Firmware {
         
         $variableNames = [];
         foreach($varList as $row) {
-            $variableNames[] = $row->NAME;
+            $variableNames[] = $row->name;
         }
         
         foreach($scriptList as &$row) {
-            $translator = new Script\Translate(new Script\Translators\C($variableNames), $row->DATA);
-            $row->DATA_TO_C = $translator->run();
+            $translator = new Script\Translate(new Script\Translators\C($variableNames), $row->data);
+            $row->data_to_c = $translator->run();
+        }
+        
+        // Проставляем индексы для переменных в связях с эвентами
+        foreach($eventList as &$row) {
+            $varIndex = -1;
+            for ($i = 0; $i < count($varList); $i++) {
+                if ($varList[$i]->id === $row->variable_id) {
+                    $varIndex = $i;
+                    break;
+                }
+            }
+            $row->variableIndex = $varIndex;
         }
         
         // Проверяем наличие директории config
@@ -85,10 +98,10 @@ class Firmware {
             'owList' => $owList,
             'varList' => $varList,
             'varTyps' => [
-                'pyb' => 0,
+                'din' => 0,
                 'ow' => 1,
                 'variable' => 2,
-            ]
+            ],
         ]));
         
         // Пакуем в файл scripts.h
@@ -101,6 +114,7 @@ class Firmware {
         $fs = new \Illuminate\Filesystem\Filesystem();
         $fs->put($this->_firmwarePath().'/config/scripts.c', View::make('admin.configuration.config.scripts_c', [
             'scriptList' => $scriptList,
+            'eventList' => $eventList,
         ]));
     }
     
@@ -121,6 +135,7 @@ class Firmware {
         foreach($xml->ItemGroup[0]->Compile as $item) {
             $file = (string)$item['Include'];
             if (strpos($file, '.c') === strlen($file) - 2) {
+                //if ($file == 'lcd.c') continue;
                 $files[] = str_replace('\\', '/', $file);
             }
         }

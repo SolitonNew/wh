@@ -223,8 +223,6 @@ class ConfigurationController extends Controller
                         $item->save();
                         $item->name = 'ow_'.$item->id.'_'.$chan;
                         $item->save();
-                        
-                        Log::info($item->ow_id);
                     }
                 }
             }
