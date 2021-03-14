@@ -130,7 +130,6 @@ class C implements ITranslator {
                         $v_index = array_search($str, $this->_variableNames);
                         
                         if ($v_index !== false) { // Это название переменной. Меняем на индекс
-                            Log::info($v_index);
                             $res[$i] = $v_index;
                             for ($v = $i + 1; $v <= $k; $v++) {
                                 $res[$v] = '';

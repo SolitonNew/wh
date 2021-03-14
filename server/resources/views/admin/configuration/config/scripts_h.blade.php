@@ -5,4 +5,4 @@
 // ---------------------------------------
 
 
-void runEventScriptForVariable(int index);
+void script_run_event_for_variable(int index);

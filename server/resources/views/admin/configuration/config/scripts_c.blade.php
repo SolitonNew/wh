@@ -14,11 +14,13 @@ void script_{{ $row->id }}(void) {
 
 @endforeach
 
-void runEventScriptForVariable(int index) {
+void script_run_event_for_variable(int index) {
     switch (index) {
 @foreach($eventList as $row)
         case {{ $row->variableIndex }}: 
-            script_{{ $row->script_id }}();
+            @foreach(explode(',', $row->script_ids) as $scr)
+            script_{{ $scr }}();
+            @endforeach
             break;
             
 @endforeach
