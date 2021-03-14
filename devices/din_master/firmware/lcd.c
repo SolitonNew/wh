@@ -163,7 +163,8 @@ void lcd_init(void) {
 }
 
 void lcd_char(uint8_t c) {
-	if (c < 32) c = 32;
+	if (c < 0x20) c = 0x20;
+	if (c > 0x7f) c = 0x7f;
 	
 	if (text_x > LCD_MAX_X - 1) {
 		lcd_move(0, text_y + 1);
@@ -171,8 +172,8 @@ void lcd_char(uint8_t c) {
 	
 	text_x++;
 	
-	int o = (c - 32) * 5;
-	for(uint8_t i = 0; i < 5; i++) {
+	int o = (c - 0x20) * 5;
+	for (uint8_t i = 0; i < 5; i++) {
 		lcd_write(1, pgm_read_byte(&font[o + i]));
 	}
 	lcd_write(1, 0);
