@@ -10,6 +10,7 @@ namespace App\Library;
 
 use View;
 use Log;
+use DB;
 
 /**
  * Description of Firmware
@@ -45,7 +46,10 @@ class Firmware {
         $owList = \App\Http\Models\OwDevsModel::orderBy('id', 'asc')->get();
         $varList = \App\Http\Models\VariablesModel::orderBy('id', 'asc')->get();
         $scriptList = \App\Http\Models\ScriptsModel::orderBy('id', 'asc')->limit(10)->get();
-        $eventList = \App\Http\Models\VariableEventsModel::orderBy('variable_id', 'asc')->get();
+        $eventList = DB::select('select e.variable_id, GROUP_CONCAT(e.script_id) script_ids
+                                   from core_variable_events e 
+                                 group by e.variable_id 
+                                 order by e.variable_id');
         
         // 
         foreach($varList as &$row) {
