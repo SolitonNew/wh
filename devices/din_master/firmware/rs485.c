@@ -39,7 +39,8 @@ void rs485_send(uint8_t c) {
 }
 
 ISR(USART__RXC_vect) {
-	if (rs485_in_buff_size > RS485_BUFF_MAX_SIZE - 2) {
+	// Накапливаем входящий буфер
+	if (rs485_in_buff_size >= RS485_BUFF_MAX_SIZE - 1) {
 		rs485_in_buff_size = 0;
 		board_rs485_error();
 	}
