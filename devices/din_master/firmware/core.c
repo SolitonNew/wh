@@ -5,7 +5,7 @@
  *  Author: User
  */ 
 
-#include "globals.h"
+#include "board.h"
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include "core.h"

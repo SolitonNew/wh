@@ -5,7 +5,7 @@
  *  Author: User
  */ 
 
-#include "globals.h"
+#include "board.h"
 #include <avr/pgmspace.h>
 #include <avr/io.h>
 #include "util/delay.h"
@@ -167,7 +167,11 @@ void lcd_char(uint8_t c) {
 	if (c > 0x7f) c = 0x7f;
 	
 	if (text_x > LCD_MAX_X - 1) {
-		lcd_move(0, text_y + 1);
+		if (text_y < LCD_MAX_Y) {
+			lcd_move(0, text_y + 1);	
+		} else {
+			lcd_clear();
+		}
 	}
 	
 	text_x++;

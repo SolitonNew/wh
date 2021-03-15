@@ -5,7 +5,7 @@
  *  Author: User
  */ 
 
-#include "globals.h"
+#include "board.h"
 #include <avr/io.h>
 #include "control.h"
 

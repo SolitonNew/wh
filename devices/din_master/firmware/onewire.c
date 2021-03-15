@@ -5,7 +5,7 @@
  *  Author: User
  */ 
 
-#include "globals.h"
+#include "board.h"
 #include <avr/io.h>
 #include "util/delay.h"
 #include "onewire.h"
@@ -57,22 +57,22 @@ uint8_t onewire_reset(void) {
 
 void onewire_write_bit(uint8_t bit) {
 	onewire_set(1);
-	_delay_us(10); // 1
+	_delay_us(1); // 1
 	if (bit) {
 		onewire_set(0);
 	}		
-	_delay_us(70);	// 60
+	_delay_us(60);	// 60
 	onewire_set(0);
 }
 
 uint8_t onewire_read_bit(void) {
 	uint8_t bit = 0;
 	onewire_set(1);
-	_delay_us(10); // 1
+	_delay_us(1); // 1
 	onewire_set(0);
 	_delay_us(10); // 10
 	if (ONEWIRE_CHECK_IN) bit = 1;
-	_delay_us(60); // 40
+	_delay_us(40); // 40
 	return bit;
 }
 

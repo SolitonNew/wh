@@ -5,8 +5,9 @@
  *  Author: User
  */ 
 
-#include "globals.h"
+#include "board.h"
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include "util/delay.h"
 #include "core.h"
 #include "control.h"
@@ -14,11 +15,10 @@
 
 #include "lcd.h"
 
-uint8_t controller_id;
 control_btn_states_t control_btn_states = {0, 0, 0, 0};
 	
-uint8_t text[16];
-uint8_t text_len = 0;
+uint8_t roms[80];
+char text[16];
 	
 int main(void)
 {
@@ -26,17 +26,18 @@ int main(void)
 	
 	control_init();
 	core_init();
-
-	lcd_init();
-	lcd_text("START ", 6);
 	
-	variable_t v;
-	text_len = sprintf(text, "%d", devs_get_variable_controller(3));
+	lcd_init();
+	lcd_text("START", 5);
+	
+	uint8_t num = onewire_search(roms);
+	uint8_t text_len = sprintf(text, " %d ", num);
 	lcd_text(text, text_len);
+		
+	sei();
 		
     while(1)
     {	
-		//core_rs485_processing();
 		//core_onewire_alarm_processing();
 		//core_schedule_processing();
 		

@@ -57,6 +57,9 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="board.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="commands.c">
       <SubType>compile</SubType>
     </Compile>
@@ -144,7 +147,7 @@
     <Compile Include="rs485.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="globals.h">
+    <Compile Include="board.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="core.c">
