@@ -11,7 +11,7 @@
             <div class="form-label">@lang('admin/statistics.table_ID')</div>
         </div>
         <div class="col-sm-4">
-            <div class="form-control">{{ $item->ID }}</div>
+            <div class="form-control">{{ $item->id }}</div>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -20,7 +20,7 @@
             <div class="form-label">@lang('admin/statistics.table_CHANGE_DATE')</div>
         </div>
         <div class="col-sm-8">
-            <div class="form-control">{{ $item->CHANGE_DATE }}</div>
+            <div class="form-control">{{ $item->change_date }}</div>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -29,7 +29,7 @@
             <div class="form-label">@lang('admin/statistics.table_VALUE')</div>
         </div>
         <div class="col-sm-4">
-            <div class="form-control">{{ $item->VALUE }}</div>
+            <div class="form-control">{{ $item->value }}</div>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -46,7 +46,7 @@
 <script>
     function statisticsValueDelete() {
         confirmYesNo("@lang('admin/statistics.table-value-delete-confirm')", () => {
-            $.ajax('{{ route("statistics-table-value-delete", $item->ID) }}').done((data) => {
+            $.ajax('{{ route("statistics-table-value-delete", $item->id) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
                         window.location.reload();

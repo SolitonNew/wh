@@ -143,7 +143,7 @@
                 datasets: [{
                     data: [
                     @foreach($data as $row)
-                    {x: '{{ $row->change_date }}', y: {{ $row->VALUE }} },
+                    {x: '{{ $row->change_date }}', y: {{ $row->value }} },
                     @endforeach
                     ],
                     lineTension: 0,
