@@ -15,7 +15,13 @@ class LoginController extends Controller
      * @return type
      */
     protected function redirectTo() {
-        return route('home');
+        switch (Auth::user()->access) {
+            case 1:
+                return route('home');
+            case 2:
+                return route('admin');
+        }
+        return '/';
     }
 
     /**

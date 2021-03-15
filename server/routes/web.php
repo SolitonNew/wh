@@ -36,7 +36,7 @@ Route::group(['middleware'=>'role:rerminal'], function () {
 
 Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     /* Индексный контроллер */
-    Route::get('/', 'Admin\IndexController@index');
+    Route::get('/', 'Admin\IndexController@index')->name('admin');
     Route::get('/variable-changes/{lastID}', 'Admin\IndexController@variableChanges')->name('variable-changes');
     
     /* Раздел "Планирование" помещений */
