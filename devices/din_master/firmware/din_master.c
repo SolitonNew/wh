@@ -10,11 +10,15 @@
 #include "util/delay.h"
 #include "core.h"
 #include "control.h"
+#include "config/devs.h"
 
-//#include "lcd.h"
+#include "lcd.h"
 
 uint8_t controller_id;
 control_btn_states_t control_btn_states = {0, 0, 0, 0};
+	
+uint8_t text[16];
+uint8_t text_len = 0;
 	
 int main(void)
 {
@@ -23,7 +27,12 @@ int main(void)
 	control_init();
 	core_init();
 
-	//lcd_init();
+	lcd_init();
+	lcd_text("START ", 6);
+	
+	variable_t v;
+	text_len = sprintf(text, "%d", devs_get_variable_controller(3));
+	lcd_text(text, text_len);
 		
     while(1)
     {	

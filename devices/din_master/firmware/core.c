@@ -11,6 +11,7 @@
 #include "core.h"
 #include "rs485.h"
 #include "onewire.h"
+#include "din.h"
 #include "config/devs.h"
 #include "config/scripts.h"
 #include "drivers/ds18b20.h"
@@ -18,104 +19,55 @@
 #include "drivers/dht11.h"
 #include "drivers/mq7.h"
 #include "drivers/pc.h"
-#include "drivers/ow4rele.h"
+#include "drivers/fc.h"
 
 
 uint8_t core_onewire_alarm_buff[ONEWIRE_ALARM_LIMIT * 8];
-
-int core_get_variable_index(int id) {
-	for (int i = 0; i < variable_count; i++) {
-		int vid = pgm_read_dword(&variables[i]);
-		if (vid == id) {		
-			return i;
-		}
-	}
-	return -1;
-}
-
-uint8_t core_get_variable_controller(int index) {
-	if ((index < 0) || (index >= variable_count)) return 0;
-	return pgm_read_byte((int)(&variables[index]) + 2);
-}
-
-uint8_t core_get_variable_typ(int index) {
-	if ((index < 0) || (index >= variable_count)) return 0;
-	return pgm_read_byte((int)(&variables[index]) + 3);
-}
-
-uint8_t core_get_variable_direction(int index) {
-	if ((index < 0) || (index >= variable_count)) return 0;
-	return pgm_read_byte((int)(&variables[index]) + 4);
-}
-
-int core_get_variable_ow_index(int index) {
-	if ((index < 0) || (index >= variable_count)) return 0;
-	return pgm_read_dword((int)(&variables[index]) + 5);
-}
-
-uint8_t core_get_variable_channel(int index) {
-	if ((index < 0) || (index >= variable_count)) return 0;
-	return pgm_read_byte((int)(&variables[index]) + 7);
-}
-
-void core_get_variable_rom(int index, uint8_t *rom) {
-	int ow_index = core_get_variable_ow_index(index);
-	if (ow_index > -1) {
-		int ind = (int)&onewire_roms[ow_index * 8];
-		for (uint8_t i = 0; i < 8; i++) {
-			rom[i] = pgm_read_byte(ind++);
-		}
-	} else {
-		rom[0] = 0;
-	}
-}
-
-int core_onewire_rom_index(uint8_t *rom) {
-	int ind = (int)&onewire_roms[0];
-	for (int i = 0; i < onewire_roms_count; i++) {
-		for (int r = 0; r < 8; r++) {
-			uint8_t b = pgm_read_byte(ind + r);
-			if (rom[r] == b) {
-				if (r == 7) {
-					return i;
-				}
-			} else {
-				break;
-			}
-		}
-		ind += 8;
-	}
-	return -1;
-}
-
-uint8_t core_find_variables_by_ow_index(int ow_index, int *vars) {
-	uint8_t num = 0;
-	for (int i = 0; i < variable_count; i++) {
-		if (core_get_variable_ow_index(i) == ow_index) {
-			vars[num++] = i;
-			if (num == 8) break;
-		}
-	}
-	return num;
-}
 
 float core_get_variable_value(int index) {
 	if ((index < 0) || (index >= variable_count)) return 0;
 	return variable_values[index];
 }
 
-void core_set_variable_value(int index, float value) {
+// target: 0-server, 1-devs, 2-script
+void core_set_variable_value(int index, uint8_t target, float value) {
 	if ((index < 0) || (index >= variable_count)) return ;
+	if (variable_values[index] == value) return ;
+	
 	variable_values[index] = value;
 	
-	// Если переменная нашего контроллера мы должны попытаться 
-	// выполнить скрипт, если он назначен для переменной
-	if (core_get_variable_controller(index) == controller_id) {
+	variable_t variable;
+	devs_get_varible(index, &variable);
+	
+	if (variable.controller_id == controller_id) { // Это переменная этого контроллера
+		// Выполняем пересылку новых состояний для devs
+		switch(variable.typ) {
+			case 0: // din
+				din_set_value(variable.channel, value);
+				break;
+			case 1: // ow
+				core_transmit_ow_values(variable.ow_index);
+				break;
+			case 2: // variable;
+				// not records
+				break;
+		}
+		
+		// Пишем в лог изменений для отправки на сервер
+		switch (target) {
+			case 1: // devs
+			case 2: // script
+				
+				break;
+		}
+		
+		// Запрашиваем выполнение скрпита по событию изменения
 		script_run_event_for_variable(index);
 	}	
 }
 
 void core_init(void) {
+	din_init();
 	rs485_init();
 	onewire_init();
 }
@@ -129,103 +81,191 @@ void core_rs485_processing(void) {
 
 void core_onewire_alarm_processing(void) {
 	// Обработка alarm событий на шине OW
-	// с дальнейшей реакцией по модификации переменных
+		
+	uint8_t alarm_num = onewire_alarms(core_onewire_alarm_buff);
+	if (alarm_num) {
+		uint8_t* ind = (uint8_t*)&core_onewire_alarm_buff[0];
+		for (uint8_t i = 0; i < alarm_num; i++) {
+			core_request_ow_values(ind);
+			ind += 8;
+		}
+	}
+}
+
+// Собирает данные всех переменных с ow_index и отправляет в устройство
+void core_transmit_ow_values(int ow_index) {
+	variable_t variable;
+	fc_data_t fc_data;
 	
-	int ow_index;
+	uint8_t rom[8];
+	devs_get_ow_rom(ow_index, rom);
 	int vars[8];
-	uint8_t vars_count;
+	uint8_t vars_num = devs_find_variables_by_ow_index(ow_index, vars);
+	
+	switch (rom[0]) {
+		case 0x28: // ds18b20
+			// readonly
+			break;
+		case 0xf0: // hs
+			// readonly
+			break;
+		case 0xf1: // fc			
+			for (uint8_t i = 0; i < vars_num; i++) {
+				if (devs_get_varible(vars[i], &variable)) {
+					switch (variable.channel) {
+						case 0: // f1
+							fc_data.f1 = core_get_variable_value(vars[i]);
+							break;
+						case 1: // f2
+							fc_data.f2 = core_get_variable_value(vars[i]);
+							break;
+						case 2: // f3
+							fc_data.f3 = core_get_variable_value(vars[i]);
+							break;
+						case 3: // f4
+							fc_data.f4 = core_get_variable_value(vars[i]);
+							break;
+						default: ;
+					}
+				}
+			}
+			fc_set_data(rom, &fc_data);
+			break;
+		case 0xf2: // pc
+			// readonly
+			break;
+		case 0xf3: // dht11
+			// readonly
+			break;
+		case 0xf4: // mq7
+			// readonly
+			break;
+		case 0xf5: // ampermetr
+			// readonly
+			break;
+	}	
+}
+
+// Запрашивает данные каналов устройства по ow_index и применяет их в контроллере
+void core_request_ow_values(uint8_t *rom) {
+	variable_t variable;
 	ds18b20_data_t ds18b20_data;
 	hs_data_t hs_data;
+	fc_data_t fc_data;
 	dht11_data_t dht11_data;
 	mq7_data_t mq7_data;
 	pc_data_t pc_data;
 	
-	uint8_t num = onewire_alarms(core_onewire_alarm_buff);
-	if (num) {
-		int rom_ind = 0;
-		for (uint8_t i = 0; i < num; i++) {
-			ow_index = core_onewire_rom_index(&core_onewire_alarm_buff[rom_ind]);
-			if (ow_index > -1) {
-				vars_count = core_find_variables_by_ow_index(ow_index, vars);
-			} else {
-				vars_count = 0;
+	int ow_index = devs_onewire_rom_index(rom);
+	int vars[8];
+	uint8_t vars_num = devs_find_variables_by_ow_index(ow_index, vars);
+	
+	switch (rom[0]) {
+		case 0x28: // ds18b20
+			ds18b20_get_data(rom, &ds18b20_data);
+			for (uint8_t i = 0; i < vars_num; i++) {
+				if (devs_get_varible(vars[i], &variable)) {
+					switch (variable.channel) {
+						case 0: // temp
+							core_set_variable_value(vars[i], 1, ds18b20_data.temp);
+							break;
+						default: ;
+					}
+				}
 			}
-			switch (core_onewire_alarm_buff[rom_ind]) {
-				case 0x28: // ds18b20
-					if (ds18b20_get_data(&core_onewire_alarm_buff[rom_ind], &ds18b20_data)) {
-						for (uint8_t n = 0; n < vars_count; n++) {
-							if (core_get_variable_controller(vars[n]) == controller_id) continue;
-							core_set_variable_value(vars[n], ds18b20_data.temp);
-						}
+			break;
+		case 0xf0: // hs
+			hs_get_data(rom, &hs_data);
+			for (uint8_t i = 0; i < vars_num; i++) {
+				if (devs_get_varible(vars[i], &variable)) {
+					switch (variable.channel) {
+						case 0: // left
+							core_set_variable_value(vars[i], 1, hs_data.left);
+							break;
+						case 1: // right
+							core_set_variable_value(vars[i], 1, hs_data.right);
+							break;
+						default: ;
 					}
-					break;
-				case 0xf0: // hs
-					if (hs_get_data(&core_onewire_alarm_buff[rom_ind], &hs_data)) {
-						for (uint8_t n = 0; n < vars_count; n++) {
-							if (core_get_variable_controller(vars[n]) != controller_id) continue; 
-							switch (core_get_variable_channel(vars[n])) {
-								case 0:
-									core_set_variable_value(vars[n], hs_data.left);
-									break;
-								case 1:
-									core_set_variable_value(vars[n], hs_data.right);
-									break;
-							}
-						}
-					}
-					break;
-				case 0xf1: // ow_4_rele
-					// not record
-					break;
-				case 0xf2: // pc (pin control)
-					if (pc_get_data(&core_onewire_alarm_buff[rom_ind], &pc_data)) {
-						for (uint8_t n = 0; n < vars_count; n++) {
-							if (core_get_variable_controller(vars[n]) != controller_id) continue; 
-							switch (core_get_variable_channel(vars[n])) {
-								case 0:
-									core_set_variable_value(vars[n], pc_data.p1);
-									break;
-								case 1:
-									core_set_variable_value(vars[n], pc_data.p2);
-									break;
-								case 2:
-									core_set_variable_value(vars[n], pc_data.p3);
-									break;
-								case 3:
-									core_set_variable_value(vars[n], pc_data.p4);
-									break;
-							}
-						}
-					}					
-					break;
-				case 0xf3: // dht11
-					if (dht11_get_data(&core_onewire_alarm_buff[rom_ind], &dht11_data)) {
-						for (uint8_t n = 0; n < vars_count; n++) {
-							if (core_get_variable_controller(vars[n]) != controller_id) continue; 
-							switch (core_get_variable_channel(vars[n])) {
-								case 0:
-									core_set_variable_value(vars[n], dht11_data.h);
-									break;
-								case 1:
-									core_set_variable_value(vars[n], dht11_data.t);
-									break;
-							}
-						}
-					}
-					break;
-				case 0xf4: // mq7
-					if (mq7_get_data(&core_onewire_alarm_buff[rom_ind], &mq7_data)) {
-						for (uint8_t n = 0; n < vars_count; n++) {
-							if (core_get_variable_controller(vars[n]) == controller_id) continue;
-							core_set_variable_value(vars[n], mq7_data.co);
-						}
-					}
-					break;
-				case 0xf5: // ampermetr
-					break;
+				}
 			}
-			rom_ind += 8;
-		}
+			break;
+		case 0xf1: // fc
+			fc_get_data(rom, &fc_data);
+			for (uint8_t i = 0; i < vars_num; i++) {
+				if (devs_get_varible(vars[i], &variable)) {
+					switch (variable.channel) {
+						case 0: // f1
+							core_set_variable_value(vars[i], 1, fc_data.f1);
+							break;
+						case 1: // f2
+							core_set_variable_value(vars[i], 1, fc_data.f2);
+							break;
+						case 2: // f3
+							core_set_variable_value(vars[i], 1, fc_data.f3);
+							break;
+						case 3: // f4
+							core_set_variable_value(vars[i], 1, fc_data.f4);
+							break;
+						default: ;
+					}
+				}
+			}
+			break;
+		case 0xf2: // pc
+			pc_get_data(rom, &pc_data);
+			for (uint8_t i = 0; i < vars_num; i++) {
+				if (devs_get_varible(vars[i], &variable)) {
+					switch (variable.channel) {
+						case 0: // p1
+							core_set_variable_value(vars[i], 1, pc_data.p1);
+							break;
+						case 1: // p2
+							core_set_variable_value(vars[i], 1, pc_data.p2);
+							break;
+						case 2: // p3
+							core_set_variable_value(vars[i], 1, pc_data.p3);
+							break;
+						case 3: // p4
+							core_set_variable_value(vars[i], 1, pc_data.p4);
+							break;
+						default: ;
+					}
+				}
+			}
+			break;
+		case 0xf3: // dht11
+			dht11_get_data(rom, &dht11_data);
+			for (uint8_t i = 0; i < vars_num; i++) {
+				if (devs_get_varible(vars[i], &variable)) {
+					switch (variable.channel) {
+						case 0: // p1
+							core_set_variable_value(vars[i], 1, dht11_data.h);
+							break;
+						case 1: // p2
+							core_set_variable_value(vars[i], 1, dht11_data.t);
+							break;
+						default: ;
+					}
+				}
+			}
+			break;
+		case 0xf4: // mq7
+			mq7_get_data(rom, &mq7_data);
+			for (uint8_t i = 0; i < vars_num; i++) {
+				if (devs_get_varible(vars[i], &variable)) {
+					switch (variable.channel) {
+						case 0: // p1
+							core_set_variable_value(vars[i], 1, mq7_data.co);
+							break;
+						default: ;
+					}
+				}
+			}
+			break;
+		case 0xf5: // ampermetr
+			
+			break;
 	}
 }
 

@@ -75,6 +75,12 @@
     <Compile Include="config\scripts.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="din.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="din.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="din_master.c">
       <SubType>compile</SubType>
     </Compile>
@@ -102,10 +108,10 @@
     <Compile Include="drivers\mq7.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\ow4rele.c">
+    <Compile Include="drivers\fc.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="drivers\ow4rele.h">
+    <Compile Include="drivers\fc.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\pc.c">
