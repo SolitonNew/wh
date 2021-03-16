@@ -10,21 +10,71 @@
 #define RS485_BUFF_MAX_SIZE 128
 
 /*
-	INIT
-	uint8_t sign[4]
-	uint8_t count
-	
-	SYNC
-	uint8_t sign[4]
-	uint8_t count
- 		int     id      2
-		float   value   8
-	uint8_t crc         1
-
-	6 + (10) * count
+    Пакет команды. Может быть отправлен в обе стороны.
+    
+    sign: "CMD"
+    controller_id: ИД контроллера с которым выполняется обмен.
+                   Другие контролеры видя пакеты с чужим ИД игнорируют их.
+    cmd: 1 - reset                 перезагрузка контроллера
+         2 - match receive         контроллеру приготовиться получать данные VAR (кол-во в поле tag) 
+                                   (если не инициализирован то игнорирует данные)
+         3 - match transmit        контроллеру приготовиться отдавать данные VAR
+         2 - pack transmit count   пакет передается сразу после transmit уже контроллером (кол-во записей 
+                                   передачи в поле tag)
+         4 - pack transmit init    может отдать контроллер после transmit если не инициализирован (запрос 
+                                   инициализации)
+         5 - mach receive init     контроллер должен приготовиться пакеты инициализации (кол-во в поле tag)
+         6 - match ow scan         пакет запроса к контроллеру, что бы он просканировал свою сеть (по 
+                                   готовности отдает пакет pack transmit count и дальше пакеты ROM).
+    tag: Некое число, которое может быть передано в пакете (в зависимости от ситуации)
+    crc: Контрольная сума с алгоритмом аналогичным onewire.
 */
+typedef struct _rs485_cmd_pack {
+    uint8_t sign[3];  // CMD
+    uint8_t controller_id;
+    uint8_t cmd;
+    int tag;
+    uint8_t crc;
+} rs485_cmd_pack_t;
+
+/*
+    Пакет передачи значения ОДНОЙ переменной.
+    
+    sign: "VAR"
+    controller_id: ИД контроллера с которым выполняется обмен.
+                   Другие контролеры видя пакеты с чужим ИД игнорируют его.
+    id: ИД переменной
+    value: значение переменной
+    crc: Контрольная сума с алгоритмом аналогичным onewire.
+*/
+typedef struct _rs485_var_pack {
+    uint8_t sign[3];  // VAR
+    uint8_t controller_id;
+    int id;
+    float value;
+    uint8_t crc;
+} rs485_var_pack_t;
+
+/*
+    Пакет передачи ОДНОЙ записи ROM
+    
+    sign: ROM
+    controller_id: ИД контроллера с которым выполняется обмен.
+                   Другие контролеры видя пакеты с чужим ИД игнорируют его.
+    rom: ROM
+    crc: Контрольная сума с алгоритмом аналогичным onewire.
+*/
+typedef struct _rs485_ow_rom_pack {
+    uint8_t sign[3]; // ROM
+    uint8_t controller_id;
+    uint8_t rom[8];
+    uint8_t crc;
+} rs485_ow_rom_pack_t;
 
 extern uint8_t rs485_in_buff[];
 extern uint8_t rs485_in_buff_size;
 
 void rs485_init(void);
+void rs485_transmit_CMD(uint8_t cmd, int tag);
+void rs485_transmit_VAR(int id, float value);
+void rs485_transmit_ROM(uint8_t *rom);

@@ -13,7 +13,7 @@
 #include "control.h"
 #include "config/devs.h"
 
-#include "lcd.h"
+//#include "lcd.h"
 
 control_btn_states_t control_btn_states = {0, 0, 0, 0};
 	
@@ -27,17 +27,12 @@ int main(void)
 	control_init();
 	core_init();
 	
-	lcd_init();
-	lcd_text("START", 5);
-	
-	uint8_t num = onewire_search(roms);
-	uint8_t text_len = sprintf(text, " %d ", num);
-	lcd_text(text, text_len);
-		
+	//lcd_init();
+	//lcd_text("START", 5);
+			
 	sei();
 		
-    while(1)
-    {	
+    while(1) {
 		//core_onewire_alarm_processing();
 		//core_schedule_processing();
 		
