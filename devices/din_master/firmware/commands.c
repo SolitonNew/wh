@@ -12,7 +12,7 @@ float command_get(int index) {
 }
 
 void command_set(int index, float value, ...) {
-	core_set_variable_value(index, 2, value);
+	core_set_variable_value(index, 3, value);
 }
 
 void command_toggle(int index) {

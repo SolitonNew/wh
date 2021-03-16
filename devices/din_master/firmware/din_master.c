@@ -8,16 +8,13 @@
 #include "board.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "util/delay.h"
+#include <util/delay.h>
 #include "core.h"
 #include "control.h"
-#include "config/devs.h"
-
-//#include "lcd.h"
+#include "rs485.h"
+#include "lcd.h"
 
 control_btn_states_t control_btn_states = {0, 0, 0, 0};
-	
-uint8_t roms[80];
 char text[16];
 	
 int main(void)
@@ -26,15 +23,18 @@ int main(void)
 	
 	control_init();
 	core_init();
-	
-	//lcd_init();
-	//lcd_text("START", 5);
-			
+    lcd_init();
+				
 	sei();
 		
-    while(1) {
-		//core_onewire_alarm_processing();
-		//core_schedule_processing();
+    while (1) {
+        lcd_clear();
+        uint8_t num = sprintf(text, "P:%d  E:%d", rs485_packs, rs485_errors);
+        lcd_move(2, 3);
+        lcd_text(text, num);
+        
+		core_onewire_alarm_processing();
+		core_schedule_processing();
 		
 		// Обработка кнопок управления
 		control_check_btn(&control_btn_states);

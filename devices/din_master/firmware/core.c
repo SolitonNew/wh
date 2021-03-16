@@ -29,7 +29,7 @@ float core_get_variable_value(int index) {
 	return variable_values[index];
 }
 
-// target: 0-server, 1-devs, 2-script
+// target: 0-server init, 1-server, 2-devs, 3-script
 void core_set_variable_value(int index, uint8_t target, float value) {
 	if ((index < 0) || (index >= variable_count)) return ;
 	if (variable_values[index] == value) return ;
@@ -55,8 +55,11 @@ void core_set_variable_value(int index, uint8_t target, float value) {
 		
 		// Пишем в лог изменений для отправки на сервер
 		switch (target) {
-			case 1: // devs
-			case 2: // script
+            case 0: // script init
+                break;
+            case 1: // server
+			case 2: // devs
+			case 3: // script
 				
 				break;
 		}
@@ -167,7 +170,7 @@ void core_request_ow_values(uint8_t *rom) {
 				if (devs_get_varible(vars[i], &variable)) {
 					switch (variable.channel) {
 						case 0: // temp
-							core_set_variable_value(vars[i], 1, ds18b20_data.temp);
+							core_set_variable_value(vars[i], 2, ds18b20_data.temp);
 							break;
 						default: ;
 					}
@@ -180,10 +183,10 @@ void core_request_ow_values(uint8_t *rom) {
 				if (devs_get_varible(vars[i], &variable)) {
 					switch (variable.channel) {
 						case 0: // left
-							core_set_variable_value(vars[i], 1, hs_data.left);
+							core_set_variable_value(vars[i], 2, hs_data.left);
 							break;
 						case 1: // right
-							core_set_variable_value(vars[i], 1, hs_data.right);
+							core_set_variable_value(vars[i], 2, hs_data.right);
 							break;
 						default: ;
 					}
@@ -196,16 +199,16 @@ void core_request_ow_values(uint8_t *rom) {
 				if (devs_get_varible(vars[i], &variable)) {
 					switch (variable.channel) {
 						case 0: // f1
-							core_set_variable_value(vars[i], 1, fc_data.f1);
+							core_set_variable_value(vars[i], 2, fc_data.f1);
 							break;
 						case 1: // f2
-							core_set_variable_value(vars[i], 1, fc_data.f2);
+							core_set_variable_value(vars[i], 2, fc_data.f2);
 							break;
 						case 2: // f3
-							core_set_variable_value(vars[i], 1, fc_data.f3);
+							core_set_variable_value(vars[i], 2, fc_data.f3);
 							break;
 						case 3: // f4
-							core_set_variable_value(vars[i], 1, fc_data.f4);
+							core_set_variable_value(vars[i], 2, fc_data.f4);
 							break;
 						default: ;
 					}
@@ -218,16 +221,16 @@ void core_request_ow_values(uint8_t *rom) {
 				if (devs_get_varible(vars[i], &variable)) {
 					switch (variable.channel) {
 						case 0: // p1
-							core_set_variable_value(vars[i], 1, pc_data.p1);
+							core_set_variable_value(vars[i], 2, pc_data.p1);
 							break;
 						case 1: // p2
-							core_set_variable_value(vars[i], 1, pc_data.p2);
+							core_set_variable_value(vars[i], 2, pc_data.p2);
 							break;
 						case 2: // p3
-							core_set_variable_value(vars[i], 1, pc_data.p3);
+							core_set_variable_value(vars[i], 2, pc_data.p3);
 							break;
 						case 3: // p4
-							core_set_variable_value(vars[i], 1, pc_data.p4);
+							core_set_variable_value(vars[i], 2, pc_data.p4);
 							break;
 						default: ;
 					}
@@ -240,10 +243,10 @@ void core_request_ow_values(uint8_t *rom) {
 				if (devs_get_varible(vars[i], &variable)) {
 					switch (variable.channel) {
 						case 0: // p1
-							core_set_variable_value(vars[i], 1, dht11_data.h);
+							core_set_variable_value(vars[i], 2, dht11_data.h);
 							break;
 						case 1: // p2
-							core_set_variable_value(vars[i], 1, dht11_data.t);
+							core_set_variable_value(vars[i], 2, dht11_data.t);
 							break;
 						default: ;
 					}
@@ -256,7 +259,7 @@ void core_request_ow_values(uint8_t *rom) {
 				if (devs_get_varible(vars[i], &variable)) {
 					switch (variable.channel) {
 						case 0: // p1
-							core_set_variable_value(vars[i], 1, mq7_data.co);
+							core_set_variable_value(vars[i], 2, mq7_data.co);
 							break;
 						default: ;
 					}
