@@ -28,9 +28,12 @@ class CommandDemon extends BaseDemon {
         
         $lastProcessedID = -1;
 
+        $this->printLine('');
+        $this->printLine('');
         $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/demons.command-demon-title'));
         $this->printLine(str_repeat('-', 100));
+        $this->printLine('');
         
         while(1) {
             $sql = "select *

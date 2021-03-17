@@ -10,6 +10,7 @@ namespace App\Library\Demons;
 
 use DB;
 use Lang;
+use Log;
 
 /**
  * Description of CommandDemon
@@ -28,8 +29,12 @@ class RS485Demon extends BaseDemon {
 
         $this->printLine('');
         $this->printLine('');
-        $this->printLine('');
+        $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/demons.rs485-demon-title'));
+        $this->printLine('--    PORT: '.config('firmware.rs485_port')); 
+        $this->printLine('--    BAUD: '.config('firmware.rs485_baud')); 
+        $this->printLine(str_repeat('-', 100));
+        $this->printLine('');
         
         $controllers = \App\Http\Models\ControllersModel::where('id', '<', 100)
                             ->orderBy('name', 'asc')
@@ -37,32 +42,39 @@ class RS485Demon extends BaseDemon {
         
         if (count($controllers) == 0) return;
         
-        while(1) {
-            foreach($controllers as $controller) {
-                $vars_out = [now()->timestamp];
-                $vars_in = [];
-                
-                if (random_int(0, 10) > 8) {
-                    $vars_out[] = 'VARIABLE OUT';
+        try {            
+            exec('stty -F '.config('firmware.rs485_port').' '.config('firmware.rs485_baud').' cs8 cstopb');
+            $port = fopen(config('firmware.rs485_port'), 'r+b');
+            while (1) {
+                foreach($controllers as $controller) {
+                    if ($controller->is_server) continue;
+                    $contr = $controller->name;
+                    
+                    $vars_out_str = [];
+                    $vars_in_str = [];
+                    
+                    try {
+                        fwrite($port, 0x30);
+                        
+                        $stat = 'OK';
+                        $s = "[".now()."] SYNC. '$contr': $stat\n";
+                        $s .= "   >>   [".implode(', ', $vars_out_str)."]\n";
+                        $s .= "   <<   [".implode(', ', $vars_in_str)."]\n";
+                    } catch (\Exception $ex) {
+                        $s = "[".now()."] SYNC. '$contr': ERROR\n";
+                        $s .= $ex->getMessage();
+                    }
+                                    
+                    $this->printLine($s); 
+                    
+                    usleep(100000);
                 }
-                
-                if (random_int(0, 10) > 8) {
-                    $vars_in[] = 'VARIABLE IN';
-                }                
-                
-                $date = now()->format('H:i:s');
-                $contr = $controller->name;
-                $stat = 'OK';
-                $vars_out_str = '['.implode(', ', $vars_out).']';
-                $vars_in_str = '['.implode(', ', $vars_in).']';
-                
-                $s = "[$date] SYNC. '$contr': $stat\n";
-                $s .= "   >>   $vars_out_str\n";
-                $s .= "   <<   $vars_in_str\n";                
-                $this->printLine($s);
-                
-                usleep(100000);
             }
+        } catch (\Exception $ex) {
+            $s = "[".now()."] ERROR\n";
+            $s .= $ex->getMessage();
+            $this->printLine($s); 
         }
+        fclose($port);
     }
 }
