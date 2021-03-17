@@ -12,8 +12,13 @@
 #include "rs485.h"
 #include "lcd.h"
 
+uint16_t rs485_errors = 0;
+uint16_t rs485_packs = 0;
+
 uint8_t rs485_in_buff[RS485_BUFF_MAX_SIZE];
 uint8_t rs485_in_buff_size = 0;
+uint8_t rs485_is_online = 0;
+uint16_t rs485_recieve_count = 0;
 
 void rs485_init(void) {
 	unsigned int ubrr = RS485_UBRR;
@@ -29,21 +34,203 @@ void rs485_init(void) {
 	UCSRC = (1<<URSEL) | (1<<UCSZ0) | (1<<UCSZ1) | (1<<USBS);
 }
 
-void rs485_sync(void) {
-	
+uint8_t rs485_crc_table(uint8_t data) {
+	uint8_t crc = 0x0;
+	uint8_t fb_bit = 0;
+	for (uint8_t b = 0; b < 8; b++) { 
+		fb_bit = (crc ^ data) & 0x01;
+		if (fb_bit == 0x01)
+			crc = crc ^ 0x18;
+		crc = (crc >> 1) & 0x7F;
+		if (fb_bit == 0x01) 
+			crc = crc | 0x80;
+		data >>= 1;
+	}
+	return crc;
 }
 
-void rs485_send(uint8_t c) {
+void rs485_write_byte(uint8_t c) {
     while (!(UCSRA & (1<<UDRE))) ;
     UDR = c;
 }
 
+void rs485_transmit_CMD(uint8_t cmd, int tag) {
+    rs485_cmd_pack_t pack;
+    memcpy(pack.sign, "CMD", 3);
+    pack.controller_id = controller_id;
+    pack.cmd = cmd;
+    pack.tag = tag;
+    uint8_t *ind = &pack;
+	uint8_t crc = 0;
+	for (uint8_t i = 0; i < sizeof(pack) - 1; i++) {
+        uint8_t b = *ind++;
+		crc = rs485_crc_table(crc ^ b);
+        rs485_write_byte(b);
+	}
+    rs485_write_byte(crc);
+}
+
+void rs485_transmit_VAR(int id, float value) {
+    rs485_var_pack_t pack;
+    memcpy(pack.sign, "VAR", 3);
+    pack.controller_id = controller_id;
+    pack.id = id;
+    pack.value = value;
+    uint8_t *ind = &pack;
+	uint8_t crc = 0;
+	for (uint8_t i = 0; i < sizeof(pack) - 1; i++) {
+        uint8_t b = *ind++;
+		crc = rs485_crc_table(crc ^ b);
+        rs485_write_byte(b);
+	}
+    rs485_write_byte(crc);
+}
+
+void rs485_transmit_ROM(uint8_t *rom) {
+    rs485_ow_rom_pack_t pack;
+    memcpy(pack.sign, "ROM", 3);
+    pack.controller_id = controller_id;
+    memcpy(pack.rom, rom, 8);
+    uint8_t *ind = &pack;
+	uint8_t crc = 0;
+	for (uint8_t i = 0; i < sizeof(pack) - 1; i++) {
+        uint8_t b = *ind++;
+		crc = rs485_crc_table(crc ^ b);
+        rs485_write_byte(b);
+	}
+    rs485_write_byte(crc);
+}
+
+uint8_t memeql(uint8_t *a1, uint8_t *a2, uint8_t len) {
+    for (uint8_t i = 0; i < len; i++) {
+        if ((*a1++) != (*a2++)) return 0;
+    }
+    return 1;
+}
+
 ISR(USART__RXC_vect) {
-	if (rs485_in_buff_size > RS485_BUFF_MAX_SIZE - 2) {
+	// Накапливаем входящий буфер
+	if (rs485_in_buff_size >= RS485_BUFF_MAX_SIZE - 1) {
 		rs485_in_buff_size = 0;
 		board_rs485_error();
 	}
 	rs485_in_buff[rs485_in_buff_size++] = UDR;
 	
-	
+    start_unpack:;    
+    if (rs485_in_buff_size < RS485_BUFF_MIN_SIZE) return ;
+    
+    // достигли минимального объема для возможной обработки
+    uint8_t size = 0;
+    if (memeql(rs485_in_buff, "CMD", 3)) {
+        rs485_cmd_pack_t pack;
+        size = sizeof(pack);
+        uint8_t *ind = &pack;
+	    uint8_t crc = 0;
+	    for (uint8_t i = 0; i < size; i++) {
+		    crc = rs485_crc_table(crc ^ rs485_in_buff[i]);
+            (*ind++) = rs485_in_buff[i];
+	    }
+        if (crc == 0) { // Все нормально - обрабатываем
+            if (pack.controller_id == controller_id) { // это наши данные
+                switch (pack.cmd) {
+                    case 1: // reset
+                        board_reset();
+                        break;
+                    case 2: // match receive
+                        rs485_is_online = 2;
+                        rs485_recieve_count = pack.tag;
+                        break;
+                    case 3: // match transmit
+                        rs485_is_online = 3;
+                        if (!controller_initialized) {
+                            rs485_transmit_CMD(5, 0);
+                        }
+                        break;
+                    case 4: // pack transmit count
+                        
+                        break;
+                    case 5: // pack transmit init
+                        rs485_is_online = 5;
+                        break;
+                    case 6: // match receive init
+                        rs485_is_online = 6;
+                        rs485_recieve_count = pack.tag;
+                        break;
+                    case 7: // match ow scan
+                        rs485_is_online = 7;
+                        break;
+                }
+            } else {
+                rs485_is_online = 0;
+            }
+        } else {
+            size = 0; // Отправляем неявно данные на дообработку
+        }
+    } else
+    if (memeql(rs485_in_buff, "VAR", 3)) {
+        rs485_var_pack_t pack;
+        size = sizeof(pack);
+        uint8_t *ind = &pack;
+	    uint8_t crc = 0;
+	    for (uint8_t i = 0; i < size; i++) {
+		    crc = rs485_crc_table(crc ^ rs485_in_buff[i]);
+            (*ind++) = rs485_in_buff[i];
+	    }
+        if (crc == 0) { // Все нормально - обрабатываем
+            if (pack.controller_id == controller_id) { // это наши данные
+                rs485_recieve_count--;
+                
+                if (rs485_is_online == 6) {
+                    core_set_variable_value(devs_get_variable_index(pack.id), 0, pack.value);
+                } else {
+                    core_set_variable_value(devs_get_variable_index(pack.id), 1, pack.value);
+                }                
+            } else {
+                rs485_is_online = 0;
+            }
+        } else {
+            size = 0; // Отправляем неявно данные на дообработку
+        }
+    } else
+    if (memeql(rs485_in_buff, "ROM", 3)) {  // обрабатываем этот пакет только ради очереди. Таких данных на вход не бывает.
+        rs485_ow_rom_pack_t pack;
+        size = sizeof(pack);
+        uint8_t *ind = &pack;
+	    uint8_t crc = 0;
+	    for (uint8_t i = 0; i < size; i++) {
+		    crc = rs485_crc_table(crc ^ rs485_in_buff[i]);
+            (*ind++) = rs485_in_buff[i];
+	    }
+        if (crc == 0) { // Все нормально - обрабатываем
+            if (pack.controller_id == controller_id) { // это наши данные
+                // not records   
+            } else {
+                rs485_is_online = 0;
+            }
+        } else {
+            size = 0; // Отправляем неявно данные на дообработку
+        }
+    }
+    
+    if (size == 0) { // очевидно с данными проблема
+        rs485_errors++;
+        // сдвигаем на один байт и повторяем попытку
+        for (uint8_t i = 0; i < rs485_in_buff_size - 1; i++) {
+            rs485_in_buff[i] = rs485_in_buff[i + 1];
+        }
+        rs485_in_buff_size--;
+        goto start_unpack;
+    }
+    
+    rs485_packs++;
+    
+    if (size == rs485_in_buff_size) { // самый простой вариант - просто обнуляем буфер
+        rs485_in_buff_size = 0;
+    } else { // сложнее - сдвигаем на size к началу и повторяем операцию
+        for (uint8_t i = 0; i < rs485_in_buff_size - size; i++) {
+            rs485_in_buff[i] = rs485_in_buff[i + size];
+        }
+        rs485_in_buff_size -= size;
+        goto start_unpack;        
+    }
 }

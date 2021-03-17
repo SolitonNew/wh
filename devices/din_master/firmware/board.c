@@ -10,6 +10,7 @@
 #include "control.h"
 
 uint8_t controller_id;
+uint8_t controller_initialized = 0;
 
 void board_reset(void) {
 	WDTCR |= 1<<WDE;
