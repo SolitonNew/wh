@@ -24,6 +24,8 @@ class RS485Demon extends BaseDemon {
      */
     private $_port;
     
+    private $_controllers;
+    
     /**
      * 
      */
@@ -41,50 +43,77 @@ class RS485Demon extends BaseDemon {
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
-        $controllers = \App\Http\Models\ControllersModel::where('id', '<', 100)
-                            ->orderBy('name', 'asc')
-                            ->get();
+        $this->_controllers = \App\Http\Models\ControllersModel::where('id', '<', 100)
+                                ->orderBy('name', 'asc')
+                                ->get();
         
-        if (count($controllers) == 0) return;
+        if (count($this->_controllers) == 0) return;
         
         try {            
             exec('stty -F '.config('firmware.rs485_port').' '.config('firmware.rs485_baud').' cs8 cstopb');
             $this->_port = fopen(config('firmware.rs485_port'), 'r+b');
             
             while (1) {
-                foreach($controllers as $controller) {
-                    if ($controller->is_server) continue;
-                    $contr = $controller->name;
-                    
-                    $this->_transmitCMD($controller->id, 2, 100);
-                    
-                    $this->_transmitCMD($controller->id, 3, 100);
-                    
-                    $vars_out_str = [];
-                    $vars_in_str = [];
-                    
-                    try {
-                        //$this->_transmitCMD(2, 100);
-                        
-                        $stat = 'OK';
-                        $s = "[".now()."] SYNC. '$contr': $stat\n";
-                        $s .= "   >>   [".implode(', ', $vars_out_str)."]\n";
-                        $s .= "   <<   [".implode(', ', $vars_in_str)."]\n";
-                    } catch (\Exception $ex) {
-                        $s = "[".now()."] SYNC. '$contr': ERROR\n";
-                        $s .= $ex->getMessage();
-                    }
-                                    
-                    $this->printLine($s); 
-                    
-                    usleep(100000);
-                }
+                // Читаем очередь команд
+                $this->_checkCommands();
+                
+                // Выполняем синхронизацию переменных
+                $this->_sync();
             }
             fclose($this->_port);
         } catch (\Exception $ex) {
             $s = "[".now()."] ERROR\n";
             $s .= $ex->getMessage();
             $this->printLine($s); 
+        }
+    }
+    
+    /**
+     *  Обработка очереди команд к демону
+     */
+    private function _checkCommands() {
+        $command = \App\Http\Models\PropertysModel::getRs485Command(true);
+        if (!$command) return ;
+        
+        foreach($this->_controllers as $controller) {
+            if ($controller->is_server) continue;
+            
+            switch ($command) {
+                case 'RESET':                   
+                    $this->_transmitCMD($controller->rom, 1, 0);
+                    break;
+            }
+        }
+    }
+    
+    /**
+     *  Обработка синхронизации данных системы
+     */
+    private function _sync() {
+        foreach($this->_controllers as $controller) {
+            if ($controller->is_server) continue;
+            $contr = $controller->name;
+
+            $this->_transmitCMD($controller->rom, 2, 100);
+
+            $this->_transmitCMD($controller->rom, 3, 100);
+
+            $vars_out_str = [];
+            $vars_in_str = [];
+
+            try {
+                $stat = 'OK';
+                $s = "[".now()."] SYNC. '$contr': $stat\n";
+                $s .= "   >>   [".implode(', ', $vars_out_str)."]\n";
+                $s .= "   <<   [".implode(', ', $vars_in_str)."]\n";
+            } catch (\Exception $ex) {
+                $s = "[".now()."] SYNC. '$contr': ERROR\n";
+                $s .= $ex->getMessage();
+            }
+
+            $this->printLine($s); 
+
+            usleep(100000);
         }
     }
     
@@ -116,16 +145,16 @@ class RS485Demon extends BaseDemon {
      * @param type $cmd
      * @param type $tag
      */
-    private function _transmitCMD($controllerId, $cmd, $tag) {
+    private function _transmitCMD($controllerROM, $cmd, $tag) {
         $pack = pack('a*', 'CMD');
-        $pack .= pack('C', $controllerId);
+        $pack .= pack('C', $controllerROM);
         $pack .= pack('C', $cmd);
         $pack .= pack('s', $tag);        
 	$crc = 0x0;
 	for ($i = 0; $i < strlen($pack); $i++) {
             $crc = $this->_crc_table($crc ^ ord($pack[$i]));
-	}   
-        $pack .= pack('C', $crc);        
+	}
+        $pack .= pack('C', $crc);
         fwrite($this->_port, $pack);
     }
     
@@ -134,15 +163,15 @@ class RS485Demon extends BaseDemon {
      * @param type $id
      * @param type $value
      */
-    private function _transmitVAR($controllerId, $id, $value) {
+    private function _transmitVAR($controllerROM, $id, $value) {
         $pack = pack('a*', 'VAR');
-        $pack .= pack('C', $controllerId);
+        $pack .= pack('C', $controllerROM);
         $pack .= pack('s', $id);
         $pack .= pack('f', $value);
 	$crc = 0x0;
 	for ($i = 0; $i < strlen($pack); $i++) {
             $crc = $this->_crc_table($crc ^ ord($pack[$i]));
-	}   
+	}
         $pack .= pack('C', $crc);
         fwrite($this->_port, $pack);
     }
