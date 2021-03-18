@@ -8,4 +8,7 @@
 
 return [
     'mmcu' => env('MMCU', 'atmega8a'),
+    
+    'rs485_port' => env('RS485_PORT', '/dev/ttyUSB0'),
+    'rs485_baud' => env('RS485_BAUD', 9600),
 ];

@@ -9,6 +9,8 @@
 <a href="#" class="dropdown-item" onclick="generateVariablesForOW(); return false;">@lang('admin/configuration.generate_ow_vars')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="configurationApply(); return false;">@lang('admin/configuration.configuration_apply')</a>
+<div class="dropdown-divider"></div>
+<a href="#" class="dropdown-item" onClick="configurationReset(); return false;">@lang('admin/configuration.configuration-reset')</a>
 @endif
 @endsection
 
@@ -105,6 +107,17 @@
     function configurationApply() {
         $.ajax({
             url: '{{ route("configuration-apply", "") }}',
+            success: function (data) {
+                if (data != 'OK') {
+                    alert(data);
+                }
+            },
+        })
+    }
+    
+    function configurationReset() {
+        $.ajax({
+            url: '{{ route("configuration-reset") }}',
             success: function (data) {
                 if (data != 'OK') {
                     alert(data);

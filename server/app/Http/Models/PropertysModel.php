@@ -115,4 +115,31 @@ class PropertysModel extends Model
         }
         $item->save();
     }
+    
+    /**
+     * 
+     * @return string
+     */
+    static public function getRs485Command($clear = false) {
+        $item = self::whereName('RS485_COMMAND')->first();
+        if ($item) {
+            $value = $item->value;
+            if ($clear) {
+                $item->value = '';
+                $item->save();
+            }
+            return $value;
+        }
+        return '';
+    }
+    
+    /**
+     * 
+     * @param type $command
+     */
+    static public function setRs485Command($command) {
+        $item = self::whereName('RS485_COMMAND')->first();
+        $item->value = $command;
+        $item->save();
+    }
 }

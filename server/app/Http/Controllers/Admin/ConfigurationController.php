@@ -255,4 +255,16 @@ class ConfigurationController extends Controller
         }
     }
     
+    /**
+     * 
+     */
+    public function resetControllers() {
+        try {
+            \App\Http\Models\PropertysModel::setRs485Command('RESET');
+            return 'OK';            
+        } catch (\Exception $ex) {
+            return 'ERROR';
+        }
+    }
+    
 }

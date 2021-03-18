@@ -27,8 +27,9 @@ class ScheduleDemon extends BaseDemon {
 
         $this->printLine('');
         $this->printLine('');
-        $this->printLine('');
+        $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/demons.schedule-demon-title'));
+        $this->printLine(str_repeat('-', 100));
         foreach(\App\Http\Models\ScheduleModel::orderBy('comm', 'asc')->get() as $row) {
             $row->action_datetime = $row->makeDateTime();
             $row->save();
@@ -38,7 +39,8 @@ class ScheduleDemon extends BaseDemon {
             }
             $this->printLine("[$time] $row->comm       ".($row->enable ? '' : Lang::get('admin/demons.schedule-demon-disabled')));
         }
-        $this->printLine("---------------------------------");
+        $this->printLine(str_repeat('-', 100));
+        $this->printLine('');
 
         while(1) {
             foreach(\App\Http\Models\ScheduleModel::orderBy('comm', 'asc')->get() as $row) {
