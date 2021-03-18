@@ -13,3 +13,5 @@ void board_reset(void);
 void board_rs485_error(void);
 void board_onewire_error(void);
 void board_script_error(void);
+void board_rs485_incoming_package(void);
+void board_onewire_search(uint8_t start);

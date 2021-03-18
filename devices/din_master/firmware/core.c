@@ -8,6 +8,7 @@
 #include "board.h"
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include <avr/interrupt.h>
 #include "core.h"
 #include "rs485.h"
 #include "onewire.h"
@@ -21,8 +22,8 @@
 #include "drivers/pc.h"
 #include "drivers/fc.h"
 
-
-uint8_t core_onewire_alarm_buff[ONEWIRE_ALARM_LIMIT * 8];
+const int variable_count;
+float variable_values[5];
 
 float core_get_variable_value(int index) {
 	if ((index < 0) || (index >= variable_count)) return 0;
@@ -60,11 +61,10 @@ void core_set_variable_value(int index, uint8_t target, float value) {
             case 1: // server
 			case 2: // devs
 			case 3: // script
-				
 				break;
 		}
 		
-		// Запрашиваем выполнение скрпита по событию изменения
+		// Запрашиваем выполнение скрипта по событию изменения
 		script_run_event_for_variable(index);
 	}	
 }
@@ -77,6 +77,8 @@ void core_init(void) {
 
 void core_rs485_processing(void) {
 	// Обработка буфера входящих пакетов
+    rs485_in_buff_unpack();
+    
 	// Отсылка данных из буфера исходящих пакетов
 	// Реакция на сервисные команды
 	
@@ -84,11 +86,9 @@ void core_rs485_processing(void) {
 
 void core_onewire_alarm_processing(void) {
 	// Обработка alarm событий на шине OW
-		
-	uint8_t alarm_num = onewire_alarms(core_onewire_alarm_buff);
-	if (alarm_num) {
-		uint8_t* ind = (uint8_t*)&core_onewire_alarm_buff[0];
-		for (uint8_t i = 0; i < alarm_num; i++) {
+	if (onewire_alarms()) {
+		uint8_t* ind = (uint8_t*)&onewire_roms_buff[0];
+		for (uint8_t i = 0; i < onewire_roms_buff_count; i++) {
 			core_request_ow_values(ind);
 			ind += 8;
 		}

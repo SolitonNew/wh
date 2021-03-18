@@ -18,13 +18,21 @@ void board_reset(void) {
 }
 
 void board_rs485_error(void) {
-	//
+	control_led_r(1);
 }
 
 void board_onewire_error(void) {
-	//
+	control_led_b(1);
 }
 
 void board_script_error(void) {
-	//
+	control_led_r(1);
+}
+
+void board_rs485_incoming_package(void) {
+    control_led_g(2);
+}
+
+void board_onewire_search(uint8_t start) {
+    control_led_y(start);
 }
