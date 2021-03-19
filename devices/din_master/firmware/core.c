@@ -23,7 +23,10 @@
 #include "drivers/fc.h"
 
 const int variable_count;
-float variable_values[5];
+float variable_values[];
+
+int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
+uint8_t core_variable_changed_count = 0;
 
 float core_get_variable_value(int index) {
 	if ((index < 0) || (index >= variable_count)) return 0;
@@ -55,12 +58,22 @@ void core_set_variable_value(int index, uint8_t target, float value) {
 		}
 		
 		// Пишем в лог изменений для отправки на сервер
+        uint8_t exists = 0;
 		switch (target) {
             case 0: // script init
                 break;
             case 1: // server
 			case 2: // devs
 			case 3: // script
+                for (uint8_t i = 0; i < core_variable_changed_count; i++) {
+                    if (core_variable_changed[i] == variable.id) {
+                        exists = 1;
+                        break;
+                    }
+                }
+                if (!exists && core_variable_changed_count < CORE_VARIABLE_CHANGED_COUNT_MAX) {
+                    core_variable_changed[core_variable_changed_count++] = variable.id;
+                }                    
 				break;
 		}
 		
@@ -78,10 +91,6 @@ void core_init(void) {
 void core_rs485_processing(void) {
 	// Обработка буфера входящих пакетов
     rs485_in_buff_unpack();
-    
-	// Отсылка данных из буфера исходящих пакетов
-	// Реакция на сервисные команды
-	
 }
 
 void core_onewire_alarm_processing(void) {

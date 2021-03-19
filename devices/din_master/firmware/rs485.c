@@ -9,8 +9,10 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "util/delay.h"
+#include "core.h"
 #include "rs485.h"
 #include "onewire.h"
+#include "config/devs.h"
 
 uint16_t rs485_errors = 0;
 uint16_t rs485_packs = 0;
@@ -26,6 +28,10 @@ uint16_t rs485_recieve_count = 0;
 
 uint8_t onewire_roms_buff[ONEWIRE_SEARCH_ROMS];
 uint8_t onewire_roms_buff_count;
+
+int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
+uint8_t core_variable_changed_count;
+float variable_values[];
 
 ISR(USART__RXC_vect) {
 	// Накапливаем входящий буфер
@@ -125,6 +131,8 @@ uint8_t memeq(uint8_t *a1, uint8_t *a2, uint8_t len) {
 }
 
 void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
+    uint8_t i;
+    int index;
     switch (pack->cmd) {
         case 1: // reset
             board_reset();
@@ -140,10 +148,15 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
                 rs485_transmit_CMD(5, 0);
             } else {
                 rs485_transmit_CMD(4, 0); // Пока шлем в ответ, что нет изменений
+                for (i = 0; i < core_variable_changed_count; i++) {
+                    index = devs_get_variable_index(core_variable_changed[i]);
+                    rs485_transmit_VAR(core_variable_changed[i], variable_values[index]);
+                }
+                core_variable_changed_count = 0;
             }
             break;
         case 4: // pack transmit count
-                        
+            // not records            
             break;
         case 5: // pack transmit init
             rs485_is_online = 5;
