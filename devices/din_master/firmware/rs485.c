@@ -138,6 +138,8 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
             rs485_is_online = 3;
             if (!controller_initialized) {
                 rs485_transmit_CMD(5, 0);
+            } else {
+                rs485_transmit_CMD(4, 0); // ѕока шлем в ответ, что нет изменений
             }
             break;
         case 4: // pack transmit count
@@ -149,12 +151,13 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
         case 6: // match receive init
             rs485_is_online = 6;
             rs485_recieve_count = pack->tag;
+            controller_initialized = 1; // ѕомечаем, что контроллер проинициализирован. “еперь можем принимать данные.
             break;
         case 7: // match ow scan
             rs485_is_online = 7;
             board_onewire_search(1);
             onewire_search();
-            rs485_transmit_CMD(4, onewire_roms_buff_count + 1);
+            rs485_transmit_CMD(4, onewire_roms_buff_count);
             for (int i = 0; i < onewire_roms_buff_count * 8; i += 8) {
                 rs485_transmit_ROM(&onewire_roms_buff[i]);
             }
@@ -210,7 +213,9 @@ void rs485_in_buff_unpack(void) {
 	    }
         if (crc == 0) { // ¬се нормально - обрабатываем
             if (pack.controller_id == controller_id) { // это наши данные
-                rs485_var_pack_handler(&pack);
+                if (controller_initialized) {
+                    rs485_var_pack_handler(&pack);
+                }
             } else {
                 rs485_is_online = 0;
             }

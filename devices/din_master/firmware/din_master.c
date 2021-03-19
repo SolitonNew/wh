@@ -15,6 +15,8 @@
 
 const int variable_count;
 control_btn_states_t control_btn_states = {0, 0, 0, 0, 0, 0, 0, 0};
+    
+uint8_t alarm_loop_space = 0;
 	
 int main(void)
 {
@@ -31,7 +33,10 @@ int main(void)
         core_rs485_processing();
         
         // Обрабатываем onewire на предмет alarm флагов
-		core_onewire_alarm_processing();
+        if (alarm_loop_space-- == 0) {
+		    core_onewire_alarm_processing();
+            alarm_loop_space = 10;
+        }
         
         // Обрабатываем работу с запланироваными устройствами
 		core_schedule_processing();
@@ -57,6 +62,8 @@ int main(void)
 		}
 		
 		// ---------------------------
+        
+        //control_led_b(controller_initialized);
 		
 		_delay_ms(10);
     }
