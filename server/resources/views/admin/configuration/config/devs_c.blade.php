@@ -8,27 +8,23 @@
 #include <avr/pgmspace.h>
 #include "devs.h"
 
-const int onewire_roms_count = {{ count($owList) }};
-
-const uint8_t onewire_roms[{{ count($owList) * 8 }}] PROGMEM = {
+const uint8_t onewire_roms[ONEWIRE_ROMS_SIZE] PROGMEM = {
 @foreach($owList as $row)
     {{ sprintf("0x%'02X, 0x%'02X, 0x%'02X, 0x%'02X, 0x%'02X, 0x%'02X, 0x%'02X, 0x%'02X,", 
                 $row->rom_1, $row->rom_2, $row->rom_3, $row->rom_4, $row->rom_5, $row->rom_6, $row->rom_7, $row->rom_8) }}
 @endforeach
 };
 
-const int variable_count = {{ count($varList) }};
-
-const variable_t variables[{{ count($varList) }}] PROGMEM = {
+const variable_t variables[VARIABLE_COUNT] PROGMEM = {
 @foreach($varList as $row)
    { {{ $row->id }}, {{ $row->controller_id }}, {{ $varTyps[$row->typ] }}, {{ $row->direction }}, {{ $row->ow_index }}, 0 },
 @endforeach
 };
 
-float variable_values[{{ count($varList) }}];
+float variable_values[VARIABLE_COUNT];
 
 int devs_get_variable_index(int id) {
-    for (int i = 0; i < variable_count; i++) {
+    for (int i = 0; i < VARIABLE_COUNT; i++) {
         if ((int)pgm_read_dword(&variables[i]) == id) {
             return i;
         }
@@ -75,7 +71,7 @@ void devs_get_variable_rom(int index, uint8_t *rom) {
 
 int devs_onewire_rom_index(uint8_t *rom) {
     uint8_t* ind = (uint8_t*)&onewire_roms[0];
-    for (int i = 0; i < onewire_roms_count; i++) {
+    for (int i = 0; i < ONEWIRE_ROMS_COUNT; i++) {
         for (int r = 0; r < 8; r++) {
             uint8_t b = pgm_read_byte(ind + r);
             if (rom[r] == b) {
@@ -93,7 +89,7 @@ int devs_onewire_rom_index(uint8_t *rom) {
 
 uint8_t devs_find_variables_by_ow_index(int ow_index, int *vars) {
     uint8_t num = 0;
-    for (int i = 0; i < variable_count; i++) {
+    for (int i = 0; i < VARIABLE_COUNT; i++) {
         if (devs_get_variable_ow_index(i) == ow_index) {
             vars[num++] = i;
             if (num == 8) break;

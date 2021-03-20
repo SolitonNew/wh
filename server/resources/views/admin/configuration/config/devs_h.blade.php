@@ -6,6 +6,10 @@
 
 
 #include <avr/pgmspace.h>
+    
+#define ONEWIRE_ROMS_COUNT {{ count($owList) }}
+#define ONEWIRE_ROMS_SIZE ONEWIRE_ROMS_COUNT * 8
+#define VARIABLE_COUNT {{ count($varList) }}
 
 typedef struct _variable_t {
 	int id;
@@ -15,12 +19,10 @@ typedef struct _variable_t {
 	int ow_index;
 	unsigned char channel;
 } variable_t;
-    
-extern const int onewire_roms_count;
-extern const uint8_t onewire_roms[] PROGMEM;
-extern const variable_t variables[] PROGMEM;
-extern const int variable_count;
-extern float variable_values[];
+
+extern const uint8_t onewire_roms[ONEWIRE_ROMS_SIZE] PROGMEM;
+extern const variable_t variables[VARIABLE_COUNT] PROGMEM;
+extern float variable_values[VARIABLE_COUNT];
 
 
 int devs_get_variable_index(int id);

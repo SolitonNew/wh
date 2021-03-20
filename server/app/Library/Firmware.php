@@ -94,6 +94,8 @@ class Firmware {
         // Пакуем в файл devs.c
         $fs = new \Illuminate\Filesystem\Filesystem();
         $fs->put($this->_firmwarePath().'/config/devs.h', View::make('admin.configuration.config.devs_h', [
+            'owList' => $owList,
+            'varList' => $varList,
         ]));
 
         // Пакуем в файл devs.c
