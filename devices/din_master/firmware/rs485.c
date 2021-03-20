@@ -211,7 +211,6 @@ void rs485_in_buff_unpack(void) {
                 rs485_is_online = 0;
             }                            
         } else {
-            board_onewire_error();
             size = 0; // Отправляем неявно данные на дообработку
         }
     } else
