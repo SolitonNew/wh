@@ -24,7 +24,48 @@ class RS485Demon extends BaseDemon {
      */
     private $_port;
     
+    /**
+     *
+     * @var type 
+     */
     private $_controllers;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $_waitCount = 0;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $_inPackCount = 0;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $_inBuffer = '';
+    
+    /**
+     *
+     * @var type 
+     */
+    private $_inVariables = [];
+    
+    private $_inRooms = [];
+    
+    /**
+     *
+     * @var type 
+     */
+    private $_lastSyncVariableID = -1;
+    
+    /**
+     * 
+     */
+    const SLEEP_TIME = 25;
     
     /**
      * 
@@ -44,76 +85,273 @@ class RS485Demon extends BaseDemon {
         $this->printLine('');
         
         $this->_controllers = \App\Http\Models\ControllersModel::where('id', '<', 100)
+                                ->whereIsServer(0)
                                 ->orderBy('name', 'asc')
                                 ->get();
         
         if (count($this->_controllers) == 0) return;
         
-        try {            
-            exec('stty -F '.config('firmware.rs485_port').' '.config('firmware.rs485_baud').' cs8 cstopb');
-            $this->_port = fopen(config('firmware.rs485_port'), 'r+b');
-            
-            while (1) {
-                // Читаем очередь команд
-                $this->_checkCommands();
+        try {           
+            $port = config('firmware.rs485_port');
+            $baud = config('firmware.rs485_baud');
+            exec("stty -F $port $baud cs8 cstopb ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
+            $this->_port = fopen($port, 'r+b');
+            stream_set_blocking($this->_port, false);
+            while (!feof($this->_port)) {
+                $command = \App\Http\Models\PropertysModel::getRs485Command(true);
                 
-                // Выполняем синхронизацию переменных
-                $this->_sync();
+                $variables = [];
+                if ($command == '') {
+                    $variables = [];
+                }
+                
+                foreach($this->_controllers as $controller) {
+                    switch ($command) {
+                        case 'RESET':
+                            $this->_commandReset($controller);
+                            break;
+                        case 'OW SEARCH':
+                            $this->_commandOwSearch($controller);
+                            break;
+                        default:
+                            $this->_syncVariables($controller, $variables);
+                    }
+                }
+                usleep(100000);
             }
-            fclose($this->_port);
         } catch (\Exception $ex) {
             $s = "[".now()."] ERROR\n";
             $s .= $ex->getMessage();
             $this->printLine($s); 
+        } finally {
+            fclose($this->_port);    
         }
     }
     
     /**
-     *  Обработка очереди команд к демону
+     * Обработка команды перезагрузки контроллера
+     * 
+     * @param type $conrollerROM
      */
-    private function _checkCommands() {
-        $command = \App\Http\Models\PropertysModel::getRs485Command(true);
-        if (!$command) return ;
+    private function _commandReset($controller) {
+        $this->_readPacks(250);
+        $this->_transmitCMD($controller->rom, 1, 0);
+        usleep(250000);
+    }
+    
+    /**
+     * Обработка команды сканирования onewire сети
+     * 
+     * @param type $conrollerROM
+     */
+    private function _commandOwSearch($controller) {
+        $this->_readPacks(250);
+        $this->_transmitCMD($controller->rom, 7, 0);        
+        $this->_inRooms = [];
+        $this->_readPacks(250);
         
-        foreach($this->_controllers as $controller) {
-            if ($controller->is_server) continue;
-            
-            switch ($command) {
-                case 'RESET':                   
-                    $this->_transmitCMD($controller->rom, 1, 0);
-                    break;
+        foreach ($this->_inRooms as $rom) {
+            $a = [];
+            foreach($rom as $b) {
+                $a[] = '0x'.dechex($b);
             }
+            $this->printLine(implode(' ', $a));
         }
     }
     
     /**
-     *  Обработка синхронизации данных системы
+     * Обработка синхронизации переменных.
+     * Здесь также код обработки инициализации контроллера
+     * 
+     * @param type $conrollerROM
      */
-    private function _sync() {
-        foreach($this->_controllers as $controller) {
-            if ($controller->is_server) continue;
-            $contr = $controller->name;
+    private function _syncVariables($controller, &$variables) {
+        $stat = 'OK';        
+        $vars_out = [];
+        $errorText = '';
+        try {
+            // Шлем команду (приготовиться принимать)
+            $this->_transmitCMD($controller->rom, 2, count($variables));
 
-            $this->_transmitCMD($controller->rom, 2, 100);
-
-            $this->_transmitCMD($controller->rom, 3, 100);
-
-            $vars_out_str = [];
-            $vars_in_str = [];
-
-            try {
-                $stat = 'OK';
-                $s = "[".now()."] SYNC. '$contr': $stat\n";
-                $s .= "   >>   [".implode(', ', $vars_out_str)."]\n";
-                $s .= "   <<   [".implode(', ', $vars_in_str)."]\n";
-            } catch (\Exception $ex) {
-                $s = "[".now()."] SYNC. '$contr': ERROR\n";
-                $s .= $ex->getMessage();
+            // Шлем поочередно переменные
+            foreach ($variables as $variable) {
+                $this->_transmitVAR($controller->rom, $variable->id, $variable->value);
+                $vars_out[] = "$variable->id: $variable->value";
             }
 
-            $this->printLine($s); 
+            // Шлем команду приготовиться отдавать свои изменения
+            $this->_transmitCMD($controller->rom, 3, 0);
+            
+            $this->_inVariables = [];
 
-            usleep(100000);
+            switch ($this->_readPacks(100)) {
+                case 5: // Контроллер попросил данные инициализации
+                    $stat = 'INIT';
+                    $vars_out = [];
+                    $variablesInit = \App\Http\Models\VariablesModel::orderBy('ID', 'asc')->get();
+                    $this->_transmitCMD($controller->rom, 6, count($variablesInit));
+                    foreach ($variablesInit as $variable) {
+                        $this->_transmitVAR($controller->rom, $variable->id, $variable->value);
+                        $vars_out[] = "$variable->id: $variable->value";
+                    }
+                    $this->_readPacks(250);
+                    break;
+                case -1:
+                    throw new \Exception('Controller did not respond');
+            }            
+        } catch (\Exception $ex) {
+            $stat = 'ERROR';
+            $errorText = $ex->getMessage();
+        }
+        
+        $s = "[".now()."] SYNC. '$controller->name': $stat\n";
+        if ($stat == 'OK') {
+            $s .= "   >>   [".implode(', ', $vars_out)."]\n";
+            
+            $vars_in = [];
+            foreach ($this->_inVariables as $variable) {
+                $vars_in[] = "$variable->id: $variable->value";
+            }
+            
+            $s .= "   <<   [".implode(', ', $vars_in)."]\n";
+        } elseif ($stat == 'INIT') {
+            $s .= "   >>   [".implode(', ', $vars_out)."]\n";
+        } elseif ($stat == 'ERROR') {
+            $s .= $errorText."\n";
+        }
+        $this->printLine($s);
+    }
+    
+    /**
+     * Чтение очереди входящего пакета.
+     * Устанавливается индивидуальное значение таймаута для получения данных
+     * 
+     * @param integer $utimeout  Допустимое время ожидания новых данных
+     * @return int    -1 - данные не получили. >= 0 - что-то получали
+     */
+    private function _readPacks($utimeout = 250) {
+        $this->_waitCount = 0;
+        $this->_inPackCount = 0;
+        while ($this->_waitCount < ($utimeout / self::SLEEP_TIME)) {            
+            $c = fgetc($this->_port);
+            if ($c !== false) {
+                $this->_inBuffer .= $c;
+                $returnCmd = 0;
+                if ($this->_processedInBuffer($returnCmd)) {
+                    if ($returnCmd != 4) {
+                        $this->_waitCount = 0;
+                        if ($returnCmd > 0) {
+                            return $returnCmd;
+                        }
+                    }
+                    if ($this->_inPackCount <= 0) return 0;
+                }
+            } else {
+                usleep(self::SLEEP_TIME * 1000);
+                $this->_waitCount++;
+            }
+        }
+        return -1;
+    }
+    
+    /**
+     * Главный обработчик всех входных пакетов.
+     * 
+     * @param integer $returnCmd  код последней обработаной команды в этой итерации. Если команд небыло будет 0.
+     * @return boolean  true - хоть один пакет обработан. false - ниодного пакета не обнаружено.
+     */
+    private function _processedInBuffer(&$returnCmd) {
+        $returnCmd = 0;
+        $result = false;
+        
+        start_loop:
+        
+        if (strlen($this->_inBuffer) < 3) return $result;
+        
+        $sign = unpack('a*', $this->_inBuffer[0].$this->_inBuffer[1].$this->_inBuffer[2])[1];
+        $size = 0;
+        switch ($sign) {
+            case 'CMD':
+                if (strlen($this->_inBuffer) >= 8) {
+                    $size = 8;
+                    $crc = 0;
+                    for ($i = 0; $i < $size; $i++) {
+                        $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                    }
+                    if ($crc === 0) {
+                        $this->_waitCount = 0;
+                        $this->_inPackCount = 0;
+                        $controller = unpack('C', $this->_inBuffer[3])[1];
+                        $cmd = unpack('C', $this->_inBuffer[4])[1];
+                        $tag = unpack('s', $this->_inBuffer[5].$this->_inBuffer[6])[1];
+                        if ($cmd == 4) {
+                            $this->_inPackCount = $tag;
+                        }
+                        $returnCmd = $cmd;
+                    } else {
+                        $size = 1;
+                    }
+                }
+                break;
+            
+            case 'VAR':
+                if (strlen($this->_inBuffer) >= 11) {
+                    $size = 11;
+                    $crc = 0;
+                    for ($i = 0; $i < $size; $i++) {
+                        $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                    }
+                    if ($crc === 0) {
+                        $controller = unpack('C', $this->_inBuffer[3])[1];
+                        $id = unpack('s', $this->_inBuffer[4].$this->_inBuffer[5])[1];
+                        $value = unpack('f', $this->_inBuffer[6].$this->_inBuffer[7].$this->_inBuffer[8].$this->_inBuffer[9])[1];
+                        $this->_inVariables[] = (object)[
+                            'id' => $id,
+                            'value' => $value,
+                        ];
+                        $this->_inPackCount--;
+                    } else {
+                        $size = 1;
+                    }
+                }
+                break;
+            
+            case 'ROM':
+                if (strlen($this->_inBuffer) >= 13) {
+                    $size = 13;
+                    $controller = unpack('C', $this->_inBuffer[3])[1];
+                    $crc = 0;
+                    for ($i = 0; $i < $size; $i++) {
+                        $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                    }
+                    if ($crc === 0) {
+                        $rom = [];
+                        for ($i = 0; $i < 8; $i++) {
+                            $rom[] = unpack('C', $this->_inBuffer[4 + $i])[1];
+                        }
+                        $this->_inRooms[] = $rom;
+                        $this->_inPackCount--;
+                    } else {
+                        $size = 1;
+                    }
+                }
+                break;
+                
+            default:
+                if (strlen($this->_inBuffer) > 16) { // Ограничиваем необработаный буфер
+                    $size = 1;
+                }
+        }
+
+        if ($size === 0) {
+            return $result;
+        } elseif ($size === strlen($this->_inBuffer)) {
+            $this->_inBuffer = '';
+            return true;
+        } else {
+            $this->_inBuffer = substr($this->_inBuffer, $size);
+            $result = true;
+            goto start_loop;
         }
     }
     
@@ -141,7 +379,7 @@ class RS485Demon extends BaseDemon {
     
     /**
      * 
-     * @param type $controllerId
+     * @param type $controllerROM
      * @param type $cmd
      * @param type $tag
      */
@@ -154,12 +392,13 @@ class RS485Demon extends BaseDemon {
 	for ($i = 0; $i < strlen($pack); $i++) {
             $crc = $this->_crc_table($crc ^ ord($pack[$i]));
 	}
-        $pack .= pack('C', $crc);
+        $pack .= pack('C', $crc);        
         fwrite($this->_port, $pack);
     }
     
     /**
      * 
+     * @param type $controllerROM
      * @param type $id
      * @param type $value
      */
@@ -175,4 +414,87 @@ class RS485Demon extends BaseDemon {
         $pack .= pack('C', $crc);
         fwrite($this->_port, $pack);
     }
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /**
+     *  Обработка синхронизации данных системы
+     */
+    /*private function _syncVariables() {
+        // Собираем пакет с последними изменениями
+        if ($this->_lastSyncVariableID == -1) {
+            $this->_lastSyncVariableID = DB::select('select max(id) maxID from core_variable_changes_mem')[0]->maxID ?? 0;
+        }
+        
+        $data = DB::select('select c.id, c.variable_id, c.value
+                              from core_variable_changes_mem c
+                             where id > '.$this->_lastSyncVariableID.' 
+                            order by id');
+        
+        if (count($data)) {
+            $this->_lastSyncVariableID = $data[count($data) - 1]->id;
+        }
+        
+        foreach($this->_controllers as $controller) {
+            if ($controller->is_server) continue;
+            
+            $contr = $controller->name;
+            
+            try {
+                $vars_out = [];
+                $vars_in = [];            
+
+                // Даем команду что будем отправлять данные
+                $this->_transmitCMD($controller->rom, 2, count($data));
+
+                // Отправляем нашу посылку
+                foreach ($data as $row) {
+                    $vars_out[] = "$row->variable_id: $row->value";
+                    $this->_transmitVAR($controller->rom, $row->variable_id, $row->value);
+                }
+
+                // Даем комманду, что готовы принять данные
+                $this->_transmitCMD($controller->rom, 3, 0);
+                
+                $this->_syncVariablesRecieveHandler();
+                
+                $stat = 'OK';
+                $s = "[".now()."] SYNC. '$contr': $stat\n";
+                $s .= "   >>   [".implode(', ', $vars_out)."]\n";
+                $s .= "   <<   [".implode(', ', $vars_in)."]\n";
+            } catch (\Exception $ex) {
+                $s = "[".now()."] SYNC. '$contr': ERROR\n";
+                $s .= $ex->getMessage();
+            }
+
+            $this->printLine($s); 
+
+            usleep(100000);
+        }
+    }
+    
+    private function _syncVariablesRecieveHandler() {
+        $r = [$this->_port];
+        $w = null;
+        $e = null;
+        $c = stream_select($r, $w, $e, 1);
+        if ($c) {
+            fread($this->_port, $c);
+            Log::info($c);
+        }
+    }*/
+    
 }

@@ -14,9 +14,12 @@ return [
 
     'configuration_apply' => 'Применить конфигурацию',
     
+    'configuration_reset' => 'Перезагрузить щитовые контроллеры',
+    
     'controller_ID' => 'ID',
     'controller_NAME' => 'Название',
     'controller_IS_SERVER' => 'Определить как сервер',
+    'controller_ROM' => 'Номер',
     'controller_COMM' => 'Примечания',
     'controller_STATUS' => 'Статус',
     

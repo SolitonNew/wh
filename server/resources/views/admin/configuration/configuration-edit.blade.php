@@ -42,6 +42,15 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
+            <div class="form-label strong">@lang('admin/configuration.controller_ROM')</div>
+        </div>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="rom" value="{{ $item->rom }}">
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>    
+    <div class="row">
+        <div class="col-sm-3">
             <div class="form-label">@lang('admin/configuration.controller_COMM')</div>
         </div>
         <div class="col-sm-9">
