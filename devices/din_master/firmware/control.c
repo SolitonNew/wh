@@ -7,6 +7,7 @@
 
 #include "board.h"
 #include <avr/io.h>
+#include <string.h>
 #include "control.h"
 
 void control_init(void) {
