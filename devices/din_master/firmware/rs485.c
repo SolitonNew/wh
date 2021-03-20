@@ -83,7 +83,7 @@ void rs485_transmit_CMD(uint8_t cmd, int tag) {
     pack.controller_id = controller_id;
     pack.cmd = cmd;
     pack.tag = tag;
-    uint8_t *ind = &pack;
+    uint8_t *ind = (uint8_t*)&pack;
 	uint8_t crc = 0;
 	for (uint8_t i = 0; i < sizeof(pack) - 1; i++) {
         uint8_t b = *ind++;
@@ -99,7 +99,7 @@ void rs485_transmit_VAR(int id, float value) {
     pack.controller_id = controller_id;
     pack.id = id;
     pack.value = value;
-    uint8_t *ind = &pack;
+    uint8_t *ind = (uint8_t*)&pack;
 	uint8_t crc = 0;
 	for (uint8_t i = 0; i < sizeof(pack) - 1; i++) {
         uint8_t b = *ind++;
@@ -114,7 +114,7 @@ void rs485_transmit_ROM(uint8_t *rom) {
     memcpy(pack.sign, "ROM", 3);
     pack.controller_id = controller_id;
     memcpy(pack.rom, rom, 8);
-    uint8_t *ind = &pack;
+    uint8_t *ind = (uint8_t*)&pack;
 	uint8_t crc = 0;
 	for (uint8_t i = 0; i < sizeof(pack) - 1; i++) {
         uint8_t b = *ind++;
@@ -199,7 +199,7 @@ void rs485_in_buff_unpack(void) {
     if (memeq(rs485_in_buff, "CMD", 3)) {
         rs485_cmd_pack_t pack;
         size = sizeof(pack);
-        uint8_t *ind = &pack;
+        uint8_t *ind = (uint8_t*)&pack;
 	    uint8_t crc = 0;
 	    for (uint8_t i = 0; i < size; i++) {
 		    crc = rs485_crc_table(crc ^ rs485_in_buff[i]);
@@ -219,7 +219,7 @@ void rs485_in_buff_unpack(void) {
         rs485_var_pack_t pack;
         size = sizeof(pack);
         if (rs485_in_buff_size < size) return ;
-        uint8_t *ind = &pack;
+        uint8_t *ind = (uint8_t*)&pack;
 	    uint8_t crc = 0;
 	    for (uint8_t i = 0; i < size; i++) {
 		    crc = rs485_crc_table(crc ^ rs485_in_buff[i]);
@@ -241,7 +241,7 @@ void rs485_in_buff_unpack(void) {
         rs485_ow_rom_pack_t pack;
         size = sizeof(pack);
         if (rs485_in_buff_size < size) return ;
-        uint8_t *ind = &pack;
+        uint8_t *ind = (uint8_t*)&pack;
 	    uint8_t crc = 0;
 	    for (uint8_t i = 0; i < size; i++) {
 		    crc = rs485_crc_table(crc ^ rs485_in_buff[i]);
