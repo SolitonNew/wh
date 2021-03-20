@@ -8,7 +8,8 @@
 #include "board.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "util/delay.h"
+#include <util/delay.h>
+#include <string.h>
 #include "core.h"
 #include "rs485.h"
 #include "onewire.h"
