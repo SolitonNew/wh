@@ -75,6 +75,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/configuration-gen-vars', 'Admin\ConfigurationController@generateVarsForFreeDevs')->name('configuration-gen-vars');
     Route::get('/configuration-apply/{id?}', 'Admin\ConfigurationController@configurationApply')->name('configuration-apply');
     Route::get('/configuration-reset', 'Admin\ConfigurationController@resetControllers')->name('configuration-reset');
+    Route::get('/configuration-ow-scan', 'Admin\ConfigurationController@runOwScan')->name('configuration-ow-scan');
     
     /* Настройка событий системы по расписанию */
     Route::get('/schedule', 'Admin\ScheduleController@index')->name('schedule');

@@ -27,6 +27,7 @@ class CoreOwDevs extends Migration
             $table->integer('rom_7');
             $table->integer('rom_8');
             $table->string('position', 1000)->nullable();
+            $table->integer('lost')->default(0);
             
             $table->index('controller_id');
             $table->index('rom_1');

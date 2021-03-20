@@ -44,7 +44,7 @@
             </thead>
             <tbody>
                 @forelse($data as $row)
-                <tr data-id="{{ $row->id }}">
+                <tr data-id="{{ $row->id }}" class="{{ $row->lost ? 'row-with-ow-lost' : '' }}">
                     <td>{{ $row->id }}</td>
                     <td>{{ $row->comm }}</td>
                     <td class="nowrap">{{ $row->rom }}</td>
@@ -89,7 +89,17 @@
     }
 
     function runOwScan() {
-        alert('RUN OW SCAN');
+        startGlobalWaiter();
+        $.ajax({
+            url: "{{ route('configuration-ow-scan') }}",
+            success: function (data) {
+                stopGlobalWaiter();
+                alert(data);
+                if (data != 'ERROR') {
+                    window.location.reload();
+                }
+            },
+        });
     }
 
     function generateVariablesForOW() {

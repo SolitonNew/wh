@@ -28,7 +28,8 @@ class ConfigurationController extends Controller
                        d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7,
                        t.channels,
                        t.comm,
-                       "" variables
+                       "" variables,
+                       d.lost
                   from core_ow_devs d, core_ow_types t, core_controllers c
                  where d.controller_id = c.id
                    and d.rom_1 = t.code
@@ -154,7 +155,7 @@ class ConfigurationController extends Controller
             abort(404);
         }
         
-        $item->ROM = sprintf("x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X", 
+        $item->rom = sprintf("x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X", 
             $item->rom_1, 
             $item->rom_2, 
             $item->rom_3, 
@@ -166,11 +167,11 @@ class ConfigurationController extends Controller
         
         $sql = 'select v.id, v.name, v.channel
                   from core_variables v 
-                 where v.rom = "ow" 
+                 where v.typ = "ow" 
                    and v.ow_id = '.$item->id.'
                 order by v.channel';
                 
-        $item->VARIABLES = DB::select($sql);
+        $item->variables = DB::select($sql);
         
         return view('admin.configuration.configuration-ow-info', [
             'item' => $item,
@@ -192,7 +193,23 @@ class ConfigurationController extends Controller
         }
     }
     
-
+    /**
+     * 
+     * @return type
+     */
+    public function runOwScan() {
+        \App\Http\Models\PropertysModel::setRs485Command('OW SEARCH');
+        $i = 0;
+        while ($i++ < 500) { // 5 sec
+            usleep(100000);
+            $text = \App\Http\Models\PropertysModel::getRs485CommandInfo();
+            if ($t = strpos($text, 'END_OW_SCAN')) {
+                $text = substr($text, 0, $t);
+                break;
+            }
+        }
+        return $text;
+    }
     
     /**
      * 
