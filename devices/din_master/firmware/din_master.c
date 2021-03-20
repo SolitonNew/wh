@@ -24,7 +24,6 @@ int main(void)
 	
 	control_init();
 	core_init();
-    lcd_init();
 				
 	sei();
 		
