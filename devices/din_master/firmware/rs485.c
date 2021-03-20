@@ -33,7 +33,7 @@ int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
 uint8_t core_variable_changed_count;
 float variable_values[];
 
-ISR(USART__RXC_vect) {
+ISR(USART_RXC_vect) {
 	// Накапливаем входящий буфер
 	if (rs485_in_buff_size >= RS485_BUFF_MAX_SIZE - 1) {
 		rs485_in_buff_size = 0;
