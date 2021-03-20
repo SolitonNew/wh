@@ -147,7 +147,7 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
             if (!controller_initialized) {
                 rs485_transmit_CMD(5, 0);
             } else {
-                rs485_transmit_CMD(4, 0); // Пока шлем в ответ, что нет изменений
+                rs485_transmit_CMD(4, core_variable_changed_count);
                 for (i = 0; i < core_variable_changed_count; i++) {
                     index = devs_get_variable_index(core_variable_changed[i]);
                     rs485_transmit_VAR(core_variable_changed[i], variable_values[index]);
@@ -211,6 +211,7 @@ void rs485_in_buff_unpack(void) {
                 rs485_is_online = 0;
             }                            
         } else {
+            board_onewire_error();
             size = 0; // Отправляем неявно данные на дообработку
         }
     } else
