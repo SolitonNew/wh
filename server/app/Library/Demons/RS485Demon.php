@@ -196,7 +196,12 @@ class RS485Demon extends BaseDemon {
             }
             if (!$find) {
                 $lost++;
+                
+                $owOld->lost = 1;
+            } else {
+                $owOld->lost = 0;
             }
+            $owOld->save();
         }
         
         // Ищем кого нашли

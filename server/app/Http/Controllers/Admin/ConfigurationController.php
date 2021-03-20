@@ -28,7 +28,8 @@ class ConfigurationController extends Controller
                        d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7,
                        t.channels,
                        t.comm,
-                       "" variables
+                       "" variables,
+                       d.lost
                   from core_ow_devs d, core_ow_types t, core_controllers c
                  where d.controller_id = c.id
                    and d.rom_1 = t.code
