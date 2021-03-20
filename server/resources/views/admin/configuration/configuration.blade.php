@@ -10,7 +10,7 @@
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="configurationApply(); return false;">@lang('admin/configuration.configuration_apply')</a>
 <div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onClick="configurationReset(); return false;">@lang('admin/configuration.configuration-reset')</a>
+<a href="#" class="dropdown-item" onClick="configurationReset(); return false;">@lang('admin/configuration.configuration_reset')</a>
 @endif
 @endsection
 

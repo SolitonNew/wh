@@ -72,6 +72,7 @@ class ConfigurationController extends Controller
                 $this->validate($request, [
                     'name' => 'string|required',
                     'comm' => 'string|nullable',
+                    'rom' => 'numeric|required|unique:core_controllers,rom,'.($id > 0 ? $id : ''),
                 ]);          
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
@@ -84,6 +85,7 @@ class ConfigurationController extends Controller
                 }
                 $item->name = $request->post('name');
                 $item->is_server = $request->post('is_server') ? 1 : 0;
+                $item->rom = $request->post('rom');
                 $item->comm = $request->post('comm');
                 $item->status = 0; 
                 $item->save();
@@ -101,6 +103,7 @@ class ConfigurationController extends Controller
                     'id' => -1,
                     'name' => '',
                     'is_server' => 0,
+                    'rom' => '',
                     'comm' => '',
                     'status' => 0,
                 ];
@@ -188,6 +191,8 @@ class ConfigurationController extends Controller
             return 'ERROR';
         }
     }
+    
+
     
     /**
      * 
