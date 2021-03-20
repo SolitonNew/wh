@@ -60,8 +60,6 @@ int main(void)
 		}
 		
 		// ---------------------------
-        
-        //control_led_b(controller_initialized);
 		
 		_delay_ms(10);
     }
