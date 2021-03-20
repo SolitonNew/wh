@@ -32,7 +32,7 @@ uint8_t onewire_roms_buff_count;
 
 int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
 uint8_t core_variable_changed_count;
-float variable_values[];
+float variable_values[VARIABLE_COUNT];
 
 ISR(USART_RXC_vect) {
 	// Накапливаем входящий буфер
@@ -196,7 +196,7 @@ void rs485_in_buff_unpack(void) {
     
     // достигли минимального объема для возможной обработки
     uint8_t size = 0;
-    if (memeq(&rs485_in_buff[0], "CMD", 3)) {
+    if (memeq(&rs485_in_buff[0], (uint8_t*)"CMD", 3)) {
         rs485_cmd_pack_t pack;
         size = sizeof(pack);
         uint8_t *ind = (uint8_t*)&pack;
@@ -215,7 +215,7 @@ void rs485_in_buff_unpack(void) {
             size = 0; // Отправляем неявно данные на дообработку
         }
     } else
-    if (memeq(&rs485_in_buff[0], "VAR", 3)) {
+    if (memeq(&rs485_in_buff[0], (uint8_t*)"VAR", 3)) {
         rs485_var_pack_t pack;
         size = sizeof(pack);
         if (rs485_in_buff_size < size) return ;
@@ -237,7 +237,7 @@ void rs485_in_buff_unpack(void) {
             size = 0; // Отправляем неявно данные на дообработку
         }
     } else
-    if (memeq(&rs485_in_buff[0], "ROM", 3)) {  // обрабатываем этот пакет только ради очереди. Таких данных на вход не бывает.
+    if (memeq(&rs485_in_buff[0], (uint8_t*)"ROM", 3)) {  // обрабатываем этот пакет только ради очереди. Таких данных на вход не бывает.
         rs485_ow_rom_pack_t pack;
         size = sizeof(pack);
         if (rs485_in_buff_size < size) return ;

@@ -22,20 +22,19 @@
 #include "drivers/pc.h"
 #include "drivers/fc.h"
 
-const int variable_count;
-float variable_values[];
+float variable_values[VARIABLE_COUNT];
 
 int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
 uint8_t core_variable_changed_count = 0;
 
 float core_get_variable_value(int index) {
-	if ((index < 0) || (index >= variable_count)) return 0;
+	if ((index < 0) || (index >= VARIABLE_COUNT)) return 0;
 	return variable_values[index];
 }
 
 // target: 0-server init, 1-server, 2-devs, 3-script
 void core_set_variable_value(int index, uint8_t target, float value) {
-	if ((index < 0) || (index >= variable_count)) return ;
+	if ((index < 0) || (index >= VARIABLE_COUNT)) return ;
 	if (variable_values[index] == value) return ;
 	
 	variable_values[index] = value;
