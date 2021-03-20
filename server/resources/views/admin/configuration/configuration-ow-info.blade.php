@@ -13,7 +13,7 @@
             <div class="form-label">@lang('admin/configuration.table_ID')</div>
         </div>
         <div class="col-sm-3">
-            <div class="form-control">{{ $item->ID }}</div>
+            <div class="form-control">{{ $item->id }}</div>
         </div>
     </div>
     <div class="row">
@@ -21,7 +21,7 @@
             <div class="form-label">@lang('admin/configuration.table_CONTROLLER')</div>
         </div>
         <div class="col-sm-6">
-            <div class="form-control">{{ $item->CONTROLLER_NAME }}</div>
+            <div class="form-control">{{ $item->controller_name }}</div>
         </div>
     </div>
     <div class="row">
@@ -29,7 +29,7 @@
             <div class="form-label">@lang('admin/configuration.table_ROM')</div>
         </div>
         <div class="col-sm-9">
-            <div class="form-control">{{ $item->ROM }}</div>
+            <div class="form-control">{{ $item->rom }}</div>
         </div>
     </div>
     <div class="row">
@@ -37,7 +37,7 @@
             <div class="form-label">@lang('admin/configuration.table_COMM')</div>
         </div>
         <div class="col-sm-9">
-            <div class="form-control">{{ $item->COMM }}</div>
+            <div class="form-control">{{ $item->comm }}</div>
         </div>
     </div>
     <div class="row">
@@ -45,14 +45,14 @@
             <div class="form-label">@lang('admin/configuration.table_CHANNELS')</div>
         </div>
         <div class="col-sm-9">
-            <div class="form-control">{{ $item->CHANNELS }}</div>
+            <div class="form-control">{{ $item->channels }}</div>
         </div>
     </div>
     <div class="form-group">
-        <div class="">@lang('admin/configuration.table_VARIABLES') ({{ count($item->VARIABLES) }}):</div>
+        <div class="">@lang('admin/configuration.table_VARIABLES') ({{ count($item->variables) }}):</div>
         <div class="form-control" style="height: auto;">
-        @forelse($item->VARIABLES as $v)
-        <div>[{{ $v->CHANNEL }}] {{ $v->NAME }}</div>
+        @forelse($item->variables as $v)
+        <div>[{{ $v->channel }}] {{ $v->name }}</div>
         @empty
         -//-
         @endforelse
@@ -75,7 +75,7 @@
 
     function configurationOwDelete() {
         confirmYesNo("@lang('admin/configuration.ow-delete-confirm')", () => {
-            $.ajax('{{ route("configuration-ow-delete", $item->ID) }}').done((data) => {
+            $.ajax('{{ route("configuration-ow-delete", $item->id) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
                         window.location.reload();

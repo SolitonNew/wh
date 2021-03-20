@@ -100,11 +100,20 @@ class RS485Demon extends BaseDemon {
             while (!feof($this->_port)) {
                 $command = \App\Http\Models\PropertysModel::getRs485Command(true);
                 
+                // Выполняем начальную подготовку итерации
+                // Она одинакова для все контроллеров
                 $variables = [];
-                if ($command == '') {
-                    $variables = [];
+                switch ($command) {
+                    case 'RESET':
+                        \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
+                        break;
+                    case 'OW SEARCH':
+                        \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
+                        break;
+                    default:
+                        $variables = [];
                 }
-                
+                                
                 foreach($this->_controllers as $controller) {
                     switch ($command) {
                         case 'RESET':
@@ -117,6 +126,18 @@ class RS485Demon extends BaseDemon {
                             $this->_syncVariables($controller, $variables);
                     }
                 }
+                
+                switch ($command) {
+                    case 'RESET':
+                        // not records
+                        break;
+                    case 'OW SEARCH':
+                        \App\Http\Models\PropertysModel::setRs485CommandInfo('END_OW_SCAN');
+                        break;
+                    default:
+                        
+                }
+                
                 usleep(100000);
             }
         } catch (\Exception $ex) {
@@ -150,13 +171,89 @@ class RS485Demon extends BaseDemon {
         $this->_inRooms = [];
         $this->_readPacks(250);
         
+        // Данные получили. Нужно их совместить с тем, что уже есть в системе и 
+        // выдать отчет по операции
+        
+        $new = 0;
+        $lost = 0;
+        
+        $owOldList = \App\Http\Models\OwDevsModel::whereControllerId($controller->id)->get();
+        // Ищем кого потеряли
+        foreach ($owOldList as $owOld) {
+            $find = false;
+            foreach ($this->_inRooms as $rom) {
+                if ($owOld->rom_1 === $rom[0] &&
+                    $owOld->rom_2 === $rom[1] &&
+                    $owOld->rom_3 === $rom[2] &&
+                    $owOld->rom_4 === $rom[3] &&
+                    $owOld->rom_5 === $rom[4] &&
+                    $owOld->rom_6 === $rom[5] &&
+                    $owOld->rom_7 === $rom[6] &&
+                    $owOld->rom_8 === $rom[7]) {
+                    $find = true;
+                    break;
+                }
+            }
+            if (!$find) {
+                $lost++;
+            }
+        }
+        
+        // Ищем кого нашли
+        foreach ($this->_inRooms as $rom) {
+            $find = false;
+            foreach ($owOldList as $owOld) {
+                if ($owOld->rom_1 === $rom[0] &&
+                    $owOld->rom_2 === $rom[1] &&
+                    $owOld->rom_3 === $rom[2] &&
+                    $owOld->rom_4 === $rom[3] &&
+                    $owOld->rom_5 === $rom[4] &&
+                    $owOld->rom_6 === $rom[5] &&
+                    $owOld->rom_7 === $rom[6] &&
+                    $owOld->rom_8 === $rom[7]) {
+                    $find = true;
+                    break;
+                }
+            }
+            if (!$find) {
+                $new++;
+                // Сразу же добавляем в список
+                $ow = new \App\Http\Models\OwDevsModel();
+                $ow->controller_id = $controller->id;
+                $ow->name = '';
+                $ow->comm = '';
+                $ow->rom_1 = $rom[0];
+                $ow->rom_2 = $rom[1];
+                $ow->rom_3 = $rom[2];
+                $ow->rom_4 = $rom[3];
+                $ow->rom_5 = $rom[4];
+                $ow->rom_6 = $rom[5];
+                $ow->rom_7 = $rom[6];
+                $ow->rom_8 = $rom[7];
+                $ow->save();
+            }
+        }
+        
+        $report = [];
+        $s = "OW SEARCH. '$controller->name' [TOTAL: ".count($this->_inRooms).", NEW: ".$new.", LOST: ".$lost."] ";
+        $this->printLine($s);
+        $report[] = $s;
+        $report[] = str_repeat('-', 35);
+        
         foreach ($this->_inRooms as $rom) {
             $a = [];
             foreach($rom as $b) {
-                $a[] = '0x'.dechex($b);
+                $a[] = sprintf("x%'02X", $b);
             }
-            $this->printLine(implode(' ', $a));
+            $s = implode(' ', $a);
+            $this->printLine($s);
+            $report[] = $s;
         }
+        
+        $report[] = str_repeat('-', 35);
+        $report[] = '';
+
+        \App\Http\Models\PropertysModel::setRs485CommandInfo(implode("\n", $report));
     }
     
     /**
