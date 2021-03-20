@@ -7,14 +7,13 @@
 
 #include "board.h"
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include "util/delay.h"
 #include "onewire.h"
-#include "drivers/ds18b20.h"
-#include "drivers/hs.h"
 
 #define ONEWIRE_CHECK_IN ONEWIRE_PIN & (1<<ONEWIRE_BIT)
 
-int error = 0;
+int onewire_error = 0;
 
 void onewire_init(void) {
 	CPIN(ONEWIRE_PORT, ONEWIRE_BIT);
@@ -52,6 +51,10 @@ uint8_t onewire_reset(void) {
 	_delay_us(60);	
 	status = ONEWIRE_CHECK_IN;
 	_delay_us(420);
+    if (status) {
+        onewire_error++;
+        board_onewire_error();
+    }
 	return !status;
 }
 
@@ -164,10 +167,12 @@ uint8_t onewire_match_rom(uint8_t *rom) {
 	return 1;
 }
 
-uint8_t onewire_search(uint8_t *roms) {
-	return onewire_search_roms(ONEWIRE_SEARCH_ROM, roms, 10);
+uint8_t onewire_search(void) {
+    onewire_roms_buff_count = onewire_search_roms(ONEWIRE_SEARCH_ROM, onewire_roms_buff, ONEWIRE_SEARCH_LIMIT);
+	return onewire_roms_buff_count;
 }
 
-uint8_t onewire_alarms(uint8_t *roms) {
-	return onewire_search_roms(ONEWIRE_ALARM_SEARCH, roms, 20);
+uint8_t onewire_alarms(void) {
+    onewire_roms_buff_count = onewire_search_roms(ONEWIRE_ALARM_SEARCH, onewire_roms_buff, ONEWIRE_SEARCH_LIMIT);
+	return onewire_roms_buff_count;
 }

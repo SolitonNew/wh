@@ -24,10 +24,12 @@
 #define ONEWIRE_READ_DATA 0xA0
 #define ONEWIRE_WRITE_DATA 0xB0
 
-#define ONEWIRE_SEARCH_LIMIT = 40
-#define ONEWIRE_ALARM_LIMIT 10
+#define ONEWIRE_SEARCH_LIMIT 40
+#define ONEWIRE_SEARCH_ROMS ONEWIRE_SEARCH_LIMIT * 8
 
-extern int error;
+extern int onewire_error;
+extern uint8_t onewire_roms_buff[ONEWIRE_SEARCH_ROMS];
+extern uint8_t onewire_roms_buff_count;
 
 void onewire_init(void);
 uint8_t onewire_crc_table(uint8_t data);
@@ -35,5 +37,5 @@ uint8_t onewire_reset(void);
 void onewire_write_byte(uint8_t byte);
 uint8_t onewire_read_byte(void);
 uint8_t onewire_match_rom(uint8_t *rom);
-uint8_t onewire_search(uint8_t *roms);
-uint8_t onewire_alarms(uint8_t *roms);
+uint8_t onewire_search(void);
+uint8_t onewire_alarms(void);

@@ -7,7 +7,7 @@
 
 #define RS485_BAUD 9600
 #define RS485_UBRR F_CPU/16/RS485_BAUD-1
-#define RS485_BUFF_MAX_SIZE 128
+#define RS485_BUFF_MAX_SIZE 200
 #define RS485_BUFF_MIN_SIZE 8
 
 /*
@@ -76,9 +76,11 @@ typedef struct _rs485_ow_rom_pack {  // 13 bytes
 
 extern uint16_t rs485_errors;
 extern uint16_t rs485_packs;
+extern uint8_t rs485_tag;
 extern uint16_t rs485_recieve_count;
 
 void rs485_init(void);
 void rs485_transmit_CMD(uint8_t cmd, int tag);
 void rs485_transmit_VAR(int id, float value);
 void rs485_transmit_ROM(uint8_t *rom);
+void rs485_in_buff_unpack(void);

@@ -12,10 +12,11 @@
 #include "core.h"
 #include "control.h"
 #include "rs485.h"
-#include "lcd.h"
 
-control_btn_states_t control_btn_states = {0, 0, 0, 0};
-char text[16];
+const int variable_count;
+control_btn_states_t control_btn_states = {0, 0, 0, 0, 0, 0, 0, 0};
+    
+uint8_t alarm_loop_space = 0;
 	
 int main(void)
 {
@@ -28,21 +29,41 @@ int main(void)
 	sei();
 		
     while (1) {
-        lcd_clear();
-        uint8_t num = sprintf(text, "P:%d  E:%d", rs485_packs, rs485_errors);
-        lcd_move(2, 3);
-        lcd_text(text, num);
+        // Обрабатываем входной буфер
+        core_rs485_processing();
         
-		core_onewire_alarm_processing();
+        // Обрабатываем onewire на предмет alarm флагов
+        if (alarm_loop_space-- == 0) {
+		    core_onewire_alarm_processing();
+            alarm_loop_space = 10;
+        }
+        
+        // Обрабатываем работу с запланироваными устройствами
 		core_schedule_processing();
 		
 		// Обработка кнопок управления
 		control_check_btn(&control_btn_states);
-		if (control_btn_states.btn_1) {
-			control_led_r(1);
+        
+        if (control_btn_states.btn_1_change && control_btn_states.btn_1_down == 0) {
+            board_reset();
+        }
+        
+        if (control_btn_states.btn_2_change) {
+            //
+        }   
+        
+        if (control_btn_states.btn_3_change) {
+            //
+        }                     
+        
+		if (control_btn_states.btn_4_change) {
+			control_led_r(0);
+            control_led_b(0);
 		}
 		
 		// ---------------------------
+        
+        //control_led_b(controller_initialized);
 		
 		_delay_ms(10);
     }
