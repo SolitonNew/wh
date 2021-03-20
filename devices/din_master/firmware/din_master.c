@@ -13,7 +13,6 @@
 #include "control.h"
 #include "rs485.h"
 
-const int variable_count;
 control_btn_states_t control_btn_states = {0, 0, 0, 0, 0, 0, 0, 0};
     
 uint8_t alarm_loop_space = 0;
