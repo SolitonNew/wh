@@ -44,7 +44,11 @@ class Firmware {
     public function generateConfig() {
         // Вычитываем все нужные данные
         $owList = \App\Http\Models\OwDevsModel::orderBy('id', 'asc')->get();
-        $varList = \App\Http\Models\VariablesModel::orderBy('id', 'asc')->get();
+        //$varList = \App\Http\Models\VariablesModel::orderBy('id', 'asc')->get();
+        $varList = DB::select('select v.*, c.rom controller_rom
+                                 from core_variables v, core_controllers c
+                                where v.controller_id = c.id
+                               order by id');
         $scriptList = \App\Http\Models\ScriptsModel::orderBy('id', 'asc')->limit(10)->get();
         $eventList = DB::select('select e.variable_id, GROUP_CONCAT(e.script_id) script_ids
                                    from core_variable_events e 

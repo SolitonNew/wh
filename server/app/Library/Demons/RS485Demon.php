@@ -111,7 +111,12 @@ class RS485Demon extends BaseDemon {
                         \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
                         break;
                     default:
-                        $variables = [];
+                        $variables = \App\Http\Models\VariableChangesMemModel::where('id', '>', $this->_lastSyncVariableID)
+                                        ->orderBy('id', 'asc')
+                                        ->get();
+                        if (count($variables)) {
+                            $this->_lastSyncVariableID = $variables[count($variables) - 1]->id;
+                        }
                 }
                                 
                 foreach($this->_controllers as $controller) {
@@ -277,8 +282,8 @@ class RS485Demon extends BaseDemon {
 
             // Шлем поочередно переменные
             foreach ($variables as $variable) {
-                $this->_transmitVAR($controller->rom, $variable->id, $variable->value);
-                $vars_out[] = "$variable->id: $variable->value";
+                $this->_transmitVAR($controller->rom, $variable->variable_id, $variable->value);
+                $vars_out[] = "$variable->variable_id: $variable->value";
             }
 
             // Шлем команду приготовиться отдавать свои изменения
@@ -286,7 +291,7 @@ class RS485Demon extends BaseDemon {
             
             $this->_inVariables = [];
 
-            switch ($this->_readPacks(100)) {
+            switch ($this->_readPacks(150)) {
                 case 5: // Контроллер попросил данные инициализации
                     $stat = 'INIT';
                     $vars_out = [];
@@ -300,6 +305,10 @@ class RS485Demon extends BaseDemon {
                     break;
                 case -1:
                     throw new \Exception('Controller did not respond');
+                default:
+                    foreach ($this->_inVariables as $variable) {
+                        DB::select("CALL CORE_SET_VARIABLE($variable->id, $variable->value, -1)");
+                    }
             }            
         } catch (\Exception $ex) {
             $stat = 'ERROR';
@@ -397,8 +406,8 @@ class RS485Demon extends BaseDemon {
                 break;
             
             case 'VAR':
-                if (strlen($this->_inBuffer) >= 11) {
-                    $size = 11;
+                if (strlen($this->_inBuffer) >= 9) {
+                    $size = 9;
                     $crc = 0;
                     for ($i = 0; $i < $size; $i++) {
                         $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
@@ -406,7 +415,8 @@ class RS485Demon extends BaseDemon {
                     if ($crc === 0) {
                         $controller = unpack('C', $this->_inBuffer[3])[1];
                         $id = unpack('s', $this->_inBuffer[4].$this->_inBuffer[5])[1];
-                        $value = unpack('f', $this->_inBuffer[6].$this->_inBuffer[7].$this->_inBuffer[8].$this->_inBuffer[9])[1];
+                        $value = unpack('s', $this->_inBuffer[6].$this->_inBuffer[7])[1];
+                        $value = $value / 10;
                         $this->_inVariables[] = (object)[
                             'id' => $id,
                             'value' => $value,
@@ -508,7 +518,7 @@ class RS485Demon extends BaseDemon {
         $pack = pack('a*', 'VAR');
         $pack .= pack('C', $controllerROM);
         $pack .= pack('s', $id);
-        $pack .= pack('f', $value);
+        $pack .= pack('s', ceil($value * 10));
 	$crc = 0x0;
 	for ($i = 0; $i < strlen($pack); $i++) {
             $crc = $this->_crc_table($crc ^ ord($pack[$i]));

@@ -118,7 +118,8 @@ class ScriptsController extends Controller
      * @return string
      */
     public function delete(int $id) {
-        try {
+        try {            
+            \App\Http\Models\VariableEventsModel::whereScriptId($id)->delete();
             $item = \App\Http\Models\ScriptsModel::find($id);
             $item->delete();
             return 'OK';

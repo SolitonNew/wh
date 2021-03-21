@@ -17,11 +17,11 @@ const uint8_t onewire_roms[ONEWIRE_ROMS_SIZE] PROGMEM = {
 
 const variable_t variables[VARIABLE_COUNT] PROGMEM = {
 @foreach($varList as $row)
-   { {{ $row->id }}, {{ $row->controller_id }}, {{ $varTyps[$row->typ] }}, {{ $row->direction }}, {{ $row->ow_index }}, 0 },
+   { {{ $row->id }}, {{ $row->controller_rom }}, {{ $varTyps[$row->typ] }}, {{ $row->direction }}, {{ $row->ow_index }}, 0 },
 @endforeach
 };
 
-float variable_values[VARIABLE_COUNT];
+int variable_values[VARIABLE_COUNT];
 
 int devs_get_variable_index(int id) {
     for (int i = 0; i < VARIABLE_COUNT; i++) {

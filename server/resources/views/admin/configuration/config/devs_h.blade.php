@@ -22,7 +22,7 @@ typedef struct _variable_t {
 
 extern const uint8_t onewire_roms[ONEWIRE_ROMS_SIZE] PROGMEM;
 extern const variable_t variables[VARIABLE_COUNT] PROGMEM;
-extern float variable_values[VARIABLE_COUNT];
+extern int variable_values[VARIABLE_COUNT];
 
 
 int devs_get_variable_index(int id);
