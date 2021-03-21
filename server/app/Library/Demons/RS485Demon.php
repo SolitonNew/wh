@@ -303,9 +303,14 @@ class RS485Demon extends BaseDemon {
                     $vars_out = [];
                     $variablesInit = \App\Http\Models\VariablesModel::orderBy('ID', 'asc')->get();
                     $this->_transmitCMD($controller->rom, 6, count($variablesInit));
+                    $counter = 0;
                     foreach ($variablesInit as $variable) {
                         $this->_transmitVAR($controller->rom, $variable->id, $variable->value);
                         $vars_out[] = "$variable->id: $variable->value";
+                        if ($counter++ > 5) {
+                            usleep(75000); // Притормаживаем переодически. Контроллер на том конце не мощный.
+                            $counter = 0;
+                        }
                     }
                     $this->_readPacks(250);        
                     break;
@@ -323,7 +328,17 @@ class RS485Demon extends BaseDemon {
         
         $this->printLine("[".now()."] SYNC. '$controller->name': $stat");
         if ($stat == 'OK') {
-            $this->printLine("   >>   [".implode(', ', $vars_out)."]");
+            foreach (array_chunk($vars_out, 15) as $key => $chunk) {
+                if ($key == 0) {
+                    $s = '   >>   ';
+                } else {
+                    $s = '        ';
+                }
+                $this->printLine($s.'['.implode(', ', $chunk).']');
+            }
+            if (!count($vars_out)) {
+                $this->printLine('   >>   []');
+            }
             
             $vars_in = [];
             foreach ($this->_inVariables as $variable) {
@@ -332,7 +347,17 @@ class RS485Demon extends BaseDemon {
             
             $this->printLine("   <<   [".implode(', ', $vars_in)."]");
         } elseif ($stat == 'INIT') {
-            $this->printLine("   >>   [".implode(', ', $vars_out)."]");
+            foreach (array_chunk($vars_out, 15) ?? [] as $key => $chunk) {
+                if ($key == 0) {
+                    $s = '   >>   ';
+                } else {
+                    $s = '        ';
+                }
+                $this->printLine($s.'['.implode(', ', $chunk).']');
+            }
+            if (!count($vars_out)) {
+                $this->printLine('   >>   []');
+            }
         } elseif ($stat == 'ERROR') {
             $this->printLine($errorText);
         }
@@ -390,76 +415,67 @@ class RS485Demon extends BaseDemon {
         $size = 0;
         switch ($sign) {
             case 'CMD':
-                if (strlen($this->_inBuffer) >= 8) {
-                    $size = 8;
-                    $crc = 0;
-                    for ($i = 0; $i < $size; $i++) {
-                        $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                if (strlen($this->_inBuffer) < 8) return $result;
+                $size = 8;
+                $crc = 0;
+                for ($i = 0; $i < $size; $i++) {
+                    $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                }
+                if ($crc === 0) {
+                    $this->_inPackCount = 0;
+                    $controller = unpack('C', $this->_inBuffer[3])[1];
+                    $cmd = unpack('C', $this->_inBuffer[4])[1];
+                    $tag = unpack('s', $this->_inBuffer[5].$this->_inBuffer[6])[1];
+                    if ($cmd === 4) { // Это пакет, в котором указано сколько читать после
+                        $this->_inPackCount = $tag;
                     }
-                    if ($crc === 0) {
-                        $this->_inPackCount = 0;
-                        $controller = unpack('C', $this->_inBuffer[3])[1];
-                        $cmd = unpack('C', $this->_inBuffer[4])[1];
-                        $tag = unpack('s', $this->_inBuffer[5].$this->_inBuffer[6])[1];
-                        if ($cmd === 4) { // Это пакет, в котором указано сколько читать после
-                            $this->_inPackCount = $tag;
-                        }
-                        $returnCmd = $cmd;
-                    } else {
-                        $size = 0;
-                    }
+                    $returnCmd = $cmd;
                 } else {
-                    return $result;
+                    $size = 0;
                 }
                 break;
             
             case 'VAR':
-                if (strlen($this->_inBuffer) >= 9) {
-                    $size = 9;
-                    $crc = 0;
-                    for ($i = 0; $i < $size; $i++) {
-                        $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
-                    }
-                    if ($crc === 0) {
-                        $returnCmd = 0;
-                        $controller = unpack('C', $this->_inBuffer[3])[1];
-                        $id = unpack('s', $this->_inBuffer[4].$this->_inBuffer[5])[1];
-                        $value = unpack('s', $this->_inBuffer[6].$this->_inBuffer[7])[1];
-                        $value = $value / 10;
-                        $this->_inVariables[] = (object)[
-                            'id' => $id,
-                            'value' => $value,
-                        ];
-                        $this->_inPackCount--;
-                    } else {
-                        $size = 0;
-                    }
+                if (strlen($this->_inBuffer) < 9) return $result;
+                $size = 9;
+                $crc = 0;
+                for ($i = 0; $i < $size; $i++) {
+                    $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                }
+                if ($crc === 0) {
+                    $returnCmd = 0;
+                    $controller = unpack('C', $this->_inBuffer[3])[1];
+                    $id = unpack('s', $this->_inBuffer[4].$this->_inBuffer[5])[1];
+                    $value = unpack('s', $this->_inBuffer[6].$this->_inBuffer[7])[1];
+                    $value = $value / 10;
+                    $this->_inVariables[] = (object)[
+                        'id' => $id,
+                        'value' => $value,
+                    ];
+                    $this->_inPackCount--;
                 } else {
-                    return $result;
+                    $size = 0;
                 }
                 break;
             
             case 'ROM':
-                if (strlen($this->_inBuffer) >= 13) {
-                    $size = 13;
-                    $controller = unpack('C', $this->_inBuffer[3])[1];
-                    $crc = 0;
-                    for ($i = 0; $i < $size; $i++) {
-                        $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                if (strlen($this->_inBuffer) < 13) return $result;
+                $size = 13;
+                $controller = unpack('C', $this->_inBuffer[3])[1];
+                $crc = 0;
+                for ($i = 0; $i < $size; $i++) {
+                    $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                }
+                if ($crc === 0) {
+                    $returnCmd = 0;
+                    $rom = [];
+                    for ($i = 0; $i < 8; $i++) {
+                        $rom[] = unpack('C', $this->_inBuffer[4 + $i])[1];
                     }
-                    if ($crc === 0) {
-                        $returnCmd = 0;
-                        $rom = [];
-                        for ($i = 0; $i < 8; $i++) {
-                            $rom[] = unpack('C', $this->_inBuffer[4 + $i])[1];
-                        }
-                        $this->_inRooms[] = $rom;
-                        $this->_inPackCount--;
-                    } else {
-                        $size = 0;
-                    }
+                    $this->_inRooms[] = $rom;
+                    $this->_inPackCount--;
                 } else {
-                    return $result;
+                    $size = 0;
                 }
                 break;
                 

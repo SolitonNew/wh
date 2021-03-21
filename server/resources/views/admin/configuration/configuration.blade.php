@@ -89,17 +89,7 @@
     }
 
     function runOwScan() {
-        startGlobalWaiter();
-        $.ajax({
-            url: "{{ route('configuration-ow-scan') }}",
-            success: function (data) {
-                stopGlobalWaiter();
-                alert(data);
-                if (data != 'ERROR') {
-                    window.location.reload();
-                }
-            },
-        });
+        dialog("{{ route('configuration-ow-scan') }}");
     }
 
     function generateVariablesForOW() {

@@ -208,7 +208,9 @@ class ConfigurationController extends Controller
                 break;
             }
         }
-        return $text;
+        return view('admin.configuration.configuration-ow-scan', [
+            'data' => $text,
+        ]);
     }
     
     /**
