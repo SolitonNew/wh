@@ -7,6 +7,8 @@
 
 #include <avr/io.h>
 
+#define MQ7_CODE 0xf4
+
 typedef struct _mq7_data {
 	float co;
 } mq7_data_t;

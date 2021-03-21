@@ -7,6 +7,8 @@
 
 #include <avr/io.h>
 
+#define PC_CODE 0xf2
+
 typedef struct _pc_data {
 	uint8_t p1;
 	uint8_t p2;

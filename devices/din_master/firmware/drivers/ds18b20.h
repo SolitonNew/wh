@@ -5,6 +5,7 @@
  *  Author: User
  */ 
 
+#define DS18B20_CODE 0x28
 #define ONEWIRE_CONVERTTEMP 0x44
 #define ONEWIRE_RSCRATCHPAD 0xBE
 

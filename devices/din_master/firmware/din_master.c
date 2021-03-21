@@ -13,9 +13,12 @@
 #include "control.h"
 #include "rs485.h"
 
+#define ALARM_LOOP_SPACE_INTERVAL 100 // usec
+#define ALARM_LOOP_SPACE_MAX ALARM_LOOP_SPACE_INTERVAL/MAIN_LOOP_DELAY
+
 control_btn_states_t control_btn_states = {0, 0, 0, 0, 0, 0, 0, 0};
     
-uint8_t alarm_loop_space = 0;
+int alarm_loop_space = 0;
 	
 int main(void)
 {
@@ -31,7 +34,7 @@ int main(void)
         core_rs485_processing();
         
         // Îבנאבאעûגאול onewire םא ןנוהלוע alarm פכאדמג
-        if (alarm_loop_space++ > 10) {
+        if (alarm_loop_space++ > ALARM_LOOP_SPACE_MAX) {
 			alarm_loop_space = 0;
 		    core_onewire_alarm_processing();
         }
@@ -61,7 +64,7 @@ int main(void)
 		
 		// ---------------------------
 		
-		_delay_ms(10);
+		_delay_ms(MAIN_LOOP_DELAY);
     }
 }
 

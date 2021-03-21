@@ -29,8 +29,8 @@ void board_script_error(void) {
 	control_led_r(1);
 }
 
-void board_rs485_incoming_package(void) {
-    control_led_g(2);
+void board_rs485_incoming_package(uint8_t show) {
+    control_led_g(show);
 }
 
 void board_onewire_search(uint8_t start) {
