@@ -54,6 +54,10 @@ class RS485Demon extends BaseDemon {
      */
     private $_inVariables = [];
     
+    /**
+     *
+     * @var type 
+     */
     private $_inRooms = [];
     
     /**
@@ -90,6 +94,8 @@ class RS485Demon extends BaseDemon {
                                 ->get();
         
         if (count($this->_controllers) == 0) return;
+        
+        $this->_lastSyncVariableID = DB::select('select max(id) maxID from core_variable_changes_mem')[0]->maxID ?? -1;
         
         try {           
             $port = config('firmware.rs485_port');
@@ -280,7 +286,8 @@ class RS485Demon extends BaseDemon {
             // Шлем команду (приготовиться принимать)
             $this->_transmitCMD($controller->rom, 2, count($variables));
 
-            // Шлем поочередно переменные
+            // Шлем поочередно переменные. 
+            // Каждую 10-ю посылку делаем паузу, что бы контроллер прожевал
             foreach ($variables as $variable) {
                 $this->_transmitVAR($controller->rom, $variable->variable_id, $variable->value);
                 $vars_out[] = "$variable->variable_id: $variable->value";
@@ -290,7 +297,7 @@ class RS485Demon extends BaseDemon {
             $this->_transmitCMD($controller->rom, 3, 0);
             
             $this->_inVariables = [];
-
+            // Ждем ответа от контроллера
             switch ($this->_readPacks(150)) {
                 case 5: // Контроллер попросил данные инициализации
                     $stat = 'INIT';
@@ -301,7 +308,7 @@ class RS485Demon extends BaseDemon {
                         $this->_transmitVAR($controller->rom, $variable->id, $variable->value);
                         $vars_out[] = "$variable->id: $variable->value";
                     }
-                    $this->_readPacks(250);
+                    $this->_readPacks(500);        
                     break;
                 case -1:
                     throw new \Exception('Controller did not respond');
@@ -341,28 +348,30 @@ class RS485Demon extends BaseDemon {
      * @return int    -1 - данные не получили. >= 0 - что-то получали
      */
     private function _readPacks($utimeout = 250) {
+        $returnCmd = -1;
         $this->_waitCount = 0;
-        $this->_inPackCount = 0;
         while ($this->_waitCount < ($utimeout / self::SLEEP_TIME)) {            
             $c = fgetc($this->_port);
             if ($c !== false) {
+                $this->_waitCount = 0;        
                 $this->_inBuffer .= $c;
-                $returnCmd = 0;
-                if ($this->_processedInBuffer($returnCmd)) {
-                    if ($returnCmd != 4) {
-                        $this->_waitCount = 0;
-                        if ($returnCmd > 0) {
-                            return $returnCmd;
-                        }
+                $cmd = 0;
+                if ($this->_processedInBuffer($cmd)) {        
+                    $this->_waitCount = 0; // Сбрасываем счетчик таймаута
+                    if ($cmd > 0) {
+                        $returnCmd = $cmd;
+                    } else {
+                        $returnCmd = 0;
                     }
-                    if ($this->_inPackCount <= 0) return 0;
+                    
+                    if ($this->_inPackCount <= 0) break; // Не будем ждать таймаут. Мы начитали все что нужно было.
                 }
             } else {
                 usleep(self::SLEEP_TIME * 1000);
                 $this->_waitCount++;
             }
         }
-        return -1;
+        return $returnCmd;
     }
     
     /**
@@ -390,12 +399,11 @@ class RS485Demon extends BaseDemon {
                         $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
                     }
                     if ($crc === 0) {
-                        $this->_waitCount = 0;
                         $this->_inPackCount = 0;
                         $controller = unpack('C', $this->_inBuffer[3])[1];
                         $cmd = unpack('C', $this->_inBuffer[4])[1];
                         $tag = unpack('s', $this->_inBuffer[5].$this->_inBuffer[6])[1];
-                        if ($cmd == 4) {
+                        if ($cmd === 4) { // Это пакет, в котором указано сколько читать после
                             $this->_inPackCount = $tag;
                         }
                         $returnCmd = $cmd;
@@ -413,6 +421,7 @@ class RS485Demon extends BaseDemon {
                         $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
                     }
                     if ($crc === 0) {
+                        $returnCmd = 0;
                         $controller = unpack('C', $this->_inBuffer[3])[1];
                         $id = unpack('s', $this->_inBuffer[4].$this->_inBuffer[5])[1];
                         $value = unpack('s', $this->_inBuffer[6].$this->_inBuffer[7])[1];
@@ -437,6 +446,7 @@ class RS485Demon extends BaseDemon {
                         $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
                     }
                     if ($crc === 0) {
+                        $returnCmd = 0;
                         $rom = [];
                         for ($i = 0; $i < 8; $i++) {
                             $rom[] = unpack('C', $this->_inBuffer[4 + $i])[1];
@@ -506,6 +516,7 @@ class RS485Demon extends BaseDemon {
 	}
         $pack .= pack('C', $crc);        
         fwrite($this->_port, $pack);
+        fflush($this->_port);
     }
     
     /**
@@ -525,6 +536,7 @@ class RS485Demon extends BaseDemon {
 	}
         $pack .= pack('C', $crc);
         fwrite($this->_port, $pack);
+        fflush($this->_port);
     }
     
     

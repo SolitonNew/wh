@@ -224,7 +224,7 @@ class ConfigurationController extends Controller
         
         try {
             foreach($devs as $dev) {
-                foreach (explode(',', $dev->CHANNELS) as $chan) {
+                foreach (explode(',', $dev->channels) as $chan) {
                     $find = false;
                     foreach($vars as $var) {
                         if ($var->ow_id == $dev->id && $var->channel && $var->channel == $chan) {
