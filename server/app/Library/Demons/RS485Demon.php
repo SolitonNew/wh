@@ -178,9 +178,9 @@ class RS485Demon extends BaseDemon {
      */
     private function _commandOwSearch($controller) {
         $this->_readPacks(250);
-        $this->_transmitCMD($controller->rom, 7, 0);        
         $this->_inRooms = [];
-        $this->_readPacks(250);
+        $this->_transmitCMD($controller->rom, 7, 0);
+        $this->_readPacks(500);
         
         // Данные получили. Нужно их совместить с тем, что уже есть в системе и 
         // выдать отчет по операции
@@ -287,7 +287,6 @@ class RS485Demon extends BaseDemon {
             $this->_transmitCMD($controller->rom, 2, count($variables));
 
             // Шлем поочередно переменные. 
-            // Каждую 10-ю посылку делаем паузу, что бы контроллер прожевал
             foreach ($variables as $variable) {
                 $this->_transmitVAR($controller->rom, $variable->variable_id, $variable->value);
                 $vars_out[] = "$variable->variable_id: $variable->value";
@@ -308,7 +307,7 @@ class RS485Demon extends BaseDemon {
                         $this->_transmitVAR($controller->rom, $variable->id, $variable->value);
                         $vars_out[] = "$variable->id: $variable->value";
                     }
-                    $this->_readPacks(500);        
+                    $this->_readPacks(250);        
                     break;
                 case -1:
                     throw new \Exception('Controller did not respond');
@@ -322,22 +321,21 @@ class RS485Demon extends BaseDemon {
             $errorText = $ex->getMessage();
         }
         
-        $s = "[".now()."] SYNC. '$controller->name': $stat\n";
+        $this->printLine("[".now()."] SYNC. '$controller->name': $stat");
         if ($stat == 'OK') {
-            $s .= "   >>   [".implode(', ', $vars_out)."]\n";
+            $this->printLine("   >>   [".implode(', ', $vars_out)."]");
             
             $vars_in = [];
             foreach ($this->_inVariables as $variable) {
                 $vars_in[] = "$variable->id: $variable->value";
             }
             
-            $s .= "   <<   [".implode(', ', $vars_in)."]\n";
+            $this->printLine("   <<   [".implode(', ', $vars_in)."]");
         } elseif ($stat == 'INIT') {
-            $s .= "   >>   [".implode(', ', $vars_out)."]\n";
+            $this->printLine("   >>   [".implode(', ', $vars_out)."]");
         } elseif ($stat == 'ERROR') {
-            $s .= $errorText."\n";
+            $this->printLine($errorText);
         }
-        $this->printLine($s);
     }
     
     /**
@@ -386,7 +384,7 @@ class RS485Demon extends BaseDemon {
         
         start_loop:
         
-        if (strlen($this->_inBuffer) < 3) return $result;
+        if (strlen($this->_inBuffer) < 8) return $result;
         
         $sign = unpack('a*', $this->_inBuffer[0].$this->_inBuffer[1].$this->_inBuffer[2])[1];
         $size = 0;
@@ -408,8 +406,10 @@ class RS485Demon extends BaseDemon {
                         }
                         $returnCmd = $cmd;
                     } else {
-                        $size = 1;
+                        $size = 0;
                     }
+                } else {
+                    return $result;
                 }
                 break;
             
@@ -432,8 +432,10 @@ class RS485Demon extends BaseDemon {
                         ];
                         $this->_inPackCount--;
                     } else {
-                        $size = 1;
+                        $size = 0;
                     }
+                } else {
+                    return $result;
                 }
                 break;
             
@@ -454,18 +456,32 @@ class RS485Demon extends BaseDemon {
                         $this->_inRooms[] = $rom;
                         $this->_inPackCount--;
                     } else {
-                        $size = 1;
+                        $size = 0;
                     }
+                } else {
+                    return $result;
                 }
                 break;
                 
             default:
-                if (strlen($this->_inBuffer) > 16) { // Ограничиваем необработаный буфер
-                    $size = 1;
-                }
+                $sign = '';
         }
+        
+        
+        if ($sign == '' || $size === 0) {
+            for ($i = 1; $i < strlen($this->_inBuffer) - 2; $i++) {
+                if ($this->_inBuffer[$i] > 'A' &&
+                    $this->_inBuffer[$i + 1] > 'A' &&
+                    $this->_inBuffer[$i + 2] > 'A') {
+                    $size = $i;
+                    break;
+                }
+            }
+        }
+        
 
         if ($size === 0) {
+            $this->_inBuffer = '';
             return $result;
         } elseif ($size === strlen($this->_inBuffer)) {
             $this->_inBuffer = '';
