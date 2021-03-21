@@ -5,6 +5,7 @@
  *  Author: User
  */ 
 
+#include <math.h>
 #include "../onewire.h"
 #include "ds18b20.h"
 

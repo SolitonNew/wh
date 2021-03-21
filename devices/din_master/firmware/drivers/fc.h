@@ -7,6 +7,8 @@
 
 #include <avr/io.h>
 
+#define FC_CODE 0xf1
+
 typedef struct _fc_data {
 	uint8_t f1;
 	uint8_t f2;

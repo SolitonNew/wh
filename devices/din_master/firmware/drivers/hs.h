@@ -5,6 +5,8 @@
  *  Author: User
  */ 
 
+#define HS_CODE 0xf0
+
 typedef struct _hs_data {
 	uint8_t left;
 	uint8_t right;

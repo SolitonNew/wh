@@ -93,6 +93,13 @@ void rs485_transmit_CMD(uint8_t cmd, int tag) {
         rs485_write_byte(b);
 	}
     rs485_write_byte(crc);
+	
+	switch (cmd) {
+		case 4:
+		case 5:
+		    board_rs485_incoming_package(0);
+			break;
+	}
 }
 
 void rs485_transmit_VAR(int id, int value) {
@@ -141,7 +148,7 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
             board_reset();
             break;
         case 2: // match receive
-            board_rs485_incoming_package();
+            board_rs485_incoming_package(1);
             rs485_is_online = 2;
             rs485_recieve_count = pack->tag;
             break;
@@ -170,6 +177,7 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
             controller_initialized = 1; // Помечаем, что контроллер проинициализирован. Теперь можем принимать данные.
             break;
         case 7: // match ow scan
+		    board_rs485_incoming_package(1);
             rs485_is_online = 7;
             board_onewire_search(1);
             onewire_search();
@@ -198,7 +206,7 @@ void rs485_in_buff_unpack(void) {
     
     // достигли минимального объема для возможной обработки
     uint8_t size = 0;
-    if (memeq(&rs485_in_buff[0], (uint8_t*)"CMD", 3)) {
+    if (memeq(&rs485_in_buff[0], (uint8_t*)"CMD", 3)) {		
         rs485_cmd_pack_t pack;
         size = sizeof(pack);
         uint8_t *ind = (uint8_t*)&pack;
@@ -214,7 +222,7 @@ void rs485_in_buff_unpack(void) {
                 rs485_is_online = 0;
             }                            
         } else {
-            size = 0; // Отправляем неявно данные на дообработку
+            size = 1; // На дообработку
         }
     } else
     if (memeq(&rs485_in_buff[0], (uint8_t*)"VAR", 3)) {
@@ -236,7 +244,7 @@ void rs485_in_buff_unpack(void) {
                 rs485_is_online = 0;
             }
         } else {
-            size = 0; // Отправляем неявно данные на дообработку
+            size = 1; // На дообработку
         }
     } else
     if (memeq(&rs485_in_buff[0], (uint8_t*)"ROM", 3)) {  // обрабатываем этот пакет только ради очереди. Таких данных на вход не бывает.
@@ -256,25 +264,17 @@ void rs485_in_buff_unpack(void) {
                 rs485_is_online = 0;
             }
         } else {
-            size = 0; // Отправляем неявно данные на дообработку
+            size = 1; // На дообработку
         }
     }
+	
+	if (size == 0) return ;
     
-    if (size == 0) { // очевидно с данными проблема
-        rs485_errors++;
-        board_rs485_error();
-        // сдвигаем на один байт и повторяем попытку
-        for (uint8_t i = 0; i < rs485_in_buff_size - 1; i++) {
-            rs485_in_buff[i] = rs485_in_buff[i + 1];
-        }
-        rs485_in_buff_size--;
-        goto start_unpack;
-    }
-    
-    rs485_packs++;
-    
+	if (size > 1) {
+        rs485_packs++;
+	}
+			
     uint8_t goto_start_unpack = 0;
-    
     cli();
     if (size == rs485_in_buff_size) { // самый простой вариант - просто обнуляем буфер
         rs485_in_buff_size = 0;

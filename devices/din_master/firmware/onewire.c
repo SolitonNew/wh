@@ -67,7 +67,6 @@ void onewire_write_bit(uint8_t bit) {
 	}		
 	_delay_us(60);	// 60
 	onewire_set(0);
-	_delay_us(1);
 	sei();
 }
 
@@ -77,7 +76,7 @@ uint8_t onewire_read_bit(void) {
 	onewire_set(1);
 	_delay_us(1); // 1
 	onewire_set(0);
-	_delay_us(1); // 10
+	_delay_us(10); // 10
 	if (ONEWIRE_CHECK_IN) bit = 1;
 	_delay_us(40); // 40
 	sei();

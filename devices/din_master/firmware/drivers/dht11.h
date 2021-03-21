@@ -7,6 +7,8 @@
 
 #include <avr/io.h>
 
+#define DHT11_CODE 0xf3
+
 typedef struct _dht11_data {
 	int h;
 	int t;

@@ -9,6 +9,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
+#include <math.h>
 #include "core.h"
 #include "rs485.h"
 #include "onewire.h"
@@ -21,6 +22,9 @@
 #include "drivers/mq7.h"
 #include "drivers/pc.h"
 #include "drivers/fc.h"
+
+#define SCHEDULE_STEP_INTERVAL 1000 // usec
+#define SCHEDULE_STEP_MAX SCHEDULE_STEP_INTERVAL/MAIN_LOOP_DELAY
 
 int variable_values[VARIABLE_COUNT];
 
@@ -130,13 +134,13 @@ void core_transmit_ow_values(int ow_index) {
 	uint8_t vars_num = devs_find_variables_by_ow_index(ow_index, vars);
 	
 	switch (rom[0]) {
-		case 0x28: // ds18b20
+		case DS18B20_CODE: // ds18b20
 			// readonly
 			break;
-		case 0xf0: // hs
+		case HS_CODE: // hs
 			// readonly
 			break;
-		case 0xf1: // fc			
+		case FC_CODE: // fc			
 			for (uint8_t i = 0; i < vars_num; i++) {
 				if (devs_get_varible(vars[i], &variable)) {
 					switch (variable.channel) {
@@ -158,13 +162,13 @@ void core_transmit_ow_values(int ow_index) {
 			}
 			fc_set_data(rom, &fc_data);
 			break;
-		case 0xf2: // pc
+		case PC_CODE: // pc
 			// readonly
 			break;
-		case 0xf3: // dht11
+		case DHT11_CODE: // dht11
 			// readonly
 			break;
-		case 0xf4: // mq7
+		case MQ7_CODE: // mq7
 			// readonly
 			break;
 		case 0xf5: // ampermetr
@@ -188,7 +192,7 @@ void core_request_ow_values(uint8_t *rom) {
 	uint8_t vars_num = devs_find_variables_by_ow_index(ow_index, vars);
 	
 	switch (rom[0]) {
-		case 0x28: // ds18b20
+		case DS18B20_CODE: // ds18b20
 			if (ds18b20_get_data(rom, &ds18b20_data)) {
 			    for (uint8_t i = 0; i < vars_num; i++) {
 				    if (devs_get_varible(vars[i], &variable)) {
@@ -207,7 +211,7 @@ void core_request_ow_values(uint8_t *rom) {
 				board_onewire_error();
 			}			
 			break;
-		case 0xf0: // hs
+		case HS_CODE: // hs
 			if (hs_get_data(rom, &hs_data)) {
 			    for (uint8_t i = 0; i < vars_num; i++) {
 				    if (devs_get_varible(vars[i], &variable)) {
@@ -226,7 +230,7 @@ void core_request_ow_values(uint8_t *rom) {
 				board_onewire_error();
 			}				
 			break;
-		case 0xf1: // fc
+		case FC_CODE: // fc
 			if (fc_get_data(rom, &fc_data)) {
 			    for (uint8_t i = 0; i < vars_num; i++) {
 				    if (devs_get_varible(vars[i], &variable)) {
@@ -251,7 +255,7 @@ void core_request_ow_values(uint8_t *rom) {
 				board_onewire_error();
 			}				
 			break;
-		case 0xf2: // pc
+		case PC_CODE: // pc
 			if (pc_get_data(rom, &pc_data)) {
 			    for (uint8_t i = 0; i < vars_num; i++) {
 				    if (devs_get_varible(vars[i], &variable)) {
@@ -276,7 +280,7 @@ void core_request_ow_values(uint8_t *rom) {
 				board_onewire_error();
 			}				
 			break;
-		case 0xf3: // dht11
+		case DHT11_CODE: // dht11
 			if (dht11_get_data(rom, &dht11_data)) {
 			    for (uint8_t i = 0; i < vars_num; i++) {
 				    if (devs_get_varible(vars[i], &variable)) {
@@ -295,7 +299,7 @@ void core_request_ow_values(uint8_t *rom) {
 				board_onewire_error();
 			}				
 			break;
-		case 0xf4: // mq7
+		case MQ7_CODE: // mq7
 			if (mq7_get_data(rom, &mq7_data)) {
 			    for (uint8_t i = 0; i < vars_num; i++) {
 				    if (devs_get_varible(vars[i], &variable)) {
@@ -321,7 +325,7 @@ void core_schedule_processing(void) {
 	// Поочередные запросы для периодической работы с периферией
 	// В частности опрос датчиков ds18b20
 	
-	if (schedule_step++ > 100) { // Раз в 1-2 sec (приблизительно)
+	if (schedule_step++ > SCHEDULE_STEP_MAX) {
 		schedule_step = 0;
         
         uint8_t rom[8] = {0, 0, 0, 0, 0, 0, 0, 0};
