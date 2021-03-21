@@ -13,6 +13,7 @@ extern int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
 extern uint8_t core_variable_changed_count;
 
 float core_get_variable_value(int index);
+void core_set_variable_value_int(int index, uint8_t target, int value);
 void core_set_variable_value(int index, uint8_t target, float value);
 void core_init(void);
 void core_rs485_processing(void);

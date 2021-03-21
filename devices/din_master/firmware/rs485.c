@@ -32,15 +32,17 @@ uint8_t onewire_roms_buff_count;
 
 int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
 uint8_t core_variable_changed_count;
-float variable_values[VARIABLE_COUNT];
+int variable_values[VARIABLE_COUNT];
 
 ISR(USART_RXC_vect) {
 	// Накапливаем входящий буфер
-	if (rs485_in_buff_size >= RS485_BUFF_MAX_SIZE - 1) {
+	rs485_in_buff[rs485_in_buff_size++] = UDR;
+	
+	// Защита от переполнения
+	if (rs485_in_buff_size >= RS485_BUFF_MAX_SIZE) {
 		rs485_in_buff_size = 0;
 		board_rs485_error();
 	}
-	rs485_in_buff[rs485_in_buff_size++] = UDR;
 }
 
 void rs485_init(void) {
@@ -93,7 +95,7 @@ void rs485_transmit_CMD(uint8_t cmd, int tag) {
     rs485_write_byte(crc);
 }
 
-void rs485_transmit_VAR(int id, float value) {
+void rs485_transmit_VAR(int id, int value) {
     rs485_var_pack_t pack;
     memcpy(pack.sign, "VAR", 3);
     pack.controller_id = controller_id;
@@ -184,9 +186,9 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
 void rs485_var_pack_handler(rs485_var_pack_t *pack) {
     rs485_recieve_count--;
     if (rs485_is_online == 6) {
-        core_set_variable_value(devs_get_variable_index(pack->id), 0, pack->value);
+        core_set_variable_value_int(devs_get_variable_index(pack->id), 0, pack->value);
     } else {
-        core_set_variable_value(devs_get_variable_index(pack->id), 1, pack->value);
+        core_set_variable_value_int(devs_get_variable_index(pack->id), 1, pack->value);
     } 
 }
 

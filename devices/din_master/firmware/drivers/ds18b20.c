@@ -31,7 +31,7 @@ uint8_t ds18b20_get_data(uint8_t *rom, ds18b20_data_t *data) {
 	}
 	
 	if (crc == 0) {
-		data->temp = ((d[1] << 8 | d[0]) / 16.0);
+		data->temp = ceil(((d[1] << 8 | d[0]) / 16.0) * 10) / 10;
 		return 1;
 	}		
 	
