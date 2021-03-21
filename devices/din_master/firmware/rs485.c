@@ -34,13 +34,28 @@ int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
 uint8_t core_variable_changed_count;
 int variable_values[VARIABLE_COUNT];
 
+uint8_t rs485_in_buff_lock = 0;
+
 ISR(USART_RXC_vect) {
+	uint8_t c = UDR;
+	
+	if (rs485_in_buff_lock) {
+		if (rs485_in_buff_size <= RS485_BUFF_MAX_SIZE / 2) {
+			rs485_in_buff_lock = 0;
+		} else { 
+			return ;
+		}			
+    }
+	
 	// Накапливаем входящий буфер
-	rs485_in_buff[rs485_in_buff_size++] = UDR;
+	rs485_in_buff[rs485_in_buff_size++] = c;
 	
 	// Защита от переполнения
+	// Если дошли до полного заполнения буфера ставим блокировку.
+	// Блокировка будет снята только после уменьшения входного буфера 
+	// меньше половины его максимально возможного размера.
 	if (rs485_in_buff_size >= RS485_BUFF_MAX_SIZE) {
-		rs485_in_buff_size = 0;
+		rs485_in_buff_lock = 1;
 		board_rs485_error();
 	}
 }
@@ -205,8 +220,20 @@ void rs485_in_buff_unpack(void) {
     if (rs485_in_buff_size < RS485_BUFF_MIN_SIZE) return ;
     
     // достигли минимального объема для возможной обработки
+	
+	uint8_t pack_sign = 0;
+	if (memeq(&rs485_in_buff[0], (uint8_t*)"CMD", 3)) {
+        pack_sign = 1;
+	} else
+	if (memeq(&rs485_in_buff[0], (uint8_t*)"VAR", 3)) {
+		pack_sign = 2;
+	} else
+	if (memeq(&rs485_in_buff[0], (uint8_t*)"ROM", 3)) {
+		pack_sign = 3;
+	}
+	
     uint8_t size = 0;
-    if (memeq(&rs485_in_buff[0], (uint8_t*)"CMD", 3)) {		
+    if (pack_sign == 1) { // CMD
         rs485_cmd_pack_t pack;
         size = sizeof(pack);
         uint8_t *ind = (uint8_t*)&pack;
@@ -216,16 +243,17 @@ void rs485_in_buff_unpack(void) {
             (*ind++) = rs485_in_buff[i];
 	    }
         if (crc == 0) { // Все нормально - обрабатываем
+			rs485_packs++;
             if (pack.controller_id == controller_id) { // это наши данные
                 rs485_cmd_pack_handler(&pack);
             } else {
                 rs485_is_online = 0;
             }                            
         } else {
-            size = 1; // На дообработку
+            size = 0; // На дообработку
         }
     } else
-    if (memeq(&rs485_in_buff[0], (uint8_t*)"VAR", 3)) {
+    if (pack_sign == 2) { // VAR
         rs485_var_pack_t pack;
         size = sizeof(pack);
         if (rs485_in_buff_size < size) return ;
@@ -236,6 +264,7 @@ void rs485_in_buff_unpack(void) {
             (*ind++) = rs485_in_buff[i];
 	    }
         if (crc == 0) { // Все нормально - обрабатываем
+			rs485_packs++;
             if (pack.controller_id == controller_id) { // это наши данные
                 if (controller_initialized) {
                     rs485_var_pack_handler(&pack);
@@ -244,10 +273,10 @@ void rs485_in_buff_unpack(void) {
                 rs485_is_online = 0;
             }
         } else {
-            size = 1; // На дообработку
+            size = 0; // На дообработку
         }
     } else
-    if (memeq(&rs485_in_buff[0], (uint8_t*)"ROM", 3)) {  // обрабатываем этот пакет только ради очереди. Таких данных на вход не бывает.
+    if (pack_sign == 3) {  // ROM   обрабатываем этот пакет только ради очереди. Таких данных на вход не бывает.
         rs485_ow_rom_pack_t pack;
         size = sizeof(pack);
         if (rs485_in_buff_size < size) return ;
@@ -258,24 +287,34 @@ void rs485_in_buff_unpack(void) {
             (*ind++) = rs485_in_buff[i];
 	    }
         if (crc == 0) { // Все нормально - обрабатываем
+			rs485_packs++;
             if (pack.controller_id == controller_id) { // это наши данные
                 // not records   
             } else {
                 rs485_is_online = 0;
             }
         } else {
-            size = 1; // На дообработку
+            size = 0; // На дообработку
         }
     }
 	
-	if (size == 0) return ;
-    
-	if (size > 1) {
-        rs485_packs++;
-	}
-			
+	if (pack_sign == 0 || size == 0) { // С данными что-то не то. Ищем подобие сигнатуры
+		size = 0;
+		for (uint8_t i = 1; i < rs485_in_buff_size - 2; i++) {
+			if (rs485_in_buff[i] >= 'A' && 
+			    rs485_in_buff[i + 1] >= 'A' && 
+				rs485_in_buff[i + 2] >= 'A') {
+					size = i;
+					break;
+				}
+		}
+	}		
+    			
     uint8_t goto_start_unpack = 0;
     cli();
+	if (size == 0) { // Это значит, что данных с подобием сигнаты не нашли. Все в мусорку.
+		rs485_in_buff_size = 0;
+	} else		
     if (size == rs485_in_buff_size) { // самый простой вариант - просто обнуляем буфер
         rs485_in_buff_size = 0;
     } else { // сложнее - сдвигаем на size к началу и повторяем операцию
