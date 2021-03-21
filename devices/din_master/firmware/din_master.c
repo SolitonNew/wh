@@ -13,7 +13,7 @@
 #include "control.h"
 #include "rs485.h"
 
-#define ALARM_LOOP_SPACE_INTERVAL 250 // usec
+#define ALARM_LOOP_SPACE_INTERVAL 200 // usec
 #define ALARM_LOOP_SPACE_MAX ALARM_LOOP_SPACE_INTERVAL/MAIN_LOOP_DELAY
 
 control_btn_states_t control_btn_states = {0, 0, 0, 0, 0, 0, 0, 0};

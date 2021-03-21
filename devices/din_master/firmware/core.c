@@ -23,7 +23,7 @@
 #include "drivers/pc.h"
 #include "drivers/fc.h"
 
-#define SCHEDULE_STEP_INTERVAL 1000 // usec
+#define SCHEDULE_STEP_INTERVAL 5000 // usec
 #define SCHEDULE_STEP_MAX SCHEDULE_STEP_INTERVAL/MAIN_LOOP_DELAY
 
 int variable_values[VARIABLE_COUNT];
