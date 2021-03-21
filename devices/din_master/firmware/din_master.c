@@ -31,9 +31,9 @@ int main(void)
         core_rs485_processing();
         
         // Обрабатываем onewire на предмет alarm флагов
-        if (alarm_loop_space-- == 0) {
+        if (alarm_loop_space++ > 10) {
+			alarm_loop_space = 0;
 		    core_onewire_alarm_processing();
-            alarm_loop_space = 10;
         }
         
         // Обрабатываем работу с запланироваными устройствами
@@ -60,8 +60,6 @@ int main(void)
 		}
 		
 		// ---------------------------
-        
-        //control_led_b(controller_initialized);
 		
 		_delay_ms(10);
     }

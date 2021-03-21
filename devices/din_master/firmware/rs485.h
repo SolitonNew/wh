@@ -9,6 +9,7 @@
 #define RS485_UBRR F_CPU/16/RS485_BAUD-1
 #define RS485_BUFF_MAX_SIZE 200
 #define RS485_BUFF_MIN_SIZE 8
+#define USART_RXC_vect _VECTOR(11)
 
 /*
     Пакет команды. Может быть отправлен в обе стороны.
@@ -50,11 +51,11 @@ typedef struct _rs485_cmd_pack {  // 8 bytes
     value: значение переменной
     crc: Контрольная сума с алгоритмом аналогичным onewire.
 */
-typedef struct _rs485_var_pack {  // 11 bytes
+typedef struct _rs485_var_pack {  // 9 bytes
     uint8_t sign[3];  // VAR
     uint8_t controller_id;
     int id;
-    float value;
+    int value;
     uint8_t crc;
 } rs485_var_pack_t;
 
@@ -81,6 +82,6 @@ extern uint16_t rs485_recieve_count;
 
 void rs485_init(void);
 void rs485_transmit_CMD(uint8_t cmd, int tag);
-void rs485_transmit_VAR(int id, float value);
+void rs485_transmit_VAR(int id, int value);
 void rs485_transmit_ROM(uint8_t *rom);
 void rs485_in_buff_unpack(void);
