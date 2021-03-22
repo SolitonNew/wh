@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Terminal;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use DB;
 
 class RoomController extends Controller
 {
@@ -27,7 +28,7 @@ class RoomController extends Controller
                " order by v.name";    
        
         $rows = [];
-        foreach (\Illuminate\Support\Facades\DB::select($sql) as $row) {
+        foreach (DB::select($sql) as $row) {
             $c = \App\Http\Models\VariablesModel::decodeAppControl($row->app_control);
             $itemLabel = \App\Http\Models\VariablesModel::groupVariableName($roomTitle, mb_strtoupper($row->comm), mb_strtoupper($c->label));
             $c->title = $itemLabel;
@@ -68,10 +69,10 @@ class RoomController extends Controller
                        " order by v.id ";
                 
                 $chartData = [];
-                foreach(\Illuminate\Support\Facades\DB::select($sql) as $row) {
-                    $x = $row->v_date;
-                    $y = $row->value;
-                    $data[] = "{x: $x, y: $y}";
+                foreach(DB::select($sql) as $v_row) {
+                    $x = $v_row->v_date;
+                    $y = $v_row->value;
+                    $chartData[] = "{x: $x, y: $y}";
                 }
                 
                 $charts[] = (object)[
