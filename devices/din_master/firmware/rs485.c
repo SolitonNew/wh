@@ -14,7 +14,6 @@
 
 uint16_t rs485_errors = 0;
 uint16_t rs485_packs = 0;
-uint8_t rs485_tag = 0;
 
 uint8_t controller_id;
 uint8_t controller_initialized;
@@ -200,6 +199,10 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
             board_onewire_search(0);
             onewire_roms_buff_count = 0;
             break;
+		case 24: // for boot loader
+		    break;
+		case 25: // for boot loader
+		    break;
     }
 }
 
@@ -227,6 +230,9 @@ void rs485_in_buff_unpack(void) {
     } else
     if (memeq(&rs485_in_buff[0], (uint8_t*)"ROM", 3)) {
         pack_sign = 3;
+    } else
+    if (memeq(&rs485_in_buff[0], (uint8_t*)"HEX", 3)) {
+        pack_sign = 4;
     }
 	
     uint8_t size = 0;
@@ -277,6 +283,28 @@ void rs485_in_buff_unpack(void) {
     } else
     if (pack_sign == 3) {  // ROM   обрабатываем этот пакет только ради очереди. Таких данных на вход не бывает.
         rs485_ow_rom_pack_t pack;
+        size = sizeof(pack);
+        if (rs485_in_buff_size < size) return ;
+        uint8_t *ind = (uint8_t*)&pack;
+        uint8_t crc = 0;
+        for (uint8_t i = 0; i < size; i++) {
+            crc = rs485_crc_table(crc ^ rs485_in_buff[i]);
+            (*ind++) = rs485_in_buff[i];
+        }
+        if (crc == 0) { // Все нормально - обрабатываем
+            rs485_packs++;
+            if (pack.controller_id == controller_id) { // это наши данные
+                // not records   
+            } else {
+                rs485_is_online = 0;
+            }
+        } else {
+            board_rs485_error();
+            size = 0; // На дообработку
+        }
+    } else
+    if (pack_sign == 4) {  // HEX   обрабатываем этот пакет только ради очереди. Таких данных на вход не бывает.
+        rs485_hex_pack_t pack;
         size = sizeof(pack);
         if (rs485_in_buff_size < size) return ;
         uint8_t *ind = (uint8_t*)&pack;
