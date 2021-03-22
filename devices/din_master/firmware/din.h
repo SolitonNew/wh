@@ -1,8 +1,5 @@
 /*
- * din.h
- *
- * Created: 15.03.2021 12:45:53
- *  Author: User
+ *  Author: Moklyak Alexandr
  */ 
 
 #define DIN_R1_DDR  DDRC

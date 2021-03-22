@@ -1,9 +1,6 @@
 /*
- * rs485.h
- *
- * Created: 07.03.2021 13:34:14
- *  Author: User
- */
+ *  Author: Moklyak Alexandr
+ */ 
 
 #define RS485_BAUD 9600
 #define RS485_UBRR F_CPU/16/RS485_BAUD-1

@@ -1,9 +1,6 @@
 /*
- * variables.h
- *
- * Created: 07.03.2021 13:34:54
- *  Author: User
- */
+ *  Author: Moklyak Alexandr
+ */ 
 
 #include <avr/io.h>
 

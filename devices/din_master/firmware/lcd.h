@@ -1,10 +1,3 @@
-/*
- * log.h
- *
- * Created: 09.03.2021 9:39:44
- *  Author: User
- */ 
-
 #define LCD_DDR DDRC
 #define LCD_PORT PORTC
 #define LCD_RST 3
