@@ -43,8 +43,8 @@ class Firmware {
      */
     public function generateConfig() {
         // Вычитываем все нужные данные
+        $owDevTyps = \App\Http\Models\OwTypesModel::orderBy('code', 'asc')->get();
         $owList = \App\Http\Models\OwDevsModel::orderBy('id', 'asc')->get();
-        //$varList = \App\Http\Models\VariablesModel::orderBy('id', 'asc')->get();
         $varList = DB::select('select v.*, c.rom controller_rom
                                  from core_variables v, core_controllers c
                                 where v.controller_id = c.id
@@ -58,13 +58,44 @@ class Firmware {
         // 
         foreach($varList as &$row) {
             $row->ow_index = -1;
-            if ($row->ow_id) {
-                for ($i = 0; $i < count($owList); $i++) {
-                    if ($row->ow_id == $owList[$i]->id) {
-                        $row->ow_index = $i;
-                        break;
+            if ($row->typ == 'din') {
+                $c = array_search($row->channel, ['R1', 'R2', 'R3', 'R4']);
+                if ($c !== false) {
+                    $row->channel = $c;
+                } else {
+                    $row->channel = 0;
+                }
+            } elseif ($row->typ == 'ow') {
+                if ($row->ow_id) {
+                    // Проставляем индекс OW
+                    $owCode = -1;
+                    for ($i = 0; $i < count($owList); $i++) {
+                        if ($row->ow_id == $owList[$i]->id) {
+                            $row->ow_index = $i;
+                            $owCode = $owList[$i]->rom_1;
+                            break;
+                        }
+                    }
+
+                    // Проставляем индекс канала
+                    if ($owCode > 0) {
+                        foreach($owDevTyps as $devTyp) {
+                            if ($devTyp->code == $owCode) {
+                                $a = explode(',', $devTyp->channels);
+                                $c = array_search($row->channel, $a);
+                                if ($c !== false) {
+                                    $row->channel = $c;
+                                } else {
+                                    $row->channel = 0;
+                                }
+                            }
+                        }
+                    } else {
+                        $row->channel = 0;
                     }
                 }
+            } else {
+                $row->channel = 0;
             }
         }
         

@@ -200,7 +200,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x0000000000000000     0x1e98
+.text           0x0000000000000000     0x1e88
  *(.vectors)
  .vectors       0x0000000000000000       0x26 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/crtatmega8a.o
                 0x0000000000000000                __vectors
@@ -216,40 +216,40 @@ END GROUP
  *libprintf_flt.a:*(.progmem.data)
  *libc.a:*(.progmem.data)
  *(.progmem*)
- .progmem.data  0x0000000000000026       0xc8 /home/soliton/wh/devices/din_master/firmware/Release/config/devs.o
+ .progmem.data  0x0000000000000026       0xb8 /home/soliton/wh/devices/din_master/firmware/Release/config/devs.o
                 0x0000000000000026                variables
                 0x00000000000000a6                onewire_roms
- .progmem.data  0x00000000000000ee      0x1e0 /home/soliton/wh/devices/din_master/firmware/Release/lcd.o
-                0x00000000000000ee                font
-                0x00000000000002ce                . = ALIGN (0x2)
+ .progmem.data  0x00000000000000de      0x1e0 /home/soliton/wh/devices/din_master/firmware/Release/lcd.o
+                0x00000000000000de                font
+                0x00000000000002be                . = ALIGN (0x2)
  *(.jumptables)
  *(.jumptables*)
  *(.lowtext)
  *(.lowtext*)
-                0x00000000000002ce                __ctors_start = .
+                0x00000000000002be                __ctors_start = .
  *(.ctors)
-                0x00000000000002ce                __ctors_end = .
-                0x00000000000002ce                __dtors_start = .
+                0x00000000000002be                __ctors_end = .
+                0x00000000000002be                __dtors_start = .
  *(.dtors)
-                0x00000000000002ce                __dtors_end = .
+                0x00000000000002be                __dtors_end = .
  SORT(*)(.ctors)
  SORT(*)(.dtors)
  *(.init0)
- .init0         0x00000000000002ce        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/crtatmega8a.o
-                0x00000000000002ce                __init
+ .init0         0x00000000000002be        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/crtatmega8a.o
+                0x00000000000002be                __init
  *(.init0)
  *(.init1)
  *(.init1)
  *(.init2)
- .init2         0x00000000000002ce        0xc /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/crtatmega8a.o
+ .init2         0x00000000000002be        0xc /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/crtatmega8a.o
  *(.init2)
  *(.init3)
  *(.init3)
  *(.init4)
- .init4         0x00000000000002da       0x16 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
-                0x00000000000002da                __do_copy_data
- .init4         0x00000000000002f0       0x10 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
-                0x00000000000002f0                __do_clear_bss
+ .init4         0x00000000000002ca       0x16 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
+                0x00000000000002ca                __do_copy_data
+ .init4         0x00000000000002e0       0x10 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
+                0x00000000000002e0                __do_clear_bss
  *(.init4)
  *(.init5)
  *(.init5)
@@ -260,298 +260,298 @@ END GROUP
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x0000000000000300        0x4 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/crtatmega8a.o
+ .init9         0x00000000000002f0        0x4 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/crtatmega8a.o
  *(.init9)
  *(.text)
- .text          0x0000000000000304        0x2 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/crtatmega8a.o
-                0x0000000000000304                __vector_1
-                0x0000000000000304                __vector_12
-                0x0000000000000304                __bad_interrupt
-                0x0000000000000304                __vector_6
-                0x0000000000000304                __vector_3
-                0x0000000000000304                __vector_13
-                0x0000000000000304                __vector_17
-                0x0000000000000304                __vector_7
-                0x0000000000000304                __vector_5
-                0x0000000000000304                __vector_4
-                0x0000000000000304                __vector_9
-                0x0000000000000304                __vector_2
-                0x0000000000000304                __vector_15
-                0x0000000000000304                __vector_8
-                0x0000000000000304                __vector_14
-                0x0000000000000304                __vector_10
-                0x0000000000000304                __vector_16
-                0x0000000000000304                __vector_18
- .text          0x0000000000000306       0x16 /home/soliton/wh/devices/din_master/firmware/Release/board.o
-                0x0000000000000306                board_reset
-                0x000000000000030e                board_onewire_error
-                0x0000000000000312                board_script_error
-                0x0000000000000316                board_rs485_error
-                0x0000000000000318                board_rs485_incoming_package
-                0x000000000000031a                board_onewire_search
- .text          0x000000000000031c       0xc0 /home/soliton/wh/devices/din_master/firmware/Release/commands.o
-                0x000000000000031c                command_get
-                0x000000000000031e                command_set
-                0x000000000000033c                command_toggle
-                0x000000000000037a                command_on
-                0x00000000000003aa                command_off
-                0x00000000000003d6                command_info
-                0x00000000000003d8                command_play
-                0x00000000000003da                command_speech
- .text          0x00000000000003dc      0x16e /home/soliton/wh/devices/din_master/firmware/Release/config/devs.o
-                0x00000000000003dc                devs_get_variable_index
-                0x000000000000041c                devs_get_varible
-                0x0000000000000442                devs_get_variable_ow_index
-                0x0000000000000458                devs_get_variable_controller
-                0x000000000000046e                devs_get_ow_rom
-                0x000000000000049c                devs_get_variable_rom
-                0x00000000000004ac                devs_onewire_rom_index
-                0x00000000000004ec                devs_find_variables_by_ow_index
- .text          0x000000000000054a       0x22 /home/soliton/wh/devices/din_master/firmware/Release/config/scripts.o
-                0x000000000000054a                script_4
-                0x0000000000000564                script_run_event_for_variable
- .text          0x000000000000056c       0x52 /home/soliton/wh/devices/din_master/firmware/Release/din.o
-                0x000000000000056c                din_init
-                0x000000000000057e                din_set_value
- .text          0x00000000000005be        0x0 /home/soliton/wh/devices/din_master/firmware/Release/din_master.o
- .text          0x00000000000005be       0x96 /home/soliton/wh/devices/din_master/firmware/Release/drivers/dht11.o
-                0x00000000000005be                dht11_get_data
- .text          0x0000000000000654       0xe8 /home/soliton/wh/devices/din_master/firmware/Release/drivers/ds18b20.o
-                0x0000000000000654                ds18b20_start_measure
-                0x0000000000000672                ds18b20_get_data
- .text          0x000000000000073c        0x4 /home/soliton/wh/devices/din_master/firmware/Release/drivers/hs.o
-                0x000000000000073c                hs_get_data
- .text          0x0000000000000740        0x4 /home/soliton/wh/devices/din_master/firmware/Release/drivers/mq7.o
-                0x0000000000000740                mq7_get_data
- .text          0x0000000000000744        0x6 /home/soliton/wh/devices/din_master/firmware/Release/drivers/fc.o
-                0x0000000000000744                fc_get_data
-                0x0000000000000748                fc_set_data
- .text          0x000000000000074a        0x4 /home/soliton/wh/devices/din_master/firmware/Release/drivers/pc.o
-                0x000000000000074a                pc_get_data
- .text          0x000000000000074e      0x1ae /home/soliton/wh/devices/din_master/firmware/Release/lcd.o
-                0x000000000000074e                lcd_write
-                0x0000000000000778                lcd_move
-                0x00000000000007a8                lcd_clear
-                0x00000000000007c4                lcd_init
-                0x0000000000000814                lcd_char
-                0x000000000000088a                lcd_text
-                0x00000000000008c2                lcd_hex
-                0x00000000000008e8                lcd_nl
- .text          0x00000000000008fc       0xe6 /home/soliton/wh/devices/din_master/firmware/Release/control.o
-                0x00000000000008fc                control_init
-                0x000000000000091e                control_led_r
-                0x0000000000000934                control_led_g
-                0x000000000000094a                control_led_y
-                0x0000000000000960                control_led_b
-                0x0000000000000976                control_check_btn
- .text          0x00000000000009e2      0x37e /home/soliton/wh/devices/din_master/firmware/Release/onewire.o
-                0x00000000000009e6                onewire_init
-                0x00000000000009ec                onewire_crc_table
-                0x0000000000000a10                onewire_set
-                0x0000000000000a18                onewire_reset
-                0x0000000000000a64                onewire_write_bit
-                0x0000000000000a86                onewire_read_bit
-                0x0000000000000aac                onewire_write_byte
-                0x0000000000000ae6                onewire_read_byte
-                0x0000000000000b26                onewire_search_rom
-                0x0000000000000c62                onewire_search_roms
-                0x0000000000000d16                onewire_match_rom
-                0x0000000000000d40                onewire_search
-                0x0000000000000d50                onewire_alarms
- .text          0x0000000000000d60      0x642 /home/soliton/wh/devices/din_master/firmware/Release/rs485.o
-                0x0000000000000d60                __vector_11
-                0x0000000000000dd6                rs485_init
-                0x0000000000000de6                rs485_crc_table
-                0x0000000000000e0a                rs485_write_byte
-                0x0000000000000e12                rs485_transmit_CMD
-                0x0000000000000ec8                rs485_transmit_VAR
-                0x0000000000000f50                rs485_transmit_ROM
-                0x0000000000000fe0                memeq
-                0x0000000000000ffe                rs485_cmd_pack_handler
-                0x000000000000111c                rs485_var_pack_handler
-                0x000000000000115a                rs485_in_buff_unpack
- .text          0x00000000000013a2      0x630 /home/soliton/wh/devices/din_master/firmware/Release/core.o
-                0x00000000000013a2                core_get_variable_value
-                0x00000000000013d4                core_init
-                0x00000000000013da                core_rs485_processing
-                0x00000000000013dc                core_transmit_ow_values
-                0x00000000000014a4                core_set_variable_value_int
-                0x0000000000001584                core_set_variable_value
-                0x00000000000015ae                core_request_ow_values
-                0x0000000000001876                core_onewire_alarm_processing
-                0x00000000000018a4                core_schedule_processing
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(ceil.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(cmpsf2.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(divsf3.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(divsf3x.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fixsfsi.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fixunssfsi.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(floatsisf.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_cmp.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_inf.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_mintl.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_mpack.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_nan.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_pscA.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_pscB.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_round.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_split3.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_trunc.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_zero.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(mulsf3.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(mulsf3x.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
- .text          0x00000000000019d2        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
-                0x00000000000019d2                . = ALIGN (0x2)
+ .text          0x00000000000002f4        0x2 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/crtatmega8a.o
+                0x00000000000002f4                __vector_1
+                0x00000000000002f4                __vector_12
+                0x00000000000002f4                __bad_interrupt
+                0x00000000000002f4                __vector_6
+                0x00000000000002f4                __vector_3
+                0x00000000000002f4                __vector_13
+                0x00000000000002f4                __vector_17
+                0x00000000000002f4                __vector_7
+                0x00000000000002f4                __vector_5
+                0x00000000000002f4                __vector_4
+                0x00000000000002f4                __vector_9
+                0x00000000000002f4                __vector_2
+                0x00000000000002f4                __vector_15
+                0x00000000000002f4                __vector_8
+                0x00000000000002f4                __vector_14
+                0x00000000000002f4                __vector_10
+                0x00000000000002f4                __vector_16
+                0x00000000000002f4                __vector_18
+ .text          0x00000000000002f6       0x16 /home/soliton/wh/devices/din_master/firmware/Release/board.o
+                0x00000000000002f6                board_reset
+                0x00000000000002fe                board_onewire_error
+                0x0000000000000302                board_script_error
+                0x0000000000000306                board_rs485_error
+                0x0000000000000308                board_rs485_incoming_package
+                0x000000000000030a                board_onewire_search
+ .text          0x000000000000030c       0xc0 /home/soliton/wh/devices/din_master/firmware/Release/commands.o
+                0x000000000000030c                command_get
+                0x000000000000030e                command_set
+                0x000000000000032c                command_toggle
+                0x000000000000036a                command_on
+                0x000000000000039a                command_off
+                0x00000000000003c6                command_info
+                0x00000000000003c8                command_play
+                0x00000000000003ca                command_speech
+ .text          0x00000000000003cc      0x16e /home/soliton/wh/devices/din_master/firmware/Release/config/devs.o
+                0x00000000000003cc                devs_get_variable_index
+                0x000000000000040c                devs_get_varible
+                0x0000000000000432                devs_get_variable_ow_index
+                0x0000000000000448                devs_get_variable_controller
+                0x000000000000045e                devs_get_ow_rom
+                0x000000000000048c                devs_get_variable_rom
+                0x000000000000049c                devs_onewire_rom_index
+                0x00000000000004dc                devs_find_variables_by_ow_index
+ .text          0x000000000000053a       0x22 /home/soliton/wh/devices/din_master/firmware/Release/config/scripts.o
+                0x000000000000053a                script_4
+                0x0000000000000554                script_run_event_for_variable
+ .text          0x000000000000055c       0x52 /home/soliton/wh/devices/din_master/firmware/Release/din.o
+                0x000000000000055c                din_init
+                0x000000000000056e                din_set_value
+ .text          0x00000000000005ae        0x0 /home/soliton/wh/devices/din_master/firmware/Release/din_master.o
+ .text          0x00000000000005ae       0x96 /home/soliton/wh/devices/din_master/firmware/Release/drivers/dht11.o
+                0x00000000000005ae                dht11_get_data
+ .text          0x0000000000000644       0xe8 /home/soliton/wh/devices/din_master/firmware/Release/drivers/ds18b20.o
+                0x0000000000000644                ds18b20_start_measure
+                0x0000000000000662                ds18b20_get_data
+ .text          0x000000000000072c        0x4 /home/soliton/wh/devices/din_master/firmware/Release/drivers/hs.o
+                0x000000000000072c                hs_get_data
+ .text          0x0000000000000730        0x4 /home/soliton/wh/devices/din_master/firmware/Release/drivers/mq7.o
+                0x0000000000000730                mq7_get_data
+ .text          0x0000000000000734        0x6 /home/soliton/wh/devices/din_master/firmware/Release/drivers/fc.o
+                0x0000000000000734                fc_get_data
+                0x0000000000000738                fc_set_data
+ .text          0x000000000000073a        0x4 /home/soliton/wh/devices/din_master/firmware/Release/drivers/pc.o
+                0x000000000000073a                pc_get_data
+ .text          0x000000000000073e      0x1ae /home/soliton/wh/devices/din_master/firmware/Release/lcd.o
+                0x000000000000073e                lcd_write
+                0x0000000000000768                lcd_move
+                0x0000000000000798                lcd_clear
+                0x00000000000007b4                lcd_init
+                0x0000000000000804                lcd_char
+                0x000000000000087a                lcd_text
+                0x00000000000008b2                lcd_hex
+                0x00000000000008d8                lcd_nl
+ .text          0x00000000000008ec       0xe6 /home/soliton/wh/devices/din_master/firmware/Release/control.o
+                0x00000000000008ec                control_init
+                0x000000000000090e                control_led_r
+                0x0000000000000924                control_led_g
+                0x000000000000093a                control_led_y
+                0x0000000000000950                control_led_b
+                0x0000000000000966                control_check_btn
+ .text          0x00000000000009d2      0x37e /home/soliton/wh/devices/din_master/firmware/Release/onewire.o
+                0x00000000000009d6                onewire_init
+                0x00000000000009dc                onewire_crc_table
+                0x0000000000000a00                onewire_set
+                0x0000000000000a08                onewire_reset
+                0x0000000000000a54                onewire_write_bit
+                0x0000000000000a76                onewire_read_bit
+                0x0000000000000a9c                onewire_write_byte
+                0x0000000000000ad6                onewire_read_byte
+                0x0000000000000b16                onewire_search_rom
+                0x0000000000000c52                onewire_search_roms
+                0x0000000000000d06                onewire_match_rom
+                0x0000000000000d30                onewire_search
+                0x0000000000000d40                onewire_alarms
+ .text          0x0000000000000d50      0x642 /home/soliton/wh/devices/din_master/firmware/Release/rs485.o
+                0x0000000000000d50                __vector_11
+                0x0000000000000dc6                rs485_init
+                0x0000000000000dd6                rs485_crc_table
+                0x0000000000000dfa                rs485_write_byte
+                0x0000000000000e02                rs485_transmit_CMD
+                0x0000000000000eb8                rs485_transmit_VAR
+                0x0000000000000f40                rs485_transmit_ROM
+                0x0000000000000fd0                memeq
+                0x0000000000000fee                rs485_cmd_pack_handler
+                0x000000000000110c                rs485_var_pack_handler
+                0x000000000000114a                rs485_in_buff_unpack
+ .text          0x0000000000001392      0x630 /home/soliton/wh/devices/din_master/firmware/Release/core.o
+                0x0000000000001392                core_get_variable_value
+                0x00000000000013c4                core_init
+                0x00000000000013ca                core_rs485_processing
+                0x00000000000013cc                core_transmit_ow_values
+                0x0000000000001494                core_set_variable_value_int
+                0x0000000000001574                core_set_variable_value
+                0x000000000000159e                core_request_ow_values
+                0x0000000000001866                core_onewire_alarm_processing
+                0x0000000000001894                core_schedule_processing
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(ceil.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(cmpsf2.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(divsf3.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(divsf3x.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fixsfsi.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fixunssfsi.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(floatsisf.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_cmp.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_inf.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_mintl.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_mpack.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_nan.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_pscA.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_pscB.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_round.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_split3.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_trunc.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_zero.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(mulsf3.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(mulsf3x.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
+ .text          0x00000000000019c2        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
+                0x00000000000019c2                . = ALIGN (0x2)
  *(.text.*)
- .text.startup  0x00000000000019d2       0x6a /home/soliton/wh/devices/din_master/firmware/Release/din_master.o
-                0x00000000000019d2                main
+ .text.startup  0x00000000000019c2       0x6a /home/soliton/wh/devices/din_master/firmware/Release/din_master.o
+                0x00000000000019c2                main
  .text.avr-libc.fplib
-                0x0000000000001a3c       0x26 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(ceil.o)
-                0x0000000000001a3c                ceil
+                0x0000000000001a2c       0x26 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(ceil.o)
+                0x0000000000001a2c                ceil
  .text.avr-libc.fplib
-                0x0000000000001a62        0x8 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(cmpsf2.o)
-                0x0000000000001a62                __lesf2
-                0x0000000000001a62                __nesf2
-                0x0000000000001a62                __eqsf2
-                0x0000000000001a62                __cmpsf2
-                0x0000000000001a62                __ltsf2
+                0x0000000000001a52        0x8 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(cmpsf2.o)
+                0x0000000000001a52                __lesf2
+                0x0000000000001a52                __nesf2
+                0x0000000000001a52                __eqsf2
+                0x0000000000001a52                __cmpsf2
+                0x0000000000001a52                __ltsf2
  .text.avr-libc.fplib
-                0x0000000000001a6a        0x4 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(divsf3.o)
-                0x0000000000001a6a                __divsf3
+                0x0000000000001a5a        0x4 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(divsf3.o)
+                0x0000000000001a5a                __divsf3
  .text.avr-libc.fplib
-                0x0000000000001a6e       0xcc /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(divsf3x.o)
-                0x0000000000001a84                __divsf3x
-                0x0000000000001a88                __divsf3_pse
+                0x0000000000001a5e       0xcc /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(divsf3x.o)
+                0x0000000000001a74                __divsf3x
+                0x0000000000001a78                __divsf3_pse
  .text.avr-libc.fplib
-                0x0000000000001b3a        0xa /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fixsfsi.o)
-                0x0000000000001b3a                __fixsfsi
+                0x0000000000001b2a        0xa /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fixsfsi.o)
+                0x0000000000001b2a                __fixsfsi
  .text.avr-libc.fplib
-                0x0000000000001b44       0x58 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fixunssfsi.o)
-                0x0000000000001b44                __fixunssfsi
+                0x0000000000001b34       0x58 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fixunssfsi.o)
+                0x0000000000001b34                __fixunssfsi
  .text.avr-libc.fplib
-                0x0000000000001b9c       0x7a /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(floatsisf.o)
-                0x0000000000001b9c                __floatunsisf
-                0x0000000000001ba0                __floatsisf
+                0x0000000000001b8c       0x7a /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(floatsisf.o)
+                0x0000000000001b8c                __floatunsisf
+                0x0000000000001b90                __floatsisf
  .text.avr-libc.fplib
-                0x0000000000001c16       0x48 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_cmp.o)
-                0x0000000000001c16                __fp_cmp
+                0x0000000000001c06       0x48 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_cmp.o)
+                0x0000000000001c06                __fp_cmp
  .text.avr-libc.fplib
-                0x0000000000001c5e        0xc /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_inf.o)
-                0x0000000000001c5e                __fp_inf
+                0x0000000000001c4e        0xc /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_inf.o)
+                0x0000000000001c4e                __fp_inf
  .text.avr-libc.fplib
-                0x0000000000001c6a       0x36 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_mintl.o)
-                0x0000000000001c6a                __fp_mintl
+                0x0000000000001c5a       0x36 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_mintl.o)
+                0x0000000000001c5a                __fp_mintl
  .text.avr-libc.fplib
-                0x0000000000001ca0       0x1c /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_mpack.o)
-                0x0000000000001ca0                __fp_mpack
-                0x0000000000001ca4                __fp_mpack_finite
+                0x0000000000001c90       0x1c /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_mpack.o)
+                0x0000000000001c90                __fp_mpack
+                0x0000000000001c94                __fp_mpack_finite
  .text.avr-libc.fplib
-                0x0000000000001cbc        0x6 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_nan.o)
-                0x0000000000001cbc                __fp_nan
+                0x0000000000001cac        0x6 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_nan.o)
+                0x0000000000001cac                __fp_nan
  .text.avr-libc.fplib
-                0x0000000000001cc2        0xe /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_pscA.o)
-                0x0000000000001cc2                __fp_pscA
+                0x0000000000001cb2        0xe /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_pscA.o)
+                0x0000000000001cb2                __fp_pscA
  .text.avr-libc.fplib
-                0x0000000000001cd0        0xe /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_pscB.o)
-                0x0000000000001cd0                __fp_pscB
+                0x0000000000001cc0        0xe /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_pscB.o)
+                0x0000000000001cc0                __fp_pscB
  .text.avr-libc.fplib
-                0x0000000000001cde       0x22 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_round.o)
-                0x0000000000001cde                __fp_round
+                0x0000000000001cce       0x22 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_round.o)
+                0x0000000000001cce                __fp_round
  .text.avr-libc.fplib
-                0x0000000000001d00       0x44 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_split3.o)
-                0x0000000000001d00                __fp_split3
-                0x0000000000001d10                __fp_splitA
+                0x0000000000001cf0       0x44 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_split3.o)
+                0x0000000000001cf0                __fp_split3
+                0x0000000000001d00                __fp_splitA
  .text.avr-libc.fplib
-                0x0000000000001d44       0x2e /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_trunc.o)
-                0x0000000000001d44                __fp_trunc
+                0x0000000000001d34       0x2e /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_trunc.o)
+                0x0000000000001d34                __fp_trunc
  .text.avr-libc.fplib
-                0x0000000000001d72        0xe /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_zero.o)
-                0x0000000000001d72                __fp_zero
-                0x0000000000001d74                __fp_szero
+                0x0000000000001d62        0xe /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(fp_zero.o)
+                0x0000000000001d62                __fp_zero
+                0x0000000000001d64                __fp_szero
  .text.avr-libc.fplib
-                0x0000000000001d80        0x4 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(mulsf3.o)
-                0x0000000000001d80                __mulsf3
+                0x0000000000001d70        0x4 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(mulsf3.o)
+                0x0000000000001d70                __mulsf3
  .text.avr-libc.fplib
-                0x0000000000001d84       0xc2 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(mulsf3x.o)
-                0x0000000000001d98                __mulsf3x
-                0x0000000000001d9c                __mulsf3_pse
+                0x0000000000001d74       0xc2 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/libm.a(mulsf3x.o)
+                0x0000000000001d88                __mulsf3x
+                0x0000000000001d8c                __mulsf3_pse
  .text.libgcc.mul
-                0x0000000000001e46        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
+                0x0000000000001e36        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
  .text.libgcc.div
-                0x0000000000001e46       0x26 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
-                0x0000000000001e46                __divmodhi4
-                0x0000000000001e46                _div
- .text.libgcc   0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
+                0x0000000000001e36       0x26 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
+                0x0000000000001e36                __divmodhi4
+                0x0000000000001e36                _div
+ .text.libgcc   0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
  .text.libgcc.prologue
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
  .text.libgcc.builtins
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
  .text.libgcc.fmul
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
  .text.libgcc.fixed
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_divmodhi4.o)
  .text.libgcc.mul
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
  .text.libgcc.div
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
- .text.libgcc   0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
+ .text.libgcc   0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
  .text.libgcc.prologue
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
  .text.libgcc.builtins
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
  .text.libgcc.fmul
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
  .text.libgcc.fixed
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
  .text.libgcc.mul
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
  .text.libgcc.div
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
- .text.libgcc   0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
+ .text.libgcc   0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
  .text.libgcc.prologue
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
  .text.libgcc.builtins
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
  .text.libgcc.fmul
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
  .text.libgcc.fixed
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_copy_data.o)
  .text.libgcc.mul
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
  .text.libgcc.div
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
- .text.libgcc   0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
+ .text.libgcc   0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
  .text.libgcc.prologue
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
  .text.libgcc.builtins
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
  .text.libgcc.fmul
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
  .text.libgcc.fixed
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_clear_bss.o)
  .text.libgcc.mul
-                0x0000000000001e6c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
+                0x0000000000001e5c        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
  .text.libgcc.div
-                0x0000000000001e6c       0x28 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
-                0x0000000000001e6c                __udivmodhi4
- .text.libgcc   0x0000000000001e94        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
+                0x0000000000001e5c       0x28 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
+                0x0000000000001e5c                __udivmodhi4
+ .text.libgcc   0x0000000000001e84        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
  .text.libgcc.prologue
-                0x0000000000001e94        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
+                0x0000000000001e84        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
  .text.libgcc.builtins
-                0x0000000000001e94        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
+                0x0000000000001e84        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
  .text.libgcc.fmul
-                0x0000000000001e94        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
+                0x0000000000001e84        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
  .text.libgcc.fixed
-                0x0000000000001e94        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
-                0x0000000000001e94                . = ALIGN (0x2)
+                0x0000000000001e84        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_udivmodhi4.o)
+                0x0000000000001e84                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000000000001e94        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
-                0x0000000000001e94                exit
-                0x0000000000001e94                _exit
+ .fini9         0x0000000000001e84        0x0 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
+                0x0000000000001e84                exit
+                0x0000000000001e84                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -570,11 +570,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000000000001e94        0x4 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
+ .fini0         0x0000000000001e84        0x4 /usr/lib/gcc/avr/5.4.0/avr4/libgcc.a(_exit.o)
  *(.fini0)
-                0x0000000000001e98                _etext = .
+                0x0000000000001e88                _etext = .
 
-.data           0x0000000000800060        0xe load address 0x0000000000001e98
+.data           0x0000000000800060        0xe load address 0x0000000000001e88
                 0x0000000000800060                PROVIDE (__data_start, .)
  *(.data)
  .data          0x0000000000800060        0x0 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr4/crtatmega8a.o
@@ -705,8 +705,8 @@ END GROUP
                 0x0000000000800168                onewire_roms_buff_count
                 0x0000000000800169                onewire_roms_buff
                 0x00000000008002a9                PROVIDE (__bss_end, .)
-                0x0000000000001e98                __data_load_start = LOADADDR (.data)
-                0x0000000000001ea6                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0000000000001e88                __data_load_start = LOADADDR (.data)
+                0x0000000000001e96                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00000000008002a9        0x0
                 [!provide]                        PROVIDE (__noinit_start, .)
