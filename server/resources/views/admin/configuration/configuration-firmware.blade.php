@@ -36,11 +36,15 @@
 
 @section('buttons')
     <div style="flex-grow: 1"></div>
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('dialogs.btn_close')</button>
+    <button id="btn-close" type="button" class="btn btn-secondary" data-dismiss="modal">@lang('dialogs.btn_close')</button>
 @endsection
 
 @section('script')
 <script>
+    $(document).ready(function () {
+        
+    });
+    
     function firmwareStart() {
         $('#firmware-start').hide(250);
         
@@ -48,6 +52,7 @@
             url: "{{ route('configuration-firmware-start') }}",
             success: function (data) {
                 $('#progress-firmware').show(250);
+                firmwareButtons(0);
                 firmwareStatus();
             }
         });
@@ -86,6 +91,18 @@
                 setTimeout(firmwareStatus, 500);
             },
         });
+    }
+    
+    function firmwareButtons(show) {
+        if (show) {
+            $('#btn-close').removeAttr('disabled');
+            $('#btn-dialog-close').removeAttr('disabled');
+            $('#dialog_window').modal({keyboard: true});
+        } else {
+            $('#btn-close').attr('disabled', 'true');
+            $('#btn-dialog-close').attr('disabled', 'true');
+            $('#dialog_window').modal({keyboard: false});
+        }
     }
 
 </script>

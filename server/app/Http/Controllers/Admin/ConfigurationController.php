@@ -309,6 +309,11 @@ class ConfigurationController extends Controller
                 return response()->json([                    
                     'firmware' => 'COMPLETE',
                 ]);
+            } else 
+            if (strpos($info, 'ERROR') !== false) {
+                return response()->json([
+                    'error' => $info,
+                ]);
             } else {
                 $a = explode(';', $info);                    
                 if (count($a) < 2) {
