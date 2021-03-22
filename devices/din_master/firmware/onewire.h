@@ -1,8 +1,5 @@
 /*
- * onewire.h
- *
- * Created: 07.03.2021 13:33:02
- *  Author: User
+ *  Author: Moklyak Alexandr
  */ 
 
 #include <avr/io.h>
@@ -12,10 +9,10 @@
 #define ONEWIRE_PIN PINB
 #define ONEWIRE_BIT 7
 
-#define	ONEWIRE_SEARCH_FIRST	0xFF
-#define	ONEWIRE_PRESENCE_ERR	0xFF
-#define	ONEWIRE_DATA_ERR	    0xFE
-#define ONEWIRE_LAST_DEVICE		0x00
+#define	ONEWIRE_SEARCH_FIRST 0xFF
+#define	ONEWIRE_PRESENCE_ERR 0xFF
+#define	ONEWIRE_DATA_ERR 0xFE
+#define ONEWIRE_LAST_DEVICE 0x00
 
 #define ONEWIRE_SEARCH_ROM 0xF0
 #define ONEWIRE_ALARM_SEARCH 0xEC

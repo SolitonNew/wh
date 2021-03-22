@@ -1,3 +1,7 @@
+/*
+ *  Author: Moklyak Alexandr
+ */ 
+
 #include <avr/io.h>
 
 #define F_CPU 2000000UL

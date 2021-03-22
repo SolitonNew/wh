@@ -1,8 +1,5 @@
 /*
- * onewire.c
- *
- * Created: 07.03.2021 13:32:46
- *  Author: User
+ *  Author: Moklyak Alexandr
  */ 
 
 #include "board.h"
@@ -16,96 +13,96 @@
 int onewire_error = 0;
 
 void onewire_init(void) {
-	CPIN(ONEWIRE_PORT, ONEWIRE_BIT);
-	CPIN(ONEWIRE_DDR, ONEWIRE_BIT);
+    CPIN(ONEWIRE_PORT, ONEWIRE_BIT);
+    CPIN(ONEWIRE_DDR, ONEWIRE_BIT);
 }
 
 uint8_t onewire_crc_table(uint8_t data) {
-	uint8_t crc = 0x0;
-	uint8_t fb_bit = 0;
-	for (uint8_t b = 0; b < 8; b++) { 
-		fb_bit = (crc ^ data) & 0x01;
-		if (fb_bit == 0x01)
-			crc = crc ^ 0x18;
-		crc = (crc >> 1) & 0x7F;
-		if (fb_bit == 0x01) 
-			crc = crc | 0x80;
-		data >>= 1;
-	}
-	return crc;
+    uint8_t crc = 0x0;
+    uint8_t fb_bit = 0;
+    for (uint8_t b = 0; b < 8; b++) { 
+        fb_bit = (crc ^ data) & 0x01;
+        if (fb_bit == 0x01)
+            crc = crc ^ 0x18;
+        crc = (crc >> 1) & 0x7F;
+        if (fb_bit == 0x01) 
+            crc = crc | 0x80;
+        data >>= 1;
+    }
+    return crc;
 }
 
 void onewire_set(uint8_t mode) {
-	if (mode) {
-		SPIN(ONEWIRE_DDR, ONEWIRE_BIT);
-	} else {
-		CPIN(ONEWIRE_DDR, ONEWIRE_BIT);
-	}
+    if (mode) {
+        SPIN(ONEWIRE_DDR, ONEWIRE_BIT);
+    } else {
+        CPIN(ONEWIRE_DDR, ONEWIRE_BIT);
+    }
 }
 
 uint8_t onewire_reset(void) {
-	uint8_t status;
-	onewire_set(1);
-	_delay_us(480);
-	onewire_set(0);
-	_delay_us(60);	
-	status = ONEWIRE_CHECK_IN;
-	_delay_us(420);
+    uint8_t status;
+    onewire_set(1);
+    _delay_us(480);
+    onewire_set(0);
+    _delay_us(60);	
+    status = ONEWIRE_CHECK_IN;
+    _delay_us(420);
     if (status) {
         onewire_error++;
         board_onewire_error();
     }
-	return !status;
+    return !status;
 }
 
 void onewire_write_bit(uint8_t bit) {
-	cli();
-	onewire_set(1);
-	_delay_us(1); // 1
-	if (bit) {
-		onewire_set(0);
-	}		
-	_delay_us(60);	// 60
-	onewire_set(0);
-	sei();
+    cli();
+    onewire_set(1);
+    _delay_us(1); // 1
+    if (bit) {
+        onewire_set(0);
+    }		
+    _delay_us(60); // 60
+    onewire_set(0);
+    sei();
 }
 
 uint8_t onewire_read_bit(void) {
-	cli();
-	uint8_t bit = 0;
-	onewire_set(1);
-	_delay_us(1); // 1
-	onewire_set(0);
-	_delay_us(10); // 10
-	if (ONEWIRE_CHECK_IN) bit = 1;
-	_delay_us(40); // 40
-	sei();
-	return bit;
+    cli();
+    uint8_t bit = 0;
+    onewire_set(1);
+    _delay_us(1); // 1
+    onewire_set(0);
+    _delay_us(10); // 10
+    if (ONEWIRE_CHECK_IN) bit = 1;
+    _delay_us(40); // 40
+    sei();
+    return bit;
 }
 
 void onewire_write_byte(uint8_t byte) {
-	for (uint8_t i = 0; i < 8; i++) {
-		onewire_write_bit(byte & (1<<i));
-	}		
+    for (uint8_t i = 0; i < 8; i++) {
+        onewire_write_bit(byte & (1<<i));
+    }		
 }
 
 uint8_t onewire_read_byte(void) {
-	uint8_t byte = 0;
-	for (uint8_t i = 0; i < 8; i++) {
-		if (onewire_read_bit()) {
-			byte |= (1<<i);
-		}
-	}
-	return byte;
+    uint8_t byte = 0;
+    for (uint8_t i = 0; i < 8; i++) {
+        if (onewire_read_bit()) {
+            byte |= (1<<i);
+        }
+    }
+    return byte;
 }
 
 uint8_t onewire_search_rom(uint8_t *last_rom, uint8_t diff, uint8_t cmd) {
-	if (!onewire_reset()) {
-		last_rom[0] = 0;
-		return 0;
-	}
-	onewire_write_byte(cmd);	
-	uint8_t rom[8] = {0,0,0,0,0,0,0,0};
+    if (!onewire_reset()) {
+        last_rom[0] = 0;
+        return 0;
+    }
+    onewire_write_byte(cmd);	
+    uint8_t rom[8] = {0,0,0,0,0,0,0,0};
     uint8_t next_diff = 0;
     uint8_t i = 64;
     for (uint8_t byte = 0; byte < 8; byte++) {
@@ -114,61 +111,61 @@ uint8_t onewire_search_rom(uint8_t *last_rom, uint8_t diff, uint8_t cmd) {
             uint8_t b = onewire_read_bit();
             if (onewire_read_bit()) {
                 if (b) { // There are no devices or there is a mistake on the wire
-					last_rom[0] = 0;
+                    last_rom[0] = 0;
                     return 0;
-				}					
+                }					
             } else {
                 if (!b) { // Collision. Two devices with different bit meaning
                     if ((diff > i) || ((last_rom[byte] & (1 << bit)) && (diff != i))) {
                         b = 1;
                         next_diff = i;
-					}					
-				}
-			}		
-			onewire_write_bit(b);
+                    }					
+                }
+            }	
+            onewire_write_bit(b);
             if (b) {
                 r_b |= (1 << bit);
-			}				
+            }
             i--;
-		}
+        }
         rom[byte] = r_b;
-	}
+    }
 	
-	for (uint8_t i = 0; i < 8; i++) {
-		last_rom[i] = rom[i];
-	}
+    for (uint8_t i = 0; i < 8; i++) {
+        last_rom[i] = rom[i];
+    }
 		
-	return next_diff;
+    return next_diff;
 }
 
 uint8_t onewire_search_roms(uint8_t cmd, uint8_t *roms, uint8_t limit) {	
-	uint8_t num = 0;
-	uint8_t rom[8] = {0,0,0,0,0,0,0,0};
-	uint8_t diff = 65;
-	
-	int rom_index = 0;
-	for (uint8_t i = 0; i < 0xff; i++) {
-		diff = onewire_search_rom(rom, diff, cmd);
-		if (rom[0]) {
-			for (uint8_t m = 0; m < 8; m++) {
-				roms[rom_index] = rom[m];
-				rom_index++;
-			}
-			num++;
-			if (num >= limit) break;
-		}
-		if (diff == 0) break;
-	}
-	
-	return num;
+    uint8_t num = 0;
+    uint8_t rom[8] = {0,0,0,0,0,0,0,0};
+    uint8_t diff = 65;
+    
+    int rom_index = 0;
+    for (uint8_t i = 0; i < 0xff; i++) {
+        diff = onewire_search_rom(rom, diff, cmd);
+        if (rom[0]) {
+            for (uint8_t m = 0; m < 8; m++) {
+                roms[rom_index] = rom[m];
+                rom_index++;
+            }
+            num++;
+            if (num >= limit) break;
+        }
+        if (diff == 0) break;
+    }
+    
+    return num;
 }
 
 uint8_t onewire_match_rom(uint8_t *rom) {
-	onewire_write_byte(ONEWIRE_MATCH_ROM);	
-	for (uint8_t i = 0; i < 8; i++) {
-		onewire_write_byte(rom[i]);
-	}		
-	return 1;
+    onewire_write_byte(ONEWIRE_MATCH_ROM);
+    for (uint8_t i = 0; i < 8; i++) {
+        onewire_write_byte(rom[i]);
+    }		
+    return 1;
 }
 
 uint8_t onewire_search(void) {

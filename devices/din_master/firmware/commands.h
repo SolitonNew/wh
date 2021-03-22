@@ -1,8 +1,5 @@
 /*
- * commands.h
- *
- * Created: 09.03.2021 23:30:55
- *  Author: User
+ *  Author: Moklyak Alexandr
  */ 
 
 float command_get(int index);

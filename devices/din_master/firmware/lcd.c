@@ -1,10 +1,3 @@
-/*
- * log.c
- *
- * Created: 09.03.2021 9:39:55
- *  Author: User
- */ 
-
 #include "board.h"
 #include <avr/pgmspace.h>
 #include <avr/io.h>

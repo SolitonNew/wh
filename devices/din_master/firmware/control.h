@@ -1,8 +1,5 @@
 /*
- * led.h
- *
- * Created: 10.03.2021 17:44:21
- *  Author: User
+ *  Author: Moklyak Alexandr
  */ 
 
 #define CONTROL_LED_R_DDR  DDRB
@@ -42,13 +39,13 @@
 #define CONTROL_BTN_4_BIT  3
 
 typedef struct _control_btn_states {
-	uint8_t btn_1_down;
+    uint8_t btn_1_down;
     uint8_t btn_1_change;
-	uint8_t btn_2_down;
+    uint8_t btn_2_down;
     uint8_t btn_2_change;
-	uint8_t btn_3_down;
+    uint8_t btn_3_down;
     uint8_t btn_3_change;
-	uint8_t btn_4_down;
+    uint8_t btn_4_down;
     uint8_t btn_4_change;
 } control_btn_states_t;
 

@@ -1,8 +1,5 @@
 /*
- * din_master.c
- *
- * Created: 06.03.2021 0:15:01
- *  Author: User
+ *  Author: Moklyak Alexandr
  */ 
 
 #include "board.h"
@@ -22,12 +19,12 @@ int alarm_loop_space = 0;
 	
 int main(void)
 {
-	controller_id = 1;
-	
-	control_init();
-	core_init();
-				
-	sei();
+    controller_id = 1;
+    
+    control_init();
+    core_init();
+    
+    sei();
 		
     while (1) {
         // Обрабатываем входной буфер
@@ -35,15 +32,15 @@ int main(void)
         
         // Обрабатываем onewire на предмет alarm флагов
         if (alarm_loop_space++ > ALARM_LOOP_SPACE_MAX) {
-			alarm_loop_space = 0;
-		    core_onewire_alarm_processing();
+            alarm_loop_space = 0;
+            core_onewire_alarm_processing();
         }
         
         // Обрабатываем работу с запланироваными устройствами
-		core_schedule_processing();
+        core_schedule_processing();
 		
-		// Обработка кнопок управления
-		control_check_btn(&control_btn_states);
+        // Обработка кнопок управления
+        control_check_btn(&control_btn_states);
         
         if (control_btn_states.btn_1_change && control_btn_states.btn_1_down == 0) {
             board_reset();
@@ -57,14 +54,14 @@ int main(void)
             //
         }                     
         
-		if (control_btn_states.btn_4_change) {
-			control_led_r(0);
+        if (control_btn_states.btn_4_change) {
+            control_led_r(0);
             control_led_b(0);
-		}
+        }
 		
-		// ---------------------------
+        // ---------------------------
 		
-		_delay_ms(MAIN_LOOP_DELAY);
+        _delay_ms(MAIN_LOOP_DELAY);
     }
 }
 
