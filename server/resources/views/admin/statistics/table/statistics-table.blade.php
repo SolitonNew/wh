@@ -20,7 +20,7 @@
             <span>@lang('admin/statistics.page-table-sql-filtr'):</span>
             <div>
                 <input type="text" class="form-control {{ $errors->first('sql') ? 'is-invalid' : '' }}" 
-                       style="width: auto;" name="SQL" value="{{ Session::get('STATISTICS-TABLE-SQL') }}">
+                       style="width: auto;" name="sql" value="{{ Session::get('STATISTICS-TABLE-SQL') }}">
             </div>
             <button id="statisticsTableBtn" class="btn btn-primary" style="display:none;">@lang('admin/statistics.page-table-show')</button>
         </form>
@@ -182,6 +182,7 @@
                 url: "{{ route('statistics-table-delete-all-visible', $id) }}",
                 success: function (data) {
                     alert(data);
+                    window.location.reload();
                 },
             });
         });
