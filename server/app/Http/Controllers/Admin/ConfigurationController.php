@@ -30,9 +30,9 @@ class ConfigurationController extends Controller
                        t.comm,
                        "" variables,
                        d.lost
-                  from core_ow_devs d, core_ow_types t, core_controllers c
+                  from core_ow_devs d left join core_ow_types t on d.rom_1 = t.code,
+                       core_controllers c
                  where d.controller_id = c.id
-                   and d.rom_1 = t.code
                    and d.controller_id = "'.$id.'" 
                 order by c.name, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7';
         $data = DB::select($sql);
@@ -143,9 +143,9 @@ class ConfigurationController extends Controller
                        t.channels,
                        t.comm,
                        "" variables
-                  from core_ow_devs d, core_ow_types t, core_controllers c
+                  from core_ow_devs d left join core_ow_types t on d.rom_1 = t.code, 
+                       core_controllers c
                  where d.controller_id = c.id
-                   and d.rom_1 = t.code
                    and d.id = '.$id.'
                 order by c.name, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7';
         $data = DB::select($sql);
