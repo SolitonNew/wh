@@ -4,3 +4,4 @@ Debug
 Release
 devices/din_master/firmware/config
 *.atsuo
+*.atsln
