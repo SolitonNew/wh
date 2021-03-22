@@ -15,6 +15,10 @@ return [
 
     'configuration_firmware' => 'Применить конфигурацию щитовых контроллеров...',
     'firmware_title' => 'Применить конфигурацию щитовых контроллеров',
+    'firmware-make-title' => 'Отчет по сборке',
+    'firmware-start' => 'Начать обновление',
+    'firmware-start-progress' => 'Выполняется обновление',
+    'firmware-complete' => 'Обновление успешно выполнено',
     
     'configuration_reset' => 'Перезагрузить щитовые контроллеры',
     

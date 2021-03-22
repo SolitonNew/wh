@@ -122,6 +122,25 @@
     </div>
 </div>
 
+<div class="modal fade dialog-background" id="alert_window" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog confirm-width" role="document" style="padding: 1rem;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@lang('dialogs.alert_title')</h5>
+                <button type="button" class="close" onclick="alertOk()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="alert_text"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="alertOk();">@lang('dialogs.btn_ok')</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="globalWaiter" class="form-waiter" style="position:fixed;">
     <div>
         <div class="spinner-border text-primary" style="width: 5rem;height: 5rem;">
@@ -210,6 +229,21 @@
                 "@lang('dialogs.btn_yes')",
                 "@lang('dialogs.btn_no')",
                 handler, noHandler);
+    }
+    
+    var alertHandler = false;
+    
+    function alert(text, handler) {
+        alertHandler = handler;
+        $('#alert_text').html(text);
+        $('#alert_window').modal({backdrop: 'static', keyboard: false});
+    }
+    
+    function alertOk() {
+        if (alertHandler) {
+            alertHandler();
+        }
+        $('#alert_window').modal('hide');
     }
 
 

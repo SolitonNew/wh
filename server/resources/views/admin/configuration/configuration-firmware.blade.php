@@ -5,8 +5,32 @@
 @endsection
 
 @section('content')
-<div class="form-control" style="height: auto;">
-    <div style="white-space: pre;padding: 0.5rem;">{!! $data !!}</div>
+<div class="content">
+    <div class="strong">@lang('admin/configuration.firmware-make-title'):</div>
+    <div class="row" style="padding-bottom: 1rem;">
+        <div class="col-sm-12">
+            <div class="form-control" style="height: auto;">
+                <div style="white-space: pre;padding: 0.5rem;">{!! $data !!}</div>
+            </div>
+        </div>
+    </div>
+    @if(!$makeError)
+    <div class="row" id="firmware-start">
+        <div class="offset-sm-3 col-sm-6" style="display: flex;">
+            <button class="btn btn-primary flex-grow-1" onclick="firmwareStart()">@lang('admin/configuration.firmware-start')</button>
+        </div>
+    </div>
+    <div style="display: none;" id="progress-firmware">
+        <div class="">@lang('admin/configuration.firmware-start-progress') <span id="firmwareController"></span></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 @endsection
 
@@ -16,5 +40,53 @@
 @endsection
 
 @section('script')
+<script>
+    function firmwareStart() {
+        $('#firmware-start').hide(250);
+        
+        $.ajax({
+            url: "{{ route('configuration-firmware-start') }}",
+            success: function (data) {
+                $('#progress-firmware').show(250);
+                firmwareStatus();
+            }
+        });
+    }
+    
+    function firmwareStatus() {
+        $.ajax({
+            url: "{{ route('configuration-firmware-status') }}",
+            success: function (data) {
+                console.log(data);
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                } else
+                if (data.firmware) {
+                    if (data.firmware == 'COMPLETE') {
+                        $('#firmwareController').text('');
+                        $('#progress-firmware .progress-bar').css({
+                            width: '100%',
+                        });
+                        
+                        alert("@lang('admin/configuration.firmware-complete')", () => {
+                            dialogHide(() => {
+                                window.location.reload();
+                            });                            
+                        });
+                        return ;
+                    }
+                } else {
+                    $('#firmwareController').text(data.controller);
+                    $('#progress-firmware .progress-bar').css({
+                        width: data.percent + '%',
+                    });
+                }
+                
+                setTimeout(firmwareStatus, 500);
+            },
+        });
+    }
 
+</script>
 @endsection

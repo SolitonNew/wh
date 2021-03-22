@@ -74,8 +74,11 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/configuration-ow-delete/{id}', 'Admin\ConfigurationController@owDelete')->name('configuration-ow-delete');
     Route::get('/configuration-gen-vars', 'Admin\ConfigurationController@generateVarsForFreeDevs')->name('configuration-gen-vars');
     Route::get('/configuration-firmware/{id?}', 'Admin\ConfigurationController@configurationFirmware')->name('configuration-firmware');
+    Route::get('/configuration-firmware-start', 'Admin\ConfigurationController@configurationFirmwareStart')->name('configuration-firmware-start');
+    Route::get('/configuration-firmware-status', 'Admin\ConfigurationController@configurationFirmwareStatus')->name('configuration-firmware-status');
     Route::get('/configuration-reset', 'Admin\ConfigurationController@resetControllers')->name('configuration-reset');
     Route::get('/configuration-ow-scan', 'Admin\ConfigurationController@runOwScan')->name('configuration-ow-scan');
+    
     
     /* Настройка событий системы по расписанию */
     Route::get('/schedule', 'Admin\ScheduleController@index')->name('schedule');

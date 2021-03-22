@@ -263,6 +263,7 @@ class ConfigurationController extends Controller
      * @return string
      */
     public function configurationFirmware(int $id = null) {
+        $makeError = false;
         $text = '';
         try {
             $firmware = new \App\Library\Firmware();
@@ -273,15 +274,56 @@ class ConfigurationController extends Controller
             if ($firmware->make($outs)) {
                 $text = implode("\n", $outs);
             } else {
-                $text = "ERROR \n".implode("\n", $outs);
+                $makeError = true;
+                $text = implode("\n", $outs);
             }
         } catch (\Exception $ex) {
-            $text = "ERROR \n".$ex->getMessage();
+            $makeError = true;
+            $text = $ex->getMessage();
         }
         
         return view('admin.configuration.configuration-firmware', [
             'data' => $text,
+            'makeError' => $makeError,
         ]);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function configurationFirmwareStart() {
+        \App\Http\Models\PropertysModel::setRs485Command('FIRMWARE');
+        \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
+        return 'OK';
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function configurationFirmwareStatus() {
+        try {
+            $info = \App\Http\Models\PropertysModel::getRs485CommandInfo();
+            if ($info == 'COMPLETE') {
+                return response()->json([                    
+                    'firmware' => 'COMPLETE',
+                ]);
+            } else {
+                $a = explode(';', $info);                    
+                if (count($a) < 2) {
+                    $a = ['', 0];
+                }
+                return response()->json([
+                    'controller' => $a[0],
+                    'percent' => $a[1],
+                ]);                
+            }
+        } catch (\Exception $ex) {
+            return response()->json([
+                'error' => $ex->getMessage(),
+            ]);
+        }
     }
     
     /**

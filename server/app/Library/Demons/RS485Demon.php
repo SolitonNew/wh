@@ -116,6 +116,9 @@ class RS485Demon extends BaseDemon {
                     case 'OW SEARCH':
                         \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
                         break;
+                    case 'FIRMWARE':
+                        \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
+                        break;
                     default:
                         $variables = \App\Http\Models\VariableChangesMemModel::where('id', '>', $this->_lastSyncVariableID)
                                         ->orderBy('id', 'asc')
@@ -133,6 +136,9 @@ class RS485Demon extends BaseDemon {
                         case 'OW SEARCH':
                             $this->_commandOwSearch($controller);
                             break;
+                        case 'FIRMWARE':
+                            $this->_commandFirmware($controller);
+                            break;
                         default:
                             $this->_syncVariables($controller, $variables);
                     }
@@ -144,6 +150,9 @@ class RS485Demon extends BaseDemon {
                         break;
                     case 'OW SEARCH':
                         \App\Http\Models\PropertysModel::setRs485CommandInfo('END_OW_SCAN');
+                        break;
+                    case 'FIRMWARE':
+                        \App\Http\Models\PropertysModel::setRs485CommandInfo('COMPLETE', true);
                         break;
                     default:
                         
@@ -270,6 +279,34 @@ class RS485Demon extends BaseDemon {
         $report[] = '';
 
         \App\Http\Models\PropertysModel::setRs485CommandInfo(implode("\n", $report));
+    }
+    
+    /**
+     * 
+     * @param type $controller
+     */
+    public function _commandFirmware($controller) {
+        $count = count($this->_controllers);
+        $index = 0;
+        for ($i = 0; $i < $count; $i++) {
+            if ($this->_controllers[$i]->id == $controller->id) {
+                $index = $i;
+                break;
+            }
+        }
+        
+        $this->_readPacks(250);
+        $this->_transmitCMD($controller->rom, 1, 0);
+        for ($i = 0; $i < 100; $i++) {
+            $a = [
+                $controller->name, 
+                round((($index * 100) + $i) / $count),
+            ];
+            \App\Http\Models\PropertysModel::setRs485CommandInfo(implode(';', $a), true);
+            usleep(100000);
+        }
+        $this->_transmitCMD($controller->rom, 1, 0);
+        usleep(250000);
     }
     
     /**
