@@ -8,7 +8,7 @@
 <a href="#" class="dropdown-item" onclick="runOwScan(); return false;">@lang('admin/configuration.controller_ow_scan')</a>
 <a href="#" class="dropdown-item" onclick="generateVariablesForOW(); return false;">@lang('admin/configuration.generate_ow_vars')</a>
 <div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onclick="configurationApply(); return false;">@lang('admin/configuration.configuration_apply')</a>
+<a href="#" class="dropdown-item" onclick="configurationFirmware(); return false;">@lang('admin/configuration.configuration_firmware')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onClick="configurationReset(); return false;">@lang('admin/configuration.configuration_reset')</a>
 @endif
@@ -104,15 +104,8 @@
         });
     }
     
-    function configurationApply() {
-        $.ajax({
-            url: '{{ route("configuration-apply", "") }}',
-            success: function (data) {
-                if (data != 'OK') {
-                    alert(data);
-                }
-            },
-        })
+    function configurationFirmware() {
+        dialog("{{ route('configuration-firmware') }}");
     }
     
     function configurationReset() {

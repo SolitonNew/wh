@@ -262,7 +262,8 @@ class ConfigurationController extends Controller
      * @param int $id
      * @return string
      */
-    public function configurationApply(int $id = null) {
+    public function configurationFirmware(int $id = null) {
+        $text = '';
         try {
             $firmware = new \App\Library\Firmware();
             
@@ -270,13 +271,17 @@ class ConfigurationController extends Controller
             
             $outs = [];
             if ($firmware->make($outs)) {
-                return implode("\n", $outs);
+                $text = implode("\n", $outs);
             } else {
-                return "ERROR \n".implode("\n", $outs);
+                $text = "ERROR \n".implode("\n", $outs);
             }
         } catch (\Exception $ex) {
-            return $ex->getMessage();
+            $text = "ERROR \n".$ex->getMessage();
         }
+        
+        return view('admin.configuration.configuration-firmware', [
+            'data' => $text,
+        ]);
     }
     
     /**

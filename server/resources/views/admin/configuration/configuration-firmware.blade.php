@@ -1,7 +1,7 @@
 @extends('dialog')
 
 @section('title')
-@lang('admin/configuration.ow_scan_title')
+@lang('admin/configuration.firmware_title')
 @endsection
 
 @section('content')

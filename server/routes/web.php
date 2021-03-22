@@ -73,7 +73,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/configuration-ow-info/{id}', 'Admin\ConfigurationController@owInfo')->name('configuration-ow-info');
     Route::get('/configuration-ow-delete/{id}', 'Admin\ConfigurationController@owDelete')->name('configuration-ow-delete');
     Route::get('/configuration-gen-vars', 'Admin\ConfigurationController@generateVarsForFreeDevs')->name('configuration-gen-vars');
-    Route::get('/configuration-apply/{id?}', 'Admin\ConfigurationController@configurationApply')->name('configuration-apply');
+    Route::get('/configuration-firmware/{id?}', 'Admin\ConfigurationController@configurationFirmware')->name('configuration-firmware');
     Route::get('/configuration-reset', 'Admin\ConfigurationController@resetControllers')->name('configuration-reset');
     Route::get('/configuration-ow-scan', 'Admin\ConfigurationController@runOwScan')->name('configuration-ow-scan');
     
