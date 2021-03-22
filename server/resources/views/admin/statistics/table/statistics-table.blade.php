@@ -1,6 +1,7 @@
 @extends('admin.statistics.statistics')
 
 @section('page-down-menu')
+<a href="#" class="dropdown-item" onclick="statisticTableDeleteAllVisible(); return false;">@lang('admin/statistics.page-table-delete-all-visible')</a>
 @endsection
 
 @section('page-top-menu')
@@ -172,6 +173,17 @@
                     enabled: false,
                 }
             }
+        });
+    }
+    
+    function statisticTableDeleteAllVisible() {
+        confirmYesNo("@lang('admin/statistics.page-table-delete-all-visible-confirm')", () => {
+            $.ajax({
+                url: "{{ route('statistics-table-delete-all-visible', $id) }}",
+                success: function (data) {
+                    alert(data);
+                },
+            });
         });
     }
     

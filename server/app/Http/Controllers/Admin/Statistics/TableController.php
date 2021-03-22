@@ -85,4 +85,32 @@ class TableController extends Controller
             return 'ERROR';
         }
     }
+    
+    /**
+     * 
+     * @param int $id
+     * @return string
+     */
+    public function deleteAllVisibleValues(int $id) {
+        try {
+            $date = Session::get('STATISTICS-TABLE-DATE');
+            $sql = Session::get('STATISTICS-TABLE-SQL');
+            
+            if (!$date) {
+                return 'ERROR';
+            }
+            
+            $d = Carbon::parse($date)->startOfDay();
+            $query = \App\Http\Models\VariableChangesModel::whereVariableId($id)
+                        ->whereBetween('change_date', [$d, $d->copy()->addDay()]);
+            if ($sql) {
+                $query->whereRaw('value '.$sql);
+            }
+            
+            return 'OK: '.$query->delete();
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+    
 }
