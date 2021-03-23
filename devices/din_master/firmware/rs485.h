@@ -6,7 +6,7 @@
 #define RS485_UBRR F_CPU/16/RS485_BAUD-1
 #define RS485_BUFF_MAX_SIZE 128
 #define RS485_BUFF_MIN_SIZE 8
-#define USART_RXC_vect _VECTOR(11)
+//#define USART_RXC_vect _VECTOR(12) // 11
 
 /*
     Пакет команды. Может быть отправлен в обе стороны.

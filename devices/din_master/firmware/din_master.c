@@ -9,6 +9,7 @@
 #include "core.h"
 #include "control.h"
 #include "rs485.h"
+#include "onewire.h"
 
 #define ALARM_LOOP_SPACE_INTERVAL 200 // usec
 #define ALARM_LOOP_SPACE_MAX ALARM_LOOP_SPACE_INTERVAL/MAIN_LOOP_DELAY
@@ -18,12 +19,12 @@ control_btn_states_t control_btn_states = {0, 0, 0, 0, 0, 0, 0, 0};
 int alarm_loop_space = 0;
 	
 int main(void)
-{
+{	
     controller_id = 1;
     
     control_init();
     core_init();
-    
+	
     sei();
 		
     while (1) {
@@ -51,7 +52,9 @@ int main(void)
         }   
         
         if (control_btn_states.btn_3_change) {
-            //
+			if (onewire_search() > 2) {
+				control_led_g(1);
+			}				
         }                     
         
         if (control_btn_states.btn_4_change) {
