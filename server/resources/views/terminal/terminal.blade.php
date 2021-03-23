@@ -111,36 +111,38 @@
     let lastVariableID = {{ App\Http\Models\VariableChangesMemModel::lastVariableID() }};
     
     function loadChanges() {
-        $.ajax({url: '{{ route("terminal.variable-changes", '') }}/' + lastVariableID, 
-        success: (data) => {           
-            setTimeout(loadChanges, 500);
-            
-            if (typeof(data) == 'string') {
-                if ((data.substr(0, 15) == '<!DOCTYPE HTML>')) {
-                    window.location.reload();
-                    return ;
-                } else
-                if (data.substr(0, 9) == 'LAST_ID: ') {
-                    lastVariableID = data.substr(9);             
+        $.ajax({
+            url: '{{ route("terminal.variable-changes", '') }}/' + lastVariableID, 
+            success: (data) => {
+                setTimeout(loadChanges, 500);
+
+                if (typeof(data) == 'string') {
+                    if ((data.substr(0, 15) == '<!DOCTYPE HTML>')) {
+                        window.location.reload();
+                        return ;
+                    } else
+                    if (data.substr(0, 9) == 'LAST_ID: ') {
+                        lastVariableID = data.substr(9);             
+                    }
+                } else {
+                    for (let i = 0; i < data.length; i++) {
+                        let rec = data[i];
+                        let varID = parseInt(rec.variable_id);
+                        let varValue = parseFloat(rec.value);
+                        let varTime = parseInt(rec.change_date);
+                        lastVariableID = rec.ID;
+
+                        /* Call Event */
+                        variableOnChanged(varID, varValue, varTime);
+                        /* ---------- */
+                    }
                 }
-            } else {
-                for (let i = 0; i < data.length; i++) {
-                    let rec = data[i];
-                    let varID = parseInt(rec.VARIABLE_ID);
-                    let varValue = parseFloat(rec.VALUE);
-                    let varTime = parseInt(rec.CHANGE_DATE);
-                    lastVariableID = rec.ID;
-                    
-                    /* Call Event */
-                    variableOnChanged(varID, varValue, varTime);
-                    /* ---------- */
-                }
-            }
-        }, 
-        error: () => {
-            setTimeout(loadChanges, 5000);
-            console.log('ERROR');
-        }});
+            }, 
+            error: () => {
+                setTimeout(loadChanges, 5000);
+                console.log('ERROR');
+            },
+        });
     }
 
     var bodyItemW = 0;

@@ -4,7 +4,7 @@ Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('/login', 'Auth\LoginController@login')->name('loginPost');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
-Route::group(['middleware'=>'role:rerminal'], function () {
+Route::group(['middleware'=>'role:terminal'], function () {
     /* Отображение сгруппированых данных по комнатам */
     Route::get('/', 'Terminal\RoomsController@index')->name('home');
     Route::get('/room/{roomID}', 'Terminal\RoomController@index')->name('terminal.room');

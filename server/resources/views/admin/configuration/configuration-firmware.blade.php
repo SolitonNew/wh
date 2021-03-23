@@ -9,7 +9,7 @@
     <div class="strong">@lang('admin/configuration.firmware-make-title'):</div>
     <div class="row" style="padding-bottom: 1rem;">
         <div class="col-sm-12">
-            <div class="form-control" style="height: auto;">
+            <div class="form-control" style="height: auto;overflow-x: auto;">
                 <div style="white-space: pre;padding: 0.5rem;">{!! $data !!}</div>
             </div>
         </div>

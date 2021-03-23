@@ -176,6 +176,7 @@
         });
     }
     
+    @if($id)
     function statisticTableDeleteAllVisible() {
         confirmYesNo("@lang('admin/statistics.page-table-delete-all-visible-confirm')", () => {
             $.ajax({
@@ -187,6 +188,7 @@
             });
         });
     }
+    @endif
     
 </script>
 @endsection

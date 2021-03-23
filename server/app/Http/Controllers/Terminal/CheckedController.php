@@ -67,22 +67,21 @@ class CheckedController extends Controller
             if ($row->control->typ == 1) {
                 $sql = "select UNIX_TIMESTAMP(v.change_date) * 1000 v_date, v.value ".
                        "  from core_variable_changes_mem v ".
-                       " where v.variable_id = ".$row->data->ID.
-                       "   and v.value <> 85 ".
+                       " where v.variable_id = ".$row->data->id.
                        "   and v.change_date > (select max(zz.change_date) ".
                        "                          from core_variable_changes_mem zz ".
-                       "                         where zz.variable_id = ".$row->data->ID.") - interval 3 hour ".
+                       "                         where zz.variable_id = ".$row->data->id.") - interval 3 hour ".
                        " order by v.ID ";
                 
                 $chartData = [];
-                foreach(DB::select($sql) as $row) {
-                    $x = $row->v_date;
-                    $y = $row->value;
-                    $data[] = "{x: $x, y: $y}";
+                foreach(DB::select($sql) as $v_row) {
+                    $x = $v_row->v_date;
+                    $y = $v_row->value;
+                    $chartData[] = "{x: $x, y: $y}";
                 }
                 
                 $charts[] = (object)[
-                    'ID' => $row->data->ID,
+                    'id' => $row->data->id,
                     'data' => implode(', ', $chartData),
                     'color' => $color,
                 ];
