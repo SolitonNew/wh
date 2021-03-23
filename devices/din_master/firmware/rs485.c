@@ -32,7 +32,7 @@ int variable_values[VARIABLE_COUNT];
 
 uint8_t rs485_in_buff_lock = 0;
 
-ISR(USART_RXC_vect) {
+ISR(USARTRXC_vect) {
     uint8_t c = UDR;
     
     if (rs485_in_buff_lock) {

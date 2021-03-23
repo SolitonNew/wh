@@ -4,9 +4,9 @@
 
 #include <avr/io.h>
 
-#define ONEWIRE_DDR DDRB
-#define ONEWIRE_PORT PORTB
-#define ONEWIRE_PIN PINB
+#define ONEWIRE_DDR DDRD
+#define ONEWIRE_PORT PORTD
+#define ONEWIRE_PIN PIND
 #define ONEWIRE_BIT 7
 
 #define	ONEWIRE_SEARCH_FIRST 0xFF
