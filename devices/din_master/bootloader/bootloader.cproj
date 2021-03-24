@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>5.1</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8</ToolchainName>
-    <ProjectGuid>{f67bcfe9-1395-4bfa-a2aa-6e104c8178c7}</ProjectGuid>
+    <ProjectGuid>{1d672d94-3620-4282-a4d4-92de21ba6f79}</ProjectGuid>
     <avrdevice>ATmega16A</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
@@ -17,18 +17,12 @@
     <RootNamespace>bootloader</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <AsfVersion>2.11.1</AsfVersion>
-    <avrtool />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
       <AvrGcc>
   <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
   <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
-  <avrgcc.compiler.directories.IncludePaths>
-    <ListValues>
-      <Value>../</Value>
-    </ListValues>
-  </avrgcc.compiler.directories.IncludePaths>
   <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
   <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
   <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
@@ -38,9 +32,13 @@
       <Value>m</Value>
     </ListValues>
   </avrgcc.linker.libraries.Libraries>
+  <avrgcc.linker.memorysettings.Flash>
+    <ListValues>
+      <Value>.text=0x1C00</Value>
+    </ListValues>
+  </avrgcc.linker.memorysettings.Flash>
 </AvrGcc>
     </ToolchainSettings>
-    <UsesExternalMakeFile>False</UsesExternalMakeFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
