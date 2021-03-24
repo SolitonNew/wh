@@ -48,15 +48,15 @@ class Firmware {
         $varList = DB::select('select v.*, c.rom controller_rom
                                  from core_variables v, core_controllers c
                                 where v.controller_id = c.id
-                               order by id');
-        $scriptList = \App\Http\Models\ScriptsModel::orderBy('id', 'asc')->limit(10)->get();
+                               order by v.id');
+        $scriptList = \App\Http\Models\ScriptsModel::orderBy('id', 'asc')->get();
         $eventList = DB::select('select e.variable_id, GROUP_CONCAT(e.script_id) script_ids
                                    from core_variable_events e 
                                  group by e.variable_id 
                                  order by e.variable_id');
         
         // 
-        foreach($varList as &$row) {
+        foreach($varList as $row) {
             $row->ow_index = -1;
             if ($row->typ == 'din') {
                 $c = array_search($row->channel, ['R1', 'R2', 'R3', 'R4']);
@@ -236,5 +236,41 @@ class Firmware {
         }
         
         return false;
+    }
+    
+    /**
+     * 
+     * @return boolean|array
+     */
+    public function getHex() {
+        $file = $this->_firmwarePath().'/Release/'.$this->_project.'.hex';
+        if (!file_exists($file)) return false;
+        
+        $res = [];
+        
+        $f = fopen($file, 'r');
+        try {
+            $d_i = 0;
+            $data = [];
+            while (!feof($f)) {
+                $line = fgets($f);
+                
+                $len = hexdec(substr($line, 2, 2));
+                for ($i = 0; $i < $len; $i++) {
+                    $data[] = hexdec(substr($line, 10 + $i, 2));
+                    if ($d_i++ > 8) {
+                        $res[] = $data;
+                        $d_i = 0;
+                        $data = [];
+                    }
+                }
+            }
+        } catch (\Exception $ex) {
+
+        } finally {
+            fclose($f);
+        }
+        
+        return $res;
     }
 }

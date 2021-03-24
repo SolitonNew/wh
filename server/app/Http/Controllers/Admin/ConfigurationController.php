@@ -282,6 +282,8 @@ class ConfigurationController extends Controller
             $text = $ex->getMessage();
         }
         
+        $firmware->getHex();
+        
         return view('admin.configuration.configuration-firmware', [
             'data' => $text,
             'makeError' => $makeError,
