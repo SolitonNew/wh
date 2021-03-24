@@ -95,7 +95,6 @@ typedef struct _rs485_hex_pack { // 13 bytes
 
 extern uint16_t rs485_errors;
 extern uint16_t rs485_packs;
-extern uint8_t rs485_tag;
 extern uint16_t rs485_recieve_count;
 
 void rs485_init(void);
