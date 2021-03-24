@@ -199,10 +199,14 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
             board_onewire_search(0);
             onewire_roms_buff_count = 0;
             break;
-		case 24: // for boot loader
+		case 24: 
 		    break;
-		case 25: // for boot loader
-		    break;
+		case 25: 
+            break;
+        case 26: 
+            break;
+        case 27: 
+            break;
     }
 }
 
