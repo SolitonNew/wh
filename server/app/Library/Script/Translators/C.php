@@ -35,24 +35,33 @@ class C implements ITranslator {
      * @var type 
      */
     protected $_keywords = [
-        'get', 
-        'set',
-        'on',
-        'off',
-        'toggle',
-        'speech',
-        'play',
-        'info',
-        'print',
-    ];
+        'get' => 'command_get', 
+        'set' => [
+            2 => 'command_set',
+            3 => 'command_set_later',
+        ],
+        'on' => [
+            1 => 'command_on',
+            2 => 'command_on_later',
+        ],
+        'off' => [
+            1 => 'command_off',
+            2 => 'command_off_later',
+        ],
+        'toggle' => [
+            1 => 'command_toggle',
+            2 => 'command_toggle_later',
+        ],
+        'speech' => 'command_speach',
+        'play' => 'command_play',
+        'info' => 'command_info',
+        'print' => 'command_print',
+    ];    
     
     /**
      *
      * @var type 
      */
-    protected $_funcPrefix = 'command_';
-    
-    
     protected $_variableNames = [];
     
     /**
@@ -154,8 +163,24 @@ class C implements ITranslator {
                         // пропускаем
                     } else
                     if ($res[$k] === '(') { // Нашли функцию
-                        if (in_array($p, $this->_keywords)) { // Нашли нашу функцию
-                            $res[$i] = $this->_funcPrefix.$p;
+                        if (isset($this->_keywords[$p])) { // Нашли нашу функцию
+                            // Определяем может ли функция иметь несколько вариантов
+                            if (is_array($this->_keywords[$p])) {
+                                // считаем кол-во параметров
+                                $a_c = 1;
+                                for ($a_i = $k + 1; $a_i < $len; $a_i++) {
+                                    if ($res[$a_i] === ',') $a_c++;
+                                    if ($res[$a_i] === ')') break;
+                                }
+                                Log::info($a_c);
+                                if (isset($this->_keywords[$p][$a_c])) {
+                                    $res[$i] = $this->_keywords[$p][$a_c];
+                                } else { // Такое тоже может быть. Пусть компилятор разбирается
+                                    $res[$i] = $this->_keywords[$p][array_key_first($this->_keywords[$p])];
+                                }
+                            } else {
+                                $res[$i] = $this->_keywords[$p];
+                            }
                         } else {
                             //
                         }
@@ -166,7 +191,7 @@ class C implements ITranslator {
                     }
                 }
                 
-                // Если ничего не добавили рассматриваем поближе
+                // Если ничего не добавили рассматриваем по ближе
                 if (!$append) {
                     if (in_array($p, $this->_specKeys)) { // Это специальное ключевое слово
                         //
