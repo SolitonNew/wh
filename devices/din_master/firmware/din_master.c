@@ -37,8 +37,11 @@ int main(void)
             core_onewire_alarm_processing();
         }
         
-        // Обрабатываем работу с запланироваными устройствами
-        core_schedule_processing();
+        // Вызываем обработчик переодичных действий
+        core_periodic_processing();
+		
+		// Обрабатываем отложенные назначения переменных
+		core_set_later_processing();
 		
         // Обработка кнопок управления
         control_check_btn(&control_btn_states);
