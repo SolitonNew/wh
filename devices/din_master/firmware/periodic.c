@@ -4,7 +4,9 @@
 
 #include "board.h"
 #include "periodic.h"
+#include "core.h"
 #include "config/devs.h"
+#include "drivers/ds18b20.h"
 
 int periodic_variable_index = -1;
 int periodic_step = 0;
