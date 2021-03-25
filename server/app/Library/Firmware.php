@@ -18,13 +18,46 @@ use DB;
  * @author soliton
  */
 class Firmware {
-    
+    /**
+     * Название проекта прошивки щитового контроллера
+     * 
+     * @var type 
+     */
     protected $_project = 'din_master';
+    
+    /**
+     * Название микроконтроллера
+     * 
+     * @var type 
+     */
     protected $_mmcu = 'atmega8a';
+    
+    /**
+     * Размер страницы микроконтроллера.
+     * Зависит от типа микроконтроллера и устанавливается вручную.
+     * Влияет на паузы при прошивке микроконтроллера (после передачи одной страницы 
+     * нужно сделать паузу, что бы контроллер успел записать во flash)
+     * 
+     * @var type 
+     */
+    protected $_spm_pagesize = 128;
+    
+    public function spmPageSize() {
+        return $this->_spm_pagesize;
+    }
+    
+    /**
+     * Путь к папке с исходниками прошивки
+     * @var type 
+     */
     protected $_rel_path = 'devices/din_master/firmware';
     
+    /**
+     * 
+     */
     public function __construct() {
         $this->_mmcu = config('firmware.mmcu');
+        $this->_spm_pagesize = config('firmware.spm_pagesize');
     }
     
     /**
@@ -161,7 +194,8 @@ class Firmware {
     
     /**
      * Выполняет необходимые действия с компилятором avr-gcc для получения 
-     * прошивки.
+     * файла прошивки в формате IntelHEX.
+     * Результат работы будет помещен в подпапку Release.
      * 
      * @param type $outs
      * @return boolean    true - OK; false - ERROR
@@ -239,6 +273,7 @@ class Firmware {
     }
     
     /**
+     * Читает ранее созданый файл прошивки и формирует массив по 8 байт в записи.
      * 
      * @return boolean|array
      */

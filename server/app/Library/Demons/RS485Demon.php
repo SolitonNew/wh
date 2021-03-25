@@ -73,6 +73,12 @@ class RS485Demon extends BaseDemon {
     private $_firmwareHex = [];
     
     /**
+     *
+     * @var type 
+     */
+    private $_firmwareSpmPageSize = 0;
+    
+    /**
      * 
      */
     const SLEEP_TIME = 25;
@@ -306,6 +312,7 @@ class RS485Demon extends BaseDemon {
         if (!$this->_firmwareHex) {
             $firmware = new \App\Library\Firmware();
             $this->_firmwareHex = $firmware->getHex();
+            $this->_firmwareSpmPageSize = $firmware->spmPageSize();
         }
         
         $PAGE_STORE_PAUSE = 100000;
@@ -326,13 +333,15 @@ class RS485Demon extends BaseDemon {
         
         $this->_transmitCMD($controller->rom, 24, count($this->_firmwareHex));
         
+        $hexPackStep = ceil($this->_firmwareSpmPageSize / 8);
+        
         $dp = 100 / count($this->_firmwareHex);
         $packs = 0;
         $p = 0;
         foreach ($this->_firmwareHex as $hex) {
             $this->_transmitHEX($controller->rom, $hex);
             $packs++;
-            if ($packs % 16 == 0) {
+            if ($packs % $hexPackStep == 0) {
                 $a = [
                     $controller->name,
                     round((($index * 100) + $p) / $count),
@@ -688,7 +697,7 @@ class RS485Demon extends BaseDemon {
         fwrite($this->_port, $pack);
         fflush($this->_port);
         
-        usleep(10000);
+        usleep(10000); // Иначе контроллер не успевает обработать
     }
     
 }

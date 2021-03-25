@@ -65,6 +65,7 @@
                 console.log(data);
                 if (data.error) {
                     alert(data.error);
+                    firmwareButtons(1);
                     return;
                 } else
                 if (data.firmware) {
@@ -79,6 +80,8 @@
                                 window.location.reload();
                             });                            
                         });
+                        
+                        firmwareButtons(1);
                         return ;
                     }
                 } else {
