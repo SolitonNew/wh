@@ -20,24 +20,88 @@
 #include "drivers/pc.h"
 #include "drivers/fc.h"
 
-#define SCHEDULE_STEP_INTERVAL 5000 // usec
-#define SCHEDULE_STEP_MAX SCHEDULE_STEP_INTERVAL/MAIN_LOOP_DELAY
+typedef struct _core_set_later {
+	int index;
+	int value;
+	int duration;
+} core_set_later_t;
 
 int variable_values[VARIABLE_COUNT];
+core_set_later_t core_set_later_list[CORE_SET_LATER_LIST_MAX];
 
 int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
 uint8_t core_variable_changed_count = 0;
 
-int schedule_variable_index = -1;
-int schedule_step = 0;
-uint8_t schedule_measure_start = 0;  // 0-ищем ow переменную; 1-запускаем измерени; 2-сохраняем данные;
+int core_periodic_variable_index = -1;
+int core_periodic_step = 0;
+uint8_t core_periodic_measure_start = 0;  // 0-ищем ow переменную; 1-запускаем измерени; 2-сохраняем данные;
 
+/**
+ * Инициализация ядра
+ */
+void core_init(void) {
+    din_init();
+    rs485_init();
+    onewire_init();
+}
+
+/**
+ * Обработка входящей очереди rs485
+ */
+void core_rs485_processing(void) {
+    // Обработка буфера входящих пакетов
+    rs485_in_buff_unpack();
+}
+
+/**
+ * Обработка alarm событий на шине OW
+ */
+void core_onewire_alarm_processing(void) {
+    if (onewire_alarms()) {
+        uint8_t* ind = (uint8_t*)&onewire_roms_buff[0];
+        for (uint8_t i = 0; i < onewire_roms_buff_count; i++) {
+            core_request_ow_values(ind);
+            ind += 8;
+        }
+    }
+}
+
+/**
+ * Обработка отложенных назначений значения переменной
+ * Должно вызываться раз в 1 сек.
+ */
+void core_set_later_processing(void) {
+	for (uint8_t i = 0; i < CORE_SET_LATER_LIST_MAX; i++) {
+		core_set_later_t *rec = &core_set_later_list[i];
+		if (rec->duration > 0) {
+			if (rec->duration-- == 0) { // Выполняем действие
+				core_set_variable_value_int(rec->index, 3, rec->value);
+			}
+		}
+	}
+}
+
+/**
+ * Возвращает значение переменной конверьированое в float
+ * Все действия с переменными проходят через этот механизм.
+ *
+ * Не используйте доступ к значениям переменных напрямую.
+ *
+ * Возвращает реальное значение переменной
+ */
 float core_get_variable_value(int index) {
     if ((index < 0) || (index >= VARIABLE_COUNT)) return 0;
     return (float)variable_values[index] / 10;
 }
 
-// target: 0-server init, 1-server, 2-devs, 3-script
+/**
+ * Главная функция обработки назначения значения переменной.
+ * Все действия с переменными проходят через этот механизм.
+ *
+ * Не используйте доступ к значениям переменных напрямую.
+ *
+ * target: 0-server init, 1-server, 2-devs, 3-script
+ */
 void core_set_variable_value_int(int index, uint8_t target, int value) {
     if ((index < 0) || (index >= VARIABLE_COUNT)) return ;
     if (variable_values[index] == value) return ;
@@ -94,33 +158,45 @@ void core_set_variable_value_int(int index, uint8_t target, int value) {
     }	
 }
 
+/**
+ * Главная функция обработки назначения значения переменной (реальное значение).
+ * Все действия с переменными проходят через этот механизм.
+ *
+ * Не используйте доступ к значениям переменных напрямую.
+ *
+ * target: 0-server init, 1-server, 2-devs, 3-script
+ */
 void core_set_variable_value(int index, uint8_t target, float value) {
     core_set_variable_value_int(index, target, ceil(value * 10));
-}	
-
-void core_init(void) {
-    din_init();
-    rs485_init();
-    onewire_init();
 }
 
-void core_rs485_processing(void) {
-    // Обработка буфера входящих пакетов
-    rs485_in_buff_unpack();
+/**
+ * Регистрация отложенного назначения значения переменной.
+ */
+void core_set_later_variable_value(int index, float value, int duration) {
+	for (uint8_t i = 0; i < CORE_SET_LATER_LIST_MAX; i++) {
+		core_set_later_t *rec = &core_set_later_list[i];
+		if (rec->duration > 0 && rec->index == index) {
+			rec->value = ceil(value * 10);
+			rec->duration = duration;
+			return ;
+		}
+	}
+	
+	for (uint8_t i = 0; i < CORE_SET_LATER_LIST_MAX; i++) {
+		core_set_later_t *rec = &core_set_later_list[i];
+		if (rec->duration == 0) {
+			rec->index = index;
+			rec->value = value;
+			rec->duration = duration;
+			return ;
+		}
+	}
 }
 
-void core_onewire_alarm_processing(void) {
-    // Обработка alarm событий на шине OW
-    if (onewire_alarms()) {
-        uint8_t* ind = (uint8_t*)&onewire_roms_buff[0];
-        for (uint8_t i = 0; i < onewire_roms_buff_count; i++) {
-            core_request_ow_values(ind);
-            ind += 8;
-        }
-    }
-}
-
-// Собирает данные всех переменных с ow_index и отправляет в устройство
+/**
+ * Собирает данные всех переменных с ow_index и отправляет в устройство
+ */
 void core_transmit_ow_values(int ow_index) {
     variable_t variable;
     fc_data_t fc_data;
@@ -174,7 +250,9 @@ void core_transmit_ow_values(int ow_index) {
     }	
 }
 
-// Запрашивает данные каналов устройства по ow_index и применяет их в контроллере
+/**
+ * Запрашивает данные каналов устройства по ow_index и применяет их в контроллере
+ */
 void core_request_ow_values(uint8_t *rom) {
     variable_t variable;
     ds18b20_data_t ds18b20_data;
@@ -317,34 +395,35 @@ void core_request_ow_values(uint8_t *rom) {
     }
 }
 
-void core_schedule_processing(void) {
-    // Поочередные запросы для периодической работы с периферией
-    // В частности опрос датчиков ds18b20
-
-    if (schedule_step++ > SCHEDULE_STEP_MAX) {
-        schedule_step = 0;
+/**
+ * Поочередные запросы для периодической работы с периферией
+ * В частности опрос датчиков ds18b20
+ */
+void core_periodic_processing(void) {
+    if (core_periodic_step++ > CORE_PERIODIC_STEP_MAX) {
+        core_periodic_step = 0;
        
         uint8_t rom[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 		
-        if (schedule_measure_start == 0) {
+        if (core_periodic_measure_start == 0) {
             uint8_t find = 0;
             // Ищем следующую после schedule_ow_index OW переменную с rom_1 = 0x28 и нашего контрллера
-            for (int i = schedule_variable_index + 1; i < VARIABLE_COUNT; i++) {
+            for (int i = core_periodic_variable_index + 1; i < VARIABLE_COUNT; i++) {
                 if (devs_get_variable_controller(i) == controller_id) {
                     devs_get_variable_rom(i, rom);
                     if (rom[0] == 0x28) {
-                        schedule_variable_index = i;
+                        core_periodic_variable_index = i;
                         find = 1;
                     }
                 }
             }
             // Если за первый проход не нашли, начниаем с начала списка
             if (!find) {
-                for (int i = 0; i <= schedule_variable_index; i++) {
+                for (int i = 0; i <= core_periodic_variable_index; i++) {
                     if (devs_get_variable_controller(i) == controller_id) {
                         devs_get_variable_rom(i, rom);
                         if (rom[0] == 0x28) {
-                            schedule_variable_index = i;
+                            core_periodic_variable_index = i;
                             find = 1;
                         }
                     }
@@ -352,21 +431,21 @@ void core_schedule_processing(void) {
             }
             
             if (find) {
-                schedule_measure_start = 1;
+                core_periodic_measure_start = 1;
             }
         } else {
-            devs_get_variable_rom(schedule_variable_index, rom);
+            devs_get_variable_rom(core_periodic_variable_index, rom);
         }
         
         switch (rom[0]) {
             case 0x28:
-                if (schedule_measure_start == 1) {
+                if (core_periodic_measure_start == 1) {
                     ds18b20_start_measure(rom);
-                    schedule_measure_start = 2;
+                    core_periodic_measure_start = 2;
                 } else
-                if (schedule_measure_start == 2) {
+                if (core_periodic_measure_start == 2) {
                     core_request_ow_values(rom);
-                    schedule_measure_start = 0;
+                    core_periodic_measure_start = 0;
                 }                                        
                 break;
         }            
