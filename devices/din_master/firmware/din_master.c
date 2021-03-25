@@ -10,6 +10,8 @@
 #include "control.h"
 #include "rs485.h"
 #include "onewire.h"
+#include "periodic.h"
+#include "schedule.h"
 
 #define ALARM_LOOP_SPACE_INTERVAL 200 // usec
 #define ALARM_LOOP_SPACE_MAX ALARM_LOOP_SPACE_INTERVAL/MAIN_LOOP_DELAY
@@ -24,12 +26,13 @@ int main(void)
     
     control_init();
     core_init();
+	schedule_init();
 	
     sei();
 		
     while (1) {
         // Обрабатываем входной буфер
-        core_rs485_processing();
+        rs485_processing();
         
         // Обрабатываем onewire на предмет alarm флагов
         if (alarm_loop_space++ > ALARM_LOOP_SPACE_MAX) {
@@ -38,10 +41,10 @@ int main(void)
         }
         
         // Вызываем обработчик переодичных действий
-        core_periodic_processing();
+        periodic_processing();
 		
 		// Обрабатываем отложенные назначения переменных
-		core_set_later_processing();
+		schedule_processing();
 		
         // Обработка кнопок управления
         control_check_btn(&control_btn_states);

@@ -3,6 +3,7 @@
  */ 
 
 #include "core.h"
+#include "schedule.h"
 
 float command_get(int index) {
     return core_get_variable_value(index);
@@ -13,7 +14,7 @@ void command_set(int index, float value) {
 }
 
 void command_set_later(int index, float value, int duration) {
-    core_set_later_variable_value(index, value, duration);
+    schedule_variable_value(index, value, duration);
 }
 
 void command_toggle(int index) {

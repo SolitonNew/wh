@@ -70,6 +70,13 @@ void rs485_init(void) {
     UCSRC = (1<<URSEL) | (1<<UCSZ0) | (1<<UCSZ1) | (1<<USBS);
 }
 
+/**
+ * Обработка входящей очереди rs485
+ */
+void rs485_processing(void) {
+	rs485_in_buff_unpack();
+}
+
 uint8_t rs485_crc_table(uint8_t data) {
     uint8_t crc = 0x0;
     uint8_t fb_bit = 0;

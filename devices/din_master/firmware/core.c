@@ -20,21 +20,10 @@
 #include "drivers/pc.h"
 #include "drivers/fc.h"
 
-typedef struct _core_set_later {
-	int index;
-	int value;
-	int duration;
-} core_set_later_t;
-
 int variable_values[VARIABLE_COUNT];
-core_set_later_t core_set_later_list[CORE_SET_LATER_LIST_MAX];
 
 int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
 uint8_t core_variable_changed_count = 0;
-
-int core_periodic_variable_index = -1;
-int core_periodic_step = 0;
-uint8_t core_periodic_measure_start = 0;  // 0-ищем ow переменную; 1-запускаем измерени; 2-сохраняем данные;
 
 /**
  * Инициализация ядра
@@ -43,14 +32,6 @@ void core_init(void) {
     din_init();
     rs485_init();
     onewire_init();
-}
-
-/**
- * Обработка входящей очереди rs485
- */
-void core_rs485_processing(void) {
-    // Обработка буфера входящих пакетов
-    rs485_in_buff_unpack();
 }
 
 /**
@@ -64,21 +45,6 @@ void core_onewire_alarm_processing(void) {
             ind += 8;
         }
     }
-}
-
-/**
- * Обработка отложенных назначений значения переменной
- * Должно вызываться раз в 1 сек.
- */
-void core_set_later_processing(void) {
-	for (uint8_t i = 0; i < CORE_SET_LATER_LIST_MAX; i++) {
-		core_set_later_t *rec = &core_set_later_list[i];
-		if (rec->duration > 0) {
-			if (rec->duration-- == 0) { // Выполняем действие
-				core_set_variable_value_int(rec->index, 3, rec->value);
-			}
-		}
-	}
 }
 
 /**
@@ -168,30 +134,6 @@ void core_set_variable_value_int(int index, uint8_t target, int value) {
  */
 void core_set_variable_value(int index, uint8_t target, float value) {
     core_set_variable_value_int(index, target, ceil(value * 10));
-}
-
-/**
- * Регистрация отложенного назначения значения переменной.
- */
-void core_set_later_variable_value(int index, float value, int duration) {
-	for (uint8_t i = 0; i < CORE_SET_LATER_LIST_MAX; i++) {
-		core_set_later_t *rec = &core_set_later_list[i];
-		if (rec->duration > 0 && rec->index == index) {
-			rec->value = ceil(value * 10);
-			rec->duration = duration;
-			return ;
-		}
-	}
-	
-	for (uint8_t i = 0; i < CORE_SET_LATER_LIST_MAX; i++) {
-		core_set_later_t *rec = &core_set_later_list[i];
-		if (rec->duration == 0) {
-			rec->index = index;
-			rec->value = value;
-			rec->duration = duration;
-			return ;
-		}
-	}
 }
 
 /**
@@ -392,62 +334,5 @@ void core_request_ow_values(uint8_t *rom) {
             break;
         case 0xf5: // ampermetr
             break;
-    }
-}
-
-/**
- * Поочередные запросы для периодической работы с периферией
- * В частности опрос датчиков ds18b20
- */
-void core_periodic_processing(void) {
-    if (core_periodic_step++ > CORE_PERIODIC_STEP_MAX) {
-        core_periodic_step = 0;
-       
-        uint8_t rom[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-		
-        if (core_periodic_measure_start == 0) {
-            uint8_t find = 0;
-            // Ищем следующую после schedule_ow_index OW переменную с rom_1 = 0x28 и нашего контрллера
-            for (int i = core_periodic_variable_index + 1; i < VARIABLE_COUNT; i++) {
-                if (devs_get_variable_controller(i) == controller_id) {
-                    devs_get_variable_rom(i, rom);
-                    if (rom[0] == 0x28) {
-                        core_periodic_variable_index = i;
-                        find = 1;
-                    }
-                }
-            }
-            // Если за первый проход не нашли, начниаем с начала списка
-            if (!find) {
-                for (int i = 0; i <= core_periodic_variable_index; i++) {
-                    if (devs_get_variable_controller(i) == controller_id) {
-                        devs_get_variable_rom(i, rom);
-                        if (rom[0] == 0x28) {
-                            core_periodic_variable_index = i;
-                            find = 1;
-                        }
-                    }
-                }    
-            }
-            
-            if (find) {
-                core_periodic_measure_start = 1;
-            }
-        } else {
-            devs_get_variable_rom(core_periodic_variable_index, rom);
-        }
-        
-        switch (rom[0]) {
-            case 0x28:
-                if (core_periodic_measure_start == 1) {
-                    ds18b20_start_measure(rom);
-                    core_periodic_measure_start = 2;
-                } else
-                if (core_periodic_measure_start == 2) {
-                    core_request_ow_values(rom);
-                    core_periodic_measure_start = 0;
-                }                                        
-                break;
-        }            
     }
 }

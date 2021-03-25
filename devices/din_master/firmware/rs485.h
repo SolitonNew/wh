@@ -6,7 +6,6 @@
 #define RS485_UBRR F_CPU/16/RS485_BAUD-1
 #define RS485_BUFF_MAX_SIZE 128
 #define RS485_BUFF_MIN_SIZE 8
-//#define USART_RXC_vect _VECTOR(12) // 11
 
 /*
     Пакет команды. Может быть отправлен в обе стороны.
@@ -104,6 +103,7 @@ extern uint16_t rs485_packs;
 extern uint16_t rs485_recieve_count;
 
 void rs485_init(void);
+void rs485_processing(void);
 void rs485_transmit_CMD(uint8_t cmd, int tag);
 void rs485_transmit_VAR(int id, int value);
 void rs485_transmit_ROM(uint8_t *rom);
