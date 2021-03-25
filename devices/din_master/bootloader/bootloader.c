@@ -50,6 +50,7 @@ uint16_t rs485_packs = 0;
 uint16_t rs485_hex_packs = 0;
 uint8_t controller_id;
 uint8_t is_boot = 0;
+int in_hex_packs = 0;
 uint32_t page_start = 0;
 uint8_t page_buff[SPM_PAGESIZE];
 uint8_t page_buff_size = 0;
@@ -152,7 +153,7 @@ void rs485_in_buff_unpack(void) {
 		size = 8;
 		if (rs485_in_buff_size < size) return ;       
 		if (rs485_check_crc(size)) {
-            int tag = (int)rs485_in_buff[5] & ((int)rs485_in_buff[6] << 8);
+            int tag = (int)rs485_in_buff[5] | ((int)rs485_in_buff[6] << 8);
 			if (rs485_in_buff[3] == controller_id) {
 				switch (rs485_in_buff[4]) {
                     case 1: // reset
@@ -169,6 +170,7 @@ void rs485_in_buff_unpack(void) {
                         }
                         break;
 		            case 24: // Приготовиться шиться
+					    in_hex_packs = tag;						
 					    is_boot = 1;
 		                break;
 		            case 25: // Сказать сколько прошилось (вернуть CMD: 4)
@@ -283,6 +285,7 @@ void boot_step_1(void) {
 		rs485_timeout = RS485_TIMEOUT_VALUE;
 		while (!(UCSRA & (1<<RXC))) {
             if (rs485_timeout-- == 0) goto finish;
+			if (is_boot && (in_hex_packs == rs485_hex_packs)) goto finish;
 		}
         rs485_in_buff[rs485_in_buff_size++] = UDR;
 		rs485_in_buff_unpack();
@@ -334,13 +337,13 @@ void boot_step_2(void) {
     }
 }
 
-int main(void)
-{
+int main(void) {
     rs485_in_buff_size = 0;
     rs485_errors = 0;
     rs485_packs = 0;
     rs485_hex_packs = 0;
     is_boot = 0;
+	in_hex_packs = 0;
     page_start = 0;
     page_buff_size = 0;
     rs485_timeout = 0;
