@@ -254,16 +254,21 @@ class Firmware {
             $data = [];
             while (!feof($f)) {
                 $line = fgets($f);
-                
-                $len = hexdec(substr($line, 2, 2));
+                $len = hexdec(substr($line, 1, 2));
                 for ($i = 0; $i < $len; $i++) {
-                    $data[] = hexdec(substr($line, 10 + $i, 2));
-                    if ($d_i++ > 8) {
-                        $res[] = $data;
+                    $data[] = hexdec(substr($line, 9 + $i * 2, 2));
+                    $d_i++;
+                    if ($d_i >= 8) {
+                        if (count($data)) {
+                            $res[] = $data;
+                        }
                         $d_i = 0;
                         $data = [];
                     }
                 }
+            }
+            if (count($data)) {
+                $res[] = $data;
             }
         } catch (\Exception $ex) {
 

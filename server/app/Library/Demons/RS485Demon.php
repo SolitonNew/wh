@@ -67,6 +67,12 @@ class RS485Demon extends BaseDemon {
     private $_lastSyncVariableID = -1;
     
     /**
+     *
+     * @var type 
+     */
+    private $_firmwareHex = [];
+    
+    /**
      * 
      */
     const SLEEP_TIME = 25;
@@ -104,6 +110,7 @@ class RS485Demon extends BaseDemon {
             $this->_port = fopen($port, 'r+b');
             stream_set_blocking($this->_port, false);
             while (!feof($this->_port)) {
+                $loopErrors = false;
                 $command = \App\Http\Models\PropertysModel::getRs485Command(true);
                 
                 // Выполняем начальную подготовку итерации
@@ -118,6 +125,8 @@ class RS485Demon extends BaseDemon {
                         break;
                     case 'FIRMWARE':
                         \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
+                        $firmware = new \App\Library\Firmware();
+                        $this->_firmwareHex = $firmware->getHex();
                         break;
                     default:
                         $variables = \App\Http\Models\VariableChangesMemModel::where('id', '>', $this->_lastSyncVariableID)
@@ -137,7 +146,9 @@ class RS485Demon extends BaseDemon {
                             $this->_commandOwSearch($controller);
                             break;
                         case 'FIRMWARE':
-                            $this->_commandFirmware($controller);
+                            if (!$this->_commandFirmware($controller)) {
+                                $loopErrors = true;
+                            }
                             break;
                         default:
                             $this->_syncVariables($controller, $variables);
@@ -152,7 +163,12 @@ class RS485Demon extends BaseDemon {
                         \App\Http\Models\PropertysModel::setRs485CommandInfo('END_OW_SCAN');
                         break;
                     case 'FIRMWARE':
-                        \App\Http\Models\PropertysModel::setRs485CommandInfo('COMPLETE', true);
+                        if (!$loopErrors) {
+                            \App\Http\Models\PropertysModel::setRs485CommandInfo('COMPLETE', true);
+                        } else {
+                            \App\Http\Models\PropertysModel::setRs485CommandInfo('ERROR', true);
+                        }
+                        $this->_firmwareHex = [];
                         break;
                     default:
                         
@@ -165,7 +181,9 @@ class RS485Demon extends BaseDemon {
             $s .= $ex->getMessage();
             $this->printLine($s); 
         } finally {
-            fclose($this->_port);    
+            if ($this->_port) {
+                fclose($this->_port);    
+            }
         }
     }
     
@@ -286,6 +304,8 @@ class RS485Demon extends BaseDemon {
      * @param type $controller
      */
     public function _commandFirmware($controller) {
+        $PAGE_STORE_PAUSE = 100000;
+        
         $count = count($this->_controllers);
         $index = 0;
         for ($i = 0; $i < $count; $i++) {
@@ -297,16 +317,39 @@ class RS485Demon extends BaseDemon {
         
         $this->_readPacks(250);
         $this->_transmitCMD($controller->rom, 1, 0);
-        for ($i = 0; $i < 100; $i++) {
-            $a = [
-                $controller->name, 
-                round((($index * 100) + $i) / $count),
-            ];
-            \App\Http\Models\PropertysModel::setRs485CommandInfo(implode(';', $a), true);
-            usleep(100000);
+        
+        usleep(1000000);
+        
+        $this->_transmitCMD($controller->rom, 24, count($this->_firmwareHex));
+        
+        $dp = 100 / count($this->_firmwareHex);
+        $packs = 0;
+        $p = 0;
+        foreach ($this->_firmwareHex as $hex) {
+            $this->_transmitHEX($controller->rom, $hex);
+            $packs++;
+            if ($packs % 16 == 0) {
+                $a = [
+                    $controller->name,
+                    round((($index * 100) + $p) / $count),
+                ];
+                \App\Http\Models\PropertysModel::setRs485CommandInfo(implode(';', $a), true);
+                usleep($PAGE_STORE_PAUSE);
+            }
+            $p += $dp;
         }
-        $this->_transmitCMD($controller->rom, 1, 0);
-        usleep(250000);
+        $a = [
+            $controller->name,
+            round((($index * 100) + $p) / $count),
+        ];
+        \App\Http\Models\PropertysModel::setRs485CommandInfo(implode(';', $a), true);
+        
+        usleep($PAGE_STORE_PAUSE);
+        
+        $this->_transmitCMD($controller->rom, 25, count($this->_firmwareHex));
+        $this->_readPacks(250);
+        
+        return ($this->_inPackCount == count($this->_firmwareHex));
     }
     
     /**
@@ -608,86 +651,31 @@ class RS485Demon extends BaseDemon {
         fflush($this->_port);
     }
     
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     /**
-     *  Обработка синхронизации данных системы
+     * 
+     * @param type $controllerROM
+     * @param type $data
      */
-    /*private function _syncVariables() {
-        // Собираем пакет с последними изменениями
-        if ($this->_lastSyncVariableID == -1) {
-            $this->_lastSyncVariableID = DB::select('select max(id) maxID from core_variable_changes_mem')[0]->maxID ?? 0;
+    private function _transmitHEX($controllerROM, $data) {
+        $pack = pack('a*', 'HEX');
+        $pack .= pack('C', $controllerROM);
+        for ($i = 0; $i < 8; $i++) {
+            $pack .= pack('C', isset($data[$i]) ? $data[$i] : 0xff);
         }
+	$crc = 0x0;
+	for ($i = 0; $i < strlen($pack); $i++) {
+            $crc = $this->_crc_table($crc ^ ord($pack[$i]));
+	}
+        $pack .= pack('C', $crc);
+        fwrite($this->_port, $pack);
+        fflush($this->_port);
         
-        $data = DB::select('select c.id, c.variable_id, c.value
-                              from core_variable_changes_mem c
-                             where id > '.$this->_lastSyncVariableID.' 
-                            order by id');
-        
-        if (count($data)) {
-            $this->_lastSyncVariableID = $data[count($data) - 1]->id;
+        /*$a = [];
+        foreach($data as $b) {
+            $a[] = sprintf("%'02X", $b);
         }
-        
-        foreach($this->_controllers as $controller) {
-            if ($controller->is_server) continue;
-            
-            $contr = $controller->name;
-            
-            try {
-                $vars_out = [];
-                $vars_in = [];            
-
-                // Даем команду что будем отправлять данные
-                $this->_transmitCMD($controller->rom, 2, count($data));
-
-                // Отправляем нашу посылку
-                foreach ($data as $row) {
-                    $vars_out[] = "$row->variable_id: $row->value";
-                    $this->_transmitVAR($controller->rom, $row->variable_id, $row->value);
-                }
-
-                // Даем комманду, что готовы принять данные
-                $this->_transmitCMD($controller->rom, 3, 0);
-                
-                $this->_syncVariablesRecieveHandler();
-                
-                $stat = 'OK';
-                $s = "[".now()."] SYNC. '$contr': $stat\n";
-                $s .= "   >>   [".implode(', ', $vars_out)."]\n";
-                $s .= "   <<   [".implode(', ', $vars_in)."]\n";
-            } catch (\Exception $ex) {
-                $s = "[".now()."] SYNC. '$contr': ERROR\n";
-                $s .= $ex->getMessage();
-            }
-
-            $this->printLine($s); 
-
-            usleep(100000);
-        }
+        Log::info(implode(' ', $a)); */
+        usleep(10000);
     }
-    
-    private function _syncVariablesRecieveHandler() {
-        $r = [$this->_port];
-        $w = null;
-        $e = null;
-        $c = stream_select($r, $w, $e, 1);
-        if ($c) {
-            fread($this->_port, $c);
-            Log::info($c);
-        }
-    }*/
     
 }

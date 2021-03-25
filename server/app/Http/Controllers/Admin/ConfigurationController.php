@@ -282,7 +282,15 @@ class ConfigurationController extends Controller
             $text = $ex->getMessage();
         }
         
-        $firmware->getHex();
+        /*$zzz = $firmware->getHex();
+        Log::info(count($zzz));
+        foreach ($zzz as $hex) {
+            $a = [];
+            foreach($hex as $b) {
+                $a[] = sprintf("%'02X", $b);
+            }
+            Log::info(implode(' ', $a));
+        }*/
         
         return view('admin.configuration.configuration-firmware', [
             'data' => $text,
