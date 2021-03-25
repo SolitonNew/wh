@@ -105,6 +105,10 @@ void rs485_write_byte(uint8_t c) {
     UDR = c;
 }
 
+void rs485_flush(void) {
+	while (!(UCSRA & (1<<UDRE))) ;
+}
+
 void rs485_transmit_CMD(uint8_t cmd, int tag) {
 	uint8_t buff[7] = {
 	    'C', 'M', 'D', 
@@ -118,6 +122,7 @@ void rs485_transmit_CMD(uint8_t cmd, int tag) {
 		rs485_write_byte(buff[i]);
     }
 	rs485_write_byte(crc);
+	rs485_flush();
 }
 
 uint8_t rs485_check_crc(uint8_t size) {
@@ -315,8 +320,6 @@ void boot_step_1(void) {
         boot_program_page(page_start, page_buff);
         leds_off();
     }
-    
-    exit: ;
 }
 
 void boot_step_2(void) {
