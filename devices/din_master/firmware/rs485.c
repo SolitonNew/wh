@@ -90,6 +90,10 @@ void rs485_write_byte(uint8_t c) {
     UDR = c;
 }
 
+void rs485_flush(void) {
+    while (!(UCSRA & (1<<UDRE))) ;
+}
+
 void rs485_transmit_CMD(uint8_t cmd, int tag) {
     rs485_cmd_pack_t pack;
     memcpy(pack.sign, "CMD", 3);
@@ -111,6 +115,7 @@ void rs485_transmit_CMD(uint8_t cmd, int tag) {
             board_rs485_incoming_package(0);
             break;
     }
+    rs485_flush();
 }
 
 void rs485_transmit_VAR(int id, int value) {
@@ -127,6 +132,7 @@ void rs485_transmit_VAR(int id, int value) {
         rs485_write_byte(b);
     }
     rs485_write_byte(crc);
+    rs485_flush();
 }
 
 void rs485_transmit_ROM(uint8_t *rom) {
@@ -142,6 +148,7 @@ void rs485_transmit_ROM(uint8_t *rom) {
         rs485_write_byte(b);
     }
     rs485_write_byte(crc);
+    rs485_flush();
 }
 
 uint8_t memeq(uint8_t *a1, uint8_t *a2, uint8_t len) {

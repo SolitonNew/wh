@@ -453,7 +453,11 @@ class RS485Demon extends BaseDemon {
         } elseif ($stat == 'IN BOOTLOADER') {
             //
         } elseif ($stat == 'FIRMWARE QUERY') {
-            $this->_commandFirmware($controller);
+            if ($this->_commandFirmware($controller)) {
+                $this->printLine('FIRMWARE OK');
+            } else {
+                $this->printLine('FIRMWARE ERROR');
+            }
         }
     }
     
@@ -684,11 +688,6 @@ class RS485Demon extends BaseDemon {
         fwrite($this->_port, $pack);
         fflush($this->_port);
         
-        /*$a = [];
-        foreach($data as $b) {
-            $a[] = sprintf("%'02X", $b);
-        }
-        Log::info(implode(' ', $a)); */
         usleep(10000);
     }
     
