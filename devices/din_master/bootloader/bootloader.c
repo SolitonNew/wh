@@ -73,16 +73,22 @@ void control_init(void) {
 
 void leds_on(void) {
     SPIN(LED_R_PORT, LED_R_BIT);
-    SPIN(LED_G_PORT, LED_G_BIT);
     SPIN(LED_Y_PORT, LED_Y_BIT);
     SPIN(LED_B_PORT, LED_B_BIT);
 }
 
 void leds_off(void) {
     CPIN(LED_R_PORT, LED_R_BIT);
-    CPIN(LED_G_PORT, LED_G_BIT);
     CPIN(LED_Y_PORT, LED_Y_BIT);
     CPIN(LED_B_PORT, LED_B_BIT);
+}
+
+void rs485_led_toggle(void) {
+	if (GPIN(LED_G_PORT, LED_G_BIT)) {
+        CPIN(LED_G_PORT, LED_G_BIT);
+	} else {
+        SPIN(LED_G_PORT, LED_G_BIT);
+	}
 }
 
 uint8_t rs485_crc_table(uint8_t data) {
@@ -294,11 +300,7 @@ void boot_step_1(void) {
 		}
         rs485_in_buff[rs485_in_buff_size++] = UDR;
 		rs485_in_buff_unpack();
-		if (GPIN(LED_G_PORT, LED_G_BIT)) {
-            CPIN(LED_G_PORT, LED_G_BIT);
-		} else {
-			SPIN(LED_G_PORT, LED_G_BIT);
-		}			
+		rs485_led_toggle();			
 		
 		if (page_buff_size >= SPM_PAGESIZE) {
 			leds_on();
@@ -332,11 +334,7 @@ void boot_step_2(void) {
 		}
         rs485_in_buff[rs485_in_buff_size++] = UDR;
 		rs485_in_buff_unpack();
-		if (GPIN(LED_G_PORT, LED_G_BIT)) {
-            CPIN(LED_G_PORT, LED_G_BIT);
-		} else {
-			SPIN(LED_G_PORT, LED_G_BIT);
-		}
+        rs485_led_toggle();
     }
 }
 
