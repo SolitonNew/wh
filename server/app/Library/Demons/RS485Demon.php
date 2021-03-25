@@ -125,8 +125,7 @@ class RS485Demon extends BaseDemon {
                         break;
                     case 'FIRMWARE':
                         \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
-                        $firmware = new \App\Library\Firmware();
-                        $this->_firmwareHex = $firmware->getHex();
+                        $this->_firmwareHex = false;
                         break;
                     default:
                         $variables = \App\Http\Models\VariableChangesMemModel::where('id', '>', $this->_lastSyncVariableID)
@@ -168,7 +167,7 @@ class RS485Demon extends BaseDemon {
                         } else {
                             \App\Http\Models\PropertysModel::setRs485CommandInfo('ERROR', true);
                         }
-                        $this->_firmwareHex = [];
+                        $this->_firmwareHex = false;
                         break;
                     default:
                         
@@ -304,6 +303,11 @@ class RS485Demon extends BaseDemon {
      * @param type $controller
      */
     public function _commandFirmware($controller) {
+        if (!$this->_firmwareHex) {
+            $firmware = new \App\Library\Firmware();
+            $this->_firmwareHex = $firmware->getHex();
+        }
+        
         $PAGE_STORE_PAUSE = 100000;
         
         $count = count($this->_controllers);
@@ -394,6 +398,12 @@ class RS485Demon extends BaseDemon {
                     }
                     $this->_readPacks(250);        
                     break;
+                case 26: // Контроллер попросил прошивку
+                    $stat = 'FIRMWARE QUERY';
+                    break;
+                case 27: // Контроллер в буте (вероятно перегружался)
+                    $stat = 'BOOTLOADER';
+                    break;
                 case -1:
                     throw new \Exception('Controller did not respond');
                 default:
@@ -440,6 +450,10 @@ class RS485Demon extends BaseDemon {
             }
         } elseif ($stat == 'ERROR') {
             $this->printLine($errorText);
+        } elseif ($stat == 'IN BOOTLOADER') {
+            //
+        } elseif ($stat == 'FIRMWARE QUERY') {
+            $this->_commandFirmware($controller);
         }
     }
     
