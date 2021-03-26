@@ -9,6 +9,7 @@
 <a href="#" class="dropdown-item" onclick="scriptEdit(); return false;">@lang('admin/scripts.script_edit')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="editorShow(); return false;">@lang('admin/scripts.script_show_editor')</a>
+<a href="#" class="dropdown-item" onclick="scriptTest(); return false;">@lang('admin/scripts.script_test')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="scriptAttachEvent(); return false;">@lang('admin/scripts.script_attach_event')</a>
 @endif
@@ -99,6 +100,27 @@
         dialog('{{ route("script-edit", $scriptID) }}');
     }
 
+    function runScriptTest(source) {
+        $.post({
+            url: '{{ route("script-test") }}',
+            data: {
+                '_token': '{{ Session::token() }}',
+                'command': source,
+            },
+            success: function(data) {
+                alert(data);
+            },
+            error: function () {
+                alert('ERROR');
+            }
+        });
+    }
+
+    function scriptTest() {
+        console.log($('.codetext').text());
+        runScriptTest($('.codetext').text());
+    }
+
     function scriptAttachEvent() {
         dialog('{{ route("script-events", $scriptID) }}');
     }
@@ -131,19 +153,7 @@
     }
     
     function editorTest() {
-        $.post({
-            url: '{{ route("script-test") }}',
-            data: {
-                '_token': '{{ Session::token() }}',
-                'command': $('.script-editor-code').val(),
-            },
-            success: function(data) {
-                alert(data);
-            },
-            error: function () {
-                alert('ERROR');
-            }
-        });
+        runScriptTest($('.script-editor-code').val());
     }
     @endif    
 </script>

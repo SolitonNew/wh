@@ -8,6 +8,7 @@ return [
     'script_edit' => 'Свойства скрипта...',
     'script_show_editor' => 'Редактировать скрипт...',
     'script_attach_event' => 'Назначить как событие на переменную...',
+    'script_test' => 'Тест скрипта',
     
     'table_ID' => 'ID',
     'table_COMM' => 'Название',

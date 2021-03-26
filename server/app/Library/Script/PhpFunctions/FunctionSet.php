@@ -18,13 +18,13 @@ trait FunctionSet {
      * @throws \Exception
      */
     public function function_set($name, $value, $time = 0) {
-        $vars = DB::select("select ID from core_variables where NAME = '$name'");
-        if (count($vars)) {
+        $variable = \App\Http\Models\VariablesModel::whereName($name)->first();
+        if ($variable) {
             if ($time == 0) {
-                DB::select('CALL CORE_SET_VARIABLE('.$vars[0]->ID.', '.$value.', null)');
+                DB::select('CALL CORE_SET_VARIABLE('.$variable->id.', '.$value.', null)');
             } else {
                 $datetime = now()->addMinute($time);
-                \App\Http\Models\SchedulerModel::appendFastRecord("set('$name', $value, $time)", "set('$name', $value);", $datetime, $vars[0]->ID);
+                \App\Http\Models\SchedulerModel::appendFastRecord("set('$name', $value, $time)", "set('$name', $value);", $datetime, $variable->id);
             }
         } else {
             throw new \Exception("Variable '$name' not found");

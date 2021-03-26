@@ -45,7 +45,6 @@ class ScriptsController extends Controller
             ];
             
             $sourceCode = $item->data;
-            $sourceCode = str_replace(' ', '&nbsp;', $sourceCode);
             
             foreach($words as $key => $val) {
                 $sourceCode = str_replace($key, $val, $sourceCode);
@@ -55,7 +54,6 @@ class ScriptsController extends Controller
                 $sourceCode = str_replace($val, '<span class="code-keyword">'.$key.'</span>', $sourceCode);
             }
             
-            $sourceCode = nl2br($sourceCode);
         } else {
             $sourceCode = '';
         }
@@ -158,13 +156,12 @@ class ScriptsController extends Controller
                 $ids[] = 0;
                 $ids_sql = implode(', ', $ids);
 
-                // Удаляем записи не которые не отмечены
-                $sql = "delete from core_variable_events
-                         where script_id = $id
-                           and not variable_id in ($ids_sql)";
-                db::delete($sql);
+                // Удаляем записи которые не отмечены
+                $changes = \App\Http\Models\VariableEventsModel::whereScriptId($id)
+                                ->whereNotIn('variable_id', $ids)
+                                ->delete();
                 
-                // добавляем новые
+                // Добавляем новые
                 $sql = "select v.id
                           from core_variables v
                          where v.id in ($ids_sql)
@@ -178,6 +175,11 @@ class ScriptsController extends Controller
                     $rec->variable_id = $row->id;
                     $rec->script_id = $id;
                     $rec->save();
+                    $changes++;
+                }
+                
+                if ($changes) { // Шлем вручную событие изменения
+                    event(new \App\Http\Events\FirmwareChangedEvent());
                 }
                 return 'OK';
             } catch (\Exception $ex) {
@@ -207,7 +209,7 @@ class ScriptsController extends Controller
     public function scriptTest(Request $request) {
         try {
             $execute = new \App\Library\Script\PhpExecute($request->post('command'));
-            $res = $execute->run();
+            $res = $execute->run(true);
             return $res ? $res : 'OK';
         } catch (\Exception $ex) {
             return $ex->getMessage();

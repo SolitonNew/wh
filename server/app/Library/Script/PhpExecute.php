@@ -23,6 +23,12 @@ class PhpExecute {
         PhpFunctions\FunctionSet,
         PhpFunctions\FunctionSpeech,
         PhpFunctions\FunctionToggle;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $_fake = false;
             
     /**
      *
@@ -48,8 +54,9 @@ class PhpExecute {
      * 
      * @return type
      */
-    public function run() {
+    public function run($fake = false) {
         try {
+            $this->_fake = $fake;
             $code = $this->_translator->run();
             eval($code);
         } catch (\ParseError $ex) {

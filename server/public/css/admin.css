@@ -314,6 +314,7 @@ option:disabled {
     flex-grow: 1; 
     font-family: 'Courier New';
     padding: 1rem;
+    white-space: pre;
 }
 
 .form-waiter {

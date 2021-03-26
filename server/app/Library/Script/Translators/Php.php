@@ -46,7 +46,7 @@ class Php implements ITranslator {
      * @var type 
      */
     protected $_funcPrefix = '$this->function_';
-    
+
     /**
      * 
      * @param type $parts

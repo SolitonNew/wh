@@ -8,8 +8,6 @@
 
 namespace App\Library\Script\PhpFunctions;
 
-use DB;
-
 trait FunctionGet {
     /**
      * 
@@ -18,9 +16,10 @@ trait FunctionGet {
      * @throws \Exception
      */
     public function function_get($name) {
-        $vars = DB::select("select VALUE from core_variables where NAME = '$name'");
-        if (count($vars)) {
-            return $vars[0]->VALUE;
+        $variable = \App\Http\Models\VariablesModel::whereName($name)->first();
+        
+        if ($variable) {
+            return $variable->value;
         } else {
             throw new \Exception("Variable '$name' not found");
         }
