@@ -2,11 +2,12 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use \App\Library\AffectsFirmwareModel;
 
-class OwDevsModel extends Model
-{
+class OwDevsModel extends AffectsFirmwareModel
+{    
     protected $table = 'core_ow_devs';
     public $timestamps = false;
     
+    protected $_affectFirmwareFields = [];
 }

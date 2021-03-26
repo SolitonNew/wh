@@ -174,4 +174,44 @@ class PropertysModel extends Model
         }
         $item->save();
     }
+    
+    /**
+     * Кэш для getFirmwareChanges
+     */
+    static protected $_firmwareChanges = false;
+    
+    /**
+     * Возвращает количество изменений в БД (которые влияют на прошивку) 
+     * с момента последнего обновления.
+     * 
+     * @return int
+     */
+    static public function getFirmwareChanges() {
+        if (self::$_firmwareChanges === false) {
+            $item = self::whereName('WIRMWARE_CHANGES')->first();
+            if ($item) {
+                self::$_firmwareChanges = $item->value ?? 0;
+            } else {
+                self::$_firmwareChanges = 0;
+            }
+        }
+        return self::$_firmwareChanges;
+    }
+    
+    /**
+     * Устанавливает значение количества изменений в БД (которые влияют на 
+     * прошивку)
+     * 
+     * @param int $count
+     */
+    static public function setFirmwareChanges(int $count) {
+        $item = self::whereName('WIRMWARE_CHANGES')->first();
+        if (!$item) {
+            $item = new PropertysModel();
+            $item->name = 'WIRMWARE_CHANGES';
+            $item->comm = '';
+        }
+        $item->value = $count;
+        $item->save();
+    }
 }

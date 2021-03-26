@@ -2,13 +2,21 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use \App\Library\AffectsFirmwareModel;
 
-class VariablesModel extends Model
-{
+class VariablesModel extends AffectsFirmwareModel
+{    
     protected $table = 'core_variables';
     public $timestamps = false;
     
+    protected $_affectFirmwareFields = [
+        'controller_id',
+        'typ',
+        'ow_id',
+        'direction',
+        'name',
+        'channel',
+    ];
     
     /**
      * 

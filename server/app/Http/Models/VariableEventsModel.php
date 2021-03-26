@@ -2,11 +2,12 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use \App\Library\AffectsFirmwareModel;
 
-class VariableEventsModel extends Model
-{
+class VariableEventsModel extends AffectsFirmwareModel
+{   
     protected $table = 'core_variable_events';
     public $timestamps = false;
 
+    protected $_affectFirmwareFields = [];
 }

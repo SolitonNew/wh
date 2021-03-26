@@ -114,7 +114,7 @@ class VariablesController extends Controller
                 $item->value = $request->post('value');
                 $item->group_id = $request->post('group_id');
                 $item->app_control = $request->post('app_control');
-                $item->save();
+                $item->save();                
                 return 'OK';
             } catch (\Exception $ex) {
                 return response()->json([

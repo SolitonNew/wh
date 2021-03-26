@@ -88,7 +88,7 @@ class ScriptsController extends Controller
             try {
                 if (!$item) {
                     $item = new \App\Http\Models\ScriptsModel();
-                    $item->data = 'pass';
+                    $item->data = '';
                 }
                 $item->comm = $request->post('comm');
                 $item->save();
@@ -172,7 +172,6 @@ class ScriptsController extends Controller
                                             from core_variable_events t
                                            where t.script_id = $id
                                              and t.variable_id = v.id)";
-                Log::info($sql);
                 foreach(DB::select($sql) as $row) {
                     $rec = new \App\Http\Models\VariableEventsModel();
                     $rec->event_type = 0;

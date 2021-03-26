@@ -90,7 +90,6 @@ class ConfigurationController extends Controller
                 $item->comm = $request->post('comm');
                 $item->status = 0; 
                 $item->save();
-                
                 return 'OK';
             } catch (\Exception $ex) {
                 return response()->json([
@@ -123,7 +122,7 @@ class ConfigurationController extends Controller
     public function delete(int $id) {
         try {
             $item = \App\Http\Models\ControllersModel::find($id);
-            $item->delete();            
+            $item->delete();
             return 'OK';
         } catch (\Exception $ex) {
             return 'ERROR';
@@ -186,7 +185,7 @@ class ConfigurationController extends Controller
     public function owDelete(int $id) {
         try {
             $item = \App\Http\Models\OwDevsModel::find($id);
-            $item->delete();            
+            $item->delete();
             return 'OK';
         } catch (\Exception $ex) {
             return 'ERROR';
@@ -281,16 +280,6 @@ class ConfigurationController extends Controller
             $makeError = true;
             $text = $ex->getMessage();
         }
-        
-        /*$zzz = $firmware->getHex();
-        Log::info(count($zzz));
-        foreach ($zzz as $hex) {
-            $a = [];
-            foreach($hex as $b) {
-                $a[] = sprintf("%'02X", $b);
-            }
-            Log::info(implode(' ', $a));
-        }*/
         
         return view('admin.configuration.configuration-firmware', [
             'data' => $text,

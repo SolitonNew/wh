@@ -2,11 +2,14 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use \App\Library\AffectsFirmwareModel;
 
-class ScriptsModel extends Model
-{
+class ScriptsModel extends AffectsFirmwareModel
+{    
     protected $table = 'core_scripts';
     public $timestamps = false;
     
+    protected $_affectFirmwareFields = [
+        'data',
+    ];
 }

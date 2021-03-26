@@ -170,6 +170,8 @@ class RS485Demon extends BaseDemon {
                     case 'FIRMWARE':
                         if (!$loopErrors) {
                             \App\Http\Models\PropertysModel::setRs485CommandInfo('COMPLETE', true);
+                            // Сбрасываем счетчик изменений прошивки
+                            \App\Http\Models\PropertysModel::setFirmwareChanges(0);
                         } else {
                             \App\Http\Models\PropertysModel::setRs485CommandInfo('ERROR', true);
                         }

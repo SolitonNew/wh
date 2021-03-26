@@ -2,11 +2,16 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use \App\Library\AffectsFirmwareModel;
 
-class ControllersModel extends Model
+class ControllersModel extends AffectsFirmwareModel
 {
     protected $table = 'core_controllers';
     public $timestamps = false;
 
+    protected $_affectFirmwareFields = [
+        'is_server',
+        'rom',
+    ];
+    
 }
