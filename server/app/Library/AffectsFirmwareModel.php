@@ -10,7 +10,7 @@ namespace App\Library;
 
 use \Illuminate\Database\Eloquent\Model;
 
-class AffectsFirmwareModel extends Model 
+class AffectsFirmwareModel extends Model
 {
     /**
      *
