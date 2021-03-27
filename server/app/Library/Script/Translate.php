@@ -48,7 +48,6 @@ class Translate {
         'speech' => [1],
         'play' => [1],
         'info' => [0],
-        //'loop' => [1],
     ];
     
     /**
@@ -162,11 +161,15 @@ class Translate {
                 $to_char = chr(0);
         }
         
+        $empty = 0;
         for ($i = $from_i; $i < count($this->_parts); $i++) {
             $part = $this->_parts[$i];
             if (in_array($part, $spaces)) continue;
             
+            $empty++;
+            
             if ($part == $to_char) { // Конец блока
+                if ($empty == 1) $func_args = 0;
                 return $i;
             } else
             if ($part == '{') { // Новый блок
@@ -186,8 +189,7 @@ class Translate {
                         if (in_array($this->_parts[$k], $spaces)) continue;
                         if ($this->_parts[$k] == '(') { // Это функция или конструкция
                             $args = 1;
-                            $new_i = $this->_prepareBlock($k, $args);
-                            
+                            $new_i = $this->_prepareBlock($k, $args);                            
                             if (isset($this->_functions[$part])) { // Это наша функция
                                 // Проверяем кол-во аргументов
                                 if (!in_array($args, $this->_functions[$part])) {

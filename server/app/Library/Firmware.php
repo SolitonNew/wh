@@ -261,6 +261,8 @@ class Firmware {
         // Команда сбора статистики
         $commands[] = "avr-size -C --mcu=$this->_mmcu $path_elf";
         
+        Log::info("avr-size -C --mcu=$this->_mmcu $path_elf");
+        
         // Запускаем созданые команды на выполнение
         for($i = 0; $i < count($commands); $i++) {
             //Log::info($commands[$i]);

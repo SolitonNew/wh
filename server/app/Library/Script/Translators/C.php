@@ -46,7 +46,9 @@ class C implements ITranslator {
         'play' => [
             1 => 'command_play',
         ],
-        'info' => [],
+        'info' => [
+            0 => 'command_info',
+        ],
     ];
     
     private $_variableNames = [];
