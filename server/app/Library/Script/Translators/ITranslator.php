@@ -17,5 +17,5 @@ interface ITranslator {
      * 
      * @param type $source
      */
-     public function translate(&$parts);
+     public function translate($prepareData, &$report = null);
 }

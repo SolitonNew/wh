@@ -16,12 +16,16 @@ trait FunctionToggle {
      * @param type $name
      */
     public function function_toggle($name, $time = 0) {
-        $vars = DB::select("select ID, VALUE from core_variables where NAME = '$name'");
-        if (count($vars)) {
-            if ($vars[0]->VALUE) {
-                DB::select('CALL CORE_SET_VARIABLE('.$vars[0]->ID.', 0, null)');
+        $variable = \App\Http\Models\VariablesModel::whereName($name)->first();
+        if ($variable) {
+            if ($this->_fake) {
+                //
             } else {
-                DB::select('CALL CORE_SET_VARIABLE('.$vars[0]->ID.', 1, null)');
+                if ($variable->value) {
+                    DB::select('CALL CORE_SET_VARIABLE('.$variable->id.', 0, null)');
+                } else {
+                    DB::select('CALL CORE_SET_VARIABLE('.$variable->id.', 1, null)');
+                }
             }
         } else {
             throw new \Exception("Variable '$name' not found");

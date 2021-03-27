@@ -8,6 +8,8 @@
 
 namespace App\Library\Script;
 
+use Log;
+
 /**
  * Description of PhpExecute
  *
@@ -41,7 +43,7 @@ class PhpExecute {
      * @param type $source
      */
     public function __construct($source) {
-        $this->_translator = new Translate(new Translators\Php(), $source);
+        $this->_translator = new Translate($source);
     }
     
     /**
@@ -57,7 +59,8 @@ class PhpExecute {
     public function run($fake = false) {
         try {
             $this->_fake = $fake;
-            $code = $this->_translator->run();
+            $report = [];
+            $code = $this->_translator->run(new Translators\Php(), $report);
             eval($code);
         } catch (\ParseError $ex) {
             $this->printLine($ex->getMessage());

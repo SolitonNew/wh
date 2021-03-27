@@ -138,8 +138,9 @@ class Firmware {
         }
         
         foreach($scriptList as &$row) {
-            $translator = new Script\Translate(new Script\Translators\C($variableNames), $row->data);
-            $row->data_to_c = $translator->run();
+            $translator = new Script\Translate($row->data);
+            $report = [];
+            $row->data_to_c = $translator->run(new Script\Translators\C($variableNames), $report);
         }
         
         // Проставляем индексы для переменных в связях с эвентами

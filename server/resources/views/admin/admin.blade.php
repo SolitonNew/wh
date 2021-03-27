@@ -134,7 +134,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p id="alert_text"></p>
+                <p id="alert_text" style="white-space: pre;overflow-x: auto;"></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="alertOk();">@lang('dialogs.btn_ok')</button>

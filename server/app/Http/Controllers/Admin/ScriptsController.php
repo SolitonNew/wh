@@ -210,7 +210,7 @@ class ScriptsController extends Controller
         try {
             $execute = new \App\Library\Script\PhpExecute($request->post('command'));
             $res = $execute->run(true);
-            return $res ? $res : 'OK';
+            return $res ? $res : "OK";
         } catch (\Exception $ex) {
             return $ex->getMessage();
         }
