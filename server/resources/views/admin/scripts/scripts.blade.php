@@ -28,7 +28,7 @@
         </a>
         @endforeach
     </div>
-    <div class="content-body codeedit">
+    <div class="content-body codeedit" style="overflow: hidden;">
         <div id="code_rownums" class="script-editor-rownums" data-count="0"></div>
         <div class="script-editor-content">
             <div id="code_preview" class="script-editor-code-view"></div>
@@ -58,6 +58,13 @@
             aa.push(i);
         }
         $('#code_rownums').html(aa.join('<br>'));
+        
+        $('#code_preview_sel').on('scroll', function (e) {
+            $('#code_preview').scrollLeft($(this).scrollLeft());
+            $('#code_preview').scrollTop($(this).scrollTop());
+            
+            $('#code_rownums').scrollTop($(this).scrollTop());
+        });
     });
 
     function scriptAdd() {

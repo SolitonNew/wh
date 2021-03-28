@@ -19,7 +19,6 @@
 </div>
 
 <script>
-    
     var script_editor_tab_chars = 4;
     
     $(document).ready(() => {
@@ -157,6 +156,14 @@
             }
         });
         
+        $('#script_editor_code').on('scroll', function (e) {
+            editorScrollSync($(this).scrollLeft(), $(this).scrollTop());
+        });
+        
+        $('#script_editor_code_view_sel').on('scroll', function (e) {            
+            editorScrollSync($(this).scrollLeft(), $(this).scrollTop());
+        });
+        
         $('#script_editor_code_view_sel').on('click', function (e) {
             let {anchorOffset, focusOffset} = document.getSelection();
             let start = Math.min(anchorOffset, focusOffset);
@@ -166,6 +173,24 @@
             $('#script_editor_code').prop('selectionEnd', end);
         });
     });
+    
+    var editorScrollX;
+    var editorScrollY;
+    
+    function editorScrollSync(scrollX, scrollY) {
+        if (scrollX == editorScrollX && scrollY == editorScrollY) return ;
+        
+        editorScrollX = scrollX;
+        editorScrollY = scrollY;
+        
+        $('#script_editor_code').scrollLeft(scrollX);
+        $('#script_editor_code').scrollTop(scrollY);
+        $('#script_editor_code_view').scrollLeft(scrollX);
+        $('#script_editor_code_view').scrollTop(scrollY);
+        $('#script_editor_code_view_sel').scrollLeft(scrollX);
+        $('#script_editor_code_view_sel').scrollTop(scrollY);
+        $('#script_editor_rownums').scrollTop(scrollY);
+    }
     
     function editorShow(selStart, selEnd) {
         $('#script_editor_code').val($('#editor_original_data').val()).trigger('input');
@@ -246,28 +271,50 @@
                 
                 if (code[i] == '/' && code[i + 1] == '*') {
                     s = '/*';
+                    let find = false;
                     for (let k = i + 2; k < code.length - 1; k++) {
                         if (code[k] == '*' && code[k + 1] == '/') {
                             s += '*/';
                             i = k + 1;
+                            find = true;
                             break;
                         }
                         s += code[k];
                     }
                     parts.push(s);
                     s = '';
+                    if (!find) i = code.length;
                 } else
                 if (code[i] == '/' && code[i + 1] == '/') {
                     s = '//';
+                    let find = false;
                     for (let k = i + 2; k < code.length; k++) {
                         if (code[k] == '\r' || code[k] == '\n') {
                             i = k - 1;
+                            find = true;
                             break;
                         }
                         s += code[k];
                     }
                     parts.push(s);
                     s = '';
+                    if (!find) i = code.length;
+                } else
+                if (code[i] == "'") {
+                    s = "'";
+                    let find = false;
+                    for (let k = i + 1; k < code.length; k++) {
+                        if (code[k] == "'") {
+                            s += "'";
+                            i = k;
+                            find = true;
+                            break;
+                        }
+                        s += code[k];
+                    }
+                    parts.push(s);
+                    s = '';
+                    if (!find) i = code.length;
                 } else {
                     parts.push(code[i]);
                 }
@@ -285,9 +332,16 @@
             } else
             if (parts[i].substr(0, 2) == '/*' || parts[i].substr(0, 2) == '//') {
                 parts[i] = '<span class="comment">' + parts[i] + '</span>';
+            } else
+            if (parts[i].substr(0, 1) == "'") {
+                parts[i] = '<span class="text">' + parts[i] + '</span>';
             }
         }
         
         $(viewer).html(parts.join(''));
+    }
+    
+    function editorShowHelper() {
+        //
     }
 </script>

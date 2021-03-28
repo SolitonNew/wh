@@ -365,6 +365,7 @@ div.form-control {
     flex-grow: 1;
     background-color: #ffffff;
     box-shadow: 0 0 20px rgba(255,255,255,0.5);
+    overflow: hidden;
 }
 
 .script-editor-rownums {
@@ -375,6 +376,7 @@ div.form-control {
     font-family: 'Courier New';
     text-align: right;
     border-right: 1px solid rgba(0,0,0,0.125);
+    overflow: hidden;
 }
 
 .script-editor-content {
@@ -383,11 +385,13 @@ div.form-control {
 }
 
 .script-editor-code {
-    padding: 1rem;
+    padding-top: 1rem;
+    padding-left: 1rem;
     border: 0px;
     font-family: 'Courier New';
     width: 100%;
     height: 100%;
+    white-space: nowrap;
 }
 
 .script-editor-code:focus {
@@ -397,13 +401,15 @@ div.form-control {
 .script-editor-code-view,
 .script-editor-code-view-sel {
     position: absolute;
+    padding-top: 1rem;
+    padding-left: 1rem;
     top: 0px;
     left: 0px;
     width: 100%;
     height: 100%;
     font-family: 'Courier New';
     white-space: pre;
-    padding: 1rem;
+    overflow: auto;
 }
 
 .script-editor-code-view-sel {
@@ -417,6 +423,10 @@ div.form-control {
 
 .script-editor-code-view .comment {
     color: #00cc00;
+}
+
+.script-editor-code-view .text {
+    color: #ff0000;
 }
 
 .script-editor-toolbar {
