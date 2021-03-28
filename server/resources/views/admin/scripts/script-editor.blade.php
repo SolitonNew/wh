@@ -7,6 +7,15 @@
                 <textarea id="script_editor_code" class="script-editor-code"></textarea>
                 <div id="script_editor_code_view" class="script-editor-code-view"></div>
                 <div id="script_editor_code_view_sel" class="script-editor-code-view-sel"></div>
+                <div id="script_editor_code_helper" class="script-editor-code-helper">
+                @foreach(App\Http\Models\VariablesModel::orderBy('name', 'asc')->get() as $row)
+                <div class="script-editor-code-helpe-item" data-word="{{ $row->name }}">
+                    <span class="strong">{{ $row->name }}</span>
+                    <span class="text-muted">@lang('admin/variables.app_control.'.$row->app_control)</span>
+                    {{ $row->comm }}
+                </div>
+                @endforeach
+                </div>
             </div>
         </div>
         <div class="script-editor-toolbar">
@@ -112,11 +121,43 @@
                 $('#script_editor_code').prop('selectionEnd', selStart + insert_chars);
 
                 $(this).trigger('input');
+            } else
+            if (e.code == 'ArrowLeft') {
+                if (editorHelperKeyLeft()) {
+                    e.preventDefault();
+                }
+            } else
+            if (e.code == 'ArrowRight') {
+                if (editorHelperKeyRight()) {
+                    e.preventDefault();
+                }
+            } else
+            if (e.code == 'ArrowUp') {
+                if (editorHelperKeyTop()) {
+                    e.preventDefault();
+                }
+            } else
+            if (e.code == 'ArrowDown') {
+                if (editorHelperKeyBottom()) {
+                    e.preventDefault();
+                }
+            } else
+            if (e.code == 'Esc') {
+                if (editorHelperKeyEsc()) {
+                    e.preventDefault();
+                }
+            } else
+            if (e.code == 'Enter') {
+                if (editorHelperKeyEnter()) {
+                    e.preventDefault();
+                }
             }
         });
         
         $('#script_editor_code').on('keyup', function (e) {
             if (e.code == 'Enter') {
+                if (editorHelperVisible()) return ;
+                
                 let selStart = $('#script_editor_code').prop('selectionStart');
                 let text = $(this).val();
                 
@@ -153,6 +194,9 @@
                         $(this).trigger('input');
                     }   
                 }
+            } else
+            if (e.ctrlKey && e.code == 'Space') {
+                editorHelperShow();
             }
         });
         
@@ -171,6 +215,8 @@
             $('#script_editor_code').focus();
             $('#script_editor_code').prop('selectionStart', start);
             $('#script_editor_code').prop('selectionEnd', end);
+            
+            editorHelperHide();
         });
     });
     
@@ -259,7 +305,6 @@
             'info',
         ];
         
-        
         let parts = new Array();
         let s = '';
         for (let i = 0; i < code.length; i++) {
@@ -341,7 +386,155 @@
         $(viewer).html(parts.join(''));
     }
     
-    function editorShowHelper() {
-        //
+    function editorHelperShow() {
+        if (!editorHelperVisible()) {
+            $('#script_editor_code_helper').fadeIn(150);
+        }
+        
+        let selStart = $('#script_editor_code').prop('selectionStart');
+        let text = $('#script_editor_code').val();
+        let text_before = text.substr(0, selStart);
+        let a_before = text_before.split(/\r?\n/);
+        
+        let top = 1 + (a_before.length * 1.5);
+        let left = 1;
+        if (a_before.length > 0) {
+            left = 1 + (a_before[a_before.length - 1].length * 0.6);
+        }
+        
+        $('#script_editor_code_helper').css({
+            top: top + 'rem',
+            left: left + 'rem',
+        });
+    }
+    
+    function editorHelperHide() {
+        $('#script_editor_code_helper').fadeOut(150);
+    }
+    
+    function editorHelperVisible() {
+        return $('#script_editor_code_helper').css('display') != 'none';
+    }
+    
+    function editorHelperKeyLeft() {
+        if (editorHelperVisible()) {
+            $('#script_editor_code_helper .active').removeClass('active');
+            let elem = $('#script_editor_code_helper div')
+                            .first()
+                            .addClass('active');
+            editorHelperScrollToVisible();
+            return true;
+        }
+        return false;
+    }
+    
+    function editorHelperKeyRight() {
+        if (editorHelperVisible()) {
+            $('#script_editor_code_helper .active').removeClass('active');
+            let elem = $('#script_editor_code_helper div')
+                            .last()
+                            .addClass('active');
+            editorHelperScrollToVisible();
+            return true;
+        }
+        return false;
+    }
+    
+    function editorHelperKeyTop() {
+        if (editorHelperVisible()) {
+            let active = $('#script_editor_code_helper .active');
+            if (active.length) {
+                active = active
+                            .removeClass('active')
+                            .prev()
+                            .addClass('active');
+                if (active.length == 0) {
+                    $('#script_editor_code_helper div')
+                        .last()
+                        .addClass('active');
+                }
+            } else {
+                $('#script_editor_code_helper div')
+                    .last()
+                    .addClass('active');
+            }
+            editorHelperScrollToVisible();
+            return true;
+        }
+        return false;
+    }
+    
+    function editorHelperKeyBottom() {
+        if (editorHelperVisible()) {
+            let active = $('#script_editor_code_helper .active');
+            if (active.length) {
+                active = active
+                            .removeClass('active')
+                            .next()
+                            .addClass('active');
+                if (active.length == 0) {
+                    $('#script_editor_code_helper div')
+                        .first()
+                        .addClass('active');
+                }
+            } else {
+                let elem = $('#script_editor_code_helper div')
+                            .first()
+                            .addClass('active');
+            }
+            editorHelperScrollToVisible();
+            return true;
+        }
+        return false;
+    }
+    
+    function editorHelperScrollToVisible() {
+        let helper = $('#script_editor_code_helper');
+        let padding = parseInt(helper.css('padding-top'));
+        let active = $('#script_editor_code_helper .active');
+        if (active.length) {
+            active = active[0];
+            if (active.offsetTop - padding < helper.scrollTop()) {
+                helper.scrollTop(active.offsetTop - padding);
+            } else {
+                let item_bottom = active.offsetTop + active.offsetHeight;
+                if (item_bottom > helper.scrollTop() + helper[0].clientHeight - padding) {
+                    helper.scrollTop(item_bottom - helper[0].clientHeight + padding);
+                }
+            }
+        }
+    }
+    
+    function editorHelperKeyEsc() {
+        if (editorHelperVisible()) {
+            editorHelperHide();
+            return true;
+        }
+        return false;
+    }
+    
+    function editorHelperKeyEnter() {
+        if (editorHelperVisible()) {
+            
+            let selStart = $('#script_editor_code').prop('selectionStart');
+            let text = $('#script_editor_code').val();
+            let text_before = text.substr(0, selStart);
+            let text_after = text.substr(selStart);
+            //let a_before = text_before.split(/\r?\n/);
+            
+            let word = $('#script_editor_code_helper div.active').data('word');
+            if (word) {
+                let insert_chars = word.length;
+
+                $('#script_editor_code').val(text_before + word + text_after).trigger('input');
+
+                $('#script_editor_code').prop('selectionStart', selStart + insert_chars);
+                $('#script_editor_code').prop('selectionEnd', selStart + insert_chars);   
+            }
+            
+            editorHelperHide();
+            return true;
+        }
+        return false;
     }
 </script>
