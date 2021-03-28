@@ -29,30 +29,35 @@
         @endforeach
     </div>
     <div class="content-body codeedit">
-        <div class="numbers">000</div>
-        <div class="codetext">{!! $sourceCode !!}</div>
+        <div id="code_rownums" class="script-editor-rownums" data-count="0"></div>
+        <div class="script-editor-content">
+            <div id="code_preview" class="script-editor-code-view"></div>
+            <div id="code_preview_sel" class="script-editor-code-view-sel"></div>
+        </div>
     </div>
 </div>
 
-@if($data)
 @include('admin.scripts.script-editor')
-@endif
 
 <script>
-    $(document).ready(() => {
-        let s = $('.content-body .codetext').text();
+    $(document).ready(() => {        
+        @if($data)
+        $('#code_preview_sel').on('click', () => {
+            let {anchorOffset, focusOffset} = document.getSelection();
+            editorShow(anchorOffset, focusOffset);
+        });
+    
+        $('#code_preview_sel').text($('#editor_original_data').val());
+        editorUpdateView($('#code_preview'), $('#editor_original_data').val());
+        @endif
+        
+        let s = $('#editor_original_data').val();
         let a = s.split('\n');
         let aa = new Array();
         for (let i = 1;  i <= a.length; i++) {
             aa.push(i);
         }
-        $('.content-body .numbers').html(aa.join('<br>'));
-        
-        @if($data)
-        $('.codetext').on('click', () => {
-            editorShow();
-        });
-        @endif
+        $('#code_rownums').html(aa.join('<br>'));
     });
 
     function scriptAdd() {

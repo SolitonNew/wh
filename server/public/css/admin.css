@@ -394,7 +394,8 @@ div.form-control {
     outline: 0px;
 }
 
-.script-editor-code-view {
+.script-editor-code-view,
+.script-editor-code-view-sel {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -405,9 +406,17 @@ div.form-control {
     padding: 1rem;
 }
 
+.script-editor-code-view-sel {
+    color: rgba(0,0,0,0);
+}
+
 .script-editor-code-view .keyword {
     color: #0000ff;
     font-weight: bold;
+}
+
+.script-editor-code-view .comment {
+    color: #00cc00;
 }
 
 .script-editor-toolbar {
