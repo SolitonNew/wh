@@ -9,7 +9,7 @@
                 <div id="script_editor_code_view_sel" class="script-editor-code-view-sel"></div>
                 <div id="script_editor_code_helper" class="script-editor-code-helper">
                 @foreach($helper as $row)
-                <div class="script-editor-code-helper-item" data-word="{{ $row->keyword }}">
+                <div class="script-editor-code-helper-item" data-word="{{ $row->keyword }}" data-type="{{ $row->type }}">
                     <span class="strong {{ $row->type }}">{{ $row->keyword }}</span>
                     <span class="italic text-muted" >{{ $row->description }}</span>
                 </div>
@@ -434,18 +434,27 @@
         } else {
             if (script_editor_helper_filter_text[0] == "'") {
                 $('#script_editor_code_helper > div').each(function () {
-                    let word = "'" + $(this).data('word');
-                    if (script_editor_helper_filter_text == word.substr(0, script_editor_helper_filter_text.length)) {
-                        $(this).show();
+                    if ($(this).data('type') == 'variable') {
+                        let word = "'" + $(this).data('word');
+                        if (script_editor_helper_filter_text == word.substr(0, script_editor_helper_filter_text.length)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
                     } else {
                         $(this).hide();
                     }
                 });
             } else {
                 $('#script_editor_code_helper > div').each(function () {
-                    let word = $(this).data('word');
-                    if (script_editor_helper_filter_text == word.substr(0, script_editor_helper_filter_text.length)) {
-                        $(this).show();
+                    if ($(this).data('type') != 'variable') {
+                        let word = $(this).data('word');
+                        if (script_editor_separators.indexOf(script_editor_helper_filter_text) > -1 || 
+                            script_editor_helper_filter_text == word.substr(0, script_editor_helper_filter_text.length)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
                     } else {
                         $(this).hide();
                     }
@@ -456,7 +465,14 @@
         editorHelperScrollToVisible();
         
         let top = parseInt($('#script_editor_code').css('padding-top')) + (cursor_y * script_editor_char_size.h);
-        let left = parseInt($('#script_editor_code').css('padding-left')) + (cursor_x * script_editor_char_size.w);        
+        let left = parseInt($('#script_editor_code').css('padding-left')) + (cursor_x * script_editor_char_size.w);
+        
+        let right = left + $('#script_editor_code_helper').width();
+        let bottom = top + $('#script_editor_code_helper').height();
+        
+        if (right > $('#script_editor_code').width()) {
+            left -= right - $('#script_editor_code').width();
+        }
         
         $('#script_editor_code_helper').css({
             left: left + 'px',
@@ -550,10 +566,16 @@
                 let text = $('#script_editor_code').val();
                 let text_before = text.substr(0, selStart);
                 let text_after = text.substr(selStart);
+
                 let helper_text_len = script_editor_helper_filter_text.length;
+                if (script_editor_separators.indexOf(script_editor_helper_filter_text) > -1) {
+                    helper_text_len = 0;
+                }
+                
                 if (script_editor_helper_filter_text[0] == "'") helper_text_len--;
-                let word = selWord.data('word');
-                word = word.substr(helper_text_len);
+                
+                let word = selWord.data('word').substr(helper_text_len);
+                
                 let parts_after = editorSourceSplit(text_after);
                 if (parts_after.length) {
                     if (parts_after[0][0] != "'" && script_editor_separators.indexOf(parts_after[0]) == -1) {
@@ -561,6 +583,7 @@
                     }
                 }
                 let insert_chars = word.length;
+                
                 $('#script_editor_code').val(text_before + word + text_after).trigger('input');
                 $('#script_editor_code').prop('selectionStart', selStart + insert_chars);
                 $('#script_editor_code').prop('selectionEnd', selStart + insert_chars); 
