@@ -93,8 +93,7 @@
     }
 
     function scriptTest() {
-        console.log($('.codetext').text());
-        runScriptTest($('.codetext').text());
+        runScriptTest($('#editor_original_data').val());
     }
 
     function scriptAttachEvent() {

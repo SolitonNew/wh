@@ -302,10 +302,10 @@ void core_request_ow_values(uint8_t *rom) {
                 for (uint8_t i = 0; i < vars_num; i++) {
                     if (devs_get_varible(vars[i], &variable)) {
                         switch (variable.channel) {
-                            case 0: // p1
+                            case 0: // h
                                 core_set_variable_value(vars[i], 2, dht11_data.h);
                                 break;
-                            case 1: // p2
+                            case 1: // t
                                 core_set_variable_value(vars[i], 2, dht11_data.t);
                                 break;
                             default: ;
@@ -321,7 +321,7 @@ void core_request_ow_values(uint8_t *rom) {
                 for (uint8_t i = 0; i < vars_num; i++) {
                     if (devs_get_varible(vars[i], &variable)) {
                         switch (variable.channel) {
-                            case 0: // p1
+                            case 0: // co
                                 core_set_variable_value(vars[i], 2, mq7_data.co);
                                 break;
                             default: ;

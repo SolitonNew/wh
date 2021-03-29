@@ -202,8 +202,6 @@ class Translate {
                                     'args' => $args,
                                 ];
                                 
-                                Log::info($part . $args);
-                                
                                 if (isset($this->_prepared_functions[$part])) {
                                     if (!in_array($args, $this->_prepared_functions[$part])) {
                                         $this->_prepared_functions[$part][] = $args;

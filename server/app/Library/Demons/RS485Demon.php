@@ -112,7 +112,7 @@ class RS485Demon extends BaseDemon {
         try {           
             $port = config('firmware.rs485_port');
             $baud = config('firmware.rs485_baud');
-            exec("stty -F $port $baud cs8 cstopb ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
+            exec("stty -F $port $baud cs8 cstopb -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
             $this->_port = fopen($port, 'r+b');
             stream_set_blocking($this->_port, false);
             while (!feof($this->_port)) {
@@ -561,9 +561,10 @@ class RS485Demon extends BaseDemon {
                         'id' => $id,
                         'value' => $value,
                     ];
-                    $this->_inPackCount--;
+                    $this->_inPackCount--;                    
                 } else {
                     $size = 0;
+                    Log::info('RS485 CRC');
                 }
                 break;
             
@@ -595,9 +596,9 @@ class RS485Demon extends BaseDemon {
         
         if ($sign == '' || $size === 0) {
             for ($i = 1; $i < strlen($this->_inBuffer) - 2; $i++) {
-                if ($this->_inBuffer[$i] > 'A' &&
-                    $this->_inBuffer[$i + 1] > 'A' &&
-                    $this->_inBuffer[$i + 2] > 'A') {
+                if ($this->_inBuffer[$i] >= 'A' &&
+                    $this->_inBuffer[$i + 1] >= 'A' &&
+                    $this->_inBuffer[$i + 2] >= 'A') {
                     $size = $i;
                     break;
                 }

@@ -74,7 +74,7 @@ void rs485_init(void) {
  * Обработка входящей очереди rs485
  */
 void rs485_processing(void) {
-	rs485_in_buff_unpack();
+    rs485_in_buff_unpack();
 }
 
 uint8_t rs485_crc_table(uint8_t data) {
