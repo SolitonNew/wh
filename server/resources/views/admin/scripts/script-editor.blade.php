@@ -28,6 +28,14 @@
 
 <script>
     var script_editor_tab_chars = 4;
+    var script_editor_helper_filter_text
+    var script_editor_separators = [
+            ' ', '.', ',', "'", '"', '+', '-', '*', '/', '=', '(', ')', '{', '}', 
+            '[', ']', ':', ';', '?', '&', '|', '!', '$', 
+            String.fromCharCode(10), 
+            String.fromCharCode(13), 
+            String.fromCharCode(9)
+        ];    
     
     $(document).ready(() => {
         $(window).on('resize', () => {
@@ -131,16 +139,6 @@
 
                 $(this).trigger('input');
             } else
-            if (e.code == 'ArrowLeft') {
-                if (editorHelperKeyLeft()) {
-                    e.preventDefault();
-                }
-            } else
-            if (e.code == 'ArrowRight') {
-                if (editorHelperKeyRight()) {
-                    e.preventDefault();
-                }
-            } else
             if (e.code == 'ArrowUp') {
                 if (editorHelperKeyTop()) {
                     e.preventDefault();
@@ -207,6 +205,8 @@
             if (e.ctrlKey && e.code == 'Space') {
                 editorHelperShow();
             }
+        
+            editorHelperUpdate();
         });
         
         $('#script_editor_code').on('scroll', function (e) {
@@ -287,25 +287,13 @@
         runScriptTest($('#script_editor_code').val());
     }
     
-    function editorUpdateView(viewer, code) {
-        let separators = [
-            ' ', '.', ',', "'", '"', '+', '-', '*', '/', '=', '(', ')', '{', '}', 
-            '[', ']', ':', ';', '?', '&', '|', '!', '$', 
-            String.fromCharCode(10), 
-            String.fromCharCode(13), 
-            String.fromCharCode(9)
-        ];
-        
-        let keywords = [
-            @foreach($keywords as $key => $descr)
-            '{{ $key }}',
-            @endforeach
-        ];
+    function editorSourceSplit(code) {
+
         
         let parts = new Array();
         let s = '';
         for (let i = 0; i < code.length; i++) {
-            if (separators.indexOf(code[i]) >= 0) {
+            if (script_editor_separators.indexOf(code[i]) >= 0) {
                 if (s != '') {
                     parts.push(s);
                     s = '';
@@ -368,6 +356,18 @@
             parts.push(s);
         }
         
+        return parts;
+    }
+    
+    function editorUpdateView(viewer, code) {
+        let parts = editorSourceSplit(code);
+        
+        let keywords = [
+            @foreach($keywords as $key => $descr)
+            '{{ $key }}',
+            @endforeach
+        ];
+        
         for (let i = 0; i < parts.length; i++) {
             if (keywords.indexOf(parts[i]) >= 0) {
                 parts[i] = '<span class="keyword">' + parts[i] + '</span>';
@@ -385,20 +385,63 @@
     
     function editorHelperShow() {
         if (!editorHelperVisible()) {
+            editorHelperUpdate(true);
             $('#script_editor_code_helper').fadeIn(150);
         }
+    }
+    
+    function editorHelperUpdate(force) {
+        if (!editorHelperVisible() && !force) return ;
         
         let selStart = $('#script_editor_code').prop('selectionStart');
         let text = $('#script_editor_code').val();
         let text_before = text.substr(0, selStart);
         let a_before = text_before.split(/\r?\n/);
+        let cursor_x = 0;
+        let cursor_y = a_before.length;
         
-        let top = 1 + (a_before.length * 1.5);
-        let left = 1;
-        if (a_before.length > 0) {
-            left = 1 + (a_before[a_before.length - 1].length * 0.6);
+        script_editor_helper_filter_text = '';
+        // Определяем что у нас в той же строке перед курсором
+        if (a_before.length) { 
+            cursor_x = a_before[a_before.length - 1].length;
+            let line = a_before[a_before.length - 1];
+            let line_parts = editorSourceSplit(line);
+            
+            if (line_parts.length > 0) {
+                let last_part = line_parts[line_parts.length - 1];
+                cursor_x -= last_part.length; // Выравниваем всплывайку на начало фрагмента
+                script_editor_helper_filter_text = last_part; // Вносим фрагмент для фильтрации
+            }
         }
         
+        if (script_editor_helper_filter_text == '') {
+            $('#script_editor_code_helper div').show();
+        } else {
+            if (script_editor_helper_filter_text[0] == "'") {
+                $('#script_editor_code_helper > div').each(function () {
+                    let word = "'" + $(this).data('word');
+                    if (script_editor_helper_filter_text == word.substr(0, script_editor_helper_filter_text.length)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            } else {
+                $('#script_editor_code_helper > div').each(function () {
+                    let word = $(this).data('word');
+                    if (script_editor_helper_filter_text == word.substr(0, script_editor_helper_filter_text.length)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });                
+            }
+        }
+        
+        editorHelperScrollToVisible();
+        
+        let top = 1 + (cursor_y * 1.5);
+        let left = 1 + (cursor_x * 0.6);        
         $('#script_editor_code_helper').css({
             top: top + 'rem',
             left: left + 'rem',
@@ -412,47 +455,21 @@
     function editorHelperVisible() {
         return $('#script_editor_code_helper').css('display') != 'none';
     }
-    
-    function editorHelperKeyLeft() {
-        if (editorHelperVisible()) {
-            $('#script_editor_code_helper .active').removeClass('active');
-            let elem = $('#script_editor_code_helper div')
-                            .first()
-                            .addClass('active');
-            editorHelperScrollToVisible();
-            return true;
-        }
-        return false;
-    }
-    
-    function editorHelperKeyRight() {
-        if (editorHelperVisible()) {
-            $('#script_editor_code_helper .active').removeClass('active');
-            let elem = $('#script_editor_code_helper div')
-                            .last()
-                            .addClass('active');
-            editorHelperScrollToVisible();
-            return true;
-        }
-        return false;
-    }
-    
+        
     function editorHelperKeyTop() {
         if (editorHelperVisible()) {
             let active = $('#script_editor_code_helper .active');
             if (active.length) {
                 active = active
                             .removeClass('active')
-                            .prev()
+                            .prevAll(':visible:first')
                             .addClass('active');
                 if (active.length == 0) {
-                    $('#script_editor_code_helper div')
-                        .last()
+                    $('#script_editor_code_helper div:visible:last')
                         .addClass('active');
                 }
             } else {
-                $('#script_editor_code_helper div')
-                    .last()
+                $('#script_editor_code_helper div:visible:last')
                     .addClass('active');
             }
             editorHelperScrollToVisible();
@@ -467,16 +484,14 @@
             if (active.length) {
                 active = active
                             .removeClass('active')
-                            .next()
+                            .nextAll(':visible:first')
                             .addClass('active');
                 if (active.length == 0) {
-                    $('#script_editor_code_helper div')
-                        .first()
+                    $('#script_editor_code_helper div:visible:first')
                         .addClass('active');
                 }
             } else {
-                let elem = $('#script_editor_code_helper div')
-                            .first()
+                let elem = $('#script_editor_code_helper div:visible:first')
                             .addClass('active');
             }
             editorHelperScrollToVisible();
@@ -512,21 +527,27 @@
     
     function editorHelperKeyEnter() {
         if (editorHelperVisible()) {
+            let selWord = $('#script_editor_code_helper div.active:visible');
             
-            let selStart = $('#script_editor_code').prop('selectionStart');
-            let text = $('#script_editor_code').val();
-            let text_before = text.substr(0, selStart);
-            let text_after = text.substr(selStart);
-            //let a_before = text_before.split(/\r?\n/);
-            
-            let word = $('#script_editor_code_helper div.active').data('word');
-            if (word) {
+            if (selWord.length) {
+                let selStart = $('#script_editor_code').prop('selectionStart');
+                let text = $('#script_editor_code').val();
+                let text_before = text.substr(0, selStart);
+                let text_after = text.substr(selStart);
+                let helper_text_len = script_editor_helper_filter_text.length;
+                if (script_editor_helper_filter_text[0] == "'") helper_text_len--;
+                let word = selWord.data('word');
+                word = word.substr(helper_text_len);
+                let parts_after = editorSourceSplit(text_after);
+                if (parts_after.length) {
+                    if (parts_after[0][0] != "'" && script_editor_separators.indexOf(parts_after[0]) == -1) {
+                        text_after = text_after.substr(parts_after[0].length);
+                    }
+                }
                 let insert_chars = word.length;
-
                 $('#script_editor_code').val(text_before + word + text_after).trigger('input');
-
                 $('#script_editor_code').prop('selectionStart', selStart + insert_chars);
-                $('#script_editor_code').prop('selectionEnd', selStart + insert_chars);   
+                $('#script_editor_code').prop('selectionEnd', selStart + insert_chars); 
             }
             
             editorHelperHide();
