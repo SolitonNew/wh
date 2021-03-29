@@ -568,11 +568,12 @@
                 let text_after = text.substr(selStart);
 
                 let helper_text_len = script_editor_helper_filter_text.length;
+                if (script_editor_helper_filter_text[0] == "'") {
+                    helper_text_len--;
+                } else 
                 if (script_editor_separators.indexOf(script_editor_helper_filter_text) > -1) {
                     helper_text_len = 0;
                 }
-                
-                if (script_editor_helper_filter_text[0] == "'") helper_text_len--;
                 
                 let word = selWord.data('word').substr(helper_text_len);
                 
