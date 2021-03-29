@@ -35,7 +35,9 @@
             String.fromCharCode(10), 
             String.fromCharCode(13), 
             String.fromCharCode(9)
-        ];    
+        ];
+        
+    var script_editor_char_size = {w: 10, h: 20};
     
     $(document).ready(() => {
         $(window).on('resize', () => {
@@ -49,6 +51,21 @@
                 height: codeedit.height() + 'px',
             });
         });
+        
+        // Расчет размера символа моноширинного шрифта
+        let div = $('<div>W</div>');
+        div.css({
+            'display': 'inline-block',
+            'font-family': $('#script_editor_code').css('font-family'),
+            'font-size': $('#script_editor_code').css('font-size'),
+        });
+        $('body').append(div);
+        script_editor_char_size = {
+            w: div.width(),
+            h: div.height(),
+        };
+        div.remove();
+        // -----------------------------
         
         $('#script_editor_code').on('input', function () {
             $('#script_editor_code_view_sel').text($(this).val())
@@ -288,8 +305,6 @@
     }
     
     function editorSourceSplit(code) {
-
-        
         let parts = new Array();
         let s = '';
         for (let i = 0; i < code.length; i++) {
@@ -440,11 +455,12 @@
         
         editorHelperScrollToVisible();
         
-        let top = 1 + (cursor_y * 1.5);
-        let left = 1 + (cursor_x * 0.6);        
+        let top = parseInt($('#script_editor_code').css('padding-top')) + (cursor_y * script_editor_char_size.h);
+        let left = parseInt($('#script_editor_code').css('padding-left')) + (cursor_x * script_editor_char_size.w);        
+        
         $('#script_editor_code_helper').css({
-            top: top + 'rem',
-            left: left + 'rem',
+            left: left + 'px',
+            top: top + 'px',
         });
     }
     
