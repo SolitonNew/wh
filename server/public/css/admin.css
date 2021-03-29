@@ -458,7 +458,15 @@ div.form-control {
     color: #ffffff;
 }
 
-.script-editor-code-helper-item.active .text-muted {
+.script-editor-code-helper-item .function {
+    color: var(--primary);
+}
+
+.script-editor-code-helper-item .variable {
+    color: #ff0000;
+}
+
+.script-editor-code-helper-item.active > * {
     color: #ffffff!important;
 }
 

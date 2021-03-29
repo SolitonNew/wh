@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use \Illuminate\Support\Facades\DB;
+use Lang;
 use Log;
 
 class ScriptsController extends Controller
@@ -33,10 +34,50 @@ class ScriptsController extends Controller
             }
         }
         
+        $keywords = [
+            'if' => 'keyword', 
+            'else' => 'keyword', 
+            'for' => 'keyword',
+            'switch' => 'keyword',
+            'case' => 'keyword',
+            'default' => 'keyword',
+            'break' => 'keyword',
+            'get' => 'function(name)',
+            'set' => 'function(name, value, later = 0)',
+            'on' => 'function(name, later = 0)',
+            'off' => 'function(name, later = 0)',
+            'toggle' => 'function(name, later = 0)',
+            'speech' => 'function(phrase)',
+            'play' => 'function(media)',
+            'info' => 'function()',
+        ];
+        
+        $helper = [];
+        
+        foreach($keywords as $key => $descr) {
+            if (strpos($descr, 'function') !== false) {
+                $helper[] = (object)[
+                    'keyword' => $key,
+                    'type' => 'function',
+                    'description' => $descr,
+                ];
+            }
+        }
+        
+        foreach(\App\Http\Models\VariablesModel::orderBy('name', 'asc')->get() as $row) {
+            $helper[] = (object)[
+                'keyword' => $row->name,
+                'type' => 'variable',
+                'description' => Lang::get('admin/variables.app_control.'.$row->app_control).' '.$row->comm,
+            ];
+        }
+        
         return view('admin.scripts.scripts', [
             'scriptID' => $scriptID,
             'list' => $list,
             'data' => $item,
+            'keywords' => $keywords,
+            'helper' => $helper,
         ]);
     }
     

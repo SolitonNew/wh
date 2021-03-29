@@ -8,11 +8,10 @@
                 <div id="script_editor_code_view" class="script-editor-code-view"></div>
                 <div id="script_editor_code_view_sel" class="script-editor-code-view-sel"></div>
                 <div id="script_editor_code_helper" class="script-editor-code-helper">
-                @foreach(App\Http\Models\VariablesModel::orderBy('name', 'asc')->get() as $row)
-                <div class="script-editor-code-helper-item" data-word="{{ $row->name }}">
-                    <span class="strong">{{ $row->name }}</span>
-                    <span class="text-muted">@lang('admin/variables.app_control.'.$row->app_control)</span>
-                    {{ $row->comm }}
+                @foreach($helper as $row)
+                <div class="script-editor-code-helper-item" data-word="{{ $row->keyword }}">
+                    <span class="strong {{ $row->type }}">{{ $row->keyword }}</span>
+                    <span class="italic text-muted" >{{ $row->description }}</span>
                 </div>
                 @endforeach
                 </div>
@@ -68,7 +67,9 @@
             $(this).addClass('active');
             let ev = $.Event('keydown');
             ev.code = 'Enter';
-            $('#script_editor_code').trigger(ev);
+            $('#script_editor_code')
+                    .trigger(ev)
+                    .focus();
         });
         
         $('#script_editor_code').on('keydown', function (e) {
@@ -150,7 +151,7 @@
                     e.preventDefault();
                 }
             } else
-            if (e.code == 'Esc') {
+            if (e.code == 'Escape') {
                 if (editorHelperKeyEsc()) {
                     e.preventDefault();
                 }
@@ -296,21 +297,9 @@
         ];
         
         let keywords = [
-            'if', 
-            'else', 
-            'for',
-            'switch',
-            'case',
-            'default',
-            'break',
-            'get',
-            'set',
-            'on',
-            'off',
-            'toggle',
-            'speech',
-            'play',
-            'info',
+            @foreach($keywords as $key => $descr)
+            '{{ $key }}',
+            @endforeach
         ];
         
         let parts = new Array();
