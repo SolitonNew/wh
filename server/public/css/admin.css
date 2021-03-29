@@ -444,20 +444,21 @@ div.form-control {
     padding: 4px;
 }
 
-.script-editor-code-helpe-item {
+.script-editor-code-helper-item {
     padding: 0.05rem 0.5rem;
+    cursor: pointer;
 }
 
-.script-editor-code-helpe-item:hover {
+.script-editor-code-helper-item:hover {
     background-color: rgba(0,0,0,0.125);
 }
 
-.script-editor-code-helpe-item.active {
+.script-editor-code-helper-item.active {
     background-color: var(--primary);
     color: #ffffff;
 }
 
-.script-editor-code-helpe-item.active .text-muted {
+.script-editor-code-helper-item.active .text-muted {
     color: #ffffff!important;
 }
 

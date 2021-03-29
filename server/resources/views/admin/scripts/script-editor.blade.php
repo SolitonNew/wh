@@ -9,7 +9,7 @@
                 <div id="script_editor_code_view_sel" class="script-editor-code-view-sel"></div>
                 <div id="script_editor_code_helper" class="script-editor-code-helper">
                 @foreach(App\Http\Models\VariablesModel::orderBy('name', 'asc')->get() as $row)
-                <div class="script-editor-code-helpe-item" data-word="{{ $row->name }}">
+                <div class="script-editor-code-helper-item" data-word="{{ $row->name }}">
                     <span class="strong">{{ $row->name }}</span>
                     <span class="text-muted">@lang('admin/variables.app_control.'.$row->app_control)</span>
                     {{ $row->comm }}
@@ -62,6 +62,14 @@
                 nums.html(a.join('<br>'));
             }
         }).trigger('input');
+        
+        $('.script-editor-code-helper-item').on('click', function (e) {
+            $('.script-editor-code-helper-item.active').removeClass('active');
+            $(this).addClass('active');
+            let ev = $.Event('keydown');
+            ev.code = 'Enter';
+            $('#script_editor_code').trigger(ev);
+        });
         
         $('#script_editor_code').on('keydown', function (e) {
             if (e.code == 'Tab') {
