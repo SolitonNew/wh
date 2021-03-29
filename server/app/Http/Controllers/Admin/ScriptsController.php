@@ -33,36 +33,10 @@ class ScriptsController extends Controller
             }
         }
         
-        if ($item) {
-            $words = [
-                'elif' => '@KEY_2@',
-                'if' => '@KEY_1@',
-                'else' => '@KEY_3@',
-                'for' => '@KEY_4@',
-                'import' => '@KEY_5@',
-                'pass' => '@KEY_6@',
-                'not' => '@KEY_7@',
-            ];
-            
-            $sourceCode = $item->data;
-            
-            foreach($words as $key => $val) {
-                $sourceCode = str_replace($key, $val, $sourceCode);
-            }
-            
-            foreach($words as $key => $val) {
-                $sourceCode = str_replace($val, '<span class="code-keyword">'.$key.'</span>', $sourceCode);
-            }
-            
-        } else {
-            $sourceCode = '';
-        }
-        
         return view('admin.scripts.scripts', [
             'scriptID' => $scriptID,
             'list' => $list,
             'data' => $item,
-            'sourceCode' => $sourceCode,
         ]);
     }
     

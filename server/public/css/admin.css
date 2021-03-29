@@ -365,6 +365,7 @@ div.form-control {
     flex-grow: 1;
     background-color: #ffffff;
     box-shadow: 0 0 20px rgba(255,255,255,0.5);
+    overflow: hidden;
 }
 
 .script-editor-rownums {
@@ -375,17 +376,89 @@ div.form-control {
     font-family: 'Courier New';
     text-align: right;
     border-right: 1px solid rgba(0,0,0,0.125);
+    overflow: hidden;
+}
+
+.script-editor-content {
+    position: relative;
+    flex-grow: 1;
 }
 
 .script-editor-code {
-    padding: 1rem;
-    flex-grow: 1;
+    padding-top: 1rem;
+    padding-left: 1rem;
     border: 0px;
     font-family: 'Courier New';
+    width: 100%;
+    height: 100%;
+    white-space: nowrap;
 }
 
 .script-editor-code:focus {
     outline: 0px;
+}
+
+.script-editor-code-view,
+.script-editor-code-view-sel {
+    position: absolute;
+    padding-top: 1rem;
+    padding-left: 1rem;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    font-family: 'Courier New';
+    white-space: pre;
+    overflow: auto;
+}
+
+.script-editor-code-view-sel {
+    color: rgba(0,0,0,0);
+}
+
+.script-editor-code-view .keyword {
+    color: #0000ff;
+    font-weight: bold;
+}
+
+.script-editor-code-view .comment {
+    color: #00cc00;
+}
+
+.script-editor-code-view .text {
+    color: #ff0000;
+}
+
+.script-editor-code-helper {
+    display: none;
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    width: 350px;
+    height: 300px;
+    background-color: #ffffff;
+    border: 1px solid #999999;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.35);
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.script-editor-code-helpe-item {
+    padding: 0.05rem 0.5rem;
+}
+
+.script-editor-code-helpe-item:hover {
+    background-color: rgba(0,0,0,0.125);
+}
+
+.script-editor-code-helpe-item.active {
+    background-color: var(--primary);
+    color: #ffffff;
+}
+
+.script-editor-code-helpe-item.active .text-muted {
+    color: #ffffff!important;
 }
 
 .script-editor-toolbar {

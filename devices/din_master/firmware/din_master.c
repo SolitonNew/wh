@@ -26,7 +26,7 @@ int main(void)
     
     control_init();
     core_init();
-	schedule_init();
+    schedule_init();
 	
     sei();
 		
@@ -43,8 +43,8 @@ int main(void)
         // Вызываем обработчик переодичных действий
         periodic_processing();
 		
-		// Обрабатываем отложенные назначения переменных
-		schedule_processing();
+        // Обрабатываем отложенные назначения переменных
+        schedule_processing();
 		
         // Обработка кнопок управления
         control_check_btn(&control_btn_states);
@@ -58,9 +58,9 @@ int main(void)
         }   
         
         if (control_btn_states.btn_3_change) {
-			if (onewire_search() > 2) {
-				control_led_g(1);
-			}				
+            if (onewire_search() > 2) {
+                control_led_g(1);
+            }				
         }                     
         
         if (control_btn_states.btn_4_change) {

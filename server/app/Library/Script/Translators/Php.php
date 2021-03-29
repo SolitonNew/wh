@@ -46,7 +46,9 @@ class Php implements ITranslator {
         'play' => [
             1 => '$this->function_play',
         ],
-        'info' => [],
+        'info' => [
+            0 => '$this->function_info',
+        ],
     ];    
     
     /**

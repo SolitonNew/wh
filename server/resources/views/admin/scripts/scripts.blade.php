@@ -28,67 +28,43 @@
         </a>
         @endforeach
     </div>
-    <div class="content-body codeedit">
-        <div class="numbers">000</div>
-        <div class="codetext">{!! $sourceCode !!}</div>
+    <div class="content-body codeedit" style="overflow: hidden;">
+        <div id="code_rownums" class="script-editor-rownums" data-count="0"></div>
+        <div class="script-editor-content">
+            <div id="code_preview" class="script-editor-code-view"></div>
+            <div id="code_preview_sel" class="script-editor-code-view-sel"></div>
+        </div>
     </div>
 </div>
 
-@if($data)
-<div class="script-editor-background">
-    <div class="script-editor-container">
-        <div class="script-editor-body">
-            <div class="script-editor-rownums" data-count="0"></div>
-            <textarea class="script-editor-code">{{ $data->data }}</textarea>
-        </div>
-        <div class="script-editor-toolbar">
-            <button class="btn btn-warning" onclick="editorTest()">@lang('admin/scripts.btn_test')</button>
-            <div style="flex-grow: 1"></div>
-            <button class="btn btn-primary" onclick="editorSave()">@lang('dialogs.btn_save')</button>
-            <button class="btn btn-secondary" onclick="editorHide()" >@lang('dialogs.btn_cancel')</button>
-        </div>
-    </div>
-</div>
-@endif
+@include('admin.scripts.script-editor')
 
 <script>
-    $(document).ready(() => {
-        let s = $('.content-body .codetext').text();
+    $(document).ready(() => {        
+        @if($data)
+        $('#code_preview_sel').on('click', () => {
+            let {anchorOffset, focusOffset} = document.getSelection();
+            editorShow(anchorOffset, focusOffset);
+        });
+    
+        $('#code_preview_sel').text($('#editor_original_data').val());
+        editorUpdateView($('#code_preview'), $('#editor_original_data').val());
+        @endif
+        
+        let s = $('#editor_original_data').val();
         let a = s.split('\n');
         let aa = new Array();
         for (let i = 1;  i <= a.length; i++) {
             aa.push(i);
         }
-        $('.content-body .numbers').html(aa.join('<br>'));
-
-        $(window).on('resize', () => {
-            let codeedit = $('.codeedit');
-            let codeedit_pos = codeedit.position();
-            let editor = $('.script-editor-container');
-            editor.css({
-                left: codeedit_pos.left + 'px',
-                top: codeedit_pos.top + 'px',
-                width: codeedit.width() + 'px',
-                height: codeedit.height() + 'px',
-            });
+        $('#code_rownums').html(aa.join('<br>'));
+        
+        $('#code_preview_sel').on('scroll', function (e) {
+            $('#code_preview').scrollLeft($(this).scrollLeft());
+            $('#code_preview').scrollTop($(this).scrollTop());
+            
+            $('#code_rownums').scrollTop($(this).scrollTop());
         });
-
-        $('.script-editor-code').on('input', function () {
-            let s = $(this).val();
-            let n = 0;
-            if (s) {
-                n = s.split('\n').length;
-            }
-            let nums = $('.script-editor-rownums');
-            if (nums.data('count') != n) {
-                let a = new Array(n);
-                for (let i = 0; i < n; i++) {
-                    a[i] = (i + 1);
-                }
-                nums.data('count', n);
-                nums.html(a.join('<br>'));
-            }
-        }).trigger('input');
     });
 
     function scriptAdd() {
@@ -117,43 +93,11 @@
     }
 
     function scriptTest() {
-        console.log($('.codetext').text());
-        runScriptTest($('.codetext').text());
+        runScriptTest($('#editor_original_data').val());
     }
 
     function scriptAttachEvent() {
         dialog('{{ route("script-events", $scriptID) }}');
-    }
-
-    function editorShow() {
-        $('.script-editor-background').fadeIn(250);
-    }
-
-    function editorHide(handler) {
-        $('.script-editor-background').fadeOut(250, handler);
-    }
-
-    function editorSave() {
-        $.post({
-            url: '{{ route("script-save", $scriptID) }}',
-            data: {
-                '_token': '{{ Session::token() }}',
-                data: $('.script-editor-code').val(),
-            },
-            success: function (data) {
-                if (data == 'OK') {
-                    editorHide(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    console.log(data);
-                }
-            }
-        });
-    }
-    
-    function editorTest() {
-        runScriptTest($('.script-editor-code').val());
     }
     @endif    
 </script>
