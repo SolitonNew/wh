@@ -467,11 +467,20 @@
         let top = parseInt($('#script_editor_code').css('padding-top')) + (cursor_y * script_editor_char_size.h);
         let left = parseInt($('#script_editor_code').css('padding-left')) + (cursor_x * script_editor_char_size.w);
         
+        top -= $('#script_editor_code').scrollTop();
+        left -= $('#script_editor_code').scrollLeft();
+        
         let right = left + $('#script_editor_code_helper').width();
         let bottom = top + $('#script_editor_code_helper').height();
         
         if (right > $('#script_editor_code').width()) {
             left -= right - $('#script_editor_code').width();
+        }
+        
+        if (bottom > $('#script_editor_code').height()) {
+            top -= $('#script_editor_code_helper').height();
+            top -= script_editor_char_size.h;
+            top -= parseInt($('#script_editor_code_helper').css('padding-top')) * 2 + 2;
         }
         
         $('#script_editor_code_helper').css({
