@@ -52,6 +52,10 @@
             });
         });
         
+        $(window).on('click', function (e) {
+            editorHelperHide();
+        });
+        
         // Расчет размера символа моноширинного шрифта
         let div = $('<div>W</div>');
         div.css({
@@ -241,8 +245,6 @@
             $('#script_editor_code').focus();
             $('#script_editor_code').prop('selectionStart', start);
             $('#script_editor_code').prop('selectionEnd', end);
-            
-            editorHelperHide();
         });
     });
     
