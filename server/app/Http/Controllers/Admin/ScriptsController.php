@@ -101,7 +101,7 @@ class ScriptsController extends Controller
             try {
                 if (!$item) {
                     $item = new \App\Http\Models\ScriptsModel();
-                    $item->data = '';
+                    $item->data = '/* COMMENT */';
                 }
                 $item->comm = $request->post('comm');
                 $item->save();
@@ -150,7 +150,7 @@ class ScriptsController extends Controller
     public function saveScript(Request $request, int $id) {
         $item = \App\Http\Models\ScriptsModel::find($id);
         if ($item) {
-            $item->data = $request->post('data') ? $request->post('data') : 'pass';
+            $item->data = $request->post('data') ? $request->post('data') : '/* COMMENT */';
             $item->save();
             return 'OK';
         } else {

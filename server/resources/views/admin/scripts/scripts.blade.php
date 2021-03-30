@@ -37,7 +37,9 @@
     </div>
 </div>
 
+@if($data)
 @include('admin.scripts.script-editor')
+@endif
 
 <script>
     $(document).ready(() => {        
