@@ -63,7 +63,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             DB::delete('delete from core_execute
                          where ID < (select a.maxID 
-                                       from (select (MAX(ID) - 100) maxID 
+                                       from (select (IFNULL(MAX(ID), 0) - 100) maxID 
                                                from core_execute) a)');
         })->dailyAt('4:00');
         
@@ -71,7 +71,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             /*DB::delete('delete from app_control_sess
                          where ID < (select a.maxID 
-                                       from (select (MAX(ID) - 100) maxID 
+                                       from (select (IFNULL(MAX(ID), 0) - 100) maxID 
                                                from app_control_sess) a)'); */
         })->dailyAt('4:00');
         
@@ -79,7 +79,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             /*DB::delete('delete from app_control_queue
                          where ID < (select a.maxID 
-                                       from (select (MAX(ID) - 100) maxID 
+                                       from (select (IFNULL(MAX(ID), 0) - 100) maxID 
                                                from app_control_queue) a)'); */
         })->dailyAt('4:00');
         
@@ -87,7 +87,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             /*DB::delete('delete from app_control_exe_queue
                          where ID < (select a.maxID 
-                                       from (select (MAX(ID) - 100) maxID 
+                                       from (select (IFNULL(MAX(ID), 0) - 100) maxID 
                                                from app_control_exe_queue) a)'); */
         })->dailyAt('4:00');
         
