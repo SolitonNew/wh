@@ -260,7 +260,7 @@
     var editorCaretY = 0;
     
     function editorUpdateCaret() {
-        let selStart = $('#script_editor_code').prop('selectionStart');
+        let selStart = $('#script_editor_code').prop('selectionEnd');
         let text = $('#script_editor_code').val();
         let text_before = text.substr(0, selStart);
         let a_before = text_before.split(/\r?\n/);
