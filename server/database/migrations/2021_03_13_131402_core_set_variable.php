@@ -14,7 +14,7 @@ class CoreSetVariable extends Migration
     public function up()
     {
         DB::unprepared("
-CREATE PROCEDURE CORE_SET_VARIABLE (
+CREATE PROCEDURE `CORE_SET_VARIABLE` (
     IN VAR_ID int,
     IN VAR_VALUE float,
     IN DEV_ID int
@@ -44,6 +44,7 @@ END
      */
     public function down()
     {
-        DB::unprepared('DROP PROCEDURE IF EXISTS CORE_SET_VARIABLE');
+        DB::unprepared('DROP PROCEDURE IF EXISTS `CORE_SET_VARIABLE`');
+        Log::info('DROP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     }
 }
