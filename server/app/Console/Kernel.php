@@ -41,14 +41,14 @@ class Kernel extends ConsoleKernel
         // Прочистка "web_logs"
         $schedule->call(function (DemonManager $demonManager) {
             foreach($demonManager->demons() as $demon) {
-                $rows = DB::select('select ID
+                $rows = DB::select('select id
                                       from web_logs 
-                                     where DEMON = "'.$demon.'"
-                                    order by ID desc
+                                     where demon = "'.$demon.'"
+                                    order by id desc
                                     limit '.config("app.admin_demons_log_lines_count"));
                 if (count($rows)) {
-                    $id = $rows[count($rows) - 1]->ID;
-                    DB::delete('delete from web_logs where DEMON = "'.$demon.'" and ID < '.$id);
+                    $id = $rows[count($rows) - 1]->id;
+                    DB::delete('delete from web_logs where demon = "'.$demon.'" and id < '.$id);
                 }
             }
         })->everyMinute();
@@ -56,38 +56,38 @@ class Kernel extends ConsoleKernel
         // Прочистка "core_variable_changes_mem"
         $schedule->call(function () {
             DB::delete('delete from core_variable_changes_mem
-                         where CHANGE_DATE < CURRENT_TIMESTAMP - interval 1 day');
+                         where change_date < CURRENT_TIMESTAMP - interval 1 day');
         })->hourly();
         
         // Прочистка "core_execute"
         $schedule->call(function () {
             DB::delete('delete from core_execute
-                         where ID < (select a.maxID 
-                                       from (select (IFNULL(MAX(ID), 0) - 100) maxID 
+                         where id < (select a.maxID 
+                                       from (select (IFNULL(MAX(id), 0) - 100) maxID 
                                                from core_execute) a)');
         })->dailyAt('4:00');
         
         // Прочистка "app_control_sess"
         $schedule->call(function () {
             /*DB::delete('delete from app_control_sess
-                         where ID < (select a.maxID 
-                                       from (select (IFNULL(MAX(ID), 0) - 100) maxID 
+                         where id < (select a.maxID 
+                                       from (select (IFNULL(MAX(id), 0) - 100) maxID 
                                                from app_control_sess) a)'); */
         })->dailyAt('4:00');
         
         // Прочистка "app_control_queue"
         $schedule->call(function () {
             /*DB::delete('delete from app_control_queue
-                         where ID < (select a.maxID 
-                                       from (select (IFNULL(MAX(ID), 0) - 100) maxID 
+                         where id < (select a.maxID 
+                                       from (select (IFNULL(MAX(id), 0) - 100) maxID 
                                                from app_control_queue) a)'); */
         })->dailyAt('4:00');
         
         // Прочистка "app_control_exe_queue"
         $schedule->call(function () {
             /*DB::delete('delete from app_control_exe_queue
-                         where ID < (select a.maxID 
-                                       from (select (IFNULL(MAX(ID), 0) - 100) maxID 
+                         where id < (select a.maxID 
+                                       from (select (IFNULL(MAX(id), 0) - 100) maxID 
                                                from app_control_exe_queue) a)'); */
         })->dailyAt('4:00');
         
