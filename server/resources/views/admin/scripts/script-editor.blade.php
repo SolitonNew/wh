@@ -355,7 +355,7 @@
                 if (code[i] == '/' && code[i + 1] == '*') {
                     s = '/*';
                     let find = false;
-                    for (let k = i + 2; k < code.length - 1; k++) {
+                    for (let k = i + 2; k < code.length; k++) {
                         if (code[k] == '*' && code[k + 1] == '/') {
                             s += '*/';
                             i = k + 1;
@@ -414,6 +414,8 @@
     
     function editorUpdateView(viewer, code) {
         let parts = editorSourceSplit(code);
+        
+        console.log(parts);
         
         let keywords = [
             @foreach($keywords as $key => $descr)
