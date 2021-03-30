@@ -229,9 +229,9 @@
             let {anchorOffset, focusOffset} = document.getSelection();
             let start = Math.min(anchorOffset, focusOffset);
             let end = Math.max(anchorOffset, focusOffset);
-            $('#script_editor_code').focus();
             $('#script_editor_code').prop('selectionStart', start);
             $('#script_editor_code').prop('selectionEnd', end);
+            $('#script_editor_code').focus();
         });
     });
     
