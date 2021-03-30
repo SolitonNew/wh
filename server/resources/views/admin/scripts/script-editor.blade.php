@@ -4,8 +4,8 @@
         <div class="script-editor-body">
             <div id="script_editor_rownums" class="script-editor-rownums" data-count="0"></div>
             <div class="script-editor-content">
-                <textarea id="script_editor_code" class="script-editor-code"></textarea>
                 <div id="script_editor_code_view" class="script-editor-code-view"></div>
+                <textarea id="script_editor_code" class="script-editor-code"></textarea>
                 <div id="script_editor_code_view_sel" class="script-editor-code-view-sel"></div>
                 <div id="script_editor_code_helper" class="script-editor-code-helper">
                 @foreach($helper as $row)
@@ -28,7 +28,8 @@
 
 <script>
     var script_editor_tab_chars = 4;
-    var script_editor_helper_filter_text
+    var script_editor_helper_filter_text = '';
+    var script_editor_caret = false;
     var script_editor_separators = [
             ' ', '.', ',', "'", '"', '+', '-', '*', '/', '=', '(', ')', '{', '}', 
             '[', ']', ':', ';', '?', '&', '|', '!', '$', 
@@ -36,9 +37,9 @@
             String.fromCharCode(13), 
             String.fromCharCode(9)
         ];
-        
+                
     var script_editor_char_size = {w: 10, h: 20};
-    
+            
     $(document).ready(() => {
         $(window).on('resize', () => {
             let codeedit = $('.codeedit');
@@ -71,6 +72,16 @@
         div.remove();
         // -----------------------------
         
+        script_editor_caret = $('<div class="script-editor-code-caret"></div>').insertBefore($('#script_editor_code_view_sel'));
+        script_editor_caret.height(script_editor_char_size.h);
+        setInterval(function () {
+            script_editor_caret.toggle();
+        }, 500);
+        
+        $(document).on('selectionchange', function (e) {
+            editorUpdateCaret();
+        }).trigger('selectionchange');
+        
         $('#script_editor_code').on('input', function () {
             $('#script_editor_code_view_sel').text($(this).val())
             editorUpdateView($('#script_editor_code_view'), $(this).val());
@@ -88,7 +99,7 @@
                 }
                 nums.data('count', n);
                 nums.html(a.join('<br>'));
-            }
+            }        
         }).trigger('input');
         
         $('.script-editor-code-helper-item').on('click', function (e) {
@@ -172,6 +183,8 @@
                     e.preventDefault();
                 }
             }
+        
+            editorUpdateCaret();
         });
         
         $('#script_editor_code').on('keyup', function (e) {
@@ -215,6 +228,8 @@
             }
         
             editorHelperUpdate();
+            
+            editorUpdateCaret();
         });
         
         $('#script_editor_code').on('scroll', function (e) {
@@ -229,14 +244,46 @@
             let {anchorOffset, focusOffset} = document.getSelection();
             let start = Math.min(anchorOffset, focusOffset);
             let end = Math.max(anchorOffset, focusOffset);
+                        
             $('#script_editor_code').prop('selectionStart', start);
             $('#script_editor_code').prop('selectionEnd', end);
             $('#script_editor_code').focus();
+            
+            //editorUpdateSelections();
         });
     });
     
-    var editorScrollX;
-    var editorScrollY;
+    var editorScrollX = 0;
+    var editorScrollY = 0;
+    
+    var editorCaretX = 0;
+    var editorCaretY = 0;
+    
+    function editorUpdateCaret() {
+        let selStart = $('#script_editor_code').prop('selectionStart');
+        let text = $('#script_editor_code').val();
+        let text_before = text.substr(0, selStart);
+        let a_before = text_before.split(/\r?\n/);
+        let cursor_x = 0;
+        let cursor_y = a_before.length;
+        if (a_before.length) { 
+            cursor_x = a_before[a_before.length - 1].length;
+        }
+        
+        let left = (cursor_x * script_editor_char_size.w) - 1 - editorScrollX + parseInt($('#script_editor_code').css('padding-left'));
+        let top = ((cursor_y - 1) * script_editor_char_size.h) - editorScrollY + parseInt($('#script_editor_code').css('padding-top'));
+        
+        if (left != editorCaretX || top != editorCaretY) {
+            script_editor_caret.css({
+                left: left + 'px',
+                top: top + 'px',
+            });
+            editorCaretX = left;
+            editorCaretY = top;
+        }
+        
+        script_editor_caret.show();
+    }
     
     function editorScrollSync(scrollX, scrollY) {
         if (scrollX == editorScrollX && scrollY == editorScrollY) return ;
@@ -251,6 +298,8 @@
         $('#script_editor_code_view_sel').scrollLeft(scrollX);
         $('#script_editor_code_view_sel').scrollTop(scrollY);
         $('#script_editor_rownums').scrollTop(scrollY);
+        
+        editorUpdateCaret();
     }
     
     function editorShow(selStart, selEnd) {
