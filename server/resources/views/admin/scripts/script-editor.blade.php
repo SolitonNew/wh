@@ -74,9 +74,6 @@
         
         script_editor_caret = $('<div class="script-editor-code-caret"></div>').insertBefore($('#script_editor_code_view_sel'));
         script_editor_caret.height(script_editor_char_size.h);
-        setInterval(function () {
-            script_editor_caret.toggle();
-        }, 500);
         
         $(document).on('selectionchange', function (e) {
             editorUpdateCaret();
@@ -228,7 +225,6 @@
             }
         
             editorHelperUpdate();
-            
             editorUpdateCaret();
         });
         
@@ -248,8 +244,6 @@
             $('#script_editor_code').prop('selectionStart', start);
             $('#script_editor_code').prop('selectionEnd', end);
             $('#script_editor_code').focus();
-            
-            //editorUpdateSelections();
         });
     });
     
@@ -303,6 +297,8 @@
     }
     
     function editorShow(selStart, selEnd) {
+        script_editor_caret.hide();
+        
         $('#script_editor_code').val($('#editor_original_data').val()).trigger('input');
         $('.script-editor-background').fadeIn(250, () => {
             if (selStart != undefined && selEnd != undefined) {
@@ -312,11 +308,16 @@
                 $('#script_editor_code').prop('selectionStart', start);
                 $('#script_editor_code').prop('selectionEnd', end);        
             }
+            
+            editorCaretBlink();
         });
     }
 
     function editorHide(handler) {
-        $('.script-editor-background').fadeOut(250, handler);
+        $('.script-editor-background').fadeOut(250, function () {
+            if (handler) handler();
+            script_editor_caret.hide();
+        });
     }
 
     function editorSave() {
@@ -414,8 +415,6 @@
     
     function editorUpdateView(viewer, code) {
         let parts = editorSourceSplit(code);
-        
-        console.log(parts);
         
         let keywords = [
             @foreach($keywords as $key => $descr)
@@ -647,5 +646,14 @@
             return true;
         }
         return false;
+    }
+    
+    function editorCaretBlink() {
+        setTimeout(function () {
+            if ($('.script-editor-background').is(':visible')) {
+                script_editor_caret.toggle();
+                editorCaretBlink();
+            }
+        }, 500);
     }
 </script>
