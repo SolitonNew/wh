@@ -108,10 +108,7 @@
                 let selStart = $('#script_editor_code').prop('selectionStart');
                 let selEnd = $('#script_editor_code').prop('selectionEnd');
                 let text = $(this).val();
-                
                 let text_before = text.substr(0, selStart);
-                let text_after = text.substr(selStart);
-                
                 let a_before = text_before.split(/\r?\n/);
                 
                 let chars_before = 0;
@@ -149,16 +146,11 @@
                     } else {
                         insert_chars = Math.ceil(chars_before / script_editor_tab_chars) * script_editor_tab_chars - chars_before;
                     }
-
                     insert_text = ' '.repeat(insert_chars);
                 }
                 
-                $(this).val(text_before + insert_text + text_after);
-
-                $('#script_editor_code').prop('selectionStart', selStart + insert_chars);
-                $('#script_editor_code').prop('selectionEnd', selStart + insert_chars);
-
-                $(this).trigger('input');
+                editorInsertText(selStart, selEnd, insert_text);
+                
             } else
             if (e.code == 'ArrowUp') {
                 if (editorHelperKeyTop()) {
@@ -187,6 +179,7 @@
                 if (editorHelperVisible()) return ;
                 
                 let selStart = $('#script_editor_code').prop('selectionStart');
+                let selEnd = $('#script_editor_code').prop('selectionEnd');
                 let text = $(this).val();
                 
                 let text_before = text.substr(0, selStart);
@@ -212,14 +205,8 @@
                     }
                     
                     if (insert_chars > 0) {
-                        let insert_text = ' '.repeat(insert_chars);
-                        
-                        $(this).val(text_before + insert_text + text_after);
-
-                        $('#script_editor_code').prop('selectionStart', selStart + insert_chars);
-                        $('#script_editor_code').prop('selectionEnd', selStart + insert_chars);
-
-                        $(this).trigger('input');
+                        let insert_text = ' '.repeat(insert_chars);                        
+                        editorInsertText(selStart, selEnd, insert_text);
                     }   
                 }
             } else
@@ -400,6 +387,13 @@
         $(viewer).html(parts.join(''));
     }
     
+    function editorInsertText(selStart, selEnd, text) {
+        $('#script_editor_code').focus();
+        $('#script_editor_code').prop('selectionStart', selStart);
+        $('#script_editor_code').prop('selectionEnd', selEnd);  
+        document.execCommand('insertText', false, text);
+    }
+    
     function editorHelperShow() {
         if (!editorHelperVisible()) {
             editorHelperUpdate(true);
@@ -574,8 +568,8 @@
             
             if (selWord.length) {
                 let selStart = $('#script_editor_code').prop('selectionStart');
+                let selEnd = $('#script_editor_code').prop('selectionEnd');
                 let text = $('#script_editor_code').val();
-                let text_before = text.substr(0, selStart);
                 let text_after = text.substr(selStart);
 
                 let helper_text_len = script_editor_helper_filter_text.length;
@@ -591,14 +585,11 @@
                 let parts_after = editorSourceSplit(text_after);
                 if (parts_after.length) {
                     if (parts_after[0][0] != "'" && script_editor_separators.indexOf(parts_after[0]) == -1) {
-                        text_after = text_after.substr(parts_after[0].length);
+                        selEnd = selEnd + parts_after[0].length;
                     }
                 }
-                let insert_chars = word.length;
                 
-                $('#script_editor_code').val(text_before + word + text_after).trigger('input');
-                $('#script_editor_code').prop('selectionStart', selStart + insert_chars);
-                $('#script_editor_code').prop('selectionEnd', selStart + insert_chars); 
+                editorInsertText(selStart, selEnd, word);
             }
             
             editorHelperHide();
