@@ -42,6 +42,9 @@ class ScriptsController extends Controller
             'case' => 'keyword',
             'default' => 'keyword',
             'break' => 'keyword',
+        ];
+        
+        $functions = [
             'get' => 'function(name)',
             'set' => 'function(name, value, later = 0)',
             'on' => 'function(name, later = 0)',
@@ -52,24 +55,9 @@ class ScriptsController extends Controller
             'info' => 'function()',
         ];
         
-        $helper = [];
-        
-        foreach($keywords as $key => $descr) {
-            if (strpos($descr, 'function') !== false) {
-                $helper[] = (object)[
-                    'keyword' => $key,
-                    'type' => 'function',
-                    'description' => $descr,
-                ];
-            }
-        }
-        
+        $strings = [];
         foreach(\App\Http\Models\VariablesModel::orderBy('name', 'asc')->get() as $row) {
-            $helper[] = (object)[
-                'keyword' => $row->name,
-                'type' => 'variable',
-                'description' => Lang::get('admin/variables.app_control.'.$row->app_control).' '.$row->comm,
-            ];
+            $strings[$row->name] = $row->comm.' '.Lang::get('admin/variables.app_control.'.$row->app_control);
         }
         
         return view('admin.scripts.scripts', [
@@ -77,7 +65,8 @@ class ScriptsController extends Controller
             'list' => $list,
             'data' => $item,
             'keywords' => $keywords,
-            'helper' => $helper,
+            'functions' => $functions,
+            'strings' => $strings,
         ]);
     }
     

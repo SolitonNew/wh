@@ -8,7 +8,7 @@
 @if($data)
 <a href="#" class="dropdown-item" onclick="scriptEdit(); return false;">@lang('admin/scripts.script_edit')</a>
 <div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onclick="editorShow(); return false;">@lang('admin/scripts.script_show_editor')</a>
+<a href="#" class="dropdown-item" onclick="scriptEditSource(); return false;">@lang('admin/scripts.script_show_editor')</a>
 <a href="#" class="dropdown-item" onclick="scriptTest(); return false;">@lang('admin/scripts.script_test')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="scriptAttachEvent(); return false;">@lang('admin/scripts.script_attach_event')</a>
@@ -28,45 +28,46 @@
         </a>
         @endforeach
     </div>
-    <div class="content-body codeedit" style="overflow: hidden;">
-        <div id="code_rownums" class="script-editor-rownums" data-count="0"></div>
-        <div class="script-editor-content">
-            <div id="code_preview" class="script-editor-code-view"></div>
-            <div id="code_preview_sel" class="script-editor-code-view-sel"></div>
-        </div>
+    <div class="content-body">
+        <div id="scriptViewer" style="height: 100%;"></div>
+        <input id="scriptData" type="hidden" value="{{ $data->data }}">
     </div>
 </div>
-
 @if($data)
 @include('admin.scripts.script-editor')
 @endif
 
 <script>
+    var scriptViewer = false;
+    
     $(document).ready(() => {        
         @if($data)
-        $('#code_preview_sel').on('click', () => {
-            let {anchorOffset, focusOffset} = document.getSelection();
-            editorShow(anchorOffset, focusOffset);
+        let ctx = document.getElementById('scriptViewer');
+        let options = {
+            readOnly: true,
+            keywords: [
+            @foreach($keywords as $key => $descr)
+                '{{ $key }}',
+            @endforeach
+            ],
+            functions: [
+            @foreach($functions as $key => $descr)
+                {name: '{{ $key }}', description: '{{ $descr }}'},
+            @endforeach
+            ],
+            strings: [
+                
+            ],
+        };
+        scriptViewer = new ScriptEditor(ctx, options);
+        scriptViewer.setData(document.getElementById('scriptData').value);
+        
+        $('#scriptViewer').on('click', function (e) {
+            const sel = scriptViewer.getSelection();
+            console.log(sel);
+            editorShow(sel.start, sel.end, scriptViewer.getData());
         });
-    
-        $('#code_preview_sel').text($('#editor_original_data').val());
-        editorUpdateView($('#code_preview'), $('#editor_original_data').val());
         @endif
-        
-        let s = $('#editor_original_data').val();
-        let a = s.split('\n');
-        let aa = new Array();
-        for (let i = 1;  i <= a.length; i++) {
-            aa.push(i);
-        }
-        $('#code_rownums').html(aa.join('<br>'));
-        
-        $('#code_preview_sel').on('scroll', function (e) {
-            $('#code_preview').scrollLeft($(this).scrollLeft());
-            $('#code_preview').scrollTop($(this).scrollTop());
-            
-            $('#code_rownums').scrollTop($(this).scrollTop());
-        });
     });
 
     function scriptAdd() {
@@ -76,6 +77,10 @@
     @if($scriptID)
     function scriptEdit() {
         dialog('{{ route("script-edit", $scriptID) }}');
+    }
+
+    function scriptEditSource() {
+        editorShow(0, 0, scriptViewer.getData());
     }
 
     function runScriptTest(source) {

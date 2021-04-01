@@ -3,6 +3,8 @@
 @section('head')
 <link rel="stylesheet" href="/css/admin.css">
 <script src="/js/jquery.form.js"></script>
+<link rel="stylesheet" href="/css/script-editor.css">
+<script src="/js/script-editor.js"></script>
 @endsection
 
 @section('body')
