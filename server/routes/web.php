@@ -105,4 +105,6 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     Route::get('/statistics/chart', 'Admin\Statistics\ChartController@index')->name('statistics-chart');
     Route::get('/statistics/power', 'Admin\Statistics\PowerController@index')->name('statistics-power');
+    
+    Route::get('/test', 'Admin\TestController@index')->name('test');
 });
