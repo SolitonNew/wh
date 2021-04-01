@@ -81,6 +81,11 @@
             font-weight: bold;
         }
         
+        .script-editor-viewer .function {
+            color: #0000ff;
+            font-weight: bold;
+        }
+        
         .script-editor-viewer .comment {
             color: #00cc00;
         }
@@ -119,12 +124,20 @@
             color: #ffffff;
         }
         
+        .script-editor-helper-item .keyword {
+            color: var(--primary);
+        }
+        
         .script-editor-helper-item .function {
             color: var(--primary);
         }
         
         .script-editor-helper-item .string {
             color: #ff0000;
+        }
+        
+        .script-editor-helper-item .description {
+            color: #777777;
         }
         
         .script-editor-helper-item.active > * {
@@ -167,6 +180,16 @@ $(document).ready(() => {
             'isset',
             'include',
         ],
+        functions: [
+            {name: 'get', description: 'function get(name)'},
+            {name: 'set', description: 'function set(name, value, later = 0)'},
+            {name: 'on', description: 'function on(name, later = 0)'},
+            {name: 'off', description: 'function off(name, later = 0)'},
+            {name: 'toggle', description: 'function toggle(name, later = 0)'},
+            {name: 'speech', description: 'function speech(prase)'},
+            {name: 'play', description: 'function play(media)'},
+            {name: 'info', description: 'function info()'},
+        ],
         strings: [
             'ALL',
             'ITEM 1',
@@ -201,11 +224,11 @@ ScriptEditor.prototype = {
             'default',
             'break',
         ],
-        strings: [
-            
-        ],
+        functions: [],
+        strings: [],
         readOnly: false,
     },
+    _functionsList: [],
     _nums: false,
     _viewer: false,
     _editor: false,
@@ -228,12 +251,18 @@ ScriptEditor.prototype = {
         this._options.readOnly = value;
     },
     setOptions: function (options) {
+        let owner = this;
+        
         if (typeof(options.tabSize) != 'undefined') {
             this._options.tabSize = options.tabSize;
         }
         
         if (typeof(options.keywords) != 'undefined') {
             this._options.keywords = options.keywords;
+        }
+        
+        if (typeof(options.functions) != 'undefined') {
+            this._options.functions = options.functions;
         }
         
         if (typeof(options.strings) != 'undefined') {
@@ -245,6 +274,11 @@ ScriptEditor.prototype = {
         }
         
         /* ---------------- */
+        
+        this._functionsList = new Array();
+        this._options.functions.forEach(function (item) {
+            owner._functionsList.push(item.name);
+        });
                 
         if (this._options.readOnly) {
             this._editor.setAttribute('readonly', true);
@@ -476,10 +510,13 @@ ScriptEditor.prototype = {
         let source = this._editor.value;
         let parts = this._splitSource(source);
         
-        let keywords = this._options.keywords ? this._options.keywords : new Array();
+        let keywords = this._options.keywords ? this._options.keywords : new Array();        
         
         for (let i = 0; i < parts.length; i++) {
             if (keywords.indexOf(parts[i]) >= 0) {
+                parts[i] = '<span class="keyword">' + parts[i] + '</span>';
+            } else
+            if (this._functionsList.indexOf(parts[i]) >= 0) {
                 parts[i] = '<span class="keyword">' + parts[i] + '</span>';
             } else
             if (parts[i].substr(0, 2) == '/*' || parts[i].substr(0, 2) == '//') {
@@ -766,10 +803,21 @@ ScriptEditor.prototype = {
             this._options.keywords.forEach(function (item) {
                 let div = document.createElement('div');
                 div.classList.add('script-editor-helper-item');
+                div.classList.add('keyword');
+                div.setAttribute('data-type', 'keyword');
+                div.setAttribute('data-word', item);
+                div.innerHTML = '<span class="strong keyword">' + item + '<span>';
+                helper.appendChild(div);
+            });
+            
+            /* Добавляем список функций */
+            this._options.functions.forEach(function (item) {
+                let div = document.createElement('div');
+                div.classList.add('script-editor-helper-item');
                 div.classList.add('function');
                 div.setAttribute('data-type', 'function');
-                div.setAttribute('data-word', item);
-                div.innerHTML = '<span class="strong function">' + item + '<span>';
+                div.setAttribute('data-word', item.name);
+                div.innerHTML = '<span class="strong function">' + item.name + '</span> <span class="description">' + item.description + '</span>';
                 helper.appendChild(div);
             });
             
