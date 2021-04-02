@@ -74,7 +74,14 @@
         
         $('#scheduleList .scheduleActionViewer').each(function () {
             let viewer = new ScriptEditor(this, scheduleActionOptions);
-            viewer.setData(this.getAttribute('data-source'));
+            let source = this.getAttribute('data-source');
+            
+            source = source.replace(/\\'/g, '\'');
+            source = source.replace(/\\"/g, '"');
+            source = source.replace(/\\0/g, '\0');
+            source = source.replace(/\\\\/g, '\\');            
+            
+            viewer.setData(source);
         });
     });
 
