@@ -41,6 +41,7 @@
     font-family: 'Courier New';
     white-space: pre;
     overflow: auto;
+    text-align: left;
 }
 
 .script-editor-editor {
@@ -57,6 +58,7 @@
     color: rgba(0,0,0,0);
     background-color: rgba(0,0,0,0);
     resize: none;
+    text-align: left;
 }
 
 .script-editor-editor:focus {

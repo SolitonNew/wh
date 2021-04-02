@@ -35,7 +35,7 @@
                     @lang('admin/schedule.action_datetime_calc')
                     @endif
                 </td>
-                <td>{!! nl2br($row->action) !!}</td>
+                <td style="padding: 0;"><div class="scheduleActionViewer" data-source="{!! addslashes($row->action) !!}"></div></td>
                 <td>{!! $row->interval_text !!}</td>
                 <td>{{ Lang::get('admin/schedule.enable_list.'.$row->enable) }}</td>
             </tr>
@@ -45,10 +45,36 @@
 </div>
 
 <script>
+    let scheduleActionOptions = {
+    @foreach([\App\Library\Script\ScriptEditor::makeKeywords()] as $row)
+        keywords: [
+        @foreach($row->keywords as $key => $descr)
+            '{{ $key }}',
+        @endforeach
+        ],
+        functions: [
+        @foreach($row->functions as $key => $descr)
+            {name: '{{ $key }}', description: '{{ $descr }}'},
+        @endforeach
+        ],
+        strings: [
+        @foreach($row->strings as $key => $descr)
+            {name: '{{ $key }}', description: '{{ $descr }}'},
+        @endforeach
+        ],
+    @endforeach
+        readOnly: true,
+    };
+    
     $(document).ready(() => {
         $('#scheduleList tbody tr').on('click', (e) => {
             let id = $(e.currentTarget).attr('data-id');
             dialog('{{ route("schedule-edit", "") }}/' + id);
+        });
+        
+        $('#scheduleList .scheduleActionViewer').each(function () {
+            let viewer = new ScriptEditor(this, scheduleActionOptions);
+            viewer.setData(this.getAttribute('data-source'));
         });
     });
 
