@@ -33,11 +33,9 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin/schedule.table_ACTION')</div>
-        </div>
-        <div class="col-sm-9">
-            <textarea class="form-control" name="action" rows="3" style="font-family: 'Courier New';">{{ $item->action }}</textarea>
+        <div class="col-sm-12">
+            <div class="strong">@lang('admin/schedule.table_ACTION'):</div>
+            <div id="actionEditor" class="border" style="height: 10rem;"></div>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -102,7 +100,34 @@
 
 @section('script')
 <script>
-    $(document).ready(() => {
+    var actionEditor = false;
+    
+    $(document).ready(function () {
+        let ctx = document.getElementById('actionEditor');
+        let options = {
+        @foreach([\App\Library\Script\ScriptEditor::makeKeywords()] as $row)
+            keywords: [
+            @foreach($row->keywords as $key => $descr)
+                '{{ $key }}',
+            @endforeach
+            ],
+            functions: [
+            @foreach($row->functions as $key => $descr)
+                {name: '{{ $key }}', description: '{{ $descr }}'},
+            @endforeach
+            ],
+            strings: [
+            @foreach($row->strings as $key => $descr)
+                {name: '{{ $key }}', description: '{{ $descr }}'},
+            @endforeach
+            ],
+        @endforeach
+            data: `{!! addslashes($item->action) !!}`,
+            readOnly: false,
+            name: 'action',
+        };
+        actionEditor = new ScriptEditor(ctx, options);
+        
         $('#schedule_edit_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
@@ -160,7 +185,7 @@
             url: '{{ route("script-test") }}',
             data: {
                 '_token': '{{ Session::token() }}',
-                'command': $('textarea[name="action"]').val(),
+                'command': actionEditor.getData(),
             },
             success: function(data) {
                 alert(data);

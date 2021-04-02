@@ -16,7 +16,8 @@ use Log;
  *
  * @author soliton
  */
-class Translate {
+class Translate 
+{
     /**
      * Cловарь синтаксических конструкций
      * @var type 
@@ -32,23 +33,69 @@ class Translate {
     ];
     
     /**
+     * Cловарь синтаксических конструкций
+     * @return type
+     */
+    public function getKeywords() {
+        return $this->_keywords;
+    }
+    
+    /**
      * Словарь функций
      * 
      * $key - Имя функции
-     * $val - Количество параметров
+     * helper - Описание функции для редактора скрипта
+     * args - Возможное количество параметров
      * 
      * @var type 
-     */
+     */    
     private $_functions = [
-        'get' => [1],
-        'set' => [2, 3],
-        'on' => [1, 2],
-        'off' => [1, 2],
-        'toggle' => [1, 2],
-        'speech' => [1],
-        'play' => [1],
-        'info' => [0],
+        'get' => [
+            'helper' => 'function (name)',
+            'args' => [1],
+        ],
+        'set' => [
+            'helper' => 'function (name, value, later = 0)',
+            'args' => [2, 3],
+        ],
+        'on' => [
+            'helper' => 'function (name, later = 0)',
+            'args' => [1, 2],
+        ],
+        'off' => [
+            'helper' => 'function (name, later = 0)',
+            'args' => [1, 2],
+        ],
+        'toggle' => [
+            'helper' => 'function (name, later = 0)',
+            'args' => [1, 2],
+        ],
+        'speech' => [
+            'helper' => 'function (phrase)',
+            'args' => [1],
+        ],
+        'play' => [
+            'helper' => 'function (media)',
+            'args' => [1],
+        ],
+        'info' => [
+            'helper' => 'function ()',
+            'args' => [0],
+        ],
     ];
+    
+    /**
+     * Словарь функций
+     * 
+     * $key - Имя функции
+     * helper - Описание функции для редактора скрипта
+     * args - Возможное количество параметров
+     * 
+     * @return type
+     */
+    public function getFunctions() {
+        return $this->_functions;
+    }
     
     /**
      *
@@ -139,7 +186,6 @@ class Translate {
         }
     }
     
-    
     private $_prepared_functions = [];
     private $_prepared_variables = [];
     private $_prepared_numbers = [];  
@@ -192,7 +238,7 @@ class Translate {
                             $new_i = $this->_prepareBlock($k, $args);                            
                             if (isset($this->_functions[$part])) { // Это наша функция
                                 // Проверяем кол-во аргументов
-                                if (!in_array($args, $this->_functions[$part])) {
+                                if (!in_array($args, $this->_functions[$part]['args'])) {
                                     throw new \Exception('Invalid number of arguments "'.$args.'" for "'.$part.'"');
                                 }
                                 // Подменяем строку записи на объект с расширеной информацией
@@ -242,6 +288,8 @@ class Translate {
         $this->_prepared_variables = [];
         $this->_prepared_numbers = [];
         $this->_prepared_strings = [];
+        
+        if (count($this->_parts) == 0) return ;
         
         // Чистим коментарии
         for ($i = 0; $i < count($this->_parts); $i++) {

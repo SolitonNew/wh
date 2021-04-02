@@ -15,6 +15,7 @@ ScriptEditor.prototype = {
     _viewer: false,
     _editor: false,
     _caret: false,
+    _caretBlinkTimeout: false,
     _isFocused: false,
     _helper: false,
     _helper_text: '',
@@ -54,6 +55,10 @@ ScriptEditor.prototype = {
         
         if (typeof(options.data) != 'undefined') {
             this._editor.value = options.data;
+        }
+        
+        if (typeof(options.name) != 'undefined') {
+            this._editor.setAttribute('name', options.name);
         }
         
         /* ---------------- */
@@ -101,7 +106,6 @@ ScriptEditor.prototype = {
         this.update();
         this._editor.selectionStart = 0;
         this._editor.selectionEnd = 0;
-        this._caretBlink();
     },
     _calcCharSize: function () {
         this._editorStyle = getComputedStyle(this._editor);
@@ -209,6 +213,14 @@ ScriptEditor.prototype = {
             owner.update();
         });
         
+        this._editor.addEventListener('mousedown', function (e) {
+            owner._caretHide();
+        });
+        
+        this._editor.addEventListener('mouseup', function (e) {
+            owner._caretShow();
+        });
+        
         this._editor.addEventListener('keydown', function (e) {
             if (owner._options.readOnly) return ;
             
@@ -274,6 +286,7 @@ ScriptEditor.prototype = {
             if (e.code == 'Escape') {
                 if (owner._helperKeyEsc()) {
                     e.preventDefault();
+                    e.stopPropagation();
                 }
             } else
             if (e.code == 'Enter') {
@@ -284,7 +297,7 @@ ScriptEditor.prototype = {
         
             owner._updateScrollers();
             owner._helperUpdate();
-            owner._updateCaret();
+            owner._caretShow();
         });
         
         this._editor.addEventListener('keyup', function (e) {
@@ -330,7 +343,7 @@ ScriptEditor.prototype = {
         
             owner._updateScrollers();
             owner._helperUpdate();
-            owner._updateCaret();
+            owner._caretShow();
         });
         
         this._editor.addEventListener('scroll', function (e) {
@@ -339,12 +352,12 @@ ScriptEditor.prototype = {
         
         this._editor.addEventListener('focus', function (e) {
             owner._isFocused = true;
-            owner._updateCaret();
+            owner._caretShow();
         });
         
         this._editor.addEventListener('blur', function (e) {
             owner._isFocused = false;
-            owner._caret.style.display = 'none';
+            owner._caretHide();
         });
     },
     update: function () {
@@ -406,10 +419,6 @@ ScriptEditor.prototype = {
             this._caret.style.top = top + 'px';
             this._caretPos.x = left;
             this._caretPos.y = top;
-        }
-        
-        if (!this._options.readOnly) {
-            this._caret.style.display = 'inline-block';
         }
     },
     _splitSource: function (source) {
@@ -487,20 +496,39 @@ ScriptEditor.prototype = {
         this._nums.scrollTop = this._editor.scrollTop;
         this._updateCaret();
     },
-    _caretBlink: function () {
-        if (this._caret) {
-            if (this._caret.style.display == 'inline-block') {
-                this._caret.style.display = 'none';
-            } else {
-                if (this._isFocused && !this._options.readOnly) {
-                    this._caret.style.display = 'inline-block';
-                }
-            }
-            let owner = this;
-            setTimeout(function () {
-                owner._caretBlink();
-            }, 500);
+    _caretShow: function () {
+        if (this._caretBlinkTimeout) {
+            clearTimeout(this._caretBlinkTimeout);
+            this._caretBlinkTimeout = false;
         }
+        if (!this._caret) return ;
+        this._caret.style.display = 'none';
+        if (this._options.readOnly) return ;        
+        this._updateCaret();
+        this._caretBlink();
+    },
+    _caretHide: function () {
+        if (this._caretBlinkTimeout) {
+            clearTimeout(this._caretBlinkTimeout);
+            this._caretBlinkTimeout = false;
+        }
+        if (!this._caret) return ;
+        this._caret.style.display = 'none';
+    },
+    _caretBlinkTimeout: false,
+    _caretBlink: function () {
+        if (!this._caret) return ;
+        if (this._caret.style.display == 'inline-block') {
+            this._caret.style.display = 'none';
+        } else {
+            if (this._isFocused && !this._options.readOnly) {
+                this._caret.style.display = 'inline-block';
+            }
+        }
+        let owner = this;
+        this._caretBlinkTimeout = setTimeout(function () {
+            owner._caretBlink();
+        }, 500);
     },
     insertText: function (selStart, selEnd, text) {
         this._editor.focus();

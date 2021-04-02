@@ -30,7 +30,6 @@
     </div>
     <div class="content-body">
         <div id="scriptViewer" style="height: 100%;"></div>
-        <input id="scriptData" type="hidden" value="{{ $data->data }}">
     </div>
 </div>
 @if($data)
@@ -45,26 +44,29 @@
         let ctx = document.getElementById('scriptViewer');
         let options = {
             readOnly: true,
+        @foreach([\App\Library\Script\ScriptEditor::makeKeywords()] as $row)
             keywords: [
-            @foreach($keywords as $key => $descr)
+            @foreach($row->keywords as $key => $descr)
                 '{{ $key }}',
             @endforeach
             ],
             functions: [
-            @foreach($functions as $key => $descr)
+            @foreach($row->functions as $key => $descr)
                 {name: '{{ $key }}', description: '{{ $descr }}'},
             @endforeach
             ],
             strings: [
-                
+            @foreach($row->strings as $key => $descr)
+                {name: '{{ $key }}', description: '{{ $descr }}'},
+            @endforeach
             ],
+        @endforeach
+            data: `{!! addslashes($data->data) !!}`,
         };
         scriptViewer = new ScriptEditor(ctx, options);
-        scriptViewer.setData(document.getElementById('scriptData').value);
         
         $('#scriptViewer').on('click', function (e) {
             const sel = scriptViewer.getSelection();
-            console.log(sel);
             editorShow(sel.start, sel.end, scriptViewer.getData());
         });
         @endif
@@ -100,7 +102,7 @@
     }
 
     function scriptTest() {
-        runScriptTest($('#editor_original_data').val());
+        runScriptTest(scriptViewer.getData());
     }
 
     function scriptAttachEvent() {

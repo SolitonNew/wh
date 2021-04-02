@@ -34,39 +34,10 @@ class ScriptsController extends Controller
             }
         }
         
-        $keywords = [
-            'if' => 'keyword', 
-            'else' => 'keyword', 
-            'for' => 'keyword',
-            'switch' => 'keyword',
-            'case' => 'keyword',
-            'default' => 'keyword',
-            'break' => 'keyword',
-        ];
-        
-        $functions = [
-            'get' => 'function(name)',
-            'set' => 'function(name, value, later = 0)',
-            'on' => 'function(name, later = 0)',
-            'off' => 'function(name, later = 0)',
-            'toggle' => 'function(name, later = 0)',
-            'speech' => 'function(phrase)',
-            'play' => 'function(media)',
-            'info' => 'function()',
-        ];
-        
-        $strings = [];
-        foreach(\App\Http\Models\VariablesModel::orderBy('name', 'asc')->get() as $row) {
-            $strings[$row->name] = $row->comm.' '.Lang::get('admin/variables.app_control.'.$row->app_control);
-        }
-        
         return view('admin.scripts.scripts', [
             'scriptID' => $scriptID,
             'list' => $list,
             'data' => $item,
-            'keywords' => $keywords,
-            'functions' => $functions,
-            'strings' => $strings,
         ]);
     }
     

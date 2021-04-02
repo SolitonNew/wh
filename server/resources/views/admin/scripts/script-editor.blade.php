@@ -1,6 +1,6 @@
 <div class="script-editor-background">
     <div id="scriptEditorWindow" class="script-editor-window">
-        <div id="scriptEditor" style="flex-grow: 1;"></div>
+        <div id="scriptEditor" style="flex-grow: 1; overflow: hidden;"></div>
         <div class="script-editor-toolbar">
             <button class="btn btn-warning" onclick="editorTest()">@lang('admin/scripts.btn_test')</button>
             <div style="flex-grow: 1"></div>
@@ -26,21 +26,23 @@
         
         let ctx = document.getElementById('scriptEditor');
         let options = {
+        @foreach([\App\Library\Script\ScriptEditor::makeKeywords()] as $row)
             keywords: [
-            @foreach($keywords as $key => $descr)
+            @foreach($row->keywords as $key => $descr)
                 '{{ $key }}',
             @endforeach
             ],
             functions: [
-            @foreach($functions as $key => $descr)
+            @foreach($row->functions as $key => $descr)
                 {name: '{{ $key }}', description: '{{ $descr }}'},
             @endforeach
             ],
             strings: [
-            @foreach($strings as $key => $descr)
+            @foreach($row->strings as $key => $descr)
                 {name: '{{ $key }}', description: '{{ $descr }}'},
             @endforeach
             ],
+        @endforeach
             data: '',
             readOnly: false,
         };
@@ -48,11 +50,10 @@
     });
     
     function editorShow(selStart, selEnd, data) {
-        $('.script-editor-background').fadeIn(250, function () {
-            scriptEditor.setData(data);
-            scriptEditor.setSelection(selStart, selEnd);
-            scriptEditor.focus();
-        });
+        $('.script-editor-background').fadeIn(250);
+        scriptEditor.setData(data);
+        scriptEditor.setSelection(selStart, selEnd);
+        scriptEditor.focus();
     }
 
     function editorHide(handler) {
