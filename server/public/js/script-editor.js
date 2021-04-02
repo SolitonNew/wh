@@ -181,8 +181,8 @@ ScriptEditor.prototype = {
         let content = document.createElement('div');
         content.classList.add('script-editor-content');
         content.appendChild(this._viewer);
-        content.appendChild(this._editor);
         content.appendChild(this._caret);
+        content.appendChild(this._editor);
         
         let container = document.createElement('div');
         container.classList.add('script-editor-container');
