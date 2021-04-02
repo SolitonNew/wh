@@ -259,8 +259,9 @@ ScriptEditor.prototype = {
                         }
                     }
                     
-                    if (insert_chars < 0) {
-                        text_before = text_before.substr(0, text_before.length + insert_chars);
+                    if (n > 0 && insert_chars < 0) {
+                        selStart += insert_chars;
+                        owner.deleteText(selStart, selEnd);
                     }
                 } else {
                     if (chars_before % owner._options.tabSize == 0) {
@@ -269,9 +270,8 @@ ScriptEditor.prototype = {
                         insert_chars = Math.ceil(chars_before / owner._options.tabSize) * owner._options.tabSize - chars_before;
                     }
                     insert_text = ' '.repeat(insert_chars);
+                    owner.insertText(selStart, selEnd, insert_text);
                 }
-                
-                owner.insertText(selStart, selEnd, insert_text);
             } else
             if (e.code == 'ArrowUp') {
                 if (owner._helperKeyUp()) {
@@ -290,8 +290,9 @@ ScriptEditor.prototype = {
                 }
             } else
             if (e.code == 'Enter') {
+                e.preventDefault();
                 if (owner._helperKeyEnter()) {
-                    e.preventDefault();
+                    
                 }
             }
         
@@ -314,8 +315,11 @@ ScriptEditor.prototype = {
                     let a_before = text_before.split(/\r?\n/);
 
                     if (a_before.length > 0) {
+                        let insert_text = "\n";
+                        let insert_text_end = '';
+                        
                         let insert_chars = 0;
-                        let s = a_before[a_before.length - 2];
+                        let s = a_before[a_before.length - 1];
                         for (let i = 0; i < s.length; i++) {
                             if (s[i] != ' ') break;
                             insert_chars++;
@@ -324,6 +328,7 @@ ScriptEditor.prototype = {
                         for (let i = s.length - 1; i > -1; i--) {
                             if (s[i] != ' ') {
                                 if (s[i] == '{') {
+                                    insert_text_end = "\n" + ' '.repeat(insert_chars) + '}';
                                     insert_chars += owner._options.tabSize;
                                 }
                                 break;
@@ -331,9 +336,14 @@ ScriptEditor.prototype = {
                         }
 
                         if (insert_chars > 0) {
-                            let insert_text = ' '.repeat(insert_chars);                        
-                            owner.insertText(selStart, selEnd, insert_text);
-                        }   
+                            insert_text += ' '.repeat(insert_chars);                        
+                        }
+
+                        owner.insertText(selStart, selEnd, insert_text + insert_text_end);
+                        if (insert_text_end.length) {
+                            owner._editor.selectionStart -= insert_text_end.length;
+                            owner._editor.selectionEnd -= insert_text_end.length;
+                        }
                     }
                 }
             } else
@@ -532,11 +542,16 @@ ScriptEditor.prototype = {
     },
     insertText: function (selStart, selEnd, text) {
         this._editor.focus();
-        this._editor.selectronStart = selStart;
+        this._editor.selectionStart = selStart;
         this._editor.selectionEnd = selEnd;
         document.execCommand('insertText', false, text);
     },
-    
+    deleteText: function (selStart, selEnd) {
+        this._editor.focus();
+        this._editor.selectionStart = selStart;
+        this._editor.selectionEnd = selEnd;
+        document.execCommand('delete');
+    },
     _helperKeyUp: function () {
         if (this._helperVisible()) {
             let ls = new Array();

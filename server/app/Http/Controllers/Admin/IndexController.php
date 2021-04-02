@@ -14,7 +14,7 @@ class IndexController extends Controller
     public function index() {
         return redirect(route('configuration'));
     }
-    
+        
     /**
      * 
      * @param int $lastID
