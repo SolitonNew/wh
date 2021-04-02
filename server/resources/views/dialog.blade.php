@@ -26,7 +26,19 @@
             let s = o.join('<br>');
             let contr = $('#dialog_content [name="' + key + '"]');
             if (contr.length) {
-                contr.addClass('is-invalid').next().html(s);
+                let errorText = contr.next('.invalid-feedback');
+                if (errorText.length) {
+                    contr.addClass('is-invalid');
+                    errorText.html(s);
+                } else {
+                    errorText = $('#dialog_content .invalid-feedback[data-formfield="' + key + '"]');
+                    if (errorText.length) {
+                        errorText.prev().addClass('is-invalid');
+                        errorText.html(s);
+                    } else {
+                        t += s + '<br>';
+                    }
+                }
             } else {
                 t += s + '<br>';
             } 

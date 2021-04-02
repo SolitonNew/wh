@@ -36,7 +36,7 @@
         <div class="col-sm-12">
             <div class="strong">@lang('admin/schedule.table_ACTION'):</div>
             <div id="actionEditor" class="border" style="height: 10rem;"></div>
-            <div class="invalid-feedback"></div>
+            <div class="invalid-feedback" data-formfield="action"></div>
         </div>
     </div>
     <div class="row">
