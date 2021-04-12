@@ -365,6 +365,13 @@ class Translate
             'numbers' => $this->_prepared_numbers,
         ];
         
-        return $translator->translate($prepareData, $report);
+        if (is_array($report)) {
+            $report['functions'] = $this->_prepared_functions;
+            $report['variables'] = $this->_prepared_variables;
+            $report['strings'] = $this->_prepared_strings;
+            $report['numbers'] = $this->_prepared_numbers;
+        }
+        
+        return $translator->translate($prepareData);
     }
 }

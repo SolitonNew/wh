@@ -54,9 +54,8 @@ class Php implements ITranslator {
     /**
      * 
      * @param type $parts
-     * @param type $report
      */
-    public function translate($prepareData, &$report = null) {
+    public function translate($prepareData) {
         $parts = $prepareData->parts;
         $variables = $prepareData->variables;
         

@@ -184,8 +184,23 @@ class ScriptsController extends Controller
     public function scriptTest(Request $request) {
         try {
             $execute = new \App\Library\Script\PhpExecute($request->post('command'));
-            $res = $execute->run(true);
-            return $res ? $res : "OK";
+            $report = [];
+            $res = $execute->run(true, $report);
+            
+            if (!$res) {
+                $log = [];
+                $log[] = 'Testing completed successfully';
+                $log[] = str_repeat('-', 40);
+                $log[] = 'FUNCTIONS ['.count($report['functions']).']';
+                foreach($report['functions'] as $key => $val) {
+                    $log[] = '    '.$key;
+                }
+                $log[] = '';
+                
+                $res = implode("\n", $log);
+            }
+            
+            return $res;
         } catch (\Exception $ex) {
             return $ex->getMessage();
         }

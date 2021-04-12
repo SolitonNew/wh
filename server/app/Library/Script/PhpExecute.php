@@ -56,10 +56,9 @@ class PhpExecute {
      * 
      * @return type
      */
-    public function run($fake = false) {
+    public function run($fake = false, &$report = null) {
         try {
             $this->_fake = $fake;
-            $report = [];
             $code = $this->_translator->run(new Translators\Php(), $report);
             eval($code);
         } catch (\ParseError $ex) {
