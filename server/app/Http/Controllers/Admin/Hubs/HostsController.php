@@ -7,18 +7,11 @@ use App\Http\Controllers\Controller;
 
 class HostsController extends Controller
 {
-    public function index(int $hubId = null) {
-        $hub = null;
-        if (!$hubId) {
-            $nub = \App\Http\Models\ControllersModel::orderBy('rom', 'asc')->first();
-            if ($hub) {
-                return redirect(route('admin.hosts', $hub->id));
-            }
-        }
-        
-        return view('admin.hubs.hosts', [
-            'hubId' => $hubId,
-            'hub' => $hub,
+    public function index(int $hubID = null) {
+
+        return view('admin.hubs.hosts.hosts', [
+            'hubID' => $hubID,
+            'page' => 'hosts',
         ]);
     }
     

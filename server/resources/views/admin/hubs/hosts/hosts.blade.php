@@ -1,0 +1,1 @@
+@extends('admin.hubs.hubs')

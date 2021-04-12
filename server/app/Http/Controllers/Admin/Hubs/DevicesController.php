@@ -7,18 +7,11 @@ use App\Http\Controllers\Controller;
 
 class DevicesController extends Controller
 {
-    public function index(int $nubId = null) {
-        $hub = null;
-        if (!$hubId) {
-            $nub = \App\Http\Models\ControllersModel::orderBy('rom', 'asc')->first();
-            if ($hub) {
-                return redirect(route('admin.devices', $hub->id));
-            }
-        }
+    public function index(int $hubID = null) {
         
-        return view('admin.hubs.devices', [
-            'hubId' => $hubId,
-            'hub' => $hub,
+        return view('admin.hubs.devices.devices', [
+            'hubID' => $hubID,
+            'page' => 'devices',
         ]);
     }
     

@@ -22,6 +22,11 @@
     line-height: 3rem;
 }
 
+.navbar-down-menu {
+    margin-left: 1rem;
+    margin-right: 1.5rem;
+}
+
 .navbar-top-menu-tab {
     margin-bottom: -1.5rem; 
     border-bottom: 1px solid #ffffff;

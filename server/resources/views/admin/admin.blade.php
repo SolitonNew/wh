@@ -13,15 +13,17 @@
         <div class="main-menu">
             <nav class="navbar">
                 <div class="logo">WISE HOUSE</div>
-                <div class="btn-group" style="margin-left: 1rem;margin-right: 1.5rem;">
-                    <button type="button" class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown" aria-haspopup="true" style="margin: 0px;"
-                            aria-expanded="false">
-                        <img src="/img/menus/menu-3x.png" style="margin-left:-3px;margin-top: -5px;margin-right: 0.5rem;">
-                        @lang('admin/admin.menu_actions')
-                    </button>
-                    <div class="dropdown-menu">
-                        @yield('down-menu')
+                <div class="navbar-down-menu">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown" aria-haspopup="true" style="margin: 0px;"
+                                aria-expanded="false">
+                            <img src="/img/menus/menu-3x.png" style="margin-left:-3px;margin-top: -5px;margin-right: 0.5rem;">
+                            @lang('admin/admin.menu_actions')
+                        </button>
+                        <div class="dropdown-menu">
+                            @yield('down-menu')
+                        </div>
                     </div>
                 </div>
                 <div style="display: flex; flex-grow: 1; align-items: center;">
@@ -37,6 +39,14 @@
                         <img src="/img/logo.png" height="100%">
                     </div>
                     <div class="list-group">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('hubs')" href="{{ route('admin.hubs', '') }}">
+                            <img src="/img/menus/pulse-2x.png">
+                            <span class="label">@lang('admin/hubs.menu')</span>
+                            @if(\App\Http\Models\PropertysModel::getFirmwareChanges() > 0)
+                            <span class="badge badge-danger badge-pill">{{ \App\Http\Models\PropertysModel::getFirmwareChanges() }}</span>
+                            @endif
+                        </a>
+                        
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('configuration')" href="{{ route('configuration', '') }}">
                             <img src="/img/menus/pulse-2x.png">
                             <span class="label">@lang('admin/configuration.menu')</span>
