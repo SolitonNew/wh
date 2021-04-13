@@ -71,6 +71,9 @@ class HubsController extends Controller
                 ]);
             }
             
+            // Перезапускаем rs485-demon
+            $this->_restartRs485Demon();
+            
             return 'OK';
         } else {
             if (!$item) {
@@ -102,6 +105,10 @@ class HubsController extends Controller
                 return abort(404);
             }
             $item->delete();
+            
+            // Перезапускаем rs485-demon
+            $this->_restartRs485Demon();
+            
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -274,6 +281,24 @@ class HubsController extends Controller
             return 'OK';            
         } catch (\Exception $ex) {
             return 'ERROR';
+        }
+    }
+    
+    /**
+     * Перезапускает демон rs485-demon
+     * 
+     * @param \App\Http\Controllers\Admin\DemonManager $demonManager
+     * @return string
+     */
+    private function _restartRs485Demon() {
+        $demonManager = new \App\Library\DemonManager();
+        $demon = 'rs485-demon';
+        try {
+            \App\Http\Models\PropertysModel::setAsRunningDemon($demon);
+            $demonManager->restart($demon);
+            return 'OK';
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
         }
     }
 }
