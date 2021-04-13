@@ -49,8 +49,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     /* Конфигурация  -------------------------------------------------------- */
     /* Управление хабами */
     Route::get('/hubs/{hubID?}', 'Admin\HubsController@index')->name('admin.hubs');
-    Route::match(['get', 'post'], '/hub-edit/{hubID}', 'Admin\HubsController@edit')->name('admin.hub-edit');
-    Route::delete('/hub-delete/{hubID}', 'Admin\HubsController@delete')->name('admin.hub-delete');
+    Route::match(['get', 'post'], '/hub-edit/{id}', 'Admin\HubsController@edit')->name('admin.hub-edit');
+    Route::delete('/hub-delete/{id}', 'Admin\HubsController@delete')->name('admin.hub-delete');
     
     /* Управление устройствами */
     Route::get('/hubs/{hubID}/devices', 'Admin\Hubs\DevicesController@index')->name('admin.hub-devices');
