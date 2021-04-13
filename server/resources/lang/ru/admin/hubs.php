@@ -31,6 +31,7 @@ return [
     'firmware_start_progress' => 'Выполняется обновление',
     'firmware_complete' => 'Обновление успешно выполнено',    
     
+    
     'devices' => 'Устройства',
     'device_ID' => 'ID',
     'device_CONTROLLER' => 'hub',
@@ -53,6 +54,7 @@ return [
     'device_edit_title' => 'Свойства устройства',
     'device_delete_confirm' => 'Удалить выбранное устройство?',
     
+    
     'hosts' => 'Hosts',
     'host_ID' => 'ID',
     'host_CONTROLLER' => 'Контроллер',
@@ -60,6 +62,12 @@ return [
     'host_COMM' => 'Тип',
     'host_CHANNELS' => 'Каналы',
     'host_VARIABLES' => 'Устройства',
+    
+    'host_add' => 'Добавить новый хост...',
+    'host_add_title' => 'Новый хост',
+    'host_edit_title' => 'Свойства хоста',
+    'host_delete_confirm' => 'Удалить выбранный хост?',
+    
     
     'app_control' => [
         0 => '-//-',

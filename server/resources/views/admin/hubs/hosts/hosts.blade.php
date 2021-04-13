@@ -1,5 +1,10 @@
 @extends('admin.hubs.hubs')
 
+@section('page-down-menu')
+<div class="dropdown-divider"></div>
+<a href="#" class="dropdown-item" onclick="hostAdd(); return false;">@lang('admin/hubs.host_add')</a>
+@endsection
+
 @section('page-content')
 <div class="content-body" scroll-store="hostsList">
     <table id="hosts_table" class="table table-sm table-hover table-bordered table-fixed-header">
