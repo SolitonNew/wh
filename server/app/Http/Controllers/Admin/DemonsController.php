@@ -14,7 +14,8 @@ class DemonsController extends Controller
      * @param string $id
      * @return type
      */
-    public function index(DemonManager $demonManager,  string $id = null) {        
+    public function index(DemonManager $demonManager,  string $id = null) 
+    {        
         if (!$id) {
             $id = $demonManager->demons()[0];
             return redirect(route('demons', $id));
@@ -50,7 +51,8 @@ class DemonsController extends Controller
      * @param int $lastID
      * @return string
      */
-    public function data(DemonManager $demonManager, string $id, int $lastID = -1) {
+    public function data(DemonManager $demonManager, string $id, int $lastID = -1) 
+    {
         if (!$demonManager->exists($id)) {
             abort(404);
         }
@@ -79,7 +81,8 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonStart(DemonManager $demonManager, string $id) {
+    public function demonStart(DemonManager $demonManager, string $id) 
+    {
         if (!$demonManager->exists($id)) {
             abort(404);
         }
@@ -99,7 +102,8 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonStop(DemonManager $demonManager, string $id) {
+    public function demonStop(DemonManager $demonManager, string $id) 
+    {
         if (!$demonManager->exists($id)) {
             abort(404);
         }
@@ -119,7 +123,8 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonRestart(DemonManager $demonManager, string $id) {
+    public function demonRestart(DemonManager $demonManager, string $id) 
+    {
         if (!$demonManager->exists($id)) {
             abort(404);
         }

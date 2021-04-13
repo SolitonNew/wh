@@ -15,7 +15,8 @@ class HubsController extends Controller
      * @param int $hubID
      * @return type
      */
-    public function index(int $hubID = null) {
+    public function index(int $hubID = null) 
+    {
         if (!$hubID) {
             $hubID = \App\Http\Models\ControllersModel::orderBy('name', 'asc')->first();
             if ($hubID) {
@@ -41,7 +42,8 @@ class HubsController extends Controller
      * @param int $id
      * @return string
      */
-    public function edit(Request $request, int $id) {
+    public function edit(Request $request, int $id) 
+    {
         $item = \App\Http\Models\ControllersModel::find($id);
 
         if ($request->method() == 'POST') {
@@ -98,7 +100,8 @@ class HubsController extends Controller
      * @param int $id
      * @return type
      */
-    public function delete(int $id) {
+    public function delete(int $id) 
+    {
         try {
             $item = \App\Http\Models\ControllersModel::find($id);
             if (!$item) {
@@ -123,7 +126,8 @@ class HubsController extends Controller
      * 
      * @return type
      */
-    public function hubsScan() {
+    public function hubsScan() 
+    {
         \App\Http\Models\PropertysModel::setRs485Command('OW SEARCH');
         $i = 0;
         while ($i++ < 500) { // 5 sec
@@ -150,7 +154,8 @@ class HubsController extends Controller
      * 
      * @return string
      */
-    public function _generateDevs() {
+    public function _generateDevs() 
+    {
         $devs = DB::select('select d.id, d.controller_id, t.channels, t.comm
                               from core_ow_devs d, core_ow_types t
                              where d.rom_1 = t.code');
@@ -197,7 +202,8 @@ class HubsController extends Controller
      * 
      * @return type
      */
-    public function firmware() {
+    public function firmware() 
+    {
         $makeError = false;
         $text = '';
         try {
@@ -229,7 +235,8 @@ class HubsController extends Controller
      * 
      * @return string
      */
-    public function firmwareStart() {
+    public function firmwareStart() 
+    {
         \App\Http\Models\PropertysModel::setRs485Command('FIRMWARE');
         \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
         return 'OK';
@@ -240,7 +247,8 @@ class HubsController extends Controller
      * 
      * @return type
      */
-    public function firmwareStatus() {
+    public function firmwareStatus() 
+    {
         try {
             $info = \App\Http\Models\PropertysModel::getRs485CommandInfo();
             if ($info == 'COMPLETE') {
@@ -275,7 +283,8 @@ class HubsController extends Controller
      * 
      * @return string
      */
-    public function hubsReset() {
+    public function hubsReset() 
+    {
         try {
             \App\Http\Models\PropertysModel::setRs485Command('RESET');
             return 'OK';            
@@ -290,7 +299,8 @@ class HubsController extends Controller
      * @param \App\Http\Controllers\Admin\DemonManager $demonManager
      * @return string
      */
-    private function _restartRs485Demon() {
+    private function _restartRs485Demon() 
+    {
         $demonManager = new \App\Library\DemonManager();
         $demon = 'rs485-demon';
         try {

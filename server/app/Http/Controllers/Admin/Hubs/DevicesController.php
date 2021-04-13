@@ -8,7 +8,8 @@ use DB;
 
 class DevicesController extends Controller
 {
-    public function index(int $hubID = null) {
+    public function index(int $hubID = null) 
+    {
         if (!\App\Http\Models\ControllersModel::find($hubID)) {
             return redirect(route('admin.hubs'));
         }
@@ -35,11 +36,13 @@ class DevicesController extends Controller
         ]);
     }
     
-    public function edit(int $nubId, int $id) {
+    public function edit(int $nubId, int $id) 
+    {
         
     }
     
-    public function delete(int $id) {
+    public function delete(int $id) 
+    {
         
     }
 }
