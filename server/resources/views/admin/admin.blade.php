@@ -370,9 +370,9 @@
             setCookie(name, '0');
         }
     }
-
-    function test() {
-
+    
+    function firmware() {
+        dialog("{{ route('admin.firmware') }}");
     }
 
 </script>

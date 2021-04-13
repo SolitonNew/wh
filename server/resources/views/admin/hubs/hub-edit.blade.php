@@ -83,7 +83,7 @@
     }
 
     function hubDelete() {
-        confirmYesNo("@lang('admin/hubs.hub-delete-confirm')", () => {
+        confirmYesNo("@lang('admin/hubs.hub_delete_confirm')", () => {
             $.ajax({
                 url: '{{ route("admin.hub-delete", $item->id) }}',
                 data: {_token: '{{ csrf_token() }}'},

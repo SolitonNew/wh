@@ -100,8 +100,7 @@ class RS485Demon extends BaseDemon {
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
-        $this->_controllers = \App\Http\Models\ControllersModel::where('id', '<', 100)
-                                ->whereIsServer(0)
+        $this->_controllers = \App\Http\Models\ControllersModel::where('id', '>', 0)
                                 ->orderBy('name', 'asc')
                                 ->get();
         

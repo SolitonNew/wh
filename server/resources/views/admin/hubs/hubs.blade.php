@@ -10,6 +10,10 @@
 <a href="#" class="dropdown-item" onclick="hubAdd(); return false;">@lang('admin/hubs.hub_add')</a>
 @if($hubID)
 <a href="#" class="dropdown-item" onclick="hubEdit(); return false;">@lang('admin/hubs.hub_edit')</a>
+<div class="dropdown-divider"></div>
+<a href="#" class="dropdown-item" onclick="hubsScan(); return false;">@lang('admin/hubs.hubs_scan')</a>
+<a href="#" class="dropdown-item" onclick="firmware(); return false;">@lang('admin/hubs.firmware')</a>
+<a href="#" class="dropdown-item" onclick="hubsReset(); return false;">@lang('admin/hubs.hubs_reset')</a>
 @endif
 
 @yield('page-down-menu')
@@ -19,9 +23,9 @@
 @if($hubID)
 <div class="nav nav-tabs navbar-top-menu-tab">
     <a class="nav-link @activeSegment(4, 'devices')" 
-        href="{{ route('admin.hub-devices', $hubID) }}">@lang('admin/hubs.devices')</a>
+        href="{{ route('admin.hub-devices', $hubID) }}">@lang('admin/hubs.devices') ({{ App\Http\Models\VariablesModel::whereControllerId($hubID)->count() }})</a>
     <a class="nav-link @activeSegment(4, 'hosts')" 
-        href="{{ route('admin.hub-hosts', $hubID) }}">@lang('admin/hubs.hosts')</a>
+        href="{{ route('admin.hub-hosts', $hubID) }}">@lang('admin/hubs.hosts') ({{ App\Http\Models\OwDevsModel::whereControllerId($hubID)->count() }})</a>
 </div>
 @endif
 @yield('page-top-menu')
@@ -59,6 +63,21 @@
     @if($hubID)
     function hubEdit() {
         dialog("{{ route('admin.hub-edit', $hubID) }}");
+    }
+
+    function hubsScan() {
+        dialog("{{ route('admin.hubs-scan') }}");
+    }
+    
+    function hubsReset() {
+        $.ajax({
+            url: '{{ route("admin.hubs-reset") }}',
+            success: function (data) {
+                if (data != 'OK') {
+                    alert(data);
+                }
+            },
+        })
     }
     @endif
     
