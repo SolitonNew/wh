@@ -3,7 +3,7 @@
     <div class="log-time text-primary">[{{ \Carbon\Carbon::parse($row->change_date)->format('H:i:s') }}]</div>
     <div class="log-text">
         @if($row->app_control > 0)
-        '@lang('admin/variables.log_app_control.'.$row->app_control). {{ $row->comm }}'
+        '@lang('admin/hubs.log_app_control.'.$row->app_control). {{ $row->comm }}'
         @else
         '{{ $row->comm }}'
         @endif

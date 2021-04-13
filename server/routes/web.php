@@ -77,11 +77,11 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     
     /* Раздел управления переменными системы  ------------------------------- */
-    Route::get('/variables/{partID?}', 'Admin\VariablesController@index')->name('variables');
+    /*Route::get('/variables/{partID?}', 'Admin\VariablesController@index')->name('variables');
     Route::get('/variables-ow-list/{controller?}', 'Admin\VariablesController@owList')->name('variables-ow-list');
     Route::get('/variables-channel-list/{rom}/{ow_id?}', 'Admin\VariablesController@channelList')->name('variables-channel-list');
     Route::match(['get', 'post'], '/variable-edit/{id}', 'Admin\VariablesController@edit')->name('variable-edit');
-    Route::get('/variable-delete/{id}', 'Admin\VariablesController@delete')->name('variable-delete');
+    Route::get('/variable-delete/{id}', 'Admin\VariablesController@delete')->name('variable-delete'); */
     
     
     /* Управление скриптами (сценариями) системы  --------------------------- */
@@ -97,20 +97,6 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/users', 'Admin\UsersController@index')->name('users');
     Route::match(['get', 'post'], '/user-edit/{id}', 'Admin\UsersController@edit')->name('user-edit');
     Route::get('/user-delete/{id}', 'Admin\UsersController@delete')->name('user-delete');
-    
-    
-    /* Управление конфигурацией системы  ------------------------------------ */
-    Route::get('/configuration/{id?}', 'Admin\ConfigurationController@index')->name('configuration');
-    Route::match(['get', 'post'], '/configuration-edit/{id}', 'Admin\ConfigurationController@edit')->name('configuration-edit');
-    Route::get('/configuration-delete/{id}', 'Admin\ConfigurationController@delete')->name('configuration-delete');
-    Route::get('/configuration-ow-info/{id}', 'Admin\ConfigurationController@owInfo')->name('configuration-ow-info');
-    Route::get('/configuration-ow-delete/{id}', 'Admin\ConfigurationController@owDelete')->name('configuration-ow-delete');
-    Route::get('/configuration-gen-vars', 'Admin\ConfigurationController@generateVarsForFreeDevs')->name('configuration-gen-vars');
-    Route::get('/configuration-firmware/{id?}', 'Admin\ConfigurationController@configurationFirmware')->name('configuration-firmware');
-    Route::get('/configuration-firmware-start', 'Admin\ConfigurationController@configurationFirmwareStart')->name('configuration-firmware-start');
-    Route::get('/configuration-firmware-status', 'Admin\ConfigurationController@configurationFirmwareStatus')->name('configuration-firmware-status');
-    Route::get('/configuration-reset', 'Admin\ConfigurationController@resetControllers')->name('configuration-reset');
-    Route::get('/configuration-ow-scan', 'Admin\ConfigurationController@runOwScan')->name('configuration-ow-scan');
     
     
     /* Настройка событий системы по расписанию  ----------------------------- */

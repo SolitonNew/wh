@@ -42,7 +42,7 @@
             e.preventDefault();
 
             let id = $(this).data('id');
-            dialog('{{ route("variable-edit", "") }}/' + id);
+            dialog('{{ route("admin.hub-device-edit", "") }}/' + id);
             
             return false;
         });

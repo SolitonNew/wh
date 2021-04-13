@@ -69,7 +69,7 @@ class VariableChangesMemModel extends Model
      * @return type
      */
     static public function decodeLogValue($app_control, $value) {
-        $dim = Lang::get('admin/variables.log_app_control_dim.'.$app_control);
+        $dim = Lang::get('admin/hubs.log_app_control_dim.'.$app_control);
         if (is_array($dim)) {
             return $dim[$value];
         } else {

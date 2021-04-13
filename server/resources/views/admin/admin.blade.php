@@ -46,23 +46,10 @@
                             <span class="badge badge-danger badge-pill">{{ \App\Http\Models\PropertysModel::getFirmwareChanges() }}</span>
                             @endif
                         </a>
-                        
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('configuration')" href="{{ route('configuration', '') }}">
-                            <img src="/img/menus/pulse-2x.png">
-                            <span class="label">@lang('admin/configuration.menu')</span>
-                            @if(\App\Http\Models\PropertysModel::getFirmwareChanges() > 0)
-                            <span class="badge badge-danger badge-pill">{{ \App\Http\Models\PropertysModel::getFirmwareChanges() }}</span>
-                            @endif
-                        </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('plan')" href="{{ route('plan') }}">
                             <img src="/img/menus/clipboard-2x.png">
                             <span class="label">@lang('admin/plan.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\PlanPartsModel::count() }}</span>
-                        </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('variables')" href="{{ route('variables') }}">
-                            <img src="/img/menus/list-2x.png">
-                            <span class="label">@lang('admin/variables.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VariablesModel::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('scripts')" href="{{ route('scripts') }}">
                             <img src="/img/menus/document-2x.png">

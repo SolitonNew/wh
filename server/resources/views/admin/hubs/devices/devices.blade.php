@@ -20,10 +20,10 @@
             <tr data-id="{{ $row->id }}" class="{{ $row->with_events ? 'row-with-events' : '' }}">
                 <td>{{ $row->id }}</td>
                 <td>{{ $row->typ }}</td>
-                <td>{{ Lang::get('admin/variables.table_readonly_list.'.$row->direction) }}</td>
+                <td>{{ Lang::get('admin/hubs.device_readonly_list.'.$row->direction) }}</td>
                 <td>{{ $row->name }}</td>
                 <td>{{ $row->comm }}</td>
-                <td>{{ lang::get('admin/variables.app_control.'.$row->app_control) }}</td>
+                <td>{{ lang::get('admin/hubs.app_control.'.$row->app_control) }}</td>
                 <td>{{ $row->value }}</td>
                 <td>{{ $row->channel }}</td>
             </tr>
