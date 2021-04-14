@@ -15,7 +15,8 @@ use Log;
  *
  * @author soliton
  */
-class Php implements ITranslator {
+class Php implements ITranslator 
+{
     /**
      *
      * @var type 
@@ -55,7 +56,8 @@ class Php implements ITranslator {
      * 
      * @param type $parts
      */
-    public function translate($prepareData) {
+    public function translate($prepareData) 
+    {
         $parts = $prepareData->parts;
         $variables = $prepareData->variables;
         

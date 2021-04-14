@@ -10,11 +10,13 @@ namespace App\Library\Script\PhpFunctions;
 
 use Lang;
 
-trait FunctionInfo {
+trait FunctionInfo 
+{
     /**
      * 
      */
-    public function function_info() {
+    public function function_info() 
+    {
         // Формируем строку текущего времени  ------------------------------
         $h = now()->hour;
         $m = now()->minute;

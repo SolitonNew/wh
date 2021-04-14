@@ -12,7 +12,8 @@ namespace App\Library\Script\Translators;
  *
  * @author soliton
  */
-interface ITranslator {
+interface ITranslator 
+{
     /**
      * 
      * @param type $source

@@ -9,8 +9,8 @@ use Log;
  *
  * @author soliton
  */
-class DemonManager {
-    
+class DemonManager 
+{
     /**
      *     
      * @var type 
@@ -20,11 +20,13 @@ class DemonManager {
     /**
      * 
      */
-    public function __construct() {
+    public function __construct() 
+    {
         $this->_demons = config('demons.list');
     }
     
-    public function demons() {
+    public function demons() 
+    {
         return $this->_demons;
     }
     
@@ -34,7 +36,8 @@ class DemonManager {
      * @param type $id
      * @return type
      */
-    public function exists(string $id) {
+    public function exists(string $id) 
+    {
         return in_array($id, $this->_demons);
     }
     
@@ -43,7 +46,8 @@ class DemonManager {
      * 
      * @param type $id
      */
-    public function isStarted(string $id) {
+    public function isStarted(string $id) 
+    {
         if ($this->exists($id)) {
             return count($this->findDemonPID($id)) > 0;
         } else {
@@ -56,7 +60,8 @@ class DemonManager {
      * 
      * @param type $id
      */
-    public function start(string $id) {
+    public function start(string $id) 
+    {
         if ($this->exists($id)) {
             exec('php '.base_path().'/artisan '.$id.'>/dev/null &');
         } else {
@@ -69,7 +74,8 @@ class DemonManager {
      * 
      * @param type $id
      */
-    public function stop(string $id) {
+    public function stop(string $id) 
+    {
         if ($this->exists($id)) {
             foreach($this->findDemonPID($id) as $pid) {
                 exec('kill -9 '.$pid);
@@ -84,7 +90,8 @@ class DemonManager {
      * 
      * @param type $id
      */
-    public function restart(string $id) {
+    public function restart(string $id) 
+    {
         if ($this->exists($id)) {
             if ($this->isStarted($id)) {
                 $this->stop($id);
@@ -101,7 +108,8 @@ class DemonManager {
      * @param string $id
      * @return type
      */
-    public function findDemonPID(string $id) {
+    public function findDemonPID(string $id) 
+    {
         $pids = [];
         exec("ps ax | grep $id | grep -v grep | grep -v 'sh -c '", $outs);
         foreach($outs as $out) {

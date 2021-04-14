@@ -8,12 +8,14 @@
 
 namespace App\Library\Script\PhpFunctions;
 
-trait FunctionPlay {
+trait FunctionPlay 
+{
     /**
      * 
      * @param type $media
      */
-    public function function_play($media) {
+    public function function_play($media) 
+    {
         
     }
 }

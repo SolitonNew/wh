@@ -8,12 +8,14 @@
 
 namespace App\Library\Script\PhpFunctions;
 
-trait FunctionSpeech {
+trait FunctionSpeech 
+{
     /**
      * 
      * @param type $phrase
      */
-    public function function_speech($phrase) {
+    public function function_speech($phrase) 
+    {
         
     }
 }

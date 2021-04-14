@@ -36,7 +36,8 @@ class Translate
      * Cловарь синтаксических конструкций
      * @return type
      */
-    public function getKeywords() {
+    public function getKeywords() 
+    {
         return $this->_keywords;
     }
     
@@ -93,7 +94,8 @@ class Translate
      * 
      * @return type
      */
-    public function getFunctions() {
+    public function getFunctions() 
+    {
         return $this->_functions;
     }
     
@@ -113,7 +115,8 @@ class Translate
      * 
      * @param type $source
      */
-    public function __construct($source) {
+    public function __construct($source) 
+    {
         $this->_source = $source;
         $this->_split();
         $this->_prepare();
@@ -122,7 +125,8 @@ class Translate
     /**
      *  Разбираем исходный текст на части. 
      */
-    protected function _split() {
+    protected function _split() 
+    {
         // Разделитель для фрагментации исходного кода
         $delimeters = [
             ' ' => [],
@@ -191,7 +195,8 @@ class Translate
     private $_prepared_numbers = [];  
     private $_prepared_strings = [];    
     
-    private function _prepareBlock($from_i, &$func_args) {
+    private function _prepareBlock($from_i, &$func_args) 
+    {
         $spaces = ['', ' ', chr(9), chr(10), chr(13)];
             
         switch ($this->_parts[$from_i]) {
@@ -283,7 +288,8 @@ class Translate
     /**
      * 
      */
-    private function _prepare() {
+    private function _prepare() 
+    {
         $this->_prepared_functions = [];
         $this->_prepared_variables = [];
         $this->_prepared_numbers = [];
@@ -349,7 +355,8 @@ class Translate
      * @param array $report
      * @return string
      */
-    public function run(ITranslator $translator, &$report = null) {
+    public function run(ITranslator $translator, &$report = null) 
+    {
         $parts = [];
         foreach($this->_parts as $part) {
             if ($part != '') {

@@ -8,12 +8,14 @@
 
 namespace App\Library\Script\PhpFunctions;
 
-trait FunctionOn {
+trait FunctionOn 
+{
     /**
      * 
      * @param type $name
      */
-    public function function_on($name, $time = 0) {
+    public function function_on($name, $time = 0) 
+    {
         $this->function_set($name, 1, $time);
     }
 }

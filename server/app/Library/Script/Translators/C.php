@@ -15,7 +15,8 @@ use Log;
  *
  * @author soliton
  */
-class C implements ITranslator {
+class C implements ITranslator 
+{
     /**
      *
      * @var type 
@@ -53,7 +54,8 @@ class C implements ITranslator {
     
     private $_variableNames = [];
     
-    public function __construct($variableNames = []) {
+    public function __construct($variableNames = []) 
+    {
         $this->_variableNames = $variableNames;
     }
     
@@ -62,7 +64,8 @@ class C implements ITranslator {
      * 
      * @param type $parts
      */
-    public function translate($prepareData) {
+    public function translate($prepareData) 
+    {
         $parts = $prepareData->parts;
         
         $variables = [];

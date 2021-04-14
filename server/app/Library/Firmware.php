@@ -17,7 +17,8 @@ use DB;
  *
  * @author soliton
  */
-class Firmware {
+class Firmware 
+{
     /**
      * Название проекта прошивки щитового контроллера
      * 
@@ -42,7 +43,8 @@ class Firmware {
      */
     protected $_spm_pagesize = 128;
     
-    public function spmPageSize() {
+    public function spmPageSize() 
+    {
         return $this->_spm_pagesize;
     }
     
@@ -55,7 +57,8 @@ class Firmware {
     /**
      * 
      */
-    public function __construct() {
+    public function __construct() 
+    {
         $this->_mmcu = config('firmware.mmcu');
         $this->_spm_pagesize = config('firmware.spm_pagesize');
     }
@@ -63,7 +66,8 @@ class Firmware {
     /**
      * Абсолютный путь к директории прошивки
      */
-    protected function _firmwarePath() {
+    protected function _firmwarePath() 
+    {
         $path = explode('/', base_path());
         array_pop($path);
         $path[] = $this->_rel_path;
@@ -74,7 +78,8 @@ class Firmware {
      * Создает файл настройки для включения в прошивку.
      * Файл помещается по пути din_master
      */
-    public function generateConfig() {
+    public function generateConfig() 
+    {
         // Вычитываем все нужные данные
         $owDevTyps = \App\Http\Models\OwTypesModel::orderBy('code', 'asc')->get();
         $owList = \App\Http\Models\OwDevsModel::orderBy('id', 'asc')->get();
@@ -88,7 +93,6 @@ class Firmware {
                                  group by e.variable_id 
                                  order by e.variable_id');
         
-        // 
         foreach($varList as $row) {
             $row->ow_index = -1;
             if ($row->typ == 'din') {
@@ -201,7 +205,8 @@ class Firmware {
      * @param type $outs
      * @return boolean    true - OK; false - ERROR
      */
-    public function make(&$outs) {
+    public function make(&$outs) 
+    {
         $firmwarePath = $this->_firmwarePath();
         
         // Получаем файлы проекта
@@ -277,7 +282,8 @@ class Firmware {
      * 
      * @return boolean|array
      */
-    public function getHex() {
+    public function getHex() 
+    {
         $file = $this->_firmwarePath().'/Release/'.$this->_project.'.hex';
         if (!file_exists($file)) return false;
         

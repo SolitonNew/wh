@@ -22,7 +22,8 @@ class ScriptEditor
      * 
      * @return type
      */
-    static public function makeKeywords() {
+    static public function makeKeywords() 
+    {
         // Обращаемся к транслятору за списками ключевых слов
         $translate = new \App\Library\Script\Translate('');
         

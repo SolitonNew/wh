@@ -15,7 +15,8 @@ use Log;
  *
  * @author soliton
  */
-class PhpExecute {
+class PhpExecute 
+{
     use PhpFunctions\FunctionGet,
         PhpFunctions\FunctionInfo,
         PhpFunctions\FunctionOff,
@@ -42,7 +43,8 @@ class PhpExecute {
      * 
      * @param type $source
      */
-    public function __construct($source) {
+    public function __construct($source) 
+    {
         $this->_translator = new Translate($source);
     }
     
@@ -56,7 +58,8 @@ class PhpExecute {
      * 
      * @return type
      */
-    public function run($fake = false, &$report = null) {
+    public function run($fake = false, &$report = null) 
+    {
         try {
             $this->_fake = $fake;
             $code = $this->_translator->run(new Translators\Php(), $report);
@@ -74,7 +77,8 @@ class PhpExecute {
      * 
      * @param type $text
      */
-    public function printLine($text) {
+    public function printLine($text) 
+    {
         $this->_outLines[] = $text;
     }
 }

@@ -8,12 +8,14 @@
 
 namespace App\Library\Script\PhpFunctions;
 
-trait FunctionOff {
+trait FunctionOff 
+{
     /**
      * 
      * @param type $name
      */
-    public function function_off($name, $time = 0) {
+    public function function_off($name, $time = 0) 
+    {
         $this->function_set($name, 0, $time);
     }
 }

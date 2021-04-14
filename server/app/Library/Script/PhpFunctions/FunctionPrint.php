@@ -8,12 +8,14 @@
 
 namespace App\Library\Script\PhpFunctions;
 
-trait FunctionPrint {
+trait FunctionPrint 
+{
     /**
      * 
      * @param type $text
      */
-    public function function_print($text) {
+    public function function_print($text) 
+    {
         $this->printLine('>>> '.$text);
     }
 }

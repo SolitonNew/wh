@@ -10,12 +10,14 @@ namespace App\Library\Script\PhpFunctions;
 
 use DB;
 
-trait FunctionToggle {
+trait FunctionToggle 
+{
     /**
      * 
      * @param type $name
      */
-    public function function_toggle($name, $time = 0) {
+    public function function_toggle($name, $time = 0) 
+    {
         $variable = \App\Http\Models\VariablesModel::whereName($name)->first();
         if ($variable) {
             if ($this->_fake) {

@@ -8,14 +8,16 @@
 
 namespace App\Library\Script\PhpFunctions;
 
-trait FunctionGet {
+trait FunctionGet 
+{
     /**
      * 
      * @param type $name
      * @return type
      * @throws \Exception
      */
-    public function function_get($name) {
+    public function function_get($name) 
+    {
         $variable = \App\Http\Models\VariablesModel::whereName($name)->first();
         
         if ($variable) {

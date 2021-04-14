@@ -10,14 +10,16 @@ namespace App\Library\Script\PhpFunctions;
 
 use DB;
 
-trait FunctionSet {
+trait FunctionSet 
+{
     /**
      * 
      * @param type $name
      * @param type $value
      * @throws \Exception
      */
-    public function function_set(string $name, float $value, int $time = 0) {
+    public function function_set(string $name, float $value, int $time = 0) 
+    {
         $variable = \App\Http\Models\VariablesModel::whereName($name)->first();
         if ($variable) {
             if ($this->_fake) {
