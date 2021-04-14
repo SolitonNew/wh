@@ -30,7 +30,7 @@ class CommandDemon extends BaseDemon
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/demons.command-demon-title'));
+        $this->printLine(Lang::get('admin/demons/command-demon.description'));
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
@@ -41,7 +41,7 @@ class CommandDemon extends BaseDemon
                     order by id";
 
             foreach(DB::select($sql) as $row) {
-                $this->printLine(Lang::get('admin/demons.command-demon-line', [
+                $this->printLine(Lang::get('admin/demons/command-demon.line', [
                     'datetime' => Carbon::now(),
                     'command' => $row->command,
                 ]));

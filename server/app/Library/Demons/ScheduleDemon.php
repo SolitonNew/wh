@@ -30,7 +30,7 @@ class ScheduleDemon extends BaseDemon
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/demons.schedule-demon-title'));
+        $this->printLine(Lang::get('admin/demons/schedule-demon.description'));
         $this->printLine(str_repeat('-', 100));
         foreach(\App\Http\Models\ScheduleModel::orderBy('comm', 'asc')->get() as $row) {
             $row->action_datetime = $row->makeDateTime();
@@ -39,7 +39,7 @@ class ScheduleDemon extends BaseDemon
             if ($row->action_datetime) {
                 $time = Carbon::parse($row->action_datetime)->format('Y-m-d H:i:s');
             }
-            $this->printLine("[$time] $row->comm       ".($row->enable ? '' : Lang::get('admin/demons.schedule-demon-disabled')));
+            $this->printLine("[$time] $row->comm       ".($row->enable ? '' : Lang::get('admin/demons/schedule-demon.disabled')));
         }
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
@@ -54,7 +54,7 @@ class ScheduleDemon extends BaseDemon
                     if ($row->enable) {
                         // Выполняем
                         \App\Http\Models\ExecuteModel::command($row->action);
-                        $this->printLine(Lang::get('admin/demons.schedule-demon-line', [
+                        $this->printLine(Lang::get('admin/demons/schedule-demon.line', [
                             'datetime' => Carbon::parse($row->action_datetime),
                             'comm' => $row->comm,
                             'action' => str_replace("\n", ' ', $row->action),

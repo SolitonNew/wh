@@ -96,7 +96,7 @@ class RS485Demon extends BaseDemon
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/demons.rs485-demon-title'));
+        $this->printLine(Lang::get('admin/demons/rs485-demon.description'));
         $this->printLine('--    PORT: '.config('firmware.rs485_port')); 
         $this->printLine('--    BAUD: '.config('firmware.rs485_baud')); 
         $this->printLine(str_repeat('-', 100));

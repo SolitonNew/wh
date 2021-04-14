@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Jurnal;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -18,7 +18,7 @@ class DemonsController extends Controller
     {        
         if (!$id) {
             $id = $demonManager->demons()[0];
-            return redirect(route('demons', $id));
+            return redirect(route('admin.jurnal-demons', $id));
         }
         
         if (!$demonManager->exists($id)) {
@@ -38,7 +38,7 @@ class DemonsController extends Controller
             }
         }
 
-        return view('admin.demons.demons', [
+        return view('admin.jurnal.demons.demons', [
             'id' => $id,
             'stat' => $currStat,
             'demons' => $demons,
@@ -71,7 +71,7 @@ class DemonsController extends Controller
             $row->data = $str;
         }
 
-        return view('admin.demons.demon-log', [
+        return view('admin.jurnal.demons.demon-log', [
             'data' => $data,
         ]);
     }

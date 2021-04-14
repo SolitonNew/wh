@@ -17,7 +17,14 @@ return [
     'history_VALUE' => 'Значение',
     'history_value_delete_confirm' => 'Удалить текущую запись?',
     
-    'demons' => 'Демоны',
+    'demons' => 'Процессы',
+    'demon_run' => 'Запустить текущий процесс',
+    'demon_stop' => 'Остановить текущий процесс',
+    'demon_reload' => 'Перезапустить тукущий процесс',
+    'demon_btn_top' => 'Вверх',
+    'demon_run_confirm' => 'Запустить текущий процесс?',
+    'demon_stop_confirm' => 'Остановить текущий процесс?',
+    'demon_reload_confirm' => 'Перезапустить тукущий процесс?',
     
     'power' => 'Потребление',
 ];
