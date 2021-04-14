@@ -45,6 +45,5 @@ END
     public function down()
     {
         DB::unprepared('DROP PROCEDURE IF EXISTS `CORE_SET_VARIABLE`');
-        Log::info('DROP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     }
 }

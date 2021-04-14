@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
+use Log;
 
 class HubsController extends Controller
 {
@@ -156,6 +157,40 @@ class HubsController extends Controller
      */
     public function _generateDevs() 
     {
+        // Генерация устройств для каналов хостов
+        $din_channels = config('firmware.channels.'.config('firmware.mmcu'));
+        $vars = DB::select('select controller_id, channel from core_variables where typ = "din"');
+        foreach(\App\Http\Models\ControllersModel::get() as $din) {
+            try {
+                foreach($din_channels as $chan) {
+                    $find = false;
+                    foreach($vars as $var) {
+                        if ($var->controller_id == $din->id && $var->channel == $chan) {
+                            $find = true;
+                            break;
+                        }
+                    }
+                    if (!$find) {
+                        $item = new \App\Http\Models\VariablesModel();
+                        $item->controller_id = $din->id;
+                        $item->typ = 'din';
+                        $item->direction = 0;
+                        $item->name = 'temp for din';
+                        $item->comm = $din->name;
+                        $item->ow_id = null;
+                        $item->channel = $chan;
+                        $item->save();
+                        $item->name = 'din_'.$item->id.'_'.$chan;
+                        $item->save();
+                    }
+                }
+            } catch (\Exception $ex) {
+                Log::info($ex);
+                return 'ERROR';
+            }
+        }
+        
+        // Генерация устройств для сетевых хабов
         $devs = DB::select('select d.id, d.controller_id, t.channels, t.comm
                               from core_ow_devs d, core_ow_types t
                              where d.rom_1 = t.code');
@@ -188,11 +223,12 @@ class HubsController extends Controller
                     }
                 }
             }
-            return 'OK';
         } catch (\Exception $ex) {
             Log::info($ex);
             return 'ERROR';
         }
+        
+        return 'OK';
     }
     
     /**

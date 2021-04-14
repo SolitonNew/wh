@@ -174,12 +174,7 @@ class DevicesController extends Controller
     {
         switch ($typ) {
             case 'din':
-                $data = [
-                    'R1', 
-                    'R2', 
-                    'R3',
-                    'R4',
-                ];
+                $data = config('firmware.channels.'.config('firmware.mmcu'));
                 break;
             case 'ow':
                 if ($hostID) {
