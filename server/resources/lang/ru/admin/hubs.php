@@ -34,7 +34,7 @@ return [
     
     'devices' => 'Устройства',
     'device_ID' => 'ID',
-    'device_CONTROLLER' => 'hub',
+    'device_CONTROLLER' => 'Hub',
     'device_TYP' => 'Тип',
     'device_OW' => 'Host',
     'device_READONLY' => 'Только чтение',

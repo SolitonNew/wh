@@ -40,4 +40,16 @@
         </tbody>
     </table>
 </div>
+<script>
+    $(document).ready(() => {
+        $('#devices_table tbody tr').on('click', function () {
+            if ($(this).hasClass('table-empty')) return ;
+            dialog('{{ route("admin.hub-device-edit", [$hubID, ""]) }}/' + $(this).data('id'));
+        });
+    });
+
+    function deviceAdd() {
+        dialog('{{ route("admin.hub-device-edit", [$hubID, -1]) }}');
+    }
+</script>
 @endsection
