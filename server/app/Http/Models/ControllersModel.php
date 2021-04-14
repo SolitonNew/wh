@@ -10,8 +10,6 @@ class ControllersModel extends AffectsFirmwareModel
     public $timestamps = false;
 
     protected $_affectFirmwareFields = [
-        'is_server',
         'rom',
     ];
-    
 }

@@ -26,7 +26,7 @@ class AffectsFirmwareModel extends Model
     {
         $firmwareChanged = count($this->_affectFirmwareFields) ? $this->isDirty($this->_affectFirmwareFields) : true;
         parent::finishSave($options);
-        if ($firmwareChanged) {
+        if ($firmwareChanged && !in_array('withoutevents', $options)) {
             event(new \App\Http\Events\FirmwareChangedEvent());
         }
     }

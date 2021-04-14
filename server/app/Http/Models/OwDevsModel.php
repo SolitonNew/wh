@@ -9,5 +9,7 @@ class OwDevsModel extends AffectsFirmwareModel
     protected $table = 'core_ow_devs';
     public $timestamps = false;
     
-    protected $_affectFirmwareFields = [];
+    protected $_affectFirmwareFields = [
+        'id',
+    ];
 }

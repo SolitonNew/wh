@@ -179,7 +179,7 @@ class HubsController extends Controller
                         $item->comm = $din->name;
                         $item->ow_id = null;
                         $item->channel = $chan;
-                        $item->save();
+                        $item->save(['withoutevents']);
                         $item->name = 'din_'.$item->id.'_'.$chan;
                         $item->save();
                     }
@@ -217,7 +217,7 @@ class HubsController extends Controller
                         $item->comm = $dev->comm;
                         $item->ow_id = $dev->id;
                         $item->channel = $chan;
-                        $item->save();
+                        $item->save(['withoutevents']);
                         $item->name = 'ow_'.$item->id.'_'.$chan;
                         $item->save();
                     }
