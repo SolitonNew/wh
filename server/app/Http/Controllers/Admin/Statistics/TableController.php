@@ -15,7 +15,8 @@ class TableController extends Controller
      * @param int $id
      * @return type
      */
-    public function index(Request $request, int $id = null) {
+    public function index(Request $request, int $id = null) 
+    {
         if ($id) {
             Session::put('STATISTICS-TABLE-ID', $id);
         } else {
@@ -63,7 +64,8 @@ class TableController extends Controller
      * @param int $id
      * @return type
      */
-    public function valueView(int $id) {
+    public function valueView(int $id) 
+    {
         $item = \App\Http\Models\VariableChangesModel::find($id);
         
         return view('admin/statistics/table/statistics-table-value', [
@@ -76,7 +78,8 @@ class TableController extends Controller
      * @param int $id
      * @return string
      */
-    public function valueDelete(int $id) {
+    public function valueDelete(int $id) 
+    {
         try {
             $item = \App\Http\Models\VariableChangesModel::find($id);
             $item->delete();
@@ -91,7 +94,8 @@ class TableController extends Controller
      * @param int $id
      * @return string
      */
-    public function deleteAllVisibleValues(int $id) {
+    public function deleteAllVisibleValues(int $id) 
+    {
         try {
             $date = Session::get('STATISTICS-TABLE-DATE');
             $sql = Session::get('STATISTICS-TABLE-SQL');

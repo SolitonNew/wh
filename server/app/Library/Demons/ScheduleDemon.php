@@ -17,11 +17,13 @@ use DB;
  *
  * @author soliton
  */
-class ScheduleDemon extends BaseDemon {
+class ScheduleDemon extends BaseDemon 
+{
     /**
      * 
      */
-    public function execute() {
+    public function execute() 
+    {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         DB::update('update core_schedule set action_datetime = null');
 

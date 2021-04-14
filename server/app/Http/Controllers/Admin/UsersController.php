@@ -9,10 +9,12 @@ use Auth;
 class UsersController extends Controller
 {
     /**
+     * Индексный маршрут для работы со списком пользователей системы.
      * 
      * @return type
      */
-    public function index() {
+    public function index() 
+    {
         $data = \App\Http\Models\UsersModel::orderBy('login', 'asc')->get();
         
         return view('admin.users.users', [
@@ -21,12 +23,14 @@ class UsersController extends Controller
     }
     
     /**
+     * Маршрут создать/изменить свойства записи пользователя.
      * 
      * @param Request $request
      * @param int $id
      * @return string
      */
-    public function edit(Request $request, int $id) {
+    public function edit(Request $request, int $id) 
+    {
         if ($request->method() == 'POST') {
             try {
                 $this->validate($request, [
@@ -76,11 +80,13 @@ class UsersController extends Controller
     }
     
     /**
+     * Маршрут для удаления записи пользователя.
      * 
      * @param int $id
      * @return string
      */
-    public function delete(int $id) {
+    public function delete(int $id) 
+    {
         $item = \App\Http\Models\UsersModel::find($id);
         if ($item) {
             try {

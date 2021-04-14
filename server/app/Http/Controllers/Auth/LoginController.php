@@ -11,10 +11,13 @@ class LoginController extends Controller
     use AuthenticatesUsers;
     
     /**
+     * Перегруженный метод корректирует переадресацию в зависимости от 
+     * прав пользователя.
      * 
      * @return type
      */
-    protected function redirectTo() {
+    protected function redirectTo() 
+    {
         switch (Auth::user()->access) {
             case 1:
                 return route('home');

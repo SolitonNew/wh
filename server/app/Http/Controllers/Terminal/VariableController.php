@@ -10,11 +10,13 @@ use Log;
 class VariableController extends Controller
 {
     /**
+     * Индексный маршрут для управления значением устройства.
      * 
      * @param type $variableID
      * @return string
      */
-    public function index($variableID) {
+    public function index($variableID) 
+    {
         $sql = "select p.name group_title, v.comm variable_title, v.app_control, v.group_id, v.value ".
                "  from core_variables v, plan_parts p ".
                " where v.id = $variableID ".
@@ -46,11 +48,13 @@ class VariableController extends Controller
     }
     
     /**
+     * Маршрут возвращает список последних изменений устройств.
      * 
      * @param type $lastID
      * @return type
      */
-    public function variableChanges($lastID) {
+    public function variableChanges($lastID) 
+    {
         $lastID = (int)$lastID;
         if ($lastID > 0) {
             $res = DB::select("select c.id, c.variable_id, c.value, UNIX_TIMESTAMP(c.change_date) * 1000 change_date ".
@@ -64,12 +68,14 @@ class VariableController extends Controller
     }
     
     /**
+     * Маршрут устанавливает указанное значение указанному устройству.
      * 
      * @param type $varID
      * @param type $varValue
      * @return string
      */
-    public function variableSet($varID, $varValue) {
+    public function variableSet($varID, $varValue) 
+    {
         $varID = (int)$varID;
         $varValue = (int)$varValue;
         

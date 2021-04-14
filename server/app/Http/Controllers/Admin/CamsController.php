@@ -10,10 +10,13 @@ use Log;
 class CamsController extends Controller
 {
     /**
+     * Индексный маршрут. 
+     * Возвращает вьюху со списком камер.
      * 
      * @return type
      */
-    public function index() {
+    public function index() 
+    {
         $sql = 'select c.*,
                        v.name var_name
                   from plan_video c
@@ -28,12 +31,14 @@ class CamsController extends Controller
     }
     
     /**
+     * Маршрут создать/изменить запись камеры.
      * 
      * @param Request $request
      * @param int $id
      * @return string
      */
-    public function edit(Request $request, int $id) {
+    public function edit(Request $request, int $id) 
+    {
         $item = \App\Http\Models\PlanVideoModel::find($id);
         if ($request->method() == 'POST') {
             try {
@@ -87,11 +92,13 @@ class CamsController extends Controller
     }
     
     /**
+     * Маршурт для удаления записи камеры.
      * 
      * @param int $id
      * @return string
      */
-    public function delete(int $id) {
+    public function delete(int $id) 
+    {
         try {
             $item = \App\Http\Models\PlanVideoModel::find($id);
             $item->delete();

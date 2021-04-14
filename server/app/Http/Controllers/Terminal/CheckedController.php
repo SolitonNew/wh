@@ -11,10 +11,12 @@ use \App\Http\Models\PropertysModel;
 class CheckedController extends Controller
 {
     /**
+     * Индексный маршрут для страницы избранных устройств.
      * 
      * @return type
      */
-    public function index() {
+    public function index() 
+    {
         $web_color = PropertysModel::getWebColors();
         $web_checks = PropertysModel::getWebChecks();
 
@@ -96,11 +98,14 @@ class CheckedController extends Controller
     }
     
     /**
+     * Индексный маршрут для работы со списком избранных для 
+     * отображения устройств.
      * 
      * @param type $selKey
      * @return type
      */
-    public function editAdd($selKey = 0) {        
+    public function editAdd($selKey = 0) 
+    {        
         $selKey = (int)$selKey;
         
         $app_controls = [];
@@ -151,11 +156,13 @@ class CheckedController extends Controller
     }
     
     /**
+     * Маршрут для добавления устройства в список избранных.
      * 
      * @param type $id
      * @return string
      */
-    public function editAdd_ADD($id) {
+    public function editAdd_ADD(int $id) 
+    {
         $id = (int)$id;
         $p = PropertysModel::getWebChecks();
         if ($p) {
@@ -175,11 +182,13 @@ class CheckedController extends Controller
     }
     
     /**
+     * Маршрутдля удаления устройства из списка избранных.
      * 
      * @param type $id
      * @return string
      */
-    public function editAdd_DEL($id) {
+    public function editAdd_DEL(int $id) 
+    {
         $id = (int)$id;
         $p = PropertysModel::getWebChecks();
         if ($p) {
@@ -200,10 +209,12 @@ class CheckedController extends Controller
     }
     
     /**
+     * Маршрут для упорядочивания списка избранных.
      * 
      * @return type
      */
-    public function editOrder() {
+    public function editOrder() 
+    {
         $checks = PropertysModel::getWebChecks();
         
         if ($checks) {
@@ -244,11 +255,13 @@ class CheckedController extends Controller
     }
     
     /**
+     * Маршрут для перемещения устройства вверх в списке избранных.
      * 
      * @param type $id
      * @return string
      */
-    public function editOrder_UP($id) {
+    public function editOrder_UP(int $id) 
+    {
         $id = (int)$id;
         $p = PropertysModel::getWebChecks();
         if ($p) {
@@ -272,11 +285,13 @@ class CheckedController extends Controller
     }
     
     /**
+     * Маршрут для перемещения устройства вниз в списке избранных.
      * 
      * @param type $id
      * @return string
      */
-    public function editOrder_DOWN($id) {
+    public function editOrder_DOWN($id) 
+    {
         $id = (int)$id;
         $p = PropertysModel::getWebChecks();
         if ($p) {
@@ -300,10 +315,12 @@ class CheckedController extends Controller
     }
 
     /**
+     * Маршрут для изменения цвета отображения устройства по шаблону.
      * 
      * @return type
      */
-    public function editColor() {
+    public function editColor() 
+    {
         $data = PropertysModel::getWebColors();
         return view('terminal.checked-edit-color', [
             'page' => 'color',
@@ -312,12 +329,14 @@ class CheckedController extends Controller
     }
     
     /**
+     * Маршрут для установки цвета устройства по шаблону.
      * 
      * @param Request $request
      * @param type $action
      * @return string
      */
-    public function editColor_ACTION(Request $request, $action) {
+    public function editColor_ACTION(Request $request, $action) 
+    {
         $keyword = $request->post('keyword');
         $color = $request->post('color');
         

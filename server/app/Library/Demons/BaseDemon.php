@@ -1,37 +1,34 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Demons;
 
 use Log;
 
 /**
- * Description of DemobBase
+ * Базовый класс для всех демонов системы
  *
  * @author soliton
  */
 class BaseDemon {
     
     /**
-     *
+     * Сигнатура (ИД) демона
      * @var type 
      */
     protected $_signature = '';
     
-    public function __construct($signature) {
+    public function __construct($signature) 
+    {
         $this->_signature = $signature;
     }
 
     /**
+     * Метод делает запись лога демонов в БД.
      * 
      * @param type $text
      */
-    public function printLine($text) {
+    public function printLine($text) 
+    {
         try {
             $item = new \App\Http\Models\WebLogsModel();
             $item->demon = $this->_signature;
@@ -45,9 +42,12 @@ class BaseDemon {
     }
     
     /**
-     * 
+     * Метод вызывает автоматически при запуске.
+     * Каждый наследник этого класса должен переопределить его и разместить 
+     * внутри код который должен выполнять демон.
      */
-    public function execute() {
+    public function execute() 
+    {
         
     }
     

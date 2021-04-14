@@ -9,7 +9,14 @@ use Log;
 
 class PlanController extends Controller
 {
-    public function index(int $id = null) {
+    /**
+     * Индексный маршрут для работы с планом системы.
+     * 
+     * @param int $id
+     * @return type
+     */
+    public function index(int $id = null) 
+    {
         if (!$id) {
             $first = \App\Http\Models\PlanPartsModel::whereParentId(null)
                         ->orderBy('order_num', 'asc')
@@ -44,7 +51,16 @@ class PlanController extends Controller
         ]);
     }
     
-    public function edit(Request $request, int $id, int $p_id = -1) {
+    /**
+     * Маршрут создать/изменить запись плана.
+     * 
+     * @param Request $request
+     * @param int $id
+     * @param int $p_id
+     * @return string
+     */
+    public function edit(Request $request, int $id, int $p_id = -1) 
+    {
         $item = \App\Http\Models\PlanPartsModel::find($id);
         
         if ($request->method() == 'POST') {
@@ -129,11 +145,13 @@ class PlanController extends Controller
     }
     
     /**
+     * Маршрут для удаления записи плана.
      * 
      * @param type $id
      * @return string
      */
-    public function delete($id) {
+    public function delete($id) 
+    {
         try {
             $item = \App\Http\Models\PlanPartsModel::find($id);
             $item->delete();
@@ -143,7 +161,16 @@ class PlanController extends Controller
         }
     }
     
-    public function moveChilds(Request $request, int $id) {
+    /**
+     * Маршрут для отображения окна перемещения к другому подчиненному 
+     * записи плана.
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return string
+     */
+    public function moveChilds(Request $request, int $id) 
+    {
         if ($request->method() == 'POST') {
             try {
                 $this->validate($request, [
@@ -170,7 +197,15 @@ class PlanController extends Controller
         }
     }
     
-    public function order(Request $request, int $id) {
+    /**
+     * Маршрут для отображения окна упорядолчивания записей плана.
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return string
+     */
+    public function order(Request $request, int $id) 
+    {
         if ($request->method() == 'POST') {
             $ids = explode(',', $request->post('orderIds'));
             for ($i = 0; $i < count($ids); $i++) {

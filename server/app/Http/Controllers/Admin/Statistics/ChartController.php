@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 
 class ChartController extends Controller
 {
-    public function index() {
+    public function index() 
+    {
         
         $panels = []; // \App\Http\Models\WebStatPanelsModel::orderBy('ID', 'asc')->get();
         

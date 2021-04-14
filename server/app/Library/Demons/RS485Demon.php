@@ -17,7 +17,8 @@ use Log;
  *
  * @author soliton
  */
-class RS485Demon extends BaseDemon {
+class RS485Demon extends BaseDemon 
+{
     /**
      *
      * @var type 
@@ -86,7 +87,8 @@ class RS485Demon extends BaseDemon {
     /**
      * 
      */
-    public function execute() {
+    public function execute() 
+    {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         
         $lastProcessedID = -1;
@@ -198,7 +200,8 @@ class RS485Demon extends BaseDemon {
      * 
      * @param type $conrollerROM
      */
-    private function _commandReset($controller) {
+    private function _commandReset($controller) 
+    {
         $this->_readPacks(250);
         $this->_transmitCMD($controller->rom, 1, 0);
         usleep(250000);
@@ -209,7 +212,8 @@ class RS485Demon extends BaseDemon {
      * 
      * @param type $conrollerROM
      */
-    private function _commandOwSearch($controller) {
+    private function _commandOwSearch($controller) 
+    {
         $this->_readPacks(250);
         $this->_inRooms = [];
         $this->_transmitCMD($controller->rom, 7, 0);
@@ -309,7 +313,8 @@ class RS485Demon extends BaseDemon {
      * 
      * @param type $controller
      */
-    public function _commandFirmware($controller) {
+    public function _commandFirmware($controller) 
+    {
         if (!$this->_firmwareHex) {
             $firmware = new \App\Library\Firmware();
             $this->_firmwareHex = $firmware->getHex();
@@ -372,7 +377,8 @@ class RS485Demon extends BaseDemon {
      * 
      * @param type $conrollerROM
      */
-    private function _syncVariables($controller, &$variables) {
+    private function _syncVariables($controller, &$variables) 
+    {
         $stat = 'OK';        
         $vars_out = [];
         $errorText = '';
@@ -478,7 +484,8 @@ class RS485Demon extends BaseDemon {
      * @param integer $utimeout  Допустимое время ожидания новых данных
      * @return int    -1 - данные не получили. >= 0 - что-то получали
      */
-    private function _readPacks($utimeout = 250) {
+    private function _readPacks($utimeout = 250) 
+    {
         $returnCmd = -1;
         $this->_waitCount = 0;
         while ($this->_waitCount < ($utimeout / self::SLEEP_TIME)) {            
@@ -511,7 +518,8 @@ class RS485Demon extends BaseDemon {
      * @param integer $returnCmd  код последней обработаной команды в этой итерации. Если команд небыло будет 0.
      * @return boolean  true - хоть один пакет обработан. false - ниодного пакета не обнаружено.
      */
-    private function _processedInBuffer(&$returnCmd) {
+    private function _processedInBuffer(&$returnCmd) 
+    {
         $returnCmd = 0;
         $result = false;
         
@@ -623,7 +631,8 @@ class RS485Demon extends BaseDemon {
      * @param int $data
      * @return type
      */
-    private function _crc_table($data) {
+    private function _crc_table($data) 
+    {
 	$crc = 0x0;
 	$fb_bit = 0;
 	for ($b = 0; $b < 8; $b++) { 
@@ -646,7 +655,8 @@ class RS485Demon extends BaseDemon {
      * @param type $cmd
      * @param type $tag
      */
-    private function _transmitCMD($controllerROM, $cmd, $tag) {
+    private function _transmitCMD($controllerROM, $cmd, $tag) 
+    {
         $pack = pack('a*', 'CMD');
         $pack .= pack('C', $controllerROM);
         $pack .= pack('C', $cmd);
@@ -666,7 +676,8 @@ class RS485Demon extends BaseDemon {
      * @param type $id
      * @param type $value
      */
-    private function _transmitVAR($controllerROM, $id, $value) {
+    private function _transmitVAR($controllerROM, $id, $value) 
+    {
         $pack = pack('a*', 'VAR');
         $pack .= pack('C', $controllerROM);
         $pack .= pack('s', $id);
@@ -685,7 +696,8 @@ class RS485Demon extends BaseDemon {
      * @param type $controllerROM
      * @param type $data
      */
-    private function _transmitHEX($controllerROM, $data) {
+    private function _transmitHEX($controllerROM, $data) 
+    {
         $pack = pack('a*', 'HEX');
         $pack .= pack('C', $controllerROM);
         for ($i = 0; $i < 8; $i++) {
@@ -701,5 +713,4 @@ class RS485Demon extends BaseDemon {
         
         usleep(10000); // Иначе контроллер не успевает обработать
     }
-    
 }

@@ -11,11 +11,12 @@ use Log;
 class ScheduleController extends Controller
 {
     /**
+     * Индексный маршрут для работы с расписанием.
      * 
      * @return type
      */
-    public function index() {
-        
+    public function index() 
+    {    
         $data = DB::select('select s.id,
                                    s.comm,
                                    s.action_datetime,
@@ -56,7 +57,15 @@ class ScheduleController extends Controller
         ]);
     }
     
-    public function edit(Request $request, int $id) {
+    /**
+     * Маршрут создать/изменить запись расписания.
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return string
+     */
+    public function edit(Request $request, int $id) 
+    {
         $item = \App\Http\Models\ScheduleModel::find($id);
         if ($request->method() == 'POST') {
             $typ = $request->post('interval_type');
@@ -109,11 +118,13 @@ class ScheduleController extends Controller
     }
     
     /**
+     * Маршрут для удаления записи расписания.
      * 
      * @param int $id
      * @return string
      */
-    public function delete(int $id) {
+    public function delete(int $id) 
+    {
         try {
             $item = \App\Http\Models\ScheduleModel::find($id);
             $item->delete();

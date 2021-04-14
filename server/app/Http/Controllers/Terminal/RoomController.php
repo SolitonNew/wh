@@ -9,13 +9,13 @@ use DB;
 class RoomController extends Controller
 {
     /**
+     * Маршрут для отображения устройств комнаты.
      * 
      * @param type $roomID
      * @return type
      */
-    public function index($roomID) {
-        $roomID = (int)$roomID;
-        
+    public function index(int $roomID) 
+    {        
         $room = \App\Http\Models\PlanPartsModel::find($roomID);
         
         $roomTitle = mb_strtoupper($room->name);

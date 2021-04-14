@@ -11,11 +11,13 @@ use Log;
 class ScriptsController extends Controller
 {
     /**
+     * Индексный маршрут для работы ос сценариями системы.
      * 
      * @param int $scriptID
      * @return type
      */
-    public function index(int $scriptID = null) {
+    public function index(int $scriptID = null) 
+    {
         $sql = "select s.*, 
                        (select count(*) 
                           from core_variables v, core_variable_events e
@@ -42,12 +44,14 @@ class ScriptsController extends Controller
     }
     
     /**
+     * Маршрут создать/изменить свойства записи сценария.
      * 
      * @param Request $request
      * @param int $id
      * @return string
      */
-    public function edit(Request $request, int $id) {
+    public function edit(Request $request, int $id) 
+    {
         $item = \App\Http\Models\ScriptsModel::find($id);
         if ($request->method() == 'POST') {
             try {
@@ -86,11 +90,13 @@ class ScriptsController extends Controller
     }
     
     /**
+     * Маршрут для удаления записи сценария.
      * 
      * @param int $id
      * @return string
      */
-    public function delete(int $id) {
+    public function delete(int $id) 
+    {
         try {            
             \App\Http\Models\VariableEventsModel::whereScriptId($id)->delete();
             $item = \App\Http\Models\ScriptsModel::find($id);
@@ -102,12 +108,14 @@ class ScriptsController extends Controller
     }
     
     /**
+     * Маршрут для сохранения исходного кода сценария.
      * 
      * @param Request $request
      * @param int $id
      * @return string
      */
-    public function saveScript(Request $request, int $id) {
+    public function saveScript(Request $request, int $id) 
+    {
         $item = \App\Http\Models\ScriptsModel::find($id);
         if ($item) {
             $item->data = $request->post('data') ? $request->post('data') : '/* COMMENT */';
@@ -119,12 +127,15 @@ class ScriptsController extends Controller
     }
     
     /**
+     * Маршурт для окна назначения сценария как события изменения 
+     * значения устройства.
      * 
      * @param Request $request
      * @param int $id
      * @return type
      */
-    public function attacheEvents(Request $request, int $id) {
+    public function attacheEvents(Request $request, int $id) 
+    {
         if ($request->method() == 'POST') {
             try {
                 $ids = $request->post('variables');
@@ -178,10 +189,12 @@ class ScriptsController extends Controller
     }
     
     /**
+     * Маршрут фонового тестирования исходного кода сценария.
      * 
      * @param Request $request
      */
-    public function scriptTest(Request $request) {
+    public function scriptTest(Request $request) 
+    {
         try {
             $execute = new \App\Library\Script\PhpExecute($request->post('command'));
             $report = [];

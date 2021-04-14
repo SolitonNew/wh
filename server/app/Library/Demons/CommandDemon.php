@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Demons;
 
 use \Carbon\Carbon;
@@ -18,11 +12,16 @@ use Log;
  *
  * @author soliton
  */
-class CommandDemon extends BaseDemon {    
+class CommandDemon extends BaseDemon 
+{    
     /**
-     * 
+     * Переопределенный метод.
+     * 1. Очищается лог команд на выполнение.
+     * 2. Запускается бесконечный цикл.
+     * 3. Отслеживает лог команд на выполнение и выполняет их
      */
-    public function execute() {        
+    public function execute() 
+    {        
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         DB::delete('delete from core_execute');
         

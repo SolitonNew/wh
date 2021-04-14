@@ -21,10 +21,13 @@ class RoomsController extends Controller
     private $_variables = [];
     
     /**
+     * ByИндексный маршрут для отображения упорядоченого списка комнат и 
+     * заглавных устройств.
      * 
      * @return type
      */
-    public function index() {       
+    public function index() 
+    {       
         $this->_groups = \App\Http\Models\PlanPartsModel::orderBy('order_num', 'asc')
                             ->orderBy('name', 'asc')
                             ->get();
@@ -58,11 +61,14 @@ class RoomsController extends Controller
     }
     
     /**
+     * Метод формирует по исходным параметрам данные для отображения 
+     * списка уомнат.
      * 
      * @param type $parentID
      * @param type $level
      */
-    private function _makeItems($parentID, $level, &$data) {
+    private function _makeItems($parentID, $level, &$data) 
+    {
         $switches_2 = [
             ' НОЧНИК', 
             ' СТОЛОВАЯ'
@@ -139,12 +145,15 @@ class RoomsController extends Controller
     }
     
     /**
+     * Метод ищет устройство в хранилище устройств 
+     * по ИД и названию комнаты.
      * 
      * @param type $roomID
      * @param type $roomNameUpper
      * @return type
      */
-    private function _findVariable($roomID, $roomNameUpper) {
+    private function _findVariable($roomID, $roomNameUpper) 
+    {
         $res = [];
         for ($i = 0; $i < count($this->_variables); $i++) {
             $var = $this->_variables[$i];
