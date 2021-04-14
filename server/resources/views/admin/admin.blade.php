@@ -183,9 +183,9 @@
         });
     });
 
-    function dialog(url, beforeHandler) {
+    function dialog(url, beforeHandler, afterHandler) {
         startGlobalWaiter();
-        dialogAfterHandler = false;
+        dialogAfterHandler = afterHandler;
         $('#dialog_window .modal-sm').removeClass('modal-sm');
         $.ajax({url:url}).done(function (data) {
             stopGlobalWaiter();

@@ -65,7 +65,7 @@
     }
 
     function hubsScan() {
-        dialog("{{ route('admin.hubs-scan') }}", function () {
+        dialog("{{ route('admin.hubs-scan') }}", null, function () {
             window.location.reload();
         });
     }
