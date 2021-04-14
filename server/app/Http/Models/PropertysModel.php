@@ -13,7 +13,8 @@ class PropertysModel extends Model
      * 
      * @return type
      */
-    static public function getWebColors() {
+    static public function getWebColors() 
+    {
         $item = self::whereName('WEB_COLOR')->first();
         if ($item && $item->value) {
             return json_decode($item->value, true);
@@ -26,7 +27,8 @@ class PropertysModel extends Model
      * 
      * @return type
      */
-    static public function getWebChecks() {
+    static public function getWebChecks() 
+    {
         $item = self::whereName('WEB_CHECKED')->first();
         if ($item && $item->value) {
             return $item->value;
@@ -39,7 +41,8 @@ class PropertysModel extends Model
      * 
      * @return type
      */
-    static public function runningDemons() {
+    static public function runningDemons() 
+    {
         $item = self::whereName('RUNNING_DEMONS')->first();
         if ($item && $item->value) {
             return explode(';', $item->value);
@@ -52,7 +55,8 @@ class PropertysModel extends Model
      * 
      * @param type $demon
      */
-    static public function setAsRunningDemon($demon) {
+    static public function setAsRunningDemon($demon) 
+    {
         $a = self::runningDemons();
         if (!in_array($demon, $a)) {
             $a[] = $demon;
@@ -71,7 +75,8 @@ class PropertysModel extends Model
      * 
      * @param type $demon
      */
-    static public function setAsStoppedDemon($demon) {
+    static public function setAsStoppedDemon($demon) 
+    {
         $a = self::runningDemons();
         if (in_array($demon, $a)) {
             array_splice($a, array_search($demon, $a));
@@ -90,7 +95,8 @@ class PropertysModel extends Model
      * 
      * @return int
      */
-    static public function getPlanMaxLevel() {
+    static public function getPlanMaxLevel() 
+    {
         $item = self::whereName('PLAN_MAX_LEVEL')->first();
         if ($item && $item->value) {
             return $item->value;
@@ -103,7 +109,8 @@ class PropertysModel extends Model
      * 
      * @param type $maxLevel
      */
-    static public function setPlanMaxLevel($maxLevel) {
+    static public function setPlanMaxLevel($maxLevel) 
+    {
         $item = self::whereName('PLAN_MAX_LEVEL')->first();
         if ($item) {
             $item->value = $maxLevel;
@@ -120,7 +127,8 @@ class PropertysModel extends Model
      * 
      * @return string
      */
-    static public function getRs485Command($clear = false) {
+    static public function getRs485Command($clear = false) 
+    {
         $item = self::whereName('RS485_COMMAND')->first();
         if ($item) {
             $value = $item->value;
@@ -137,7 +145,8 @@ class PropertysModel extends Model
      * 
      * @param type $command
      */
-    static public function setRs485Command($command) {
+    static public function setRs485Command($command) 
+    {
         $item = self::whereName('RS485_COMMAND')->first();
         $item->value = $command;
         $item->save();
@@ -147,7 +156,8 @@ class PropertysModel extends Model
      * 
      * @return string
      */
-    static public function getRs485CommandInfo() {
+    static public function getRs485CommandInfo() 
+    {
         $item = self::whereName('RS485_COMMAND_INFO')->first();
         if ($item) {
             return $item->value;
@@ -160,7 +170,8 @@ class PropertysModel extends Model
      * @param type $text
      * @param type $new
      */
-    static public function setRs485CommandInfo($text, $first = false) {
+    static public function setRs485CommandInfo($text, $first = false) 
+    {
         $item = self::whereName('RS485_COMMAND_INFO')->first();
         if (!$item) {
             $item = new PropertysModel();
@@ -186,7 +197,8 @@ class PropertysModel extends Model
      * 
      * @return int
      */
-    static public function getFirmwareChanges() {
+    static public function getFirmwareChanges() 
+    {
         if (self::$_firmwareChanges === false) {
             $item = self::whereName('WIRMWARE_CHANGES')->first();
             if ($item) {
@@ -204,7 +216,8 @@ class PropertysModel extends Model
      * 
      * @param int $count
      */
-    static public function setFirmwareChanges(int $count) {
+    static public function setFirmwareChanges(int $count) 
+    {
         $item = self::whereName('WIRMWARE_CHANGES')->first();
         if (!$item) {
             $item = new PropertysModel();

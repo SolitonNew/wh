@@ -22,7 +22,8 @@ class ScheduleModel extends Model
      * @param type $datetime
      * @param type $variableID
      */
-    static public function appendFastRecord($comm, $action, $datetime, $variableID) {
+    static public function appendFastRecord($comm, $action, $datetime, $variableID) 
+    {
         $item = new SchedulerModel();
         $item->comm = $comm;
         $item->action = $action;
@@ -49,7 +50,8 @@ class ScheduleModel extends Model
      * 
      * @return type
      */
-    public function makeDateTime() {
+    public function makeDateTime() 
+    {
         $action_datetime = Carbon::parse($this->action_datetime);
         $now = now()->startOfDay();
         
@@ -137,7 +139,8 @@ class ScheduleModel extends Model
      * Парсит строку с временными метками и вовзращает конвертированые метки в секундах
      * @return type
      */
-    private function _makeTime(Carbon $date) {
+    private function _makeTime(Carbon $date) 
+    {
         $times = [];
         $time_of_day = mb_strtoupper($this->interval_time_of_day);
         foreach(explode(',', $time_of_day) as $time_val) {
@@ -196,7 +199,8 @@ class ScheduleModel extends Model
      * @param string $sunTime
      * @return type
      */
-    public function getSunTime(Carbon $date, float $latitude, float $longitude, float $zenith, string $sunTime) {
+    public function getSunTime(Carbon $date, float $latitude, float $longitude, float $zenith, string $sunTime) 
+    {
         // 1. first calculate the day of the year
         $N = $date->copy()->dayOfYear();
     
@@ -278,7 +282,8 @@ class ScheduleModel extends Model
      * @param type $bounds
      * @return type
      */
-    private function _adjust($value, $bounds) {
+    private function _adjust($value, $bounds) 
+    {
         while ($value >= $bounds) {
             $value = $value - $bounds;
         }

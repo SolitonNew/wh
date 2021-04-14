@@ -13,7 +13,8 @@ class PlanPartsModel extends Model
     /**
      * 
      */
-    static public function boot() {
+    static public function boot() 
+    {
         parent::boot();
         
         self::updating(function($model) {
@@ -33,7 +34,8 @@ class PlanPartsModel extends Model
      * Возвращает кеш полного списка. Если список изначально не инициализирован - делает запрос к БД
      * @return type
      */
-    static public function getAllPartsCache() {
+    static public function getAllPartsCache() 
+    {
         if (self::$_all_parts_cache == null) {
             self::$_all_parts_cache = self::orderBy('order_num', 'asc')
                                             ->get();
@@ -49,7 +51,8 @@ class PlanPartsModel extends Model
      * @param type $list
      * @param type $data
      */
-    static private function _generateTreeLevel($p_id, $level, &$data) {
+    static private function _generateTreeLevel($p_id, $level, &$data) 
+    {
         foreach(self::getAllPartsCache() as $row) {
             if ($row->parent_id == $p_id) {
                 $item = $row;
@@ -65,7 +68,8 @@ class PlanPartsModel extends Model
      * 
      * @return array
      */
-    static public function generateTree(int $id = null) {       
+    static public function generateTree(int $id = null) 
+    {       
         $data = [];
         
         foreach(self::getAllPartsCache() as $row) {
@@ -87,7 +91,8 @@ class PlanPartsModel extends Model
      * @param type $list
      * @param type $data
      */
-    static public function _genLevelIDsForGroupAtParent($p_id, &$data) {
+    static public function _genLevelIDsForGroupAtParent($p_id, &$data) 
+    {
         foreach(self::getAllPartsCache() as $row) {
             if ($row->parent_id == $p_id) {
                 $data[] = $row->id;
@@ -101,7 +106,8 @@ class PlanPartsModel extends Model
      * @param type $id
      * @return type
      */
-    static public function genIDsForGroupAtParent($id) {       
+    static public function genIDsForGroupAtParent($id) 
+    {       
         $data = [$id];
         self::_genLevelIDsForGroupAtParent($id, $data);
         
@@ -112,7 +118,8 @@ class PlanPartsModel extends Model
      * 
      * @param type $model
      */
-    static private function _updatingHandler($model) {
+    static private function _updatingHandler($model) 
+    {
         //
     }
     
@@ -121,7 +128,8 @@ class PlanPartsModel extends Model
      * @param float $dx
      * @param float $dy
      */
-    public function moveChilds(float $dx, float $dy) {
+    public function moveChilds(float $dx, float $dy) 
+    {
         $ids = explode(',', self::genIDsForGroupAtParent($this->id));
         
         foreach(PlanPartsModel::whereIn('id', $ids)->cursor() as $row) {
@@ -143,7 +151,8 @@ class PlanPartsModel extends Model
         }
     }
     
-    static public function checkIdAsChildOfParentID(int $id, int $parentID) {
+    static public function checkIdAsChildOfParentID(int $id, int $parentID) 
+    {
         if ($id == $parentID) {
             return false;
         }
@@ -169,7 +178,8 @@ class PlanPartsModel extends Model
     /**
      * 
      */
-    static public function calcAndStoreMaxLevel() {
+    static public function calcAndStoreMaxLevel() 
+    {
         // Пройдемся по структуре и посчитаем уровни
         
         $maxLevel = 0;
@@ -184,5 +194,4 @@ class PlanPartsModel extends Model
         
         PropertysModel::setPlanMaxLevel($maxLevel + 1);
     }
-    
 }

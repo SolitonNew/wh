@@ -13,7 +13,8 @@ class ExecuteModel extends Model
      * 
      * @param string $command
      */
-    static public function command(string $command) {
+    static public function command(string $command) 
+    {
         $item = new ExecuteModel();
         $item->command = $command;
         $item->save();

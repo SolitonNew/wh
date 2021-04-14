@@ -23,7 +23,8 @@ class VariablesModel extends AffectsFirmwareModel
      * @param type $app_control
      * @return type
      */
-    static public function decodeAppControl($app_control) {
+    static public function decodeAppControl($app_control) 
+    {
         $control = '';
         $typ = -1; // 1-label; 2-switch; 3-track;
         $resolution = '';
@@ -99,7 +100,8 @@ class VariablesModel extends AffectsFirmwareModel
      * @param type $appControlLabel
      * @return type
      */
-    static public function groupVariableName($groupName, $variableName, $appControlLabel) {
+    static public function groupVariableName($groupName, $variableName, $appControlLabel) 
+    {
         $resLabel = '';
         if ($appControlLabel != '') {
             $resLabel = $appControlLabel.' ';

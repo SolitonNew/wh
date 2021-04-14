@@ -21,7 +21,8 @@ class VariableChangesMemModel extends Model
      *
      * @return type
      */
-    static public function lastVariableID() {
+    static public function lastVariableID() 
+    {
         if (self::$_lastVariableID == -1) {
             $res = DB::select('select max(ID) max_id from core_variable_changes_mem');
             if (count($res) && ($res[0]->max_id > 0)) {
@@ -35,7 +36,8 @@ class VariableChangesMemModel extends Model
      *
      * @param type $id
      */
-    static public function setLastVariableID($id) {
+    static public function setLastVariableID($id) 
+    {
         self::$_lastVariableID = $id;
     }
 
@@ -45,7 +47,8 @@ class VariableChangesMemModel extends Model
      * @param type $count
      * @return type
      */
-    static public function getLastVariables() {
+    static public function getLastVariables() 
+    {
         if (self::$_lastVariableID > 0) {
             $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.variable_id
                       from core_variable_changes_mem m, core_variables v
@@ -68,7 +71,8 @@ class VariableChangesMemModel extends Model
      * @param type $value
      * @return type
      */
-    static public function decodeLogValue($app_control, $value) {
+    static public function decodeLogValue($app_control, $value) 
+    {
         $dim = Lang::get('admin/hubs.log_app_control_dim.'.$app_control);
         if (is_array($dim)) {
             return $dim[$value];

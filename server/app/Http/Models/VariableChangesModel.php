@@ -11,5 +11,4 @@ class VariableChangesModel extends Model
     protected $table = 'core_variable_changes';
     public $timestamps = false;
 
-
 }
