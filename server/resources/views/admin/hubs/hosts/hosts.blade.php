@@ -14,7 +14,7 @@
                 <th scope="col" style="width: 150px;"><span>@lang('admin/hubs.host_COMM')</span></th>
                 <th scope="col" style="width: 250px;"><span>@lang('admin/hubs.host_ROM')</span></th>
                 <th scope="col" style="width: 110px;"><span>@lang('admin/hubs.host_CHANNELS')</span></th>
-                <th scope="col" style="width: 250px;"><span>@lang('admin/hubs.host_VARIABLES')</span></th>
+                <th scope="col" style="width: 250px;"><span>@lang('admin/hubs.host_DEVICES')</span></th>
             </tr>
         </thead>
         <tbody>
@@ -26,7 +26,7 @@
                 <td>{{ $row->channels }}</td>
                 <td>
                     @foreach($row->devices as $v)
-                    <div><a class="nowrap" href="#" onclick="showVariable({{ $v->id }}); return false;">[{{ $v->channel }}] {{ $v->name }}</a></div>
+                    <div><a class="nowrap" href="#" onclick="deviceEdit({{ $v->id }}); return false;">[{{ $v->channel }}] {{ $v->name }}</a></div>
                     @endforeach
                 </td>
             </tr>
@@ -38,4 +38,21 @@
         </tbody>
     </table>
 </div>
+<script>
+    $(document).ready(() => {
+        $('#hosts_table tbody tr').on('click', function (e) {
+            if ($(this).hasClass('table-empty')) return ;
+            if ($(e.target).is('a')) return ;
+            dialog('{{ route("admin.hub-host-edit", [$hubID, ""]) }}/' + $(this).data('id'));
+        });
+    });
+    
+    function hostAdd() {
+        dialog('{{ route("admin.hub-host-edit", [$hubID, -1]) }}');
+    }
+    
+    function deviceEdit(id) {
+        dialog('{{ route("admin.hub-device-edit", [$hubID, ""]) }}/' + id);
+    }
+</script>
 @endsection

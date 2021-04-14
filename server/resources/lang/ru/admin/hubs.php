@@ -61,7 +61,7 @@ return [
     'host_ROM' => 'Номер',
     'host_COMM' => 'Тип',
     'host_CHANNELS' => 'Каналы',
-    'host_VARIABLES' => 'Устройства',
+    'host_DEVICES' => 'Устройства',
     
     'host_add' => 'Добавить новый хост...',
     'host_add_title' => 'Новый хост',

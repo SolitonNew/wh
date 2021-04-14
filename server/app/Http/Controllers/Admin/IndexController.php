@@ -12,7 +12,7 @@ class IndexController extends Controller
      * @return type
      */
     public function index() {
-        return redirect(route('configuration'));
+        return redirect(route('admin.hubs'));
     }
         
     /**
