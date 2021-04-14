@@ -8,7 +8,7 @@
 
 @section('page-content')
 <div style="position:relative; display: flex; flex-direction: row; height: 100%;">
-    <div class="tree" style="width: 270px; min-width:270px; border-right: 1px solid rgba(0,0,0,0.125);" 
+    <div class="tree" style="width: 250px; min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" 
          scroll-store="jurnalDemonsList">
         @foreach($demons as $row)
         <a href="{{ route('admin.jurnal-demons', $row->id) }}"
@@ -32,7 +32,7 @@
                 <div class="demon-log-offset" style="position: absolute;"></div>
             </div>
         </div>
-        <button class="demon-log-btn-top btn btn-primary" style="display: none;" onclick="demonLogScrollTop()">@lang('admin/demons.demon_btn_top')</button>
+        <button class="demon-log-btn-top btn btn-primary" style="display: none;" onclick="demonLogScrollTop()">@lang('admin/jurnal.demon_btn_top')</button>
     </div>
 </div>
 
