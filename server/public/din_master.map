@@ -316,7 +316,7 @@ END GROUP
                 0x0000000000000536                devs_onewire_rom_index
                 0x0000000000000576                devs_find_variables_by_ow_index
  .text          0x00000000000005d6        0x4 /home/soliton/wh/devices/din_master/firmware/Release/config/scripts.o
-                0x00000000000005d6                script_1
+                0x00000000000005d6                script_2
                 0x00000000000005d8                script_run_event_for_variable
  .text          0x00000000000005da       0x52 /home/soliton/wh/devices/din_master/firmware/Release/din.o
                 0x00000000000005da                din_init

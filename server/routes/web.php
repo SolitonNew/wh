@@ -105,20 +105,23 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::delete('/cam-delete/{id}', 'Admin\CamsController@delete')->name('admin.cam-delete');
     
     
-    /* Управление фоновыми процессами  -------------------------------------- */
-    Route::get('/demons/{id?}', 'Admin\DemonsController@index')->name('demons');
-    Route::get('/demon-data/{id}/{lastID?}', 'Admin\DemonsController@data')->name('demon-data');
-    Route::get('/demon-start/{id}', 'Admin\DemonsController@demonStart')->name('demon-start');
-    Route::get('/demon-stop/{id}', 'Admin\DemonsController@demonStop')->name('demon-stop');
-    Route::get('/demon-restart/{id}', 'Admin\DemonsController@demonRestart')->name('demon-restart');
+    /* Журнал системы  ------------------------------------------------------ */
+    /* Управление разделом "Журнал" */
+    Route::get('/jurnal', 'Admin\JurnalController@index')->name('admin.jurnal');
     
+    /* История устройств */
+    Route::match(['get', 'post'], '/jurnal/history/{id?}', 'Admin\Jurnal\HistoryController@index')->name('admin.jurnal-history');
+    Route::get('/jurnal/history-value-view/{id}', 'Admin\Jurnal\HistoryController@valueView')->name('admin.jurnal-history-value-view');
+    Route::delete('/jurnal/history-value-delete/{id}', 'Admin\Jurnal\HistoryController@valueDelete')->name('admin.jurnal-history-value-delete');
+    Route::delete('/jurnal/history-delete-all-visible/{id}', 'Admin\Jurnal\HistoryController@deleteAllVisibleValues')->name('admin.jurnal-history-delete-all-visible');
     
-    /* Визуализация статистики системы  ------------------------------------- */
-    Route::match(['get', 'post'], '/statistics/table/{id?}', 'Admin\Statistics\TableController@index')->name('statistics-table');
-    Route::get('/statistics/table-value-view/{id}', 'Admin\Statistics\TableController@valueView')->name('statistics-table-value-view');
-    Route::get('/statistics/table-value-delete/{id}', 'Admin\Statistics\TableController@valueDelete')->name('statistics-table-value-delete');
-    Route::get('/statistics/table-delete-all-visible/{id}', 'Admin\Statistics\TableController@deleteAllVisibleValues')->name('statistics-table-delete-all-visible');
+    /* Фоновые процессы */
+    Route::get('/jurnal/demons/{id?}', 'Admin\Jurnal\DemonsController@index')->name('admin.jurnal-demons');
+    Route::get('/jurnal/demon-data/{id}/{lastID?}', 'Admin\Jurnal\DemonsController@data')->name('admin.jurnal-demon-data');
+    Route::get('/jurnal/demon-start/{id}', 'Admin\Jurnal\DemonsController@demonStart')->name('admin.jurnal-demon-start');
+    Route::get('/jurnal/demon-stop/{id}', 'Admin\Jurnal\DemonsController@demonStop')->name('admin.jurnal-demon-stop');
+    Route::get('/jurnal/demon-restart/{id}', 'Admin\Jurnal\DemonsController@demonRestart')->name('admin.jurnal-demon-restart');
     
-    Route::get('/statistics/chart', 'Admin\Statistics\ChartController@index')->name('statistics-chart');
-    Route::get('/statistics/power', 'Admin\Statistics\PowerController@index')->name('statistics-power');
+    /* Статистика потребления */    
+    Route::get('/jurnal/power', 'Admin\Jurnal\PowerController@index')->name('admin.jurnal-power');
 });

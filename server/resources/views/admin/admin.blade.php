@@ -69,18 +69,14 @@
                             <span class="label">@lang('admin/cams.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VideoModel::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('demons')" href="{{ route('demons') }}">
-                            <img src="/img/menus/terminal-2x.png">
-                            <span class="label">@lang('admin/demons.menu')</span>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('jurnal')" href="{{ route('admin.jurnal') }}">
+                            <img src="/img/menus/bar-chart-2x.png">
+                            <span class="label">@lang('admin/jurnal.menu')</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('users')" href="{{ route('admin.users') }}">
                             <img src="/img/menus/people-2x.png">
                             <span class="label">@lang('admin/users.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\UsersModel::count() }}</span>
-                        </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('statistics')" href="{{ route('statistics-table') }}">
-                            <img src="/img/menus/bar-chart-2x.png">
-                            <span class="label">@lang('admin/statistics.menu')</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{{ route('home') }}" target="_blank">
                             <img src="/img/menus/phone-2x.png">
