@@ -76,15 +76,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/plan-delete/{id}', 'Admin\PlanController@delete')->name('plan-delete');
     Route::match(['get', 'post'], '/plan-move-childs/{id}', 'Admin\PlanController@moveChilds')->name('plan-move-childs');
     Route::match(['get', 'post'], '/plan-order/{id}', 'Admin\PlanController@order')->name('plan-order');
-    
-    
-    /* Раздел управления переменными системы  ------------------------------- */
-    /*Route::get('/variables/{partID?}', 'Admin\VariablesController@index')->name('variables');
-    Route::get('/variables-ow-list/{controller?}', 'Admin\VariablesController@owList')->name('variables-ow-list');
-    Route::get('/variables-channel-list/{rom}/{ow_id?}', 'Admin\VariablesController@channelList')->name('variables-channel-list');
-    Route::match(['get', 'post'], '/variable-edit/{id}', 'Admin\VariablesController@edit')->name('variable-edit');
-    Route::get('/variable-delete/{id}', 'Admin\VariablesController@delete')->name('variable-delete'); */
-    
+       
     
     /* Управление скриптами (сценариями) системы  --------------------------- */
     Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('scripts');
@@ -108,9 +100,9 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     
     /* Управление камерами видеонаблюдения  --------------------------------- */
-    Route::get('/cams', 'Admin\CamsController@index')->name('cams');
-    Route::match(['get', 'post'], '/cam-edit/{id}', 'Admin\CamsController@edit')->name('cam-edit');
-    Route::get('/cam-delete/{id}', 'Admin\CamsController@delete')->name('cam-delete');
+    Route::get('/cams', 'Admin\CamsController@index')->name('admin.cams');
+    Route::match(['get', 'post'], '/cam-edit/{id}', 'Admin\CamsController@edit')->name('admin.cam-edit');
+    Route::get('/cam-delete/{id}', 'Admin\CamsController@delete')->name('admin.cam-delete');
     
     
     /* Управление фоновыми процессами  -------------------------------------- */

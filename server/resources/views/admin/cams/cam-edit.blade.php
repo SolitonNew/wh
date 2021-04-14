@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-<form id="cam_edit_form" class="container" method="POST" action="{{ route('cam-edit', $item->id) }}">
+<form id="cam_edit_form" class="container" method="POST" action="{{ route('admin.cam-edit', $item->id) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
@@ -48,7 +48,7 @@
         <div class="invalid-feedback"></div>
     </div>
     <div class="form-group">
-        <div class="strong">@lang('admin/cams.table_ALERT_VAR_ID'):</div>
+        <div>@lang('admin/cams.table_ALERT_VAR_ID'):</div>
         <select class="custom-select" name="alert_var_id">
         <option value="-1">-//-</option>
         @foreach(\App\Http\Models\VariablesModel::orderBy('name')->get() as $row)
@@ -89,7 +89,7 @@
 
     function camDelete() {
         confirmYesNo("@lang('admin/cams.cam_delete_confirm')", () => {
-            $.ajax('{{ route("cam-delete", $item->id) }}').done((data) => {
+            $.ajax('{{ route("admin.cam-delete", $item->id) }}').done((data) => {
                 if (data == 'OK') {
                     dialogHide(() => {
                         window.location.reload();

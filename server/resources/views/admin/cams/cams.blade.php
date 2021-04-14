@@ -9,7 +9,7 @@
 
 @section('content')
 <div class="content-body">
-    <table id="camsList" class="table table-sm table-hover table-bordered table-fixed-header">
+    <table id="cams_list" class="table table-sm table-hover table-bordered table-fixed-header">
         <thead>
             <tr>
                 <th scope="col" style="width: 50px;"><span>@lang('admin/cams.table_ID')</span></th>
@@ -33,23 +33,23 @@
 
 <script>
     $(document).ready(() => {
-        $('#camsList tbody tr').on('click', (e) => {
+        $('#cams_list tbody tr').on('click', (e) => {
             let id = $(e.currentTarget).attr('data-id');
-            dialog('{{ route("cam-edit", "") }}/' + id);
+            dialog('{{ route("admin.cam-edit", "") }}/' + id);
         });
 
-        $('#camsList a.var-link').on('click', function (e) {
+        $('#cams_list a.var-link').on('click', function (e) {
             e.preventDefault();
 
             let id = $(this).data('id');
-            dialog('{{ route("admin.hub-device-edit", ["", ""]) }}/' + id);
+            dialog('{{ route("admin.hub-device-edit", [-1, ""]) }}/' + id);
             
             return false;
         });
     });
 
     function camAdd() {
-        dialog('{{ route("cam-edit", "-1") }}');
+        dialog('{{ route("admin.cam-edit", "-1") }}');
     }
 </script>
 @endsection

@@ -59,17 +59,12 @@
                             <span class="label">@lang('admin/scripts.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\ScriptsModel::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('users')" href="{{ route('users') }}">
-                            <img src="/img/menus/people-2x.png">
-                            <span class="label">@lang('admin/users.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\UsersModel::count() }}</span>
-                        </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('schedule')" href="{{ route('schedule') }}">
                             <img src="/img/menus/calendar-2x.png">
                             <span class="label">@lang('admin/schedule.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\ScheduleModel::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('cams')" href="{{ route('cams') }}">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('cams')" href="{{ route('admin.cams') }}">
                             <img src="/img/menus/video-2x.png">
                             <span class="label">@lang('admin/cams.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VideoModel::count() }}</span>
@@ -77,6 +72,11 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('demons')" href="{{ route('demons') }}">
                             <img src="/img/menus/terminal-2x.png">
                             <span class="label">@lang('admin/demons.menu')</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('users')" href="{{ route('users') }}">
+                            <img src="/img/menus/people-2x.png">
+                            <span class="label">@lang('admin/users.menu')</span>
+                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\UsersModel::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('statistics')" href="{{ route('statistics-table') }}">
                             <img src="/img/menus/bar-chart-2x.png">
