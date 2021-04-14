@@ -213,5 +213,7 @@ class PropertysModel extends Model
         }
         $item->value = $count;
         $item->save();
+        
+        self::$_firmwareChanges = $count;
     }
 }
