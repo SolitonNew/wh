@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-<form id="schedule_edit_form" class="container" method="POST" action="{{ route('schedule-edit', $item->id) }}">
+<form id="schedule_edit_form" class="container" method="POST" action="{{ route('admin.schedule-edit', $item->id) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
@@ -90,7 +90,7 @@
 @endsection
 
 @section('buttons')
-    @if($item->id > 0 && Auth::user()->id != $item->id)
+    @if($item->id > 0)
     <button type="button" class="btn btn-danger" onclick="scheduleDelete()">@lang('dialogs.btn_delete')</button>
     <div style="flex-grow: 1"></div>
     @endif
@@ -168,24 +168,29 @@
 
     function scheduleDelete() {
         confirmYesNo("@lang('admin/schedule.schedule-delete-confirm')", () => {
-            $.ajax('{{ route("schedule-delete", $item->id) }}').done((data) => {
-                if (data == 'OK') {
-                    dialogHide(() => {
-                        window.location.reload();
-                    });
-                } else {
+            $.ajax({
+                type: 'delete',
+                url: '{{ route("admin.schedule-delete", $item->id) }}',
+                data: {_token: '{{ csrf_token() }}'},
+                success: function (data) {
+                    if (data == 'OK') {
+                        dialogHide(() => {
+                            window.location.reload();
+                        });
+                    } else {
 
-                }
+                    }
+                },
             });
         });
     }
 
     function runTest() {
         $.post({
-            url: '{{ route("script-test") }}',
+            url: '{{ route("admin.script-test") }}',
             data: {
-                '_token': '{{ Session::token() }}',
-                'command': actionEditor.getData(),
+                _token: '{{ csrf_token() }}',
+                command: actionEditor.getData(),
             },
             success: function(data) {
                 alert(data);

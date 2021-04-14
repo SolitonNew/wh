@@ -43,7 +43,7 @@ Route::group(['middleware'=>'role:terminal'], function () {
 Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     /* Индексный контроллер  ------------------------------------------------ */
     Route::get('/', 'Admin\IndexController@index')->name('admin');
-    Route::get('/variable-changes/{lastID}', 'Admin\IndexController@variableChanges')->name('variable-changes');
+    Route::get('/variable-changes/{lastID}', 'Admin\IndexController@variableChanges')->name('admin.variable-changes');
 
     
     /* Конфигурация  -------------------------------------------------------- */
@@ -71,38 +71,38 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     
     /* Раздел "Планирование" помещений  ------------------------------------- */
-    Route::get('/plan/{id?}', 'Admin\PlanController@index')->name('plan');
-    Route::match(['get', 'post'], '/plan-edit/{id}/{p_id?}', 'Admin\PlanController@edit')->name('plan-edit');
-    Route::get('/plan-delete/{id}', 'Admin\PlanController@delete')->name('plan-delete');
-    Route::match(['get', 'post'], '/plan-move-childs/{id}', 'Admin\PlanController@moveChilds')->name('plan-move-childs');
-    Route::match(['get', 'post'], '/plan-order/{id}', 'Admin\PlanController@order')->name('plan-order');
+    Route::get('/plan/{id?}', 'Admin\PlanController@index')->name('admin.plan');
+    Route::match(['get', 'post'], '/plan-edit/{id}/{p_id?}', 'Admin\PlanController@edit')->name('admin.plan-edit');
+    Route::delete('/plan-delete/{id}', 'Admin\PlanController@delete')->name('admin.plan-delete');
+    Route::match(['get', 'post'], '/plan-move-childs/{id}', 'Admin\PlanController@moveChilds')->name('admin.plan-move-childs');
+    Route::match(['get', 'post'], '/plan-order/{id}', 'Admin\PlanController@order')->name('admin.plan-order');
        
     
     /* Управление скриптами (сценариями) системы  --------------------------- */
-    Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('scripts');
-    Route::match(['get', 'post'], '/script-edit/{id}', 'Admin\ScriptsController@edit')->name('script-edit');
-    Route::get('/script-delete/{id}', 'Admin\ScriptsController@delete')->name('script-delete');
-    Route::match(['get', 'post'], '/script-events/{id}', 'Admin\ScriptsController@attacheEvents')->name('script-events');
-    Route::post('/script-save/{id}', 'Admin\ScriptsController@saveScript')->name('script-save');
-    Route::post('/script-test', 'Admin\ScriptsController@scriptTest')->name('script-test');
+    Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('admin.scripts');
+    Route::match(['get', 'post'], '/script-edit/{id}', 'Admin\ScriptsController@edit')->name('admin.script-edit');
+    Route::delete('/script-delete/{id}', 'Admin\ScriptsController@delete')->name('admin.script-delete');
+    Route::match(['get', 'post'], '/script-events/{id}', 'Admin\ScriptsController@attacheEvents')->name('admin.script-events');
+    Route::post('/script-save/{id}', 'Admin\ScriptsController@saveScript')->name('admin.script-save');
+    Route::post('/script-test', 'Admin\ScriptsController@scriptTest')->name('admin.script-test');
     
     
     /* Управление учетными записями пользователей  -------------------------- */
-    Route::get('/users', 'Admin\UsersController@index')->name('users');
-    Route::match(['get', 'post'], '/user-edit/{id}', 'Admin\UsersController@edit')->name('user-edit');
-    Route::get('/user-delete/{id}', 'Admin\UsersController@delete')->name('user-delete');
+    Route::get('/users', 'Admin\UsersController@index')->name('admin.users');
+    Route::match(['get', 'post'], '/user-edit/{id}', 'Admin\UsersController@edit')->name('admin.user-edit');
+    Route::delete('/user-delete/{id}', 'Admin\UsersController@delete')->name('admin.user-delete');
     
     
     /* Настройка событий системы по расписанию  ----------------------------- */
-    Route::get('/schedule', 'Admin\ScheduleController@index')->name('schedule');
-    Route::match(['get', 'post'], '/schedule-edit/{id}', 'Admin\ScheduleController@edit')->name('schedule-edit');
-    Route::get('/schedule-delete/{id}', 'Admin\ScheduleController@delete')->name('schedule-delete');
+    Route::get('/schedule', 'Admin\ScheduleController@index')->name('admin.schedule');
+    Route::match(['get', 'post'], '/schedule-edit/{id}', 'Admin\ScheduleController@edit')->name('admin.schedule-edit');
+    Route::delete('/schedule-delete/{id}', 'Admin\ScheduleController@delete')->name('admin.schedule-delete');
     
     
     /* Управление камерами видеонаблюдения  --------------------------------- */
     Route::get('/cams', 'Admin\CamsController@index')->name('admin.cams');
     Route::match(['get', 'post'], '/cam-edit/{id}', 'Admin\CamsController@edit')->name('admin.cam-edit');
-    Route::get('/cam-delete/{id}', 'Admin\CamsController@delete')->name('admin.cam-delete');
+    Route::delete('/cam-delete/{id}', 'Admin\CamsController@delete')->name('admin.cam-delete');
     
     
     /* Управление фоновыми процессами  -------------------------------------- */
@@ -121,8 +121,4 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     Route::get('/statistics/chart', 'Admin\Statistics\ChartController@index')->name('statistics-chart');
     Route::get('/statistics/power', 'Admin\Statistics\PowerController@index')->name('statistics-power');
-    
-    
-    
-    Route::get('/test', 'Admin\TestController@index')->name('test');
 });

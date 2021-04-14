@@ -64,9 +64,9 @@
 
     function editorSave() {
         $.post({
-            url: '{{ route("script-save", $scriptID) }}',
+            url: '{{ route("admin.script-save", $scriptID) }}',
             data: {
-                '_token': '{{ Session::token() }}',
+                _token: '{{ csrf_token() }}',
                 data: scriptEditor.getData(),
             },
             success: function (data) {

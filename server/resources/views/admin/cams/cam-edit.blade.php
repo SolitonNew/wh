@@ -89,14 +89,19 @@
 
     function camDelete() {
         confirmYesNo("@lang('admin/cams.cam_delete_confirm')", () => {
-            $.ajax('{{ route("admin.cam-delete", $item->id) }}').done((data) => {
-                if (data == 'OK') {
-                    dialogHide(() => {
-                        window.location.reload();
-                    });
-                } else {
+            $.ajax({
+                type: 'delete',
+                url: '{{ route("admin.cam-delete", $item->id) }}',
+                data: {_token: '{{ csrf_token() }}'},
+                success: function (data) {
+                    if (data == 'OK') {
+                        dialogHide(() => {
+                            window.location.reload();
+                        });
+                    } else {
 
-                }
+                    }
+                },
             });
         });
     }

@@ -19,7 +19,7 @@
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 320px;min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="scriptsList">
         @foreach($list as $row)
-        <a href="{{ route('scripts', $row->id) }}"
+        <a href="{{ route('admin.scripts', $row->id) }}"
             class="tree-item {{ $row->id == $scriptID ? 'active' : '' }}">
             {{ $row->comm }}
             @if($row->var_count > 0)
@@ -73,12 +73,12 @@
     });
 
     function scriptAdd() {
-        dialog('{{ route("script-edit", -1) }}');
+        dialog('{{ route("admin.script-edit", -1) }}');
     }
 
     @if($scriptID)
     function scriptEdit() {
-        dialog('{{ route("script-edit", $scriptID) }}');
+        dialog('{{ route("admin.script-edit", $scriptID) }}');
     }
 
     function scriptEditSource() {
@@ -87,10 +87,10 @@
 
     function runScriptTest(source) {
         $.post({
-            url: '{{ route("script-test") }}',
+            url: '{{ route("admin.script-test") }}',
             data: {
-                '_token': '{{ Session::token() }}',
-                'command': source,
+                _token: '{{ csrf_token() }}',
+                command: source,
             },
             success: function(data) {
                 alert(data);
@@ -106,7 +106,7 @@
     }
 
     function scriptAttachEvent() {
-        dialog('{{ route("script-events", $scriptID) }}');
+        dialog('{{ route("admin.script-events", $scriptID) }}');
     }
     @endif    
 </script>
