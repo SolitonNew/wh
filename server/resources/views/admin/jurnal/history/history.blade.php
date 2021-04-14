@@ -1,60 +1,57 @@
-@extends('admin.statistics.statistics')
+@extends('admin.jurnal.jurnal')
 
 @section('page-down-menu')
-<a href="#" class="dropdown-item" onclick="statisticTableDeleteAllVisible(); return false;">@lang('admin/statistics.page-table-delete-all-visible')</a>
-@endsection
-
-@section('page-top-menu')
+<a href="#" class="dropdown-item" onclick="jurnalHistoryDeleteAllVisible(); return false;">@lang('admin/jurnal.history_delete_all_visible')</a>
 @endsection
 
 @section('page-content')
 <div style="display: flex; flex-direction: column; height: 100%;">
     <div class="navbar navbar-page">
         <div style="width: 320px; margin-left: -1rem; padding: 0px 1rem;">
-            <input id="varFiltr" type="text" class="form-control" placeholder="@lang('admin/statistics.page-table-var-filtr')" >
+            <input id="jurnalHistoryFiltr" type="text" class="form-control" placeholder="@lang('admin/jurnal.history_var_filtr')" >
         </div>
-        <form class="navbar-page-group" method="POST" action="{{ route('statistics-table', $id) }}">
+        <form class="navbar-page-group" method="POST" action="{{ route('admin.jurnal-history', $id) }}">
             {{ csrf_field() }}
-            <span class="strong">@lang('admin/statistics.page-table-date-filtr'):</span>
+            <span class="strong">@lang('admin/jurnal.history_date_filtr'):</span>
             <input type="date" class="form-control" style="width: auto;" name="date" value="{{ Session::get('STATISTICS-TABLE-DATE') }}" required="true">
-            <span>@lang('admin/statistics.page-table-sql-filtr'):</span>
+            <span>@lang('admin/jurnal.history_sql_filtr'):</span>
             <div>
                 <input type="text" class="form-control {{ $errors->first('sql') ? 'is-invalid' : '' }}" 
                        style="width: auto;" name="sql" value="{{ Session::get('STATISTICS-TABLE-SQL') }}">
             </div>
-            <button id="statisticsTableBtn" class="btn btn-primary" style="display:none;">@lang('admin/statistics.page-table-show')</button>
+            <button id="jurnalHistoryBtn" class="btn btn-primary" style="display:none;">@lang('admin/jurnal.history_show')</button>
         </form>
     </div>
     <div style="flex-grow: 1; overflow: hidden;">
         <div style="position:relative; display: flex; flex-direction: row; height: 100%;">
             <div class="tree" style="width: 320px; min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" 
-                 scroll-store="statisticsTabVarList">
+                 scroll-store="jurnalHistoryVarList">
                 @foreach(\App\Http\Models\VariablesModel::orderBy('name')->get() as $row)
-                <a href="{{ route('statistics-table', $row->id) }}"
+                <a href="{{ route('admin.jurnal-history', $row->id) }}"
                     class="tree-item {{ $row->id == $id ? 'active' : '' }}"
                     style="display: block;">
                     {{ $row->name }}
                     <div class="text-muted" style="display: flex;justify-content: space-between;flex-wrap: wrap;margin-right: 0.5rem;">
                         <small class="nowrap">{{ $row->comm }}</small>
                         @if($row->app_control > 0)
-                        <small class="nowrap">@lang('admin/variables.app_control.'.$row->app_control)</small>
+                        <small class="nowrap">@lang('admin/hubs.app_control.'.$row->app_control)</small>
                         @endif
                     </div>
                 </a>
                 @endforeach
             </div>
             <div class="content-body" scroll-store="statisticsTabVarValues">
-                <table id="statisticsVarList" class="table table-sm table-hover table-bordered table-fixed-header">
+                <table id="jurnal_history_List" class="table table-sm table-hover table-bordered table-fixed-header">
                     <thead>
                         <tr>
                             <th scope="col" style="width: 100px;">
                                 <span>
-                                    <span>@lang('admin/statistics.table_ID')</span>
+                                    <span>@lang('admin/jurnal.history_ID')</span>
                                     <span class="text-primary">({{ count($data) }})</span>    
                                 </span>
                             </th>
-                            <th scope="col" style="width: 180px;"><span>@lang('admin/statistics.table_CHANGE_DATE')</span></th>
-                            <th scope="col" style="width: 100px;"><span>@lang('admin/statistics.table_VALUE')</span></th>
+                            <th scope="col" style="width: 180px;"><span>@lang('admin/jurnal.history_CHANGE_DATE')</span></th>
+                            <th scope="col" style="width: 100px;"><span>@lang('admin/jurnal.history_VALUE')</span></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,7 +72,7 @@
             @if(count($data))
             <div class="statistics-table-right">
                 <div class="statistics-table-chart">
-                    <canvas id="statisticsTableChart" style="width: 100%; height: 100%;"></canvas>
+                    <canvas id="jurnalHistoryChart" style="width: 100%; height: 100%;"></canvas>
                 </div>
             </div>
             @endif
@@ -87,9 +84,9 @@
 <script type="text/javascript" src="/js/Chart.bundle.min.js"></script>
 <script>
     $(document).ready(() => {
-        $('#varFiltr').val(getCookie('statisticsVarFiltr'));
+        $('#jurnalHistoryFiltr').val(getCookie('jurnalHistoryFiltr'));
         
-        $('#varFiltr').on('input', function () {
+        $('#jurnalHistoryFiltr').on('input', function () {
             let s = $(this).val().toUpperCase();
             if (s == '') {
                 $('.tree a').show();
@@ -118,26 +115,26 @@
                 });
             }
             
-            setCookie('statisticsVarFiltr', $(this).val());
+            setCookie('jurnalHistoryFiltr', $(this).val());
             
         }).trigger('input');
         
-        $('#statisticsVarList tbody tr').on('click', function () {
+        $('#jurnal_history_List tbody tr').on('click', function () {
             if ($(this).hasClass('table-empty')) return ;
-            dialog('{{ route("statistics-table-value-view", "") }}/' + $(this).data('id'));
+            dialog('{{ route("admin.jurnal-history-value-view", "") }}/' + $(this).data('id'));
         });
         
         $('input[name="date"], input[name="sql"]').on('input', () => {
-            $('#statisticsTableBtn').fadeIn(250);
+            $('#jurnalHistoryBtn').fadeIn(250);
         });
         
         @if(count($data))
-        initStatisticsTableChart();
+        initJurnalHistoryChart();
         @endif
     });
     
-    function initStatisticsTableChart() {
-        var ctx = document.getElementById('statisticsTableChart');
+    function initJurnalHistoryChart() {
+        var ctx = document.getElementById('jurnalHistoryChart');
         var chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -177,10 +174,12 @@
     }
     
     @if($id)
-    function statisticTableDeleteAllVisible() {
-        confirmYesNo("@lang('admin/statistics.page-table-delete-all-visible-confirm')", () => {
+    function jurnalHistoryDeleteAllVisible() {
+        confirmYesNo("@lang('admin/jurnal.history_delete_all_visible_confirm')", () => {
             $.ajax({
-                url: "{{ route('statistics-table-delete-all-visible', $id) }}",
+                type: 'delete',
+                url: "{{ route('admin.jurnal-history-delete-all-visible', $id) }}",
+                data: {_token: '{{ csrf_token() }}'},
                 success: function (data) {
                     alert(data);
                     window.location.reload();

@@ -1,35 +1,39 @@
-@extends('admin.admin')
+@extends('admin.jurnal.jurnal')
 
-@section('down-menu')
-<a href="#" class="dropdown-item {{ $stat ? 'disabled' : '' }}" onclick="demonStart(); return false">@lang('admin/demons.demon_run')</a>
-<a href="#" class="dropdown-item {{ $stat ? '' : 'disabled' }}" onclick="demonStop(); return false;">@lang('admin/demons.demon_stop')</a>
-<div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item {{ $stat ? '' : 'disabled' }}" onclick="demonReload(); return false;">@lang('admin/demons.demon_reload')</a>
+@section('page-down-menu')
+<a href="#" class="dropdown-item {{ $stat ? 'disabled' : '' }}" onclick="demonStart(); return false">@lang('admin/jurnal.demon_run')</a>
+<a href="#" class="dropdown-item {{ $stat ? '' : 'disabled' }}" onclick="demonStop(); return false;">@lang('admin/jurnal.demon_stop')</a>
+<a href="#" class="dropdown-item {{ $stat ? '' : 'disabled' }}" onclick="demonReload(); return false;">@lang('admin/jurnal.demon_reload')</a>
 @endsection
 
-@section('top-menu')
-<div class="nav nav-tabs navbar-top-menu-tab">
-    @foreach($demons as $row)
-    <a class="nav-link upper {{ $row->id == $id ? 'active' : '' }}" href="{{ route('demons', $row->id) }}">
-        <span style="margin-right: 0.5rem">{{ $row->id }}</span>
-        @if ($row->stat)
-        <div class="badge badge-pill badge-success" style="margin-top: 0; margin-bottom: 0px;">RUN</div>
-        @else
-        <div class="badge badge-pill badge-warning" style="margin-top: 0; margin-bottom: 0px;">STOP</div>
-        @endif
-    </a>
-    @endforeach
-</div>
-@endsection
-
-@section('content')
-<div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;position: relative;">
-    <div class="content-body" style="padding: 1rem;" scroll-store="demonsContentScroll">
-        <div class="demon-log" style="position: relative;">
-            <div class="demon-log-offset" style="position: absolute;"></div>
-        </div>
+@section('page-content')
+<div style="position:relative; display: flex; flex-direction: row; height: 100%;">
+    <div class="tree" style="width: 270px; min-width:270px; border-right: 1px solid rgba(0,0,0,0.125);" 
+         scroll-store="jurnalDemonsList">
+        @foreach($demons as $row)
+        <a href="{{ route('admin.jurnal-demons', $row->id) }}"
+            class="tree-item {{ $row->id == $id ? 'active' : '' }}"
+            style="display: block;">
+            <div style="display: flex;">
+                <div style="flex-grow: 1;">{{ $row->id }}</div>
+                @if ($row->stat)
+                <div class="badge badge-pill badge-success" style="margin-top: 0; margin-bottom: 0px;">RUN</div>
+                @else
+                <div class="badge badge-pill badge-warning" style="margin-top: 0; margin-bottom: 0px;">STOP</div>
+                @endif
+            </div>
+            <small class="text-muted">@lang('admin/demons/'.$row->id.'.title')</small>
+        </a>
+        @endforeach
     </div>
-    <button class="demon-log-btn-top btn btn-primary" style="display: none;" onclick="demonLogScrollTop()">@lang('admin/demons.demon_btn_top')</button>
+    <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;position: relative;">
+        <div class="content-body" style="padding: 1rem;" scroll-store="demonsContentScroll">
+            <div class="demon-log" style="position: relative;">
+                <div class="demon-log-offset" style="position: absolute;"></div>
+            </div>
+        </div>
+        <button class="demon-log-btn-top btn btn-primary" style="display: none;" onclick="demonLogScrollTop()">@lang('admin/demons.demon_btn_top')</button>
+    </div>
 </div>
 
 <script>
@@ -49,9 +53,9 @@
     });
 
     function demonStart() {
-        confirmYesNo("@lang('admin/demons.demon_run_confirm')", () => {
+        confirmYesNo("@lang('admin/jurnal.demon_run_confirm')", () => {
             startGlobalWaiter();
-            $.ajax('{{ route("demon-start", $id) }}').done((data) => {
+            $.ajax('{{ route("admin.jurnal-demon-start", $id) }}').done((data) => {
                 stopGlobalWaiter();
                 if (data == 'OK') {
                     window.location.reload();
@@ -63,9 +67,9 @@
     }
 
     function demonStop() {
-        confirmYesNo("@lang('admin/demons.demon_stop_confirm')", () => {
+        confirmYesNo("@lang('admin/jurnal.demon_stop_confirm')", () => {
             startGlobalWaiter();
-            $.ajax('{{ route("demon-stop", $id) }}').done((data) => {
+            $.ajax('{{ route("admin.jurnal-demon-stop", $id) }}').done((data) => {
                 stopGlobalWaiter();
                 if (data == 'OK') {
                     window.location.reload();
@@ -77,9 +81,9 @@
     }
 
     function demonReload() {
-        confirmYesNo("@lang('admin/demons.demon_reload_confirm')", () => {
+        confirmYesNo("@lang('admin/jurnal.demon_reload_confirm')", () => {
             startGlobalWaiter();
-            $.ajax('{{ route("demon-restart", $id) }}').done((data) => {
+            $.ajax('{{ route("admin.jurnal-demon-restart", $id) }}').done((data) => {
                 stopGlobalWaiter();
                 if (data == 'OK') {
                     window.location.reload();
@@ -92,7 +96,7 @@
 
     function getDemonData() {
         $.ajax({
-            url: '{{ route("demon-data", [$id, ""]) }}/' + demonLogLastID,
+            url: '{{ route("admin.jurnal-demon-data", [$id, ""]) }}/' + demonLogLastID,
             success: function (data) {
                 if (data) {
                     let lines = $(data);

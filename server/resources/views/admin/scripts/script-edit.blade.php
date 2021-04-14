@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-<form id="script_edit_form" class="container" method="POST" action="{{ route('script-edit', $item->id) }}">
+<form id="script_edit_form" class="container" method="POST" action="{{ route('admin.script-edit', $item->id) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
@@ -64,17 +64,21 @@
 
     function scriptDelete() {
         confirmYesNo("@lang('admin/scripts.script_delete_confirm')", () => {
-            $.ajax('{{ route("script-delete", $item->id) }}').done((data) => {
-                if (data == 'OK') {
-                    dialogHide(() => {
-                        window.location.reload();
-                    });
-                } else {
+            $.ajax({
+                type: 'delete',
+                url: '{{ route("admin.script-delete", $item->id) }}',
+                data: {_token: '{{ csrf_token() }}'},
+                success: function (data) {
+                    if (data == 'OK') {
+                        dialogHide(() => {
+                            window.location.reload();
+                        });
+                    } else {
 
-                }
+                    }
+                },
             });
         });
     }
-
 </script>
 @endsection

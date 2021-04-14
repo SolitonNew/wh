@@ -32,7 +32,7 @@ class ScriptsController extends Controller
         if (!$item) {
             $first = \App\Http\Models\ScriptsModel::orderBy('comm', 'asc')->first();
             if ($first) {
-                return redirect(route('scripts', $first->id));
+                return redirect(route('admin.scripts', $first->id));
             }
         }
         
@@ -65,7 +65,7 @@ class ScriptsController extends Controller
             try {
                 if (!$item) {
                     $item = new \App\Http\Models\ScriptsModel();
-                    $item->data = '/* COMMENT */';
+                    $item->data = '/* NEW SCRIPT */';
                 }
                 $item->comm = $request->post('comm');
                 $item->save();
@@ -118,7 +118,7 @@ class ScriptsController extends Controller
     {
         $item = \App\Http\Models\ScriptsModel::find($id);
         if ($item) {
-            $item->data = $request->post('data') ? $request->post('data') : '/* COMMENT */';
+            $item->data = $request->post('data') ? $request->post('data') : '/* NEW SCRIPT */';
             $item->save();
             return 'OK';
         } else {

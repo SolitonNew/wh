@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<form id="script_events_form" class="container" method="POST" action="{{ route('script-events', $id) }}">
+<form id="script_events_form" class="container" method="POST" action="{{ route('admin.script-events', $id) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
     <select class="custom-select" name="variables[]" multiple="true" style="height: 400px;">

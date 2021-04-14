@@ -39,7 +39,7 @@ class ScriptEditor
         
         $strings = [];
         foreach(\App\Http\Models\VariablesModel::orderBy('name', 'asc')->get() as $row) {
-            $strings[$row->name] = $row->comm.' '.Lang::get('admin/variables.app_control.'.$row->app_control);
+            $strings[$row->name] = $row->comm.' '.Lang::get('admin/hubs.app_control.'.$row->app_control);
         }
         
         return (object)[

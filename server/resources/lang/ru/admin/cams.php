@@ -9,7 +9,7 @@ return [
     'table_URL' => 'URL',
     'table_URL_LOW' => 'URL LOW',
     'table_URL_HIGH' => 'URL HIGH',
-    'table_ALERT_VAR_ID' => 'Переменная для событий',
+    'table_ALERT_VAR_ID' => 'Устройство',
     
     'cam_add' => 'Добавить новую камеру...',
     'cam_add_title' => 'Новая камера',

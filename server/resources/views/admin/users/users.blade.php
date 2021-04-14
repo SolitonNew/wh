@@ -35,12 +35,12 @@
     $(document).ready(() => {
         $('#userList tbody tr').on('click', (e) => {
             let id = $(e.currentTarget).attr('data-id');
-            dialog('{{ route("user-edit", "") }}/' + id);
+            dialog('{{ route("admin.user-edit", "") }}/' + id);
         });
     });
 
     function userAdd() {
-        dialog('{{ route("user-edit", "-1") }}');
+        dialog('{{ route("admin.user-edit", -1) }}');
     }
 </script>
 @endsection

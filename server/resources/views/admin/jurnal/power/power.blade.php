@@ -1,9 +1,6 @@
-@extends('admin.statistics.statistics')
+@extends('admin.jurnal.jurnal')
 
 @section('page-down-menu')
-@endsection
-
-@section('page-top-menu')
 @endsection
 
 @section('page-content')

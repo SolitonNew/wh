@@ -69,7 +69,7 @@
     $(document).ready(() => {
         $('#scheduleList tbody tr').on('click', (e) => {
             let id = $(e.currentTarget).attr('data-id');
-            dialog('{{ route("schedule-edit", "") }}/' + id);
+            dialog('{{ route("admin.schedule-edit", "") }}/' + id);
         });
         
         $('#scheduleList .scheduleActionViewer').each(function () {
@@ -86,7 +86,7 @@
     });
 
     function scheduleAdd() {
-        dialog('{{ route("schedule-edit", "-1") }}');
+        dialog('{{ route("admin.schedule-edit", "-1") }}');
     }
 
 </script>

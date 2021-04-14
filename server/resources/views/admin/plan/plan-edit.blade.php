@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-<form id="plan_edit_form" class="container" method="POST" action="{{ route('plan-edit', $item->id) }}">
+<form id="plan_edit_form" class="container" method="POST" action="{{ route('admin.plan-edit', $item->id) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
@@ -131,14 +131,19 @@
 
     function planDelete() {
         confirmYesNo("@lang('admin/plan.plan-delete-confirm')", () => {
-            $.ajax('{{ route("plan-delete", $item->id) }}').done((data) => {
-                if (data == 'OK') {
-                    dialogHide(() => {
-                        window.location.reload();
-                    });
-                } else {
+            $.ajax({
+                type: 'delete',
+                url: '{{ route("admin.plan-delete", $item->id) }}',
+                data: {_token: '{{ csrf_token() }}'},
+                success: function (data) {
+                    if (data == 'OK') {
+                        dialogHide(() => {
+                            window.location.reload();
+                        });
+                    } else {
 
-                }
+                    }
+                },
             });
         });
     }

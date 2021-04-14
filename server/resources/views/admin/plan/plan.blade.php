@@ -19,7 +19,7 @@
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
         @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
-        <a href="{{ route('plan', $row->id) }}"
+        <a href="{{ route('admin.plan', $row->id) }}"
            class="tree-item {{ $row->id == $partID ? 'active' : '' }}" style="padding-left: {{ $row->level + 1 }}rem">{{ $row->name }}</a>
         @endforeach
     </div>
@@ -43,7 +43,7 @@
     $(document).ready(() => {
         @if($partID)
         $('div.plan-part').on('click', function (e) {
-            dialog('{{ route("plan-edit", "") }}/' + $(this).attr('data-id'));
+            dialog('{{ route("admin.plan-edit", "") }}/' + $(this).attr('data-id'));
         });
         @endif
 
@@ -134,20 +134,20 @@
     }
 
     function planAdd() {
-        dialog('{{ route("plan-edit", [-1, $partID]) }}');
+        dialog('{{ route("admin.plan-edit", [-1, $partID]) }}');
     }
 
     @if($partID)
     function planEdit() {
-        dialog('{{ route("plan-edit", $partID) }}');
+        dialog('{{ route("admin.plan-edit", $partID) }}');
     }
 
     function planMoveChilds() {
-        dialog('{{ route("plan-move-childs", $partID) }}');
+        dialog('{{ route("admin.plan-move-childs", $partID) }}');
     }
 
     function planOrder() {
-        dialog('{{ route("plan-order", $partID) }}');
+        dialog('{{ route("admin.plan-order", $partID) }}');
     }
     @endif
 </script>

@@ -22,7 +22,7 @@ class PlanController extends Controller
                         ->orderBy('order_num', 'asc')
                         ->first();
             if ($first) {
-                return redirect(route('plan', $first->id));
+                return redirect(route('admin.plan', $first->id));
             }
         }
         
@@ -210,8 +210,10 @@ class PlanController extends Controller
             $ids = explode(',', $request->post('orderIds'));
             for ($i = 0; $i < count($ids); $i++) {
                 $item = \App\Http\Models\PlanPartsModel::find($ids[$i]);
-                $item->order_num = $i + 1;
-                $item->save();
+                if ($item) {
+                    $item->order_num = $i + 1;
+                    $item->save();
+                }
             }
             return 'OK';
         } else {
