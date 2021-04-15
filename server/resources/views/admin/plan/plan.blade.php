@@ -1,10 +1,5 @@
 @extends('admin.admin')
 
-@section('top-menu')
-<button class="btn btn-secondary" onclick="planZoomIn()">@lang('admin/plan.zoom_in')</button>
-<button class="btn btn-secondary" onclick="planZoomOut()">@lang('admin/plan.zoom_out')</button>
-@endsection
-
 @section('down-menu')
 <a href="#" class="dropdown-item" onclick="planAdd(); return false;">@lang('admin/plan.plan_add')</a>
 @if($partID)
@@ -15,7 +10,15 @@
 @endif
 @endsection
 
+@section('top-menu')
+@if($partID)
+<button class="btn btn-secondary" onclick="planZoomIn()">@lang('admin/plan.zoom_in')</button>
+<button class="btn btn-secondary" onclick="planZoomOut()">@lang('admin/plan.zoom_out')</button>
+@endif
+@endsection
+
 @section('content')
+@if($partID)
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
         @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
@@ -36,6 +39,7 @@
         </div>
     </div>
 </div>
+@endif
 
 <script>
     var planZoom = 50;

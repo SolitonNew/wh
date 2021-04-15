@@ -12,16 +12,16 @@
     <table id="scheduleList" class="table table-sm table-hover table-bordered table-fixed-header">
         <thead>
             <tr>
-                <th scope="col" style="width: 40px;"><span>@lang('admin/schedule.table_ID')</span></th>
+                <th scope="col" style="width: 60px;"><span>@lang('admin/schedule.table_ID')</span></th>
                 <th scope="col" style="width: 200px;"><span>@lang('admin/schedule.table_COMM')</span></th>
-                <th scope="col" style="width: 100px; max-width: 90px;"><span>@lang('admin/schedule.table_ACTION_DATETIME')</span></th>
+                <th scope="col" style="width: 120px; max-width: 90px;"><span>@lang('admin/schedule.table_ACTION_DATETIME')</span></th>
                 <th scope="col" style="width: 300px;"><span>@lang('admin/schedule.table_ACTION')</span></th>
                 <th scope="col" style="width: 300px;"><span>@lang('admin/schedule.table_INTERVAL')</span></th>
                 <th scope="col" style="width: 105px;"><span>@lang('admin/schedule.table_ENABLE')</span></th>
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $row)
+            @forelse($data as $row)
             <tr data-id="{{ $row->id }}" 
                 class="{{ (\Carbon\Carbon::parse($row->action_datetime)->gt(now()) && 
                            \Carbon\Carbon::parse($row->action_datetime)->lte(now()->startOfDay()->addDay())) ? 'schedule-exec-today' : '' }}">
@@ -39,7 +39,11 @@
                 <td>{!! $row->interval_text !!}</td>
                 <td>{{ Lang::get('admin/schedule.enable_list.'.$row->enable) }}</td>
             </tr>
-            @endforeach
+            @empty
+            <tr class="table-empty">
+                <td colspan="9">@lang('dialogs.table_empty')</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </div>
@@ -69,7 +73,9 @@
     $(document).ready(() => {
         $('#scheduleList tbody tr').on('click', (e) => {
             let id = $(e.currentTarget).attr('data-id');
-            dialog('{{ route("admin.schedule-edit", "") }}/' + id);
+            if (id) {
+                dialog('{{ route("admin.schedule-edit", "") }}/' + id);
+            }
         });
         
         $('#scheduleList .scheduleActionViewer').each(function () {

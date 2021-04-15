@@ -1,8 +1,5 @@
 @extends('admin.admin')
 
-@section('top-menu')
-@endsection
-
 @section('down-menu')
 <a href="#" class="dropdown-item" onclick="scriptAdd(); return false;">@lang('admin/scripts.script_add')</a>
 @if($data)
@@ -15,7 +12,11 @@
 @endif
 @endsection
 
+@section('top-menu')
+@endsection
+
 @section('content')
+@if($scriptID)
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 320px;min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="scriptsList">
         @foreach($list as $row)
@@ -32,6 +33,7 @@
         <div id="scriptViewer" style="height: 100%;"></div>
     </div>
 </div>
+@endif
 @if($data)
 @include('admin.scripts.script-editor')
 @endif
