@@ -194,4 +194,23 @@ class PlanPartsModel extends Model
         
         PropertysModel::setPlanMaxLevel($maxLevel + 1);
     }
+    
+    /**
+     * 
+     */
+    public function parentOffset() {
+        $parent = PlanPartsModel::find($this->parent_id);
+        if ($parent) {
+            $bounds = json_decode($parent->bounds);
+            return (object)[
+                'X' => $bounds->X,
+                'Y' => $bounds->Y,
+            ];
+        }
+        
+        return (object)[
+            'X' => 0,
+            'Y' => 0,
+        ];
+    }
 }

@@ -76,6 +76,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::delete('/plan-delete/{id}', 'Admin\PlanController@delete')->name('admin.plan-delete');
     Route::match(['get', 'post'], '/plan-move-childs/{id}', 'Admin\PlanController@moveChilds')->name('admin.plan-move-childs');
     Route::match(['get', 'post'], '/plan-order/{id}', 'Admin\PlanController@order')->name('admin.plan-order');
+    Route::match(['get', 'post'], '/plan-import', 'Admin\PlanController@planImport')->name('admin.plan-import');
+    Route::get('/plan-export', 'Admin\PlanController@planExport')->name('admin.plan-export');
        
     
     /* Управление скриптами (сценариями) системы  --------------------------- */

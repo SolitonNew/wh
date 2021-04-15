@@ -82,18 +82,20 @@ class PlanController extends Controller
                 if (!$item) {
                     $item = new \App\Http\Models\PlanPartsModel();
                 } else {
-                    $bounds = json_decode($item->BOUNDS);
+                    $bounds = json_decode($item->bounds);
                     if ($bounds) {
                         $dx = $request->post('X') - $bounds->X;
                         $dy = $request->post('Y') - $bounds->Y;
                     }
                 }
                 
-                $item->PARENT_ID = $request->post('parent_id');
-                $item->NAME = $request->post('name');
-                $item->BOUNDS = json_encode([
-                    'X' => $request->post('X'),
-                    'Y' => $request->post('Y'),
+                $item->parent_id = $request->post('parent_id');
+                $item->name = $request->post('name');
+                
+                $off = $item->parentOffset();
+                $item->bounds = json_encode([
+                    'X' => $request->post('X') + $off->X,
+                    'Y' => $request->post('Y') + $off->Y,
                     'W' => $request->post('W'),
                     'H' => $request->post('H'),
                 ]);
@@ -128,18 +130,25 @@ class PlanController extends Controller
                 ];
             }
             
-            if (!$item->bounds) {
-                $item->bounds = json_encode([
+            if ($item->bounds) {
+                $itemBounds = json_decode($item->bounds);
+                if ($item instanceof \App\Http\Models\PlanPartsModel) {
+                    $off = $item->parentOffset();
+                    $itemBounds->X -= $off->X;
+                    $itemBounds->Y -= $off->Y;
+                }
+            } else {
+                $itemBounds = (object)[
                     'X' => 0,
                     'Y' => 0,
                     'W' => 10,
                     'H' => 6,
-                ]);
+                ];
             }
             
             return view('admin.plan.plan-edit', [
                 'item' => $item,
-                'itemBounds' => json_decode($item->bounds),
+                'itemBounds' => $itemBounds,
             ]);
         }
     }
@@ -224,5 +233,96 @@ class PlanController extends Controller
                 'data' => $data,
             ]);
         }
+    }
+    
+    /**
+     * Маршрут для импорта плана из файла.
+     * GET: отображает окно для выбора файла.
+     * POST: Выполняет нужные манипуляции с данными и полученым файлом.
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function planImport(Request $request) 
+    {
+        if ($request->method() == 'POST') {
+            try {
+                $this->validate($request, [
+                    'file' => 'file|required',
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $ex) {
+                return response()->json($ex->errors());
+            }
+            
+            $storeLevel = function ($level, $parentID) use (&$storeLevel) {
+                $i = 1;
+                foreach($level as $item) {
+                    $plan = new \App\Http\Models\PlanPartsModel();
+                    $plan->id = $item->id;
+                    $plan->parent_id = $parentID;
+                    $plan->name = $item->name;
+                    $plan->bounds = $item->bounds;
+                    $plan->order_num = $i++;
+                    $plan->save();                    
+                    $storeLevel($item->childs, $item->id);
+                }
+            };
+            
+            try {
+                // Принимаем файл
+                $json = file_get_contents($request->file('file'));
+                
+                // Декодируем
+                $parts = json_decode($json);
+                
+                // Удаляем все существующиезаписи из БД
+                \App\Http\Models\PlanPartsModel::truncate();
+                
+                // Рекурсивно заливаем новые записи
+                $storeLevel($parts, null);
+                return 'OK';
+            } catch (\Exception $ex) {
+                return response()->json([
+                    'error' => [$ex->getMessage()],
+                ]);
+            }
+        } else {
+            return view('admin.plan.plan-import', []);
+        }
+    }
+    
+    /**
+     * Маршрут для экспорта плана системы.
+     * Данные плана собираются в виде вложенных (древовидных) объектов и 
+     * серриализируются в виде json строки.
+     * 
+     * @return type
+     */
+    public function planExport() 
+    {
+        $parts = \App\Http\Models\PlanPartsModel::orderBy('order_num', 'asc')->get();
+        
+        $loadLevel = function ($parentID) use (&$loadLevel, $parts) {
+            $res = [];
+            foreach($parts as $part) {
+                if ($part->parent_id == $parentID) {
+                    $res[] = (object)[
+                        'id' => $part->id,
+                        'name' => $part->name,
+                        'bounds' => $part->bounds,
+                        'childs' => $loadLevel($part->id),
+                    ];
+                }
+            }
+            return $res;
+        };
+        
+        $file = json_encode($loadLevel(null));
+        
+        return response($file, 200, [
+            'Content-Length' => strlen($file),
+            'Content-Disposition' => 'attachment; filename="'.\Carbon\Carbon::now()->format('Ymd_His').'_plan.json"',
+            'Pragma' => 'public',
+        ]);
     }
 }
