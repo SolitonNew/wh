@@ -34,7 +34,7 @@
 @if($hubID)
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="hubsList">
-        @foreach(\App\Http\Models\ControllersModel::orderBy('name', 'asc')->get() as $row)
+        @foreach(\App\Http\Models\ControllersModel::orderBy('rom', 'asc')->get() as $row)
         <a href="{{ route('admin.hubs', $row->id).'/'.$page }}"
             class="tree-item {{ $row->id == $hubID ? 'active' : '' }}">
             <div>
