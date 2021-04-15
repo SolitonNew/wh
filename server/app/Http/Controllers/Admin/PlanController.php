@@ -225,4 +225,95 @@ class PlanController extends Controller
             ]);
         }
     }
+    
+    /**
+     * Маршрут для импорта плана из файла.
+     * GET: отображает окно для выбора файла.
+     * POST: Выполняет нужные манипуляции с данными и полученым файлом.
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function planImport(Request $request) 
+    {
+        if ($request->method() == 'POST') {
+            try {
+                $this->validate($request, [
+                    'file' => 'file|required',
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $ex) {
+                return response()->json($ex->errors());
+            }
+            
+            $storeLevel = function ($level, $parentID) use (&$storeLevel) {
+                $i = 1;
+                foreach($level as $item) {
+                    $plan = new \App\Http\Models\PlanPartsModel();
+                    $plan->id = $item->id;
+                    $plan->parent_id = $parentID;
+                    $plan->name = $item->name;
+                    $plan->bounds = $item->bounds;
+                    $plan->order_num = $i++;
+                    $plan->save();                    
+                    $storeLevel($item->childs, $item->id);
+                }
+            };
+            
+            try {
+                // Принимаем файл
+                $json = file_get_contents($request->file('file'));
+                
+                // Декодируем
+                $parts = json_decode($json);
+                
+                // Удаляем все существующиезаписи из БД
+                \App\Http\Models\PlanPartsModel::truncate();
+                
+                // Рекурсивно заливаем новые записи
+                $storeLevel($parts, null);
+                return 'OK';
+            } catch (\Exception $ex) {
+                return response()->json([
+                    'error' => [$ex->getMessage()],
+                ]);
+            }
+        } else {
+            return view('admin.plan.plan-import', []);
+        }
+    }
+    
+    /**
+     * Маршрут для экспорта плана системы.
+     * Данные плана собираются в виде вложенных (древовидных) объектов и 
+     * серриализируются в виде json строки.
+     * 
+     * @return type
+     */
+    public function planExport() 
+    {
+        $parts = \App\Http\Models\PlanPartsModel::orderBy('order_num', 'asc')->get();
+        
+        $loadLevel = function ($parentID) use (&$loadLevel, $parts) {
+            $res = [];
+            foreach($parts as $part) {
+                if ($part->parent_id == $parentID) {
+                    $res[] = (object)[
+                        'id' => $part->id,
+                        'name' => $part->name,
+                        'bounds' => $part->bounds,
+                        'childs' => $loadLevel($part->id),
+                    ];
+                }
+            }
+            return $res;
+        };
+        
+        $file = json_encode($loadLevel(null));
+        
+        return response($file, 200, [
+            'Content-Length' => strlen($file),
+            'Content-Disposition' => 'attachment; filename="plan.json"',
+            'Pragma' => 'public',
+        ]);
+    }
 }

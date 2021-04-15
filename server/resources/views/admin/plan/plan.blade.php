@@ -8,6 +8,11 @@
 <a href="#" class="dropdown-item" onclick="planMoveChilds(); return false;">@lang('admin/plan.plan_move_childs')</a>
 <a href="#" class="dropdown-item" onclick="planOrder(); return false;">@lang('admin/plan.plan_order')</a>
 @endif
+<div class="dropdown-divider"></div>
+<a href="#" class="dropdown-item" onclick="planImport(); return false;">@lang('admin/plan.plan_import')</a>
+@if($partID)
+<a href="{{ route('admin.plan-export') }}" class="dropdown-item">@lang('admin/plan.plan_export')</a>
+@endif
 @endsection
 
 @section('top-menu')
@@ -154,5 +159,9 @@
         dialog('{{ route("admin.plan-order", $partID) }}');
     }
     @endif
+    
+    function planImport() {
+        dialog('{{ route("admin.plan-import") }}');
+    }
 </script>
 @endsection

@@ -9,6 +9,13 @@ return [
     'plan_move_childs' => 'Здвинуть подчиненных...',
     'plan_order' => 'Порядок отображения...',
     
+    'plan_export' => 'Экспорт...',
+    'plan_import' => 'Импорт...',
+    'import_title' => 'Импорт файла плана',
+    'import_file' => 'Файл плана',
+    'import_btn' => 'Выбрать...',
+    'import_select' => 'Выберите файл...',
+    
     'table_ID' => 'ID',
     'table_PARENT_ID' => 'Владелец',
     'table_NAME' => 'Название',
