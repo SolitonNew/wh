@@ -82,18 +82,20 @@ class PlanController extends Controller
                 if (!$item) {
                     $item = new \App\Http\Models\PlanPartsModel();
                 } else {
-                    $bounds = json_decode($item->BOUNDS);
+                    $bounds = json_decode($item->bounds);
                     if ($bounds) {
                         $dx = $request->post('X') - $bounds->X;
                         $dy = $request->post('Y') - $bounds->Y;
                     }
                 }
                 
-                $item->PARENT_ID = $request->post('parent_id');
-                $item->NAME = $request->post('name');
-                $item->BOUNDS = json_encode([
-                    'X' => $request->post('X'),
-                    'Y' => $request->post('Y'),
+                $item->parent_id = $request->post('parent_id');
+                $item->name = $request->post('name');
+                
+                $off = $item->parentOffset();
+                $item->bounds = json_encode([
+                    'X' => $request->post('X') + $off->X,
+                    'Y' => $request->post('Y') + $off->Y,
                     'W' => $request->post('W'),
                     'H' => $request->post('H'),
                 ]);
@@ -128,18 +130,25 @@ class PlanController extends Controller
                 ];
             }
             
-            if (!$item->bounds) {
-                $item->bounds = json_encode([
+            if ($item->bounds) {
+                $itemBounds = json_decode($item->bounds);
+                if ($item instanceof \App\Http\Models\PlanPartsModel) {
+                    $off = $item->parentOffset();
+                    $itemBounds->X -= $off->X;
+                    $itemBounds->Y -= $off->Y;
+                }
+            } else {
+                $itemBounds = (object)[
                     'X' => 0,
                     'Y' => 0,
                     'W' => 10,
                     'H' => 6,
-                ]);
+                ];
             }
             
             return view('admin.plan.plan-edit', [
                 'item' => $item,
-                'itemBounds' => json_decode($item->bounds),
+                'itemBounds' => $itemBounds,
             ]);
         }
     }
@@ -312,7 +321,7 @@ class PlanController extends Controller
         
         return response($file, 200, [
             'Content-Length' => strlen($file),
-            'Content-Disposition' => 'attachment; filename="plan.json"',
+            'Content-Disposition' => 'attachment; filename="'.\Carbon\Carbon::now()->format('Ymd_His').'_plan.json"',
             'Pragma' => 'public',
         ]);
     }
