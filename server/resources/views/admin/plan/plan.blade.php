@@ -31,7 +31,7 @@
            class="tree-item {{ $row->id == $partID ? 'active' : '' }}" style="padding-left: {{ $row->level + 1 }}rem">{{ $row->name }}</a>
         @endforeach
     </div>
-    <div class="content-body" style="display:flex" scroll-store="planContentScroll">
+    <div id="planContentScroll" class="content-body" style="display:flex; user-select: none;" scroll-store="planContentScroll">
         <div id="planContentOff" style="position:relative;">
             <div id="planContent" class="plan-parts-content" style="position:absolute;">
             @foreach($data as $row)
@@ -49,10 +49,14 @@
 
 <script>
     var planZoom = 50;
+    var planMouseDown = false;
+    var planMouseScroll = false;
+    const planMouseScrollDelta = 15;
 
     $(document).ready(() => {
         @if($partID)
         $('div.plan-part').on('click', function (e) {
+            if (planMouseScroll) return ;
             dialog('{{ route("admin.plan-edit", "") }}/' + $(this).attr('data-id'));
         });
         @endif
@@ -65,6 +69,40 @@
         $(window).on('resize', function() {
             planResize();
         }).trigger('resize');
+        
+        $('#planContentScroll').on('mousewheel', function (e) {
+            e.preventDefault();
+            if (e.originalEvent.wheelDelta > 0) {
+                planZoomIn();
+            } else {
+                planZoomOut();
+            }
+        }).on('mousedown', function (e) {
+            planMouseScroll = false;
+            planMouseDown = {
+                x: e.screenX,
+                y: e.screenY,
+                scrollX: $(this).scrollLeft(),
+                scrollY: $(this).scrollTop(),
+            };
+        }).on('mousemove', function (e) {
+            if (!planMouseDown) return ;
+            if (e.buttons == 1) {
+                if (planMouseScroll) {
+                    $(this).scrollLeft(planMouseDown.scrollX - e.screenX + planMouseDown.x);
+                    $(this).scrollTop(planMouseDown.scrollY - e.screenY + planMouseDown.y);
+                } else {
+                    planMouseScroll = ((Math.abs(planMouseDown.x - e.screenX) > planMouseScrollDelta) ||
+                                       (Math.abs(planMouseDown.y - e.screenY) > planMouseScrollDelta));
+                }
+                
+                if (planMouseScroll) {
+                    $('div', this).css('cursor', 'all-scroll');
+                }
+            }
+        }).on('mouseup', function (e) {
+            $('div', this).css('cursor', '');
+        });        
     });
 
     function planResize() {
