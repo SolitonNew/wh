@@ -30,7 +30,7 @@
                 @yield('top-menu')
                 </div>
                 @if(\App\Http\Models\PropertysModel::getFirmwareChanges() > 0)
-                <a class="btn btn-danger" href="#" onclick="firmware(); return false;">@lang('admin/admin.menu_firmware')</a>
+                <a class="btn btn-danger" href="#" onclick="firmware(); return false;">@lang('admin/admin.menu_firmware') ({{ \App\Http\Models\PropertysModel::getFirmwareChanges() }})</a>
                 @endif
                 <a class="btn btn-primary" href="{{ route('logout') }}" style="margin-right: 0;">@lang('admin/admin.menu_logout')</a>
             </nav>
@@ -46,7 +46,9 @@
                             <img src="/img/menus/pulse-2x.png">
                             <span class="label">@lang('admin/hubs.menu')</span>
                             @if(\App\Http\Models\PropertysModel::getFirmwareChanges() > 0)
-                            <span class="badge badge-danger badge-pill">{{ \App\Http\Models\PropertysModel::getFirmwareChanges() }}</span>
+                            <span class="badge badge-danger badge-pill">{{ \App\Http\Models\VariablesModel::count() }}</span>
+                            @else
+                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VariablesModel::count() }}</span>
                             @endif
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('plan')" href="{{ route('admin.plan') }}">
