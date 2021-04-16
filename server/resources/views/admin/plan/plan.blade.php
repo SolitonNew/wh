@@ -36,7 +36,8 @@
             <div id="planContent" class="plan-parts-content" style="position:absolute;">
             @foreach($data as $row)
                 @if($row->W > 0 && $row->H > 0)
-                <div class="plan-part {{ $loop->first ? 'current' : '' }}" data-id="{{ $row->id }}"
+                <div class="plan-part" data-id="{{ $row->id }}"
+                     style="border: {{ $row->pen_width }}px {{ $row->pen_style }} {{ $row->pen_color }}; background-color: {{ $row->fill_color }}"
                      data-x="{{ $row->X }}" data-y="{{ $row->Y }}" data-w="{{ $row->W }}" data-h="{{ $row->H }}"></div>
                 @endif
             @endforeach

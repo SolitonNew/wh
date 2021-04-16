@@ -289,7 +289,7 @@ tr.table-empty:hover td {
 }
 
 .plan-part:hover {
-    background-color: #dddddd;
+    background-color: #dddddd!important;
 }
 
 .plan-part.current {

@@ -27,6 +27,8 @@ return [
     'table_H' => 'H',
     'table_DX' => 'Сместить вдоль оси X на',
     'table_DY' => 'Сместить вдоль оси Y на',
+    'table_STYLE_PEN' => 'Линия',
+    'table_STYLE_FILL' => 'Заливка',
     
     'plan_add_title' => 'Новая запись плана',
     'plan_edit_title' => 'Свойства записи плана',

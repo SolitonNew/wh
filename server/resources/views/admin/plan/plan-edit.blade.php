@@ -54,22 +54,20 @@
             <div class="form-label">@lang('admin/plan.table_BOUNDS_XY')</div>
         </div>
         <div class="col-sm-9">
-            <div class="">
-                <div class="row">
-                    <div class="col-sm-2">
-                        <div class="form-label strong">@lang('admin/plan.table_X')</div>
-                    </div>
-                    <div class="col-sm-4">
-                        <input class="form-control" type="number" name="X" step="0.01" value="{{ $itemBounds->X }}" required="">
-                        <div class="invalid-feedback"></div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-label strong">@lang('admin/plan.table_Y')</div>
-                    </div>
-                    <div class="col-sm-4">
-                        <input class="form-control" type="number" name="Y" step="0.01" value="{{ $itemBounds->Y }}" required="">
-                        <div class="invalid-feedback"></div>
-                    </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-label strong">@lang('admin/plan.table_X')</div>
+                </div>
+                <div class="col-sm-4">
+                    <input class="form-control" type="number" name="X" step="0.01" value="{{ $itemBounds->X }}" required="">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-label strong">@lang('admin/plan.table_Y')</div>
+                </div>
+                <div class="col-sm-4">
+                    <input class="form-control" type="number" name="Y" step="0.01" value="{{ $itemBounds->Y }}" required="">
+                    <div class="invalid-feedback"></div>
                 </div>
             </div>
         </div>
@@ -79,24 +77,44 @@
             <div class="form-label">@lang('admin/plan.table_BOUNDS_WH')</div>
         </div>
         <div class="col-sm-9">
-            <div class="">
-                <div class="row">
-                    <div class="col-sm-2">
-                        <div class="form-label strong">@lang('admin/plan.table_W')</div>
-                    </div>
-                    <div class="col-sm-4">
-                        <input class="form-control" type="number" name="W" step="0.01" value="{{ $itemBounds->W }}" required="">
-                        <div class="invalid-feedback"></div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-label strong">@lang('admin/plan.table_H')</div>
-                    </div>
-                    <div class="col-sm-4">
-                        <input class="form-control" type="number" name="H" step="0.01" value="{{ $itemBounds->H }}" required="">
-                        <div class="invalid-feedback"></div>
-                    </div>
+            <div class="row" style="margin-bottom: 0;">
+                <div class="col-sm-2">
+                    <div class="form-label strong">@lang('admin/plan.table_W')</div>
+                </div>
+                <div class="col-sm-4">
+                    <input class="form-control" type="number" name="W" step="0.01" value="{{ $itemBounds->W }}" required="">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-label strong">@lang('admin/plan.table_H')</div>
+                </div>
+                <div class="col-sm-4">
+                    <input class="form-control" type="number" name="H" step="0.01" value="{{ $itemBounds->H }}" required="">
+                    <div class="invalid-feedback"></div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-label">@lang('admin/plan.table_STYLE_PEN')</div>
+        </div>
+        <div class="col-sm-9" style="display: flex; max-width: 335px; justify-content: space-between;">
+            <select class="custom-select" name="pen_style" style="width: 100px;">
+            @foreach(['none', 'solid', 'dotted', 'dashed', 'double', 'groove', 'ridge', 'insert', 'outset'] as $val)
+            <option {{ $itemStyle->pen_style == $val ? 'selected' : '' }}>{{ $val }}</option>
+            @endforeach
+            </select>
+            <input type="number" class="form-control" style="width: 70px;" name="pen_width" value="{{ $itemStyle->pen_width }}">
+            <input type="text" class="form-control" style="width: 100px;" name="pen_color" value="{{ $itemStyle->pen_color }}">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-label">@lang('admin/plan.table_STYLE_FILL')</div>
+        </div>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" style="width: 100px;" name="fill_color" value="{{ $itemStyle->fill_color }}">
         </div>
     </div>
 </form>

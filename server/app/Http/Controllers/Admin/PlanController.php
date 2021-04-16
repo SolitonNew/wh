@@ -43,6 +43,17 @@ class PlanController extends Controller
             $row->Y = $v->Y;
             $row->W = $v->W;
             $row->H = $v->H;
+            
+            if ($row->style) {
+                $v = json_decode($row->style);
+            } else {
+                $v = (object)[];
+            }
+            
+            $row->pen_style = isset($v->pen_style) ? $v->pen_style : 'solid';
+            $row->pen_width = isset($v->pen_width) ? $v->pen_width : 1;
+            $row->pen_color = isset($v->pen_color) ? $v->pen_color : '#000000';
+            $row->fill_color = isset($v->fill_color) ? $v->fill_color : '#EEEEEE';
         }
         
         return view('admin.plan.plan', [
@@ -77,6 +88,8 @@ class PlanController extends Controller
             }
             
             try {
+                $off = $item->parentOffset();
+                
                 $dx = 0;
                 $dy = 0;                
                 if (!$item) {
@@ -84,20 +97,25 @@ class PlanController extends Controller
                 } else {
                     $bounds = json_decode($item->bounds);
                     if ($bounds) {
-                        $dx = $request->post('X') - $bounds->X;
-                        $dy = $request->post('Y') - $bounds->Y;
+                        $dx = $request->post('X') + $off->X - $bounds->X;
+                        $dy = $request->post('Y') + $off->Y - $bounds->Y;
                     }
                 }
                 
                 $item->parent_id = $request->post('parent_id');
                 $item->name = $request->post('name');
                 
-                $off = $item->parentOffset();
                 $item->bounds = json_encode([
                     'X' => $request->post('X') + $off->X,
                     'Y' => $request->post('Y') + $off->Y,
                     'W' => $request->post('W'),
                     'H' => $request->post('H'),
+                ]);
+                $item->style = json_encode([
+                    'pen_style' => $request->post('pen_style'),
+                    'pen_width' => $request->post('pen_width'),
+                    'pen_color' => $request->post('pen_color'),
+                    'fill_color' => $request->post('fill_color'),
                 ]);
                 $item->save();
                 
@@ -146,9 +164,21 @@ class PlanController extends Controller
                 ];
             }
             
+            if ($item->style) {
+                $itemStyle = json_decode($item->style);
+            } else {
+                $itemStyle = (object)[];
+            }
+            
+            if (!isset($itemStyle->pen_style)) $itemStyle->pen_style = 'solid';
+            if (!isset($itemStyle->pen_width)) $itemStyle->pen_width = 1;
+            if (!isset($itemStyle->pen_color)) $itemStyle->pen_color = '#000000';
+            if (!isset($itemStyle->fill_color)) $itemStyle->fill_color = '#EEEEEE';
+            
             return view('admin.plan.plan-edit', [
                 'item' => $item,
                 'itemBounds' => $itemBounds,
+                'itemStyle' => $itemStyle,
             ]);
         }
     }

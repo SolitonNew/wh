@@ -283,7 +283,7 @@ class Firmware
      * 
      * @return boolean|array
      */
-    public function getHex() 
+    public function getHex()
     {
         $file = $this->_firmwarePath().'/Release/'.$this->_project.'.hex';
         if (!file_exists($file)) return false;
