@@ -169,14 +169,20 @@
 
         $('div[scroll-store]').each(function () {
             let name = $(this).attr('scroll-store');
-            let t = getCookie(name);
-            if (t > 0) {
-                $(this).scrollTop(t);
+            let c = getCookie(name);
+            if (c) {
+                let a = c.split('|');
+                if (a[0] > 0) {
+                    $(this).scrollTop(a[0]);
+                }
+                if (a[1] > 0) {
+                    $(this).scrollLeft(a[1]);
+                }
             }
 
             $(this).on('scroll', (e) => {
                 let o = $(this);
-                document.cookie = name + '=' + o.scrollTop() + '; path=/admin; max-age=3600';
+                document.cookie = name + '=' + o.scrollTop() + '|' + o.scrollLeft() + '; path=/admin; max-age=3600';
             }).trigger('scroll');
         });
     });
