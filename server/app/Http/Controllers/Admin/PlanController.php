@@ -88,7 +88,7 @@ class PlanController extends Controller
             }
             
             try {
-                $off = $item->parentOffset();
+                $off = \App\Http\Models\PlanPartsModel::parentOffset($request->post('parent_id'));
                 
                 $dx = 0;
                 $dy = 0;                
@@ -145,13 +145,14 @@ class PlanController extends Controller
                     'parent_id' => $p_id,
                     'order_num' => null,
                     'bounds' => null,
+                    'style' => null,
                 ];
             }
             
             if ($item->bounds) {
                 $itemBounds = json_decode($item->bounds);
                 if ($item instanceof \App\Http\Models\PlanPartsModel) {
-                    $off = $item->parentOffset();
+                    $off = \App\Http\Models\PlanPartsModel::parentOffset($item->parent_id);
                     $itemBounds->X -= $off->X;
                     $itemBounds->Y -= $off->Y;
                 }
