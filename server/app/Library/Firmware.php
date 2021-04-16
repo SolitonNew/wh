@@ -250,13 +250,14 @@ class Firmware
         }
         
         // Собираем комманды линковки
+        $path_map = $release_path.'/'.$this->_project.'.map';
         $path_elf = $release_path.'/'.$this->_project.'.elf';
         $files_o = [];
         foreach($files as $file) {
             $files_o[] = $release_path.'/'.substr($file, 0, strlen($file) - 2).'.o';
         }
         $path_o_all = implode(' ', $files_o);
-        $commands[] = "avr-gcc -o $path_elf $path_o_all -Wl,-Map=\"din_master.map\" -Wl,-lm -mmcu=$this->_mmcu ";
+        $commands[] = "avr-gcc -o $path_elf $path_o_all -Wl,-Map=\"$path_map\" -Wl,-lm -mmcu=$this->_mmcu ";
         
         // Команда создания прошивки
         $path_hex = $release_path.'/'.$this->_project.'.hex';
@@ -282,7 +283,7 @@ class Firmware
      * 
      * @return boolean|array
      */
-    public function getHex() 
+    public function getHex()
     {
         $file = $this->_firmwarePath().'/Release/'.$this->_project.'.hex';
         if (!file_exists($file)) return false;

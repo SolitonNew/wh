@@ -198,8 +198,8 @@ class PlanPartsModel extends Model
     /**
      * 
      */
-    public function parentOffset() {
-        $parent = PlanPartsModel::find($this->parent_id);
+    static public function parentOffset($parentId) {
+        $parent = PlanPartsModel::find($parentId);
         if ($parent) {
             $bounds = json_decode($parent->bounds);
             return (object)[
