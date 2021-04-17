@@ -51,7 +51,11 @@
     var planZoom = 50;
     var planMouseDown = false;
     var planMouseScroll = false;
+    var planMinX = 0;    
+    var planMinY = 0;    
+    
     const planMouseScrollDelta = 15;
+    const planZoomStep = 1.25;
 
     $(document).ready(() => {
         @if($partID)
@@ -99,6 +103,8 @@
                 if (planMouseScroll) {
                     $('div', this).css('cursor', 'all-scroll');
                 }
+            } else {
+                $('div', this).css('cursor', '');
             }
         }).on('mouseup', function (e) {
             $('div', this).css('cursor', '');
@@ -106,10 +112,10 @@
     });
 
     function planResize() {
-        let minX = 10000;
-        let minY = 10000;
-        let maxX = 0;
-        let maxY = 0;
+        let minX = 999999;
+        let minY = 999999;
+        let maxX = -999999;
+        let maxY = -999999;
 
         $('#planContent .plan-part').css({
             'transition-duration': '0s',
@@ -142,8 +148,8 @@
         let w = maxX - minX;
         let h = maxY - minY;
 
-        let p_w = $('.content-body').width();
-        let p_h = $('.content-body').height();
+        let p_w = $('#planContentScroll').width();
+        let p_h = $('#planContentScroll').height();
 
         let nx = (p_w - w) / 2 - minX;
         if (nx < -minX) nx = -minX;
@@ -161,22 +167,49 @@
         $('#planContent .plan-part').css({
             'transition-duration': '0.25s',
         });
+        
+        planMinX = minX;
+        planMinY = minY;
     }
 
     function planZoomIn() {
-        let z = planZoom * 1.5;
-        if (z > 200) z = 200;
+        let z = planZoom * planZoomStep;
+        if (z > 400) z = 400;
+        
+        let z_off = z / planZoom;
+        let s_w = $('#planContentScroll').width();
+        let s_h = $('#planContentScroll').height();
+        let s_x = $('#planContentScroll').scrollLeft();
+        let s_y = $('#planContentScroll').scrollTop();
+        
         planZoom = z;
         planResize();
-
+        
+        let c_x = (s_x + s_w / 2) * z_off - s_w / 2;
+        $('#planContentScroll').scrollLeft(c_x);
+        let c_y = (s_y + s_h / 2) * z_off - s_h / 2;
+        $('#planContentScroll').scrollTop(c_y);
+        
         setCookie('planZoom', planZoom);
     }
 
     function planZoomOut() {
-        let z = planZoom / 1.5;
+        let z = planZoom / planZoomStep;
         if (z < 2) z = 2;
+        
+        let z_off = z / planZoom;
+        let s_w = $('#planContentScroll').width();
+        let s_h = $('#planContentScroll').height();
+        let s_x = $('#planContentScroll').scrollLeft();
+        let s_y = $('#planContentScroll').scrollTop();
+        
         planZoom = z;
         planResize();
+        
+        let c_x = (s_x + s_w / 2) * z_off - s_w / 2;
+        $('#planContentScroll').scrollLeft(c_x);
+        let c_y = (s_y + s_h / 2) * z_off - s_h / 2;
+        $('#planContentScroll').scrollTop(c_y);
 
         setCookie('planZoom', planZoom);
     }
