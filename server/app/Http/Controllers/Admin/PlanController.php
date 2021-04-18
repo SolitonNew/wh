@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use \Illuminate\Support\Facades\DB;
 use Log;
+use DB;
 
 class PlanController extends Controller
 {
@@ -26,9 +26,10 @@ class PlanController extends Controller
             }
         }
         
-        $data = \App\Http\Models\PlanPartsModel::generateTree($id);
+        // Читаем список записей плана
         
-        foreach($data as &$row) {
+        $data = \App\Http\Models\PlanPartsModel::generateTree($id);
+        foreach($data as $row) {
             if ($row->bounds) {
                 $v = json_decode($row->bounds);
             } else {
@@ -56,9 +57,28 @@ class PlanController extends Controller
             $row->fill_color = isset($v->fill_color) ? $v->fill_color : '#EEEEEE';
         }
         
+        // Читаем список устройств
+        $devices = [];
+        foreach(\App\Http\Models\VariablesModel::get() as $device) {
+            $part = false;
+            foreach($data as $row) {
+                if ($device->group_id == $row->id) {
+                    $part = $row;
+                    break;
+                }
+            }
+            
+            if ($part) {
+                $device->X = $part->X;
+                $device->Y = $part->Y;
+                $devices[] = $device;
+            }
+        }
+        
         return view('admin.plan.plan', [
             'partID' => $id,
             'data' => $data,
+            'devices' => $devices,
         ]);
     }
     
@@ -293,6 +313,7 @@ class PlanController extends Controller
                     $plan->parent_id = $parentID;
                     $plan->name = $item->name;
                     $plan->bounds = $item->bounds;
+                    $plan->style = $item->style;
                     $plan->order_num = $i++;
                     $plan->save();                    
                     $storeLevel($item->childs, $item->id);
@@ -341,6 +362,7 @@ class PlanController extends Controller
                         'id' => $part->id,
                         'name' => $part->name,
                         'bounds' => $part->bounds,
+                        'style' => $part->style,
                         'childs' => $loadLevel($part->id),
                     ];
                 }
@@ -355,5 +377,115 @@ class PlanController extends Controller
             'Content-Disposition' => 'attachment; filename="'.\Carbon\Carbon::now()->format('Ymd_His').'_plan.json"',
             'Pragma' => 'public',
         ]);
+    }
+    
+    /**
+     * Маршрут для установки/переустановки связи между устройством и 
+     * фрагментом плана, а также определения положения устройства на плане.
+     * 
+     * @param Request $request
+     * @param int $planID
+     * @param int $deviceID
+     * @return string
+     * @throws Exception
+     */
+    public function linkDevice(Request $request, int $planID, int $deviceID = -1) {
+        if ($request->method() == 'POST') {
+            try {
+                $this->validate($request, [
+                    'offset' => 'numeric|required',
+                    'cross' => 'numeric|required',
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $ex) {
+                return response()->json($ex->errors());
+            }
+            
+            try {
+                $deviceID = $request->post('device');
+                $device = \App\Http\Models\VariablesModel::find($deviceID);
+                if ($device) {
+                    $position = (object)[
+                        'surface' => $request->post('surface'),
+                        'offset' => $request->post('offset'),
+                        'cross' => $request->post('cross'),
+                    ];
+                    $device->group_id = $planID;
+                    $device->position = json_encode($position);
+                    $device->save();                    
+                    return 'OK';
+                } else {
+                    throw new Exception('Device not found');
+                }
+            } catch (\Exception $ex) {
+                return response()->json([
+                    'error' => [$ex->getMessage()],
+                ]);
+            }
+        } else {
+            $device = \App\Http\Models\VariablesModel::find($deviceID);
+            if ($device) {
+                $position = json_decode($device->position);
+            } else {
+                $position = (object)[
+                    'surface' => 'top',
+                    'offset' => 0,
+                    'cross' => 0,
+                ];
+            }
+            
+            if (!isset($position->surface)) $position->surface = 'top';
+            if (!isset($position->offset)) $position->offset = 0;
+            if (!isset($position->cross)) $position->cross = 0;
+            
+            $sql = "select v.*
+                      from core_variables v
+                    order by v.name";
+            $devices = DB::select($sql);
+            
+            foreach($devices as $device) {
+                $path = \App\Http\Models\PlanPartsModel::getPath($device->group_id, '/');
+                if ($path) {
+                    $device->inPlan = true;
+                    $device->label = '['.$path.'] ';
+                } else {
+                    $device->inPlan = false;
+                    $device->label = '';
+                }
+                $device->label .= $device->name;
+                $app_control = \App\Http\Models\VariablesModel::decodeAppControl($device->app_control);
+                $device->label .= ' '.$app_control->label;
+            }
+            
+            usort($devices, function ($item1, $item2) {
+                return $item1->inPlan > $item2->inPlan;
+            });
+            
+            return view('admin.plan.plan-link-device', [
+                'planID' => $planID,
+                'deviceID' => $deviceID,
+                'position' => $position,
+                'devices' => $devices,
+            ]);
+        }
+    }
+    
+    /**
+     * Маршрут для открепления устройства от фрагмента плана.
+     * 
+     * @param int $deviceID
+     * @return string
+     */
+    public function unlinkDevice(int $deviceID) {
+        try {
+            $device = \App\Http\Models\VariablesModel::find($deviceID);
+            if ($device) {
+                $device->group_id = -1;
+                $device->position = null;
+                $device->save();
+            }
+            return 'OK';
+        } catch (\Exception $ex) {
+            return 'ERROR';
+        }
     }
 }

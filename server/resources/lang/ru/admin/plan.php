@@ -36,6 +36,19 @@ return [
     'plan_order_title' => 'Порядок отображения',
     'plan-delete-confirm' => 'Удалить текущую запись плана?',
     
+    'menu_plan_edit' => 'Свойства записи плана...',
+    'menu_add_device' => 'Разместить новое устройство...',
+    'plan_add_device_title' => 'Разместить устройство',
+    'plan_edit_device_title' => 'Позиция устройства',
+    
+    'device_list' => 'Устройство',
+    'device_surface' => 'Поверхность',
+    'device_offset' => 'Смещение',
+    'device_cross' => 'Высота',
+    'device_offset_roof' => 'X',
+    'device_cross_roof' => 'Y',
+    'device_unlink_confirm' => 'Удалить устройство из записи плана?',
+    
     'zoom_in' => 'Увеличить',
     'zoom_out' => 'Уменьшить',
 ];

@@ -8,7 +8,7 @@
 <form id="plan_order_form" method="POST" action="{{ route('admin.plan-order', $partID) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
-    <div class="form-control tree" style="height: auto; min-height: 300px;">
+    <div class="form-control tree" style="height: auto; min-height: 300px;max-height: 300px;">
     @foreach($data as $row)
     <a href="#" class="tree-item" data-id="{{ $row->id }}">{{ $row->name }}</a>
     @endforeach
