@@ -98,9 +98,16 @@
             if (planMouseScroll) return ;
             dialog('{{ route("admin.plan-edit", "") }}/' + $(this).attr('data-id'));
         }).on('contextmenu', function (e) {
+            let h = $('#planPartMenu').height();
+            let x = e.pageX;
+            let y = e.pageY;
+            let pageH = window.innerHeight - 40; /* 40 - это заглушка */
+            if (y + h > pageH) {
+                y = pageH - h;
+            }
             $('#planPartMenu').css({
-                left: e.pageX + 'px',
-                top: e.pageY + 'px',
+                left: x + 'px',
+                top: y + 'px',
             }).show();
             planContextMenuID = $(this).attr('data-id');
             return false;
