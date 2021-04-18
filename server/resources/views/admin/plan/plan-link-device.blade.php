@@ -9,6 +9,13 @@
 @endsection
 
 @section('content')
+<style>
+    #plan_link_device_form .roof,
+    #plan_link_device_form .not-roof {
+        display: none;
+    }
+</style>
+
 <form id="plan_link_device_form" class="container" method="POST" action="{{ route('admin.plan-link-device', [$planID, $deviceID]) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
@@ -48,18 +55,20 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <label class="form-label">@lang('admin/plan.device_offset')</label>
+            <label class="form-label not-roof">@lang('admin/plan.device_offset')</label>
+            <label class="form-label roof">@lang('admin/plan.device_offset_roof')</label>
         </div>
         <div class="col-sm-4">
-            <input type="number" class="form-control" name="offset" value="{{ $position->offset }}">
+            <input type="number" class="form-control" name="offset" value="{{ $position->offset }}" step="0.01">
         </div>
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <label class="form-label">@lang('admin/plan.device_cross')</label>
+            <label class="form-label not-roof">@lang('admin/plan.device_cross')</label>
+            <label class="form-label roof">@lang('admin/plan.device_cross_roof')</label>
         </div>
         <div class="col-sm-4">
-            <input type="number" class="form-control" name="cross" value="{{ $position->cross }}">
+            <input type="number" class="form-control" name="cross" value="{{ $position->cross }}" step="0.01">
         </div>
     </div>
 </form>
@@ -137,6 +146,17 @@
         let b_right = false;
         let b_bottom = false;
         let b_left = false;
+        
+        // Корректируем интерфейс
+        if ($('#plan_link_device_form select[name="surface"]').val() == 'roof') {
+            $('#plan_link_device_form .not-roof').fadeOut(100, function () {
+                $('#plan_link_device_form .roof').fadeIn(100);
+            });
+        } else {
+            $('#plan_link_device_form .roof').fadeOut(100, function () {
+                $('#plan_link_device_form .not-roof').fadeIn(100);
+            });
+        }
 
         // Применяем стили для стен
         switch ($('#plan_link_device_form select[name="surface"]').val()) {
