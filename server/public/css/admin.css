@@ -440,3 +440,36 @@ tr.schedule-exec-today td {
 .statistics-chart-panel {
     border-bottom: 1px solid rgba(0,0,0,0.125);
 }
+
+.dropdown-menu-sub {
+    position: relative;
+    cursor: pointer;
+}
+
+.dropdown-menu-sub > div:first-child > span {
+    display: inline-block;
+    width: 100%;
+}
+
+.dropdown-menu-sub > div:first-child::after {
+    display: inline-block;
+    margin-left: .255em;
+    vertical-align: 0;
+    content: "";
+    border-top: .3em solid transparent;
+    border-right: 0;
+    border-bottom: .3em solid transparent;
+    border-left: .3em solid;
+}
+
+.dropdown-menu-sub .dropdown-menu {
+    position: absolute;
+    top: -0.5rem;
+    left: calc(100% - 0.5rem);
+    display: none;
+    transition-duration: 0.5s;
+}
+
+.dropdown-menu-sub:hover .dropdown-menu {
+    display: inline-block;
+}

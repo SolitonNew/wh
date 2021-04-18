@@ -220,6 +220,56 @@ class PlanController extends Controller
     }
     
     /**
+     * Маршрут для клонирования записи плана.
+     * Делает копию записи но изменяет координаты новой записи с учетом 
+     * входного параметра $direction таким образом, что бы новая запись 
+     * прилегала к исходной.
+     * 
+     * @param int $id
+     * @param string $direction
+     * @return string
+     */
+    public function planClone(int $id, string $direction) 
+    {
+        try {
+            $part = \App\Http\Models\PlanPartsModel::find($id);
+            if ($part) {
+                $new_part = new \App\Http\Models\PlanPartsModel();
+                
+                $new_part->parent_id = $part->parent_id;
+                $new_part->name = $part->name.' copy';
+                $new_part->style = $part->style;
+                
+                $bounds = json_decode($part->bounds);
+                switch ($direction) {
+                    case 'top':
+                        $bounds->Y -= $bounds->H;
+                        break;
+                    case 'right':
+                        $bounds->X += $bounds->W;
+                        break;
+                    case 'bottom':
+                        $bounds->Y += $bounds->H;
+                        break;
+                    case 'left':
+                        $bounds->X -= $bounds->W;
+                        break;
+                }
+                $new_part->bounds = json_encode($bounds);
+                
+                $new_part->save();
+                $new_part->order_num = $new_part->id;
+                $new_part->save();
+                
+                return 'OK';
+            }            
+            return 'ERROR';
+        } catch (\Exception $ex) {
+            return 'ERROR';
+        }
+    }
+    
+    /**
      * Маршрут для отображения окна перемещения к другому подчиненному 
      * записи плана.
      * 
@@ -387,7 +437,8 @@ class PlanController extends Controller
      * @return string
      * @throws Exception
      */
-    public function linkDevice(Request $request, int $planID, int $deviceID = -1) {
+    public function linkDevice(Request $request, int $planID, int $deviceID = -1) 
+    {
         if ($request->method() == 'POST') {
             try {
                 $this->validate($request, [
@@ -489,7 +540,8 @@ class PlanController extends Controller
      * @param int $deviceID
      * @return string
      */
-    public function unlinkDevice(int $deviceID) {
+    public function unlinkDevice(int $deviceID) 
+    {
         try {
             $device = \App\Http\Models\VariablesModel::find($deviceID);
             if ($device) {
