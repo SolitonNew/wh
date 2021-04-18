@@ -190,8 +190,8 @@
         // Двигаем устройство
         let device = $('#deviceLinkView .plan-device');
         
-        let w = $('#deviceLinkView').width();
-        let h = $('#deviceLinkView').height();
+        let w = $('#deviceLinkView').width() - 4; /* Учитываем толщину обводки */
+        let h = $('#deviceLinkView').height() - 4;
         let kx = (w - device.width()) / b_w;
         let ky = (h - device.height()) / b_h;
         
@@ -201,32 +201,32 @@
         switch ($('#plan_link_device_form select[name="surface"]').val()) {
             case 'top':
                 device.css({
-                    left: (offset * kx - 1) + 'px',
-                    top: '-1px',
+                    left: (offset * kx) + 'px',
+                    top: '0px',
                 });
                 break;
             case 'right':
                 device.css({
-                    left: (w - device.width() - 1) + 'px',
-                    top: (offset * ky - 1) + 'px',
+                    left: (w - device.width()) + 'px',
+                    top: (offset * ky) + 'px',
                 });
                 break;
             case 'bottom':
                 device.css({
-                    left: (w - offset * kx - device.width() - 1) + 'px',
-                    top: (h - device.height() - 1) + 'px',
+                    left: (w - offset * kx - device.width()) + 'px',
+                    top: (h - device.height()) + 'px',
                 });
                 break;
             case 'left':
                 device.css({
-                    left: '-1px',
-                    top: (h - offset * ky - device.height() - 1) + 'px',
+                    left: '0px',
+                    top: (h - offset * ky - device.height()) + 'px',
                 });
                 break;
             case 'roof':
                 device.css({
-                    left: (offset * kx - 1) + 'px',
-                    top: (cross * ky - 1) + 'px',
+                    left: (offset * kx) + 'px',
+                    top: (cross * ky) + 'px',
                 });
                 break;
         }

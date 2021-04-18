@@ -216,8 +216,8 @@
             let position = $(this).data('position');
             let partBounds = $(this).data('partBounds');
             
-            let w = $(this).width() + 2;
-            let h = $(this).height() + 2;
+            let w = $(this).width() + 4; /* Учитывается толщина обводки */
+            let h = $(this).height() + 4;
             
             let partX = partBounds.X * planZoom + partPenWidth2;
             let partY = partBounds.Y * planZoom + partPenWidth2;
