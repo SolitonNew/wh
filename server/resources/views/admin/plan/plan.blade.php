@@ -38,30 +38,67 @@
                 @if($row->W > 0 && $row->H > 0)
                 <div class="plan-part" data-id="{{ $row->id }}"
                      style="border: {{ $row->pen_width }}px {{ $row->pen_style }} {{ $row->pen_color }}; background-color: {{ $row->fill_color }}"
-                     data-x="{{ $row->X }}" data-y="{{ $row->Y }}" data-w="{{ $row->W }}" data-h="{{ $row->H }}"></div>
+                     data-x="{{ $row->X }}" data-y="{{ $row->Y }}" 
+                     data-w="{{ $row->W }}" data-h="{{ $row->H }}"
+                     data-pen-style="{{ $row->pen_style }}" data-pen-width="{{ $row->pen_width }}"></div>
                 @endif
+            @endforeach
+            @foreach($devices as $row)
+            <div class="plan-device" 
+                 data-id="{{ $row->id }}" data-part-id="{{ $row->group_id }}"
+                 data-position="{{ $row->position }}"
+                 data-part-bounds="{{ $row->partBounds }}"></div>
             @endforeach
             </div>
         </div>
+    </div>
+    <div id="planPartMenu" class="dropdown-menu">
+        <a class="dropdown-item strong" href="#" onclick="planMenuPlanEdit(); return false;">@lang('admin/plan.menu_plan_edit')</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" onclick="planMenuAddDevice(); return false;">@lang('admin/plan.menu_add_device')</a>
     </div>
 </div>
 @endif
 
 <script>
+    const planMouseScrollDelta = 15;
+    const planZoomStep = 1.25;
+    const planPenZoomScale = 50;
+    const planMinPenWidth = 0.5;
+    
     var planZoom = 50;
     var planMouseDown = false;
     var planMouseScroll = false;
     var planMinX = 0;    
     var planMinY = 0;    
-    
-    const planMouseScrollDelta = 15;
-    const planZoomStep = 1.25;
+    var planContextMenuID = -1;
 
     $(document).ready(() => {
+        window.addEventListener('mousedown', function (e) {
+            if ($('#planPartMenu').find(e.target).length == 0) {
+                $('#planPartMenu').hide(); 
+            }
+        });
+        
+        window.addEventListener('mouseup', function (e) {
+            $('#planPartMenu').hide();
+        });
+        
         @if($partID)
-        $('div.plan-part').on('click', function (e) {
+        $('#planContent .plan-part').on('click', function (e) {
             if (planMouseScroll) return ;
             dialog('{{ route("admin.plan-edit", "") }}/' + $(this).attr('data-id'));
+        }).on('contextmenu', function (e) {
+            $('#planPartMenu').css({
+                left: e.pageX + 'px',
+                top: e.pageY + 'px',
+            }).show();
+            planContextMenuID = $(this).attr('data-id');
+            return false;
+        });
+        
+        $('#planContent .plan-device').on('click', function (e) {
+            dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('id'));
         });
         @endif
 
@@ -112,6 +149,8 @@
     });
 
     function planResize() {
+        let penWidth2Parts = new Array(); /* Нужен кеш с вычислениями бордеров, что бы правильно позиционировать устройства */
+        
         let minX = 999999;
         let minY = 999999;
         let maxX = -999999;
@@ -121,16 +160,32 @@
             'transition-duration': '0s',
         });
 
+        /* Настраиваем отображение комнат */
         $('#planContent .plan-part').each(function() {
             let x = $(this).data('x');
             let y = $(this).data('y');
             let w = $(this).data('w');
             let h = $(this).data('h');
+            let penStyle = $(this).data('pen-style');
+            let penWidth = 0; 
+            if (penStyle !== 'none') {
+                let pw = parseInt($(this).data('pen-width'));
+                penWidth = pw ? pw : 1;
+                penWidth = penWidth * planZoom / planPenZoomScale;
+                if (penWidth < planMinPenWidth) penWidth = planMinPenWidth;
+            }
+            let penWidth2 = Math.ceil(penWidth / 2);
+            penWidth = penWidth2 + penWidth2;
+            
+            penWidth2Parts.push({
+                id: $(this).data('id'),
+                width: penWidth2,
+            });
 
-            x = x * planZoom;
-            y = y * planZoom;
-            w = w * planZoom;
-            h = h * planZoom;
+            x = x * planZoom - penWidth2;
+            y = y * planZoom - penWidth2;
+            w = w * planZoom + penWidth;
+            h = h * planZoom + penWidth;
 
             if (x < minX) minX = x;
             if (y < minY) minY = y;
@@ -142,9 +197,71 @@
                 top: y + 'px',
                 width: w + 'px',
                 height: h + 'px',
+                'border-width': penWidth + 'px',
             });
         });
-
+        
+        /* Настраиваем отображение устройств */
+        $('#planContent .plan-device').each(function () {
+            let partId = $(this).data('part-id');
+            let partPenWidth2 = 1;
+            for (let i = 0; i < penWidth2Parts.length; i++) {
+                if (penWidth2Parts[i].id === partId) {
+                    partPenWidth2 = penWidth2Parts[i].width;
+                    break;
+                }
+            }
+            let partPenWidth = partPenWidth2 + partPenWidth2;
+            
+            let position = $(this).data('position');
+            let partBounds = $(this).data('partBounds');
+            
+            let w = $(this).width() + 4; /* Учитывается толщина обводки */
+            let h = $(this).height() + 4;
+            
+            let partX = partBounds.X * planZoom + partPenWidth2;
+            let partY = partBounds.Y * planZoom + partPenWidth2;
+            let partW = partBounds.W * planZoom - partPenWidth;
+            let partH = partBounds.H * planZoom - partPenWidth;
+            
+            let kx = (partW - w) / partBounds.W;
+            let ky = (partH - h) / partBounds.H;
+            
+            switch (position.surface) {
+                case 'top':
+                    $(this).css({
+                        left: (partX + position.offset * kx) + 'px',
+                        top: (partY) + 'px',
+                    });
+                    break;
+                case 'right':
+                    $(this).css({
+                        left: (partX + partW - w) + 'px',
+                        top: (partY + position.offset * ky) + 'px',
+                    });
+                    break;
+                case 'bottom':
+                    $(this).css({
+                        left: (partX + partW - position.offset * kx - w) + 'px',
+                        top: (partY + partH - h) + 'px',
+                    });
+                    break;
+                case 'left':
+                    $(this).css({
+                        left: (partX) + 'px',
+                        top: (partY + partH - h - position.offset * ky) + 'px',
+                    });
+                    break;
+                case 'roof':
+                    $(this).css({
+                        left: (partX + position.offset * kx) + 'px',
+                        top: (partY + position.cross * ky) + 'px',
+                    });
+                    break;
+            }
+        });
+        
+        /* Настраиваем область отображения */
         let w = maxX - minX;
         let h = maxY - minY;
 
@@ -235,5 +352,15 @@
     function planImport() {
         dialog('{{ route("admin.plan-import") }}');
     }
+    
+    @if($partID)
+    function planMenuPlanEdit() {
+        dialog('{{ route("admin.plan-edit", "") }}/' + planContextMenuID);
+    }
+        
+    function planMenuAddDevice() {
+        dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + planContextMenuID + '/-1');
+    }
+    @endif
 </script>
 @endsection

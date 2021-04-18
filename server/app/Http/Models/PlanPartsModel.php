@@ -11,18 +11,6 @@ class PlanPartsModel extends Model
     public $timestamps = false;
     
     /**
-     * 
-     */
-    static public function boot() 
-    {
-        parent::boot();
-        
-        self::updating(function($model) {
-            self::_updatingHandler($model);
-        });
-    }
-    
-    /**
      * Кеш всех записей, которые могут использоваться для построения деревьев
      * Используется во многих местах в одном сеансе.
      * 
@@ -43,34 +31,26 @@ class PlanPartsModel extends Model
         
         return self::$_all_parts_cache;
     }
-    
+        
     /**
-     * 
-     * @param type $p_id
-     * @param type $level
-     * @param type $list
-     * @param type $data
-     */
-    static private function _generateTreeLevel($p_id, $level, &$data) 
-    {
-        foreach(self::getAllPartsCache() as $row) {
-            if ($row->parent_id == $p_id) {
-                $item = $row;
-                $item->level = $level;
-                $data[] = $item;
-                self::_generateTreeLevel($row->id, $level + 1, $data);
-            }
-        }
-    }
-    
-    /**
-     *  Формирует набор данных для дерева помещений
+     * Формирует набор данных для дерева помещений.
      * 
      * @return array
      */
     static public function generateTree(int $id = null) 
     {       
         $data = [];
+        
+        $treeLevel = function ($p_id, $level) use (&$treeLevel, &$data) {
+            foreach(self::getAllPartsCache() as $row) {
+                if ($row->parent_id == $p_id) {
+                    $item = $row;
+                    $item->level = $level;
+                    $data[] = $item;
+                    $treeLevel($row->id, $level + 1);
+                }
+            }
+        };
         
         foreach(self::getAllPartsCache() as $row) {
             if ($row->id == $id) {
@@ -80,27 +60,11 @@ class PlanPartsModel extends Model
             }
         }
         
-        self::_generateTreeLevel($id, 0, $data);
+        $treeLevel($id, 0);
         
         return $data;
     }
-    
-    /**
-     * 
-     * @param type $p_id
-     * @param type $list
-     * @param type $data
-     */
-    static public function _genLevelIDsForGroupAtParent($p_id, &$data) 
-    {
-        foreach(self::getAllPartsCache() as $row) {
-            if ($row->parent_id == $p_id) {
-                $data[] = $row->id;
-                self::_genLevelIDsForGroupAtParent($row->id, $data);
-            }
-        }
-    }
-    
+       
     /**
      * 
      * @param type $id
@@ -109,21 +73,23 @@ class PlanPartsModel extends Model
     static public function genIDsForGroupAtParent($id) 
     {       
         $data = [$id];
-        self::_genLevelIDsForGroupAtParent($id, $data);
+        
+        $genLevel = function ($p_id) use (&$genLevel, &$data) {
+            foreach(self::getAllPartsCache() as $row) {
+                if ($row->parent_id == $p_id) {
+                    $data[] = $row->id;
+                    $genLevel($row->id);
+                }
+            }
+        };
+        
+        $genLevel($id);
         
         return implode(', ', $data);
     }
     
     /**
-     * 
-     * @param type $model
-     */
-    static private function _updatingHandler($model) 
-    {
-        //
-    }
-    
-    /**
+     * Выполняет перемещение вложенных записей плана с перещетом их координат.
      * 
      * @param float $dx
      * @param float $dy
@@ -151,6 +117,13 @@ class PlanPartsModel extends Model
         }
     }
     
+    /**
+     * Выполняет проверку записи плана является ли она вложенной записью.
+     * 
+     * @param int $id
+     * @param int $parentID
+     * @return boolean
+     */
     static public function checkIdAsChildOfParentID(int $id, int $parentID) 
     {
         if ($id == $parentID) {
@@ -170,13 +143,14 @@ class PlanPartsModel extends Model
                     break;
                 }
             }
-        } while($curr_id != null);
+        } while ($curr_id != null);
         
         return true;
     }
     
     /**
-     * 
+     * Выполняет расчет количества вложений в структуре плана и записывает 
+     * результат в propertys.
      */
     static public function calcAndStoreMaxLevel() 
     {
@@ -196,9 +170,13 @@ class PlanPartsModel extends Model
     }
     
     /**
-     * 
+     * Возвращает координаты $parentId
+     *
+     * @param type $parentId
+     * @return type
      */
-    static public function parentOffset($parentId) {
+    static public function parentOffset($parentId) 
+    {
         $parent = PlanPartsModel::find($parentId);
         if ($parent) {
             $bounds = json_decode($parent->bounds);
@@ -212,5 +190,30 @@ class PlanPartsModel extends Model
             'X' => 0,
             'Y' => 0,
         ];
+    }
+    
+    /**
+     * Возвращает строку пути к $id, где отдельные узлы разделены $delimeter.
+     * 
+     * @param type $id
+     * @param type $delimeter
+     * @return type
+     */
+    static public function getPath($id, $delimeter) {
+        $path = [];
+        
+        $genLevel = function ($id) use (&$genLevel, &$path) {
+            foreach (self::getAllPartsCache() as $row) {
+                if ($row->id === $id) {
+                    $path[] = $row->name;
+                    $genLevel($row->parent_id);
+                    break;
+                }
+            }
+        };
+        
+        $genLevel($id);
+        
+        return implode($delimeter, array_reverse($path));
     }
 }

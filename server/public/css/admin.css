@@ -285,15 +285,25 @@ tr.table-empty:hover td {
     border: 1px solid #000000;
     background-color: #eeeeee;
     cursor: pointer;
-    #transition-duration: 0.25s;
 }
 
 .plan-part:hover {
     background-color: #dddddd!important;
 }
 
-.plan-part.current {
-    border-width: 2px;
+.plan-device {
+    position: absolute;
+    display: inline-block;
+    border: 2px solid #000000;
+    border-radius: 10px;
+    background-color: #ff0000;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.plan-device:hover {
+    opacity: 0.7;
 }
 
 option:disabled {
