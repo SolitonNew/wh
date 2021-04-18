@@ -14,7 +14,7 @@
                 <th scope="col" style="width: 80px;"><span>@lang('admin/hubs.device_TYP')</span></th>
                 <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_READONLY')</span></th>
                 <th scope="col" style="width: 100px;"><span>@lang('admin/hubs.device_NAME')</span></th>
-                <th scope="col" style="width: 150px;"><span>@lang('admin/hubs.device_COMM')</span></th>
+                <th scope="col" style="width: 200px;"><span>@lang('admin/hubs.device_COMM')</span></th>
                 <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_APP_CONTROL')</span></th>
                 <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_VALUE')</span></th>
                 <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_CHANNEL')</span></th>

@@ -45,9 +45,9 @@
             @endforeach
             @foreach($devices as $row)
             <div class="plan-device" 
-                 data-id="{{ $row->id }}" 
-                 data-part-id="{{ $row->group_id }}"
-                 data-x="{{ $row->X }}" data-y="{{ $row->Y }}"></div>
+                 data-id="{{ $row->id }}" data-part-id="{{ $row->group_id }}"
+                 data-position="{{ $row->position }}"
+                 data-part-bounds="{{ $row->partBounds }}"></div>
             @endforeach
             </div>
         </div>
@@ -149,6 +149,8 @@
     });
 
     function planResize() {
+        let penWidth2Parts = new Array(); /* Нужен кеш с вычислениями бордеров, что бы правильно позиционировать устройства */
+        
         let minX = 999999;
         let minY = 999999;
         let maxX = -999999;
@@ -172,7 +174,13 @@
                 penWidth = penWidth * planZoom / planPenZoomScale;
                 if (penWidth < planMinPenWidth) penWidth = planMinPenWidth;
             }
-            let penWidth2 = penWidth / 2;
+            let penWidth2 = Math.ceil(penWidth / 2);
+            penWidth = penWidth2 + penWidth2;
+            
+            penWidth2Parts.push({
+                id: $(this).data('id'),
+                width: penWidth2,
+            });
 
             x = x * planZoom - penWidth2;
             y = y * planZoom - penWidth2;
@@ -194,22 +202,66 @@
         });
         
         /* Настраиваем отображение устройств */
-        
         $('#planContent .plan-device').each(function () {
-            let x = $(this).data('x');
-            let y = $(this).data('y');
+            let partId = $(this).data('part-id');
+            let partPenWidth2 = 1;
+            for (let i = 0; i < penWidth2Parts.length; i++) {
+                if (penWidth2Parts[i].id === partId) {
+                    partPenWidth2 = penWidth2Parts[i].width;
+                    break;
+                }
+            }
+            let partPenWidth = partPenWidth2 + partPenWidth2;
             
-            x = x * planZoom;
-            y = y * planZoom;
+            let position = $(this).data('position');
+            let partBounds = $(this).data('partBounds');
             
-            $(this).css({
-                left: x + 'px',
-                top: y + 'px',
-            });
+            let w = $(this).width() + 2;
+            let h = $(this).height() + 2;
+            
+            let partX = partBounds.X * planZoom + partPenWidth2;
+            let partY = partBounds.Y * planZoom + partPenWidth2;
+            let partW = partBounds.W * planZoom - partPenWidth;
+            let partH = partBounds.H * planZoom - partPenWidth;
+            
+            let kx = (partW - w) / partBounds.W;
+            let ky = (partH - h) / partBounds.H;
+            
+            switch (position.surface) {
+                case 'top':
+                    $(this).css({
+                        left: (partX + position.offset * kx) + 'px',
+                        top: (partY) + 'px',
+                    });
+                    break;
+                case 'right':
+                    $(this).css({
+                        left: (partX + partW - w) + 'px',
+                        top: (partY + position.offset * ky) + 'px',
+                    });
+                    break;
+                case 'bottom':
+                    $(this).css({
+                        left: (partX + partW - position.offset * kx - w) + 'px',
+                        top: (partY + partH - h) + 'px',
+                    });
+                    break;
+                case 'left':
+                    $(this).css({
+                        left: (partX) + 'px',
+                        top: (partY + partH - h - position.offset * ky) + 'px',
+                    });
+                    break;
+                case 'roof':
+                    $(this).css({
+                        left: (partX + position.offset * kx) + 'px',
+                        top: (partY + position.cross * ky) + 'px',
+                    });
+                    break;
+            }
         });
         
         /* Настраиваем область отображения */
-
         let w = maxX - minX;
         let h = maxY - minY;
 

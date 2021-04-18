@@ -27,7 +27,6 @@ class PlanController extends Controller
         }
         
         // Читаем список записей плана
-        
         $data = \App\Http\Models\PlanPartsModel::generateTree($id);
         foreach($data as $row) {
             if ($row->bounds) {
@@ -69,8 +68,7 @@ class PlanController extends Controller
             }
             
             if ($part) {
-                $device->X = $part->X;
-                $device->Y = $part->Y;
+                $device->partBounds = $part->bounds;
                 $devices[] = $device;
             }
         }
@@ -422,6 +420,7 @@ class PlanController extends Controller
                 ]);
             }
         } else {
+            // Данные по положению устройства
             $device = \App\Http\Models\VariablesModel::find($deviceID);
             if ($device) {
                 $position = json_decode($device->position);
@@ -437,6 +436,7 @@ class PlanController extends Controller
             if (!isset($position->offset)) $position->offset = 0;
             if (!isset($position->cross)) $position->cross = 0;
             
+            // Список устройств с информацией по присоединению к комнатам
             $sql = "select v.*
                       from core_variables v
                     order by v.name";
@@ -460,11 +460,25 @@ class PlanController extends Controller
                 return $item1->inPlan > $item2->inPlan;
             });
             
+            // Параметры комнаты
+            $part = \App\Http\Models\PlanPartsModel::find($planID);
+            if ($part && $part->bounds) {
+                $partBounds = json_decode($part->bounds);
+            } else {
+                $partBounds = (object)[
+                    'X' => 0,
+                    'Y' => 0,
+                    'W' => 5,
+                    'H' => 5,
+                ];
+            }
+            
             return view('admin.plan.plan-link-device', [
                 'planID' => $planID,
                 'deviceID' => $deviceID,
                 'position' => $position,
                 'devices' => $devices,
+                'partBounds' => $partBounds,
             ]);
         }
     }
