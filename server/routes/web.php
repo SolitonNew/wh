@@ -74,6 +74,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/plan/{id?}', 'Admin\PlanController@index')->name('admin.plan');
     Route::match(['get', 'post'], '/plan-edit/{id}/{p_id?}', 'Admin\PlanController@edit')->name('admin.plan-edit');
     Route::delete('/plan-delete/{id}', 'Admin\PlanController@delete')->name('admin.plan-delete');
+    Route::get('/plan-clone/{id}/{direction}', 'Admin\PlanController@planClone')->name('admin.plan-clone');
     Route::match(['get', 'post'], '/plan-move-childs/{id}', 'Admin\PlanController@moveChilds')->name('admin.plan-move-childs');
     Route::match(['get', 'post'], '/plan-order/{id}', 'Admin\PlanController@order')->name('admin.plan-order');
     Route::match(['get', 'post'], '/plan-import', 'Admin\PlanController@planImport')->name('admin.plan-import');

@@ -37,9 +37,18 @@ return [
     'plan-delete-confirm' => 'Удалить текущую запись плана?',
     
     'menu_plan_edit' => 'Свойства записи плана...',
+    'menu_sel_in_tree' => 'Выбрать в дереве',
+    'menu_clone_part' => 'Клонировать запись',
+    'menu_clone_part_top' => 'Вверх...',
+    'menu_clone_part_right' => 'Вправо...',
+    'menu_clone_part_bottom' => 'Вниз...',
+    'menu_clone_part_left' => 'Влево...',
+    'menu_add_part' => 'Создать вложеную запись плана...',
     'menu_add_device' => 'Разместить новое устройство...',
     'plan_add_device_title' => 'Разместить устройство',
     'plan_edit_device_title' => 'Позиция устройства',
+    
+
     
     'device_list' => 'Устройство',
     'device_surface' => 'Поверхность',

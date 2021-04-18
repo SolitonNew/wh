@@ -199,7 +199,8 @@ class PlanPartsModel extends Model
      * @param type $delimeter
      * @return type
      */
-    static public function getPath($id, $delimeter) {
+    static public function getPath($id, $delimeter) 
+    {
         $path = [];
         
         $genLevel = function ($id) use (&$genLevel, &$path) {

@@ -16,10 +16,6 @@
 @endsection
 
 @section('top-menu')
-@if($partID)
-<button class="btn btn-secondary" onclick="planZoomIn()">@lang('admin/plan.zoom_in')</button>
-<button class="btn btn-secondary" onclick="planZoomOut()">@lang('admin/plan.zoom_out')</button>
-@endif
 @endsection
 
 @section('content')
@@ -54,6 +50,19 @@
     </div>
     <div id="planPartMenu" class="dropdown-menu">
         <a class="dropdown-item strong" href="#" onclick="planMenuPlanEdit(); return false;">@lang('admin/plan.menu_plan_edit')</a>
+        <a class="dropdown-item" href="#" onclick="planSelInTree(); return false;">@lang('admin/plan.menu_sel_in_tree')</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item dropdown-menu-sub">
+            <div><span>@lang('admin/plan.menu_clone_part')</span></div>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('top'); return false;">@lang('admin/plan.menu_clone_part_top')</a>
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('right'); return false;">@lang('admin/plan.menu_clone_part_right')</a>
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('bottom'); return false;">@lang('admin/plan.menu_clone_part_bottom')</a>
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('left'); return false;">@lang('admin/plan.menu_clone_part_left')</a>
+            </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" onclick="planMenuAddPart(); return false;">@lang('admin/plan.menu_add_part')</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="#" onclick="planMenuAddDevice(); return false;">@lang('admin/plan.menu_add_device')</a>
     </div>
@@ -76,7 +85,7 @@
     $(document).ready(() => {
         window.addEventListener('mousedown', function (e) {
             if ($('#planPartMenu').find(e.target).length == 0) {
-                $('#planPartMenu').hide(); 
+                $('#planPartMenu').hide();
             }
         });
         
@@ -113,6 +122,7 @@
         
         $('#planContentScroll').on('mousewheel', function (e) {
             e.preventDefault();
+            $('#planPartMenu').hide();
             if (e.originalEvent.wheelDelta > 0) {
                 planZoomIn();
             } else {
@@ -357,9 +367,30 @@
     function planMenuPlanEdit() {
         dialog('{{ route("admin.plan-edit", "") }}/' + planContextMenuID);
     }
+
+    function planSelInTree() {
+        window.location.href = '{{ route("admin.plan", "") }}/' + planContextMenuID;
+    }
+
+    function planMenuAddPart() {
+        dialog('{{ route("admin.plan-edit", [-1, ""]) }}/' + planContextMenuID);
+    }
         
     function planMenuAddDevice() {
         dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + planContextMenuID + '/-1');
+    }
+    
+    function planMenuClonePart(direction) {
+        $.ajax({
+            url: '{{ route("admin.plan-clone", ["", ""]) }}/' + planContextMenuID + '/' + direction,
+            success: function (data) {
+                if (data == 'OK') {
+                    window.location.reload();
+                } else {
+                    
+                }
+            },
+        });
     }
     @endif
 </script>
