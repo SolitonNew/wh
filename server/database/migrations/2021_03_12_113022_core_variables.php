@@ -17,7 +17,6 @@ class CoreVariables extends Migration
             $table->integerIncrements('id');
             $table->integer('controller_id');
             $table->string('typ', 20);
-            $table->integer('direction');
             $table->string('name');
             $table->string('comm');
             $table->float('value')->default(0);

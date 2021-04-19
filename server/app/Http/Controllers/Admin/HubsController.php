@@ -174,7 +174,6 @@ class HubsController extends Controller
                         $item = new \App\Http\Models\VariablesModel();
                         $item->controller_id = $din->id;
                         $item->typ = 'din';
-                        $item->direction = 0;
                         $item->name = 'temp for din';
                         $item->comm = $din->name;
                         $item->ow_id = null;
@@ -212,7 +211,6 @@ class HubsController extends Controller
                         $item = new \App\Http\Models\VariablesModel();
                         $item->controller_id = $dev->controller_id;
                         $item->typ = 'ow';
-                        $item->direction = 0;
                         $item->name = 'temp for ow';
                         $item->comm = $dev->comm;
                         $item->ow_id = $dev->id;

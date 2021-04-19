@@ -17,7 +17,7 @@
             <div class="alert alert-light" role="alert" style="margin-bottom: 0px;">
                 {{ $group->title }}
             </div>
-            @if(is_array($group->rooms))
+            @if(isset($group->rooms) && is_array($group->rooms))
             @foreach($group->rooms as $room)
             <div class="list-group-item main-item">
                 <a href="{{ route('terminal.room', [$room->id]) }}">{{ $room->titleCrop }}</a>

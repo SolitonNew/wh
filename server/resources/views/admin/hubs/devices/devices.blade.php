@@ -12,7 +12,6 @@
             <tr>
                 <th scope="col" style="width: 60px;"><span>@lang('admin/hubs.device_ID')</span></th>
                 <th scope="col" style="width: 80px;"><span>@lang('admin/hubs.device_TYP')</span></th>
-                <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_READONLY')</span></th>
                 <th scope="col" style="width: 100px;"><span>@lang('admin/hubs.device_NAME')</span></th>
                 <th scope="col" style="width: 200px;"><span>@lang('admin/hubs.device_COMM')</span></th>
                 <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_APP_CONTROL')</span></th>
@@ -25,10 +24,9 @@
             <tr data-id="{{ $row->id }}" class="{{ $row->with_events ? 'row-with-events' : '' }}">
                 <td>{{ $row->id }}</td>
                 <td>{{ $row->typ }}</td>
-                <td>{{ Lang::get('admin/hubs.device_readonly_list.'.$row->direction) }}</td>
                 <td>{{ $row->name }}</td>
                 <td>{{ $row->comm }}</td>
-                <td>{{ lang::get('admin/hubs.app_control.'.$row->app_control) }}</td>
+                <td>{{ Lang::get('admin/hubs.app_control.'.$row->app_control) }}</td>
                 <td>{{ $row->value }}</td>
                 <td>{{ $row->channel }}</td>
             </tr>

@@ -23,7 +23,6 @@ class DevicesController extends Controller
         
         $sql = 'select v.id,
                        v.typ,
-                       v.direction,
                        v.name,
                        v.comm,
                        v.app_control,
@@ -56,20 +55,13 @@ class DevicesController extends Controller
         
         if ($request->method() == 'POST') {
             try {
-                $rules = [];
-                $rules['controller_id'] = 'required|numeric';
-                $rules['name'] = 'required|string|unique:core_variables,name,'.($id > 0 ? $id : '');
-                $rules['comm'] = 'required|string';
-                
-                if ($request->post('typ') == 'ow') {
-                    $rules['ow_id'] = 'required|numeric';
-                }
-                
-                if ($request->post('rom') == 'variable' || $request->post('direction') == '0') {
-                    $rules['value'] = 'required|numeric';
-                }
-                
-                $this->validate($request, $rules);
+                $this->validate($request, [
+                    'controller_id' => 'required|numeric',
+                    'name' => 'required|string|unique:core_variables,name,'.($id > 0 ? $id : ''),
+                    'comm' => 'required|string',
+                    'ow_id' => ($request->post('typ') === 'ow' ? 'required|numeric' : ''),
+                    'value' => ($request->post('typ') === 'variable' ? 'required|numeric' : ''),
+                ]);
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
             }
@@ -82,7 +74,6 @@ class DevicesController extends Controller
                 $item->controller_id = $request->post('controller_id');
                 $item->typ = $request->post('typ');
                 $item->ow_id = $request->post('ow_id');
-                $item->direction = $request->post('direction');
                 $item->name = $request->post('name');
                 $item->comm = $request->post('comm');
                 $item->channel = $request->post('channel') ?? 0;
@@ -103,7 +94,6 @@ class DevicesController extends Controller
                     'controller_id' => $hubID,
                     'typ' => 'ow',
                     'ow_id' => '',
-                    'direction' => 0,
                     'name' => '',
                     'comm' => '',
                     'group_id' => 1,

@@ -25,6 +25,19 @@
     @endif
     <div class="row">
         <div class="col-sm-4">
+            <div class="form-label">@lang('admin/hubs.device_APP_CONTROL')</div>
+        </div>
+        <div class="col-sm-8">
+            <select class="custom-select" name="app_control">
+                @foreach(Lang::get('admin/hubs.app_control') as $key => $val)
+                <option value="{{ $key }}" {{ $key == $item->app_control ? 'selected' : '' }}>{{ $val }}</option>
+                @endforeach
+            </select>
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
             <div class="form-label">@lang('admin/hubs.device_CONTROLLER')</div>
         </div>
         <div class="col-sm-6">
@@ -55,19 +68,6 @@
         </div>
         <div class="col-sm-8">
             <select class="custom-select" name="ow_id" data-value="{{ $item->ow_id }}"></select>
-            <div class="invalid-feedback"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="form-label">@lang('admin/hubs.device_READONLY')</div>
-        </div>
-        <div class="col-sm-3">
-            <select class="custom-select" name="direction">
-                @foreach(Lang::get('admin/hubs.device_readonly_list') as $key => $val)
-                <option value="{{ $key }}" {{ $key == $item->direction ? 'selected' : '' }}>{{ $val }}</option>
-                @endforeach
-            </select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -107,19 +107,6 @@
                 <option value="-1">-//-</option>
                 @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
                 <option value="{{ $row->id }}" {{ $row->id == $item->group_id ? 'selected' : '' }}>{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->name }}</option>
-                @endforeach
-            </select>
-            <div class="invalid-feedback"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="form-label">@lang('admin/hubs.device_APP_CONTROL')</div>
-        </div>
-        <div class="col-sm-8">
-            <select class="custom-select" name="app_control">
-                @foreach(Lang::get('admin/hubs.app_control') as $key => $val)
-                <option value="{{ $key }}" {{ $key == $item->app_control ? 'selected' : '' }}>{{ $val }}</option>
                 @endforeach
             </select>
             <div class="invalid-feedback"></div>
@@ -172,7 +159,6 @@
         $('#device_edit_form select[name="typ"]').on('change', () => {
             reloadOwList();
             reloadChannels();
-            reloadDirection();
         });
 
         $('#device_edit_form select[name="ow_id"]').on('change', (e) => {
@@ -181,17 +167,11 @@
             reloadChannels();
         });
 
-        $('#device_edit_form select[name="direction"]').on('change', (e) => {
-            reloadDirection();
-        });
-
         reloadOwList(() => {
             reloadChannels(() => {
                 //
             });
         });
-
-        reloadDirection();
     });
 
     function reloadOwList(afterHandle = null) {
@@ -260,17 +240,6 @@
                 afterHandle();
             }
         });
-    }
-
-    function reloadDirection() {
-        let l = $('#device_edit_form select[name="direction"]').val();
-        let rom = $('#device_edit_form select[name="typ"]').val();
-
-        if ((rom == 'variable') || (l == '1')) {
-            $('#value').show(250);
-        } else {
-            $('#value').hide(250);
-        }
     }
 
     function deviceEditOK() {
