@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
 use Log;
+use Lang;
 
 class HubsController extends Controller
 {
@@ -157,6 +158,32 @@ class HubsController extends Controller
      */
     public function _generateDevs() 
     {
+        $channelControl = [
+            1 => ['R1', 'R2', 'R3', 'R4'],    // Свет
+            2 => ['LEFT', 'RIGHT'],           // Выключатель
+            //3 => [],                          // Розетка
+            4 => ['T', 'TEMP'],               // Термометр
+            //5 => [],                          // Термостат
+            //6 => [],                          // Камера
+            7 => ['F1', 'F2', 'F3', 'F4'],    // Вентиляция
+            8 => ['P1', 'P2', 'P3', 'P4'],    // Датчик движения
+            //9 => [],                          // Датчик затопления
+            10 => ['H'],                      // Гигрометр
+            11 => ['CO'],                     // Датчик газа
+            //12 => [],                       // Датчик двери
+            //13 => [],                       // Атмосферное давление
+            14 => ['AMP'],                    // Датчик тока
+        ];     
+        
+        $decodeChannel = function ($channel) use ($channelControl) {
+            foreach($channelControl as $key => $val) {
+                if (in_array($channel, $val)) {
+                    return $key;
+                }
+            }
+            return -1;
+        };
+        
         // Генерация устройств для каналов хостов
         $din_channels = config('firmware.channels.'.config('firmware.mmcu'));
         $vars = DB::select('select controller_id, channel from core_variables where typ = "din"');
@@ -171,13 +198,16 @@ class HubsController extends Controller
                         }
                     }
                     if (!$find) {
+                        $app_control = 1; // По умолчанию СВЕТ
+                        
                         $item = new \App\Http\Models\VariablesModel();
                         $item->controller_id = $din->id;
                         $item->typ = 'din';
                         $item->name = 'temp for din';
-                        $item->comm = $din->name;
+                        $item->comm = Lang::get('admin/hubs.app_control.'.$app_control);
                         $item->ow_id = null;
                         $item->channel = $chan;
+                        $item->app_control = $app_control;
                         $item->save(['withoutevents']);
                         $item->name = 'din_'.$item->id.'_'.$chan;
                         $item->save();
@@ -189,7 +219,7 @@ class HubsController extends Controller
             }
         }
         
-        // Генерация устройств для сетевых хабов
+        // Генерация устройств для сетевых хабов        
         $devs = DB::select('select d.id, d.controller_id, t.channels, t.comm
                               from core_ow_devs d, core_ow_types t
                              where d.rom_1 = t.code');
@@ -208,13 +238,16 @@ class HubsController extends Controller
                     }
 
                     if (!$find) {
+                        $appControl = $decodeChannel($chan);
+                        
                         $item = new \App\Http\Models\VariablesModel();
                         $item->controller_id = $dev->controller_id;
                         $item->typ = 'ow';
                         $item->name = 'temp for ow';
-                        $item->comm = $dev->comm;
+                        $item->comm = Lang::get('admin/hubs.app_control.'.$appControl);
                         $item->ow_id = $dev->id;
                         $item->channel = $chan;
+                        $item->app_control = $appControl;
                         $item->save(['withoutevents']);
                         $item->name = 'ow_'.$item->id.'_'.$chan;
                         $item->save();
