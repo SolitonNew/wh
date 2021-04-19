@@ -213,6 +213,10 @@ class PlanController extends Controller
         try {
             $item = \App\Http\Models\PlanPartsModel::find($id);
             $item->delete();
+            
+            // Нужно пересчитать максимальный уровень вложения структуры
+            \App\Http\Models\PlanPartsModel::calcAndStoreMaxLevel();
+            
             return 'OK';
         } catch (\Exception $ex) {
             return 'ERROR';
@@ -380,6 +384,10 @@ class PlanController extends Controller
                 
                 // Рекурсивно заливаем новые записи
                 $storeLevel($parts, null);
+                
+                // Нужно пересчитать максимальный уровень вложения структуры
+                \App\Http\Models\PlanPartsModel::calcAndStoreMaxLevel();
+                
                 return 'OK';
             } catch (\Exception $ex) {
                 return response()->json([
