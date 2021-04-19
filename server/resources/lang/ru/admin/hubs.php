@@ -37,10 +37,10 @@ return [
     'device_CONTROLLER' => 'Hub',
     'device_TYP' => 'Тип host',
     'device_OW' => 'Host',
-    'device_NAME' => 'Название',
+    'device_NAME' => 'Идентификатор',
     'device_COMM' => 'Описание',
     'device_GROUP' => 'Комната',
-    'device_APP_CONTROL' => 'Устройство',
+    'device_APP_CONTROL' => 'Тип устройства',
     'device_VALUE' => 'Значение',
     'device_CHANNEL' => 'Host канал',
     

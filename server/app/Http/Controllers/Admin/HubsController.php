@@ -204,7 +204,7 @@ class HubsController extends Controller
                         $item->controller_id = $din->id;
                         $item->typ = 'din';
                         $item->name = 'temp for din';
-                        $item->comm = Lang::get('admin/hubs.app_control.'.$app_control);
+                        //$item->comm = Lang::get('admin/hubs.app_control.'.$app_control);
                         $item->ow_id = null;
                         $item->channel = $chan;
                         $item->app_control = $app_control;
@@ -244,7 +244,7 @@ class HubsController extends Controller
                         $item->controller_id = $dev->controller_id;
                         $item->typ = 'ow';
                         $item->name = 'temp for ow';
-                        $item->comm = Lang::get('admin/hubs.app_control.'.$appControl);
+                        //$item->comm = Lang::get('admin/hubs.app_control.'.$appControl);
                         $item->ow_id = $dev->id;
                         $item->channel = $chan;
                         $item->app_control = $appControl;

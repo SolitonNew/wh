@@ -18,7 +18,7 @@ class CoreVariables extends Migration
             $table->integer('controller_id');
             $table->string('typ', 20);
             $table->string('name');
-            $table->string('comm');
+            $table->string('comm')->nullable();
             $table->float('value')->default(0);
             $table->timestamp('last_update')->useCurrentOnUpdate();
             $table->integer('ow_id')->nullable();

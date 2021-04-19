@@ -82,10 +82,10 @@
     </div>
     <div class="row">
         <div class="col-sm-4">
-            <div class="form-label strong">@lang('admin/hubs.device_COMM')</div>
+            <div class="form-label">@lang('admin/hubs.device_COMM')</div>
         </div>
         <div class="col-sm-8">
-            <input class="form-control" type="text" name="comm" value="{{ $item->comm }}" required="">
+            <input class="form-control" type="text" name="comm" value="{{ $item->comm }}">
             <div class="invalid-feedback"></div>
         </div>
     </div>

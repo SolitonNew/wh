@@ -58,7 +58,7 @@ class DevicesController extends Controller
                 $this->validate($request, [
                     'controller_id' => 'required|numeric',
                     'name' => 'required|string|unique:core_variables,name,'.($id > 0 ? $id : ''),
-                    'comm' => 'required|string',
+                    'comm' => 'nullable|string',
                     'ow_id' => ($request->post('typ') === 'ow' ? 'required|numeric' : ''),
                     'value' => ($request->post('typ') === 'variable' ? 'required|numeric' : ''),
                 ]);
