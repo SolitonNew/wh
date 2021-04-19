@@ -42,19 +42,18 @@
                         <img src="/img/logo.png" height="100%">
                     </div>
                     <div class="list-group">
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('hubs')" href="{{ route('admin.hubs', '') }}">
-                            <img src="/img/menus/pulse-2x.png">
-                            <span class="label">@lang('admin/hubs.menu')</span>
-                            @if(\App\Http\Models\PropertysModel::getFirmwareChanges() > 0)
-                            <span class="badge badge-danger badge-pill">{{ \App\Http\Models\VariablesModel::count() }}</span>
-                            @else
-                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VariablesModel::count() }}</span>
-                            @endif
-                        </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('plan')" href="{{ route('admin.plan') }}">
                             <img src="/img/menus/clipboard-2x.png">
                             <span class="label">@lang('admin/plan.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\PlanPartsModel::count() }}</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('hubs')" href="{{ route('admin.hubs', '') }}">
+                            <img src="/img/menus/pulse-2x.png">
+                            <span class="label">@lang('admin/hubs.menu')</span>
+                            <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VariablesModel::count() }}</span>
+                            @if(\App\Http\Models\PropertysModel::getFirmwareChanges() > 0)
+                            <span class="warning"></span>
+                            @endif
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('scripts')" href="{{ route('admin.scripts') }}">
                             <img src="/img/menus/document-2x.png">

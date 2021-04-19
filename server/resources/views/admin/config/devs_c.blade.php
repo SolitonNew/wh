@@ -17,7 +17,7 @@ const uint8_t onewire_roms[ONEWIRE_ROMS_SIZE] PROGMEM = {
 
 const variable_t variables[VARIABLE_COUNT] PROGMEM = {
 @foreach($varList as $row)
-   { {{ $row->id }}, {{ $row->controller_rom }}, {{ $varTyps[$row->typ] }}, {{ $row->direction }}, {{ $row->ow_index }}, {{ $row->channel }} },
+   { {{ $row->id }}, {{ $row->controller_rom }}, {{ $varTyps[$row->typ] }}, {{ $row->ow_index }}, {{ $row->channel }} },
 @endforeach
 };
 

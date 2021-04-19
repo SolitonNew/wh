@@ -269,6 +269,29 @@ tr.table-empty:hover td {
     margin-right: -1.5px;
 }
 
+.list-group-item .warning {
+    position: relative;
+    font-size: 0px;
+    line-height: 0px;
+}
+
+.list-group-item .warning:after {
+    position: absolute;
+    width: 0px;
+    line-height: 0px;
+    top: 0rem;
+    left: 0.45rem;
+    display: inline-block;
+    content: '!';
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: var(--primary);
+}
+
+.list-group-item.active .warning:after {
+    color: #ffffff;
+}
+
 .tree-item .badge-pill {
     margin-top: -0.5rem;
     margin-bottom: -0.5rem;

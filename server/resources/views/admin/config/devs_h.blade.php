@@ -15,7 +15,6 @@ typedef struct _variable_t {
     int id;
     unsigned char controller_id;
     unsigned char typ;
-    unsigned char direction;
     int ow_index;
     unsigned char channel;
 } variable_t;

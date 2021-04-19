@@ -1,3 +1,4 @@
+@if(\App\Http\Models\PlanVideoModel::count())
 <div class="video-list-view">
     <div class="alert alert-light video-list-title">@lang('terminal.video_title')</div>
     <div class="video-list">
@@ -115,3 +116,4 @@
     }
    
 </script>
+@endif

@@ -62,7 +62,7 @@ class RoomsController extends Controller
     
     /**
      * Метод формирует по исходным параметрам данные для отображения 
-     * списка уомнат.
+     * списка комнат.
      * 
      * @param type $parentID
      * @param type $level
