@@ -6,6 +6,15 @@
 @endsection
 
 @section('page-content')
+<style>
+    .device-value {
+        transition-duration: 3s;
+    }
+    .device-value.actual {
+        font-weight: bold;
+        background-color: var(--warning);
+    }
+</style>
 <div class="content-body" scroll-store="devicesList">
     <table id="devices_table" class="table table-sm table-hover table-bordered table-fixed-header">
         <thead>
@@ -27,7 +36,7 @@
                 <td>{{ $row->name }}</td>
                 <td>{{ $row->comm }}</td>
                 <td>{{ Lang::get('admin/hubs.app_control.'.$row->app_control) }}</td>
-                <td>{{ $row->value }}</td>
+                <td class="device-value">{{ $row->value }}</td>
                 <td>{{ $row->channel }}</td>
             </tr>
             @empty
@@ -44,10 +53,38 @@
             if ($(this).hasClass('table-empty')) return ;
             dialog('{{ route("admin.hub-device-edit", [$hubID, ""]) }}/' + $(this).data('id'));
         });
+        
+        setInterval(function () {
+            let now = (new Date()).getTime();
+            $('#devices_table td.device-value.actual').each(function () {
+                let counter = parseInt($(this).data('counter')) - 1;
+                if (counter > 0) {
+                    $(this).data('counter', counter);
+                } else {
+                    $(this).data('counter', 0).removeClass('actual');
+                }
+            });
+        }, 1000);
     });
 
     function deviceAdd() {
         dialog('{{ route("admin.hub-device-edit", [$hubID, -1]) }}');
+    }
+    
+    function deviceUpdateValue(id, value) {
+        $('#devices_table tr[data-id="' + id + '"] td.device-value')
+            .text(value)
+            .data('counter', 15)
+            .addClass('actual');
+    }
+    
+    function variableChangesHandler(data) {
+        $(data).each(function () {
+            let id = $(this).data('varid');
+            if (id) {
+                deviceUpdateValue(id, $(this).data('value'));
+            }
+        });
     }
 </script>
 @endsection
