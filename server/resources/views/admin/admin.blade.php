@@ -52,7 +52,7 @@
                             <span class="label">@lang('admin/hubs.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\VariablesModel::count() }}</span>
                             @if(\App\Http\Models\PropertysModel::getFirmwareChanges() > 0)
-                            <span class="badge badge-danger badge-pill">!</span>
+                            <span class="warning"></span>
                             @endif
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('scripts')" href="{{ route('admin.scripts') }}">
