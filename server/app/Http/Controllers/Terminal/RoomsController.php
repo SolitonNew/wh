@@ -33,6 +33,21 @@ class RoomsController extends Controller
                             ->get();
         
         $this->_variables = \App\Http\Models\VariablesModel::get();
+        
+        // Проставим кархдому устройству comm в виде названия комнаты, 
+        // если небыло указано ранее
+        foreach($this->_variables as $var) {
+            if (!$var->comm) {
+                foreach($this->_groups as $g) {
+                    if ($g->id == $var->group_id) {
+                        $var->comm = $g->name;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        
         $data = [];
         
         switch (\App\Http\Models\PropertysModel::getPlanMaxLevel()) {
