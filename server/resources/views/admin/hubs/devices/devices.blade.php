@@ -8,11 +8,12 @@
 @section('page-content')
 <style>
     .device-value {
-        transition-duration: 3s;
+        
     }
     .device-value.actual {
         font-weight: bold;
-        background-color: var(--warning);
+        background-color: rgb(255, 193, 7);
+        transition-duration: 1s;
     }
 </style>
 <div class="content-body" scroll-store="devicesList">
@@ -36,7 +37,7 @@
                 <td>{{ $row->name }}</td>
                 <td>{{ $row->comm }}</td>
                 <td>{{ Lang::get('admin/hubs.app_control.'.$row->app_control) }}</td>
-                <td class="device-value">{{ $row->value }}</td>
+                <td class="device-value" data-time="{{ \Carbon\Carbon::parse($row->last_update)->timestamp }}">{{ $row->value }}</td>
                 <td>{{ $row->channel }}</td>
             </tr>
             @empty
@@ -48,6 +49,9 @@
     </table>
 </div>
 <script>
+    const deviceActialityInterval = 15; /* in seconds */
+    var deviceActualityBackgroundColor = [255, 193, 7];
+    
     $(document).ready(() => {
         $('#devices_table tbody tr').on('click', function () {
             if ($(this).hasClass('table-empty')) return ;
@@ -55,34 +59,46 @@
         });
         
         setInterval(function () {
-            let now = (new Date()).getTime();
-            $('#devices_table td.device-value.actual').each(function () {
-                let counter = parseInt($(this).data('counter')) - 1;
-                if (counter > 0) {
-                    $(this).data('counter', counter);
-                } else {
-                    $(this).data('counter', 0).removeClass('actual');
-                }
-            });
+            deviceUpdateActuality();
         }, 1000);
+        
+        deviceUpdateActuality();
     });
 
     function deviceAdd() {
         dialog('{{ route("admin.hub-device-edit", [$hubID, -1]) }}');
     }
     
-    function deviceUpdateValue(id, value) {
+    function deviceUpdateValue(id, value, time) {
         $('#devices_table tr[data-id="' + id + '"] td.device-value')
             .text(value)
-            .data('counter', 15)
+            .data('time', time)
             .addClass('actual');
+    }
+    
+    function deviceUpdateActuality() {
+        let actualTime = (new Date()).getTime() / 1000 - deviceActialityInterval - serverTimeOffset;
+        $('#devices_table td.device-value').each(function () {
+            let time = parseInt($(this).data('time'));
+            if (time < actualTime) {
+                $(this).removeClass('actual').css({
+                    'background-color': '',
+                });
+            } else {
+                let t = (time - actualTime) / deviceActialityInterval;
+                let color = deviceActualityBackgroundColor.join(', ');
+                $(this).addClass('actual').css({
+                    'background-color': 'rgba(' + color + ',' + t + ')',
+                });
+            }
+        });
     }
     
     function variableChangesHandler(data) {
         $(data).each(function () {
             let id = $(this).data('varid');
             if (id) {
-                deviceUpdateValue(id, $(this).data('value'));
+                deviceUpdateValue(id, $(this).data('value'), $(this).data('time'));
             }
         });
     }

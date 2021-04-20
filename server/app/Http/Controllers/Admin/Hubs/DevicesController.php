@@ -28,6 +28,7 @@ class DevicesController extends Controller
                        v.app_control,
                        v.value,
                        v.channel,
+                       v.last_update,
                        exists(select 1 from core_variable_events e where e.variable_id = v.id) with_events
                   from core_variables v
                  where v.controller_id = '.$hubID.'

@@ -151,6 +151,8 @@
 </div>
 
 <script>
+    var serverTimeOffset = (new Date()).getTime() / 1000 - {{ \Carbon\Carbon::now('UTC')->timestamp }};
+    
     $('document').ready(() => {
         convertTableToScrollGrid($('.table-fixed-header'));
 
