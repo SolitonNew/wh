@@ -60,7 +60,7 @@
         
         setInterval(function () {
             deviceUpdateActuality();
-        }, 1000);
+        }, 3000);
         
         deviceUpdateActuality();
     });
