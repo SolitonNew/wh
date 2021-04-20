@@ -23,7 +23,8 @@
                 <th scope="col" style="width: 60px;"><span>@lang('admin/hubs.device_ID')</span></th>
                 <th scope="col" style="width: 80px;"><span>@lang('admin/hubs.device_TYP')</span></th>
                 <th scope="col" style="width: 100px;"><span>@lang('admin/hubs.device_NAME')</span></th>
-                <th scope="col" style="width: 200px;"><span>@lang('admin/hubs.device_COMM')</span></th>
+                <th scope="col" style="width: 150px;"><span>@lang('admin/hubs.device_COMM')</span></th>
+                <th scope="col" style="width: 150px;"><span>@lang('admin/hubs.device_GROUP')</span></th>
                 <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_APP_CONTROL')</span></th>
                 <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_VALUE')</span></th>
                 <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_CHANNEL')</span></th>
@@ -36,6 +37,7 @@
                 <td>{{ $row->typ }}</td>
                 <td>{{ $row->name }}</td>
                 <td>{{ $row->comm }}</td>
+                <td>{{ $row->group_name ?? '-//-'  }}</td>
                 <td>{{ Lang::get('admin/hubs.app_control.'.$row->app_control) }}</td>
                 <td class="device-value" data-time="{{ \Carbon\Carbon::parse($row->last_update)->timestamp }}">{{ $row->value }}</td>
                 <td>{{ $row->channel }}</td>

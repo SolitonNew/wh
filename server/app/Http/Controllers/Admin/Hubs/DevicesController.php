@@ -29,6 +29,7 @@ class DevicesController extends Controller
                        v.value,
                        v.channel,
                        v.last_update,
+                       (select p.name from plan_parts p where p.id = v.group_id) group_name,
                        exists(select 1 from core_variable_events e where e.variable_id = v.id) with_events
                   from core_variables v
                  where v.controller_id = '.$hubID.'

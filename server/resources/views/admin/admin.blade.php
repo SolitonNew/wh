@@ -30,7 +30,7 @@
                 @yield('top-menu')
                 </div>
                 @if(\App\Http\Models\PropertysModel::getFirmwareChanges() > 0)
-                <a class="btn btn-danger" href="#" onclick="firmware(); return false;">@lang('admin/admin.menu_firmware') ({{ \App\Http\Models\PropertysModel::getFirmwareChanges() }})</a>
+                <a class="btn btn-danger" href="#" onclick="firmware(); return false;" style="margin-right: 0.5rem;">@lang('admin/admin.menu_firmware') ({{ \App\Http\Models\PropertysModel::getFirmwareChanges() }})</a>
                 @endif
                 <a class="btn btn-primary" href="{{ route('logout') }}" style="margin-right: 0;">@lang('admin/admin.menu_logout')</a>
             </nav>
