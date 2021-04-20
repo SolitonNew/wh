@@ -21,11 +21,15 @@ class CheckedController extends Controller
         $web_checks = PropertysModel::getWebChecks();
 
         if ($web_checks) {
-            $sql = "select v.* from core_variables v " .
-                   " where v.ID in ($web_checks) ";
+            $sql = "select v.*,
+                           (select p.name from plan_parts p where p.id = v.group_id) group_name
+                      from core_variables v 
+                     where v.ID in ($web_checks) ";
         } else {
-            $sql = "select v.* from core_variables v " .
-                   " where v.ID in (0) ";
+            $sql = "select v.*,
+                           (select p.name from plan_parts p where p.id = v.group_id) group_name
+                      from core_variables v
+                     where v.ID in (0) ";
         }
         
         $rows = [];
@@ -35,6 +39,9 @@ class CheckedController extends Controller
                 $row = $vars[$i];
                 if ($row->id == $key) {
                     $c = \App\Http\Models\VariablesModel::decodeAppControl($row->app_control);
+                    if (!$row->comm) {
+                        $row->comm = $row->group_name;
+                    }
                     $itemLabel = mb_strtoupper($row->comm);
                     $c->title = $c->label.' '.$itemLabel;
 

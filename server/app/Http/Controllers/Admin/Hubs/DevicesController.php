@@ -80,7 +80,7 @@ class DevicesController extends Controller
                     'name' => 'required|string|unique:core_variables,name,'.($id > 0 ? $id : ''),
                     'comm' => 'nullable|string',
                     'ow_id' => ($request->post('typ') === 'ow' ? 'required|numeric' : ''),
-                    'value' => ($request->post('typ') === 'variable' ? 'required|numeric' : ''),
+                    'value' => 'nullable|numeric',
                 ]);
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());

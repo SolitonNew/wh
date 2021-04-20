@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Terminal;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
+use Log;
 
 class RoomController extends Controller
 {
@@ -22,16 +23,26 @@ class RoomController extends Controller
         
         $web_color = \App\Http\Models\PropertysModel::getWebColors();
         
-        $sql = "select v.* from core_variables v " .
-               " where v.group_id = $roomID " .
-               "  and app_control in (1, 3, 4, 5, 7, 10, 11, 13, 14) ".
-               " order by v.name";    
+        $groupIDs = \App\Http\Models\PlanPartsModel::genIDsForGroupAtParent($roomID);
+        
+        $sql = "select v.*, 
+                       0 is_root,
+                       (select p.name from plan_parts p where p.id = v.group_id) group_name
+                  from core_variables v 
+                 where v.group_id in ($groupIDs) 
+                   and app_control in (1, 3, 4, 5, 7, 10, 11, 13, 14) 
+                order by v.id";    
        
         $rows = [];
         foreach (DB::select($sql) as $row) {
+            if (!$row->comm) {
+                $row->comm = $row->group_name;
+            }
+            
+            $row->is_root = (mb_strpos(mb_strtoupper($row->comm), $roomTitle) !== false) ? 1 : 0;
+            
             $c = \App\Http\Models\VariablesModel::decodeAppControl($row->app_control);
-            $itemLabel = \App\Http\Models\VariablesModel::groupVariableName($roomTitle, mb_strtoupper($row->comm), mb_strtoupper($c->label));
-            $c->title = $itemLabel;
+            $c->title =  \App\Http\Models\VariablesModel::groupVariableName($roomTitle, mb_strtoupper($row->comm), mb_strtoupper($c->label));
 
             $rows[] = (object)[
                 'data' => $row, 
@@ -82,6 +93,10 @@ class RoomController extends Controller
                 ];
             }
         }
+        
+        usort($rows, function ($item1, $item2) {
+            return $item1->data->is_root < $item2->data->is_root;
+        });
         
         return view('terminal.room', [
             'roomTitle' => $roomTitle,
