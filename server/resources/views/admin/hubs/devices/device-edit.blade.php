@@ -104,7 +104,7 @@
         </div>
         <div class="col-sm-8">
             <select class="custom-select" name="group_id">
-                <option value="-1">-//-</option>
+                <option value="">-- @lang('admin/hubs.device_group_empty') --</option>
                 @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
                 <option value="{{ $row->id }}" {{ $row->id == $item->group_id ? 'selected' : '' }}>{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->name }}</option>
                 @endforeach

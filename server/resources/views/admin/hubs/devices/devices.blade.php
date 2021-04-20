@@ -15,46 +15,69 @@
         background-color: rgb(255, 193, 7);
         transition-duration: 1s;
     }
+    .room-path {
+        text-align: left!important;
+        white-space: nowrap;
+        padding-left: 0.75rem!important;
+    }
 </style>
-<div class="content-body" scroll-store="devicesList">
-    <table id="devices_table" class="table table-sm table-hover table-bordered table-fixed-header">
-        <thead>
-            <tr>
-                <th scope="col" style="width: 60px;"><span>@lang('admin/hubs.device_ID')</span></th>
-                <th scope="col" style="width: 80px;"><span>@lang('admin/hubs.device_TYP')</span></th>
-                <th scope="col" style="width: 100px;"><span>@lang('admin/hubs.device_NAME')</span></th>
-                <th scope="col" style="width: 150px;"><span>@lang('admin/hubs.device_COMM')</span></th>
-                <th scope="col" style="width: 150px;"><span>@lang('admin/hubs.device_GROUP')</span></th>
-                <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_APP_CONTROL')</span></th>
-                <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_VALUE')</span></th>
-                <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_CHANNEL')</span></th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($data as $row)
-            <tr data-id="{{ $row->id }}" class="{{ $row->with_events ? 'row-with-events' : '' }}">
-                <td>{{ $row->id }}</td>
-                <td>{{ $row->typ }}</td>
-                <td>{{ $row->name }}</td>
-                <td>{{ $row->comm }}</td>
-                <td>{{ $row->group_name ?? '-//-'  }}</td>
-                <td>{{ Lang::get('admin/hubs.app_control.'.$row->app_control) }}</td>
-                <td class="device-value" data-time="{{ \Carbon\Carbon::parse($row->last_update)->timestamp }}">{{ $row->value }}</td>
-                <td>{{ $row->channel }}</td>
-            </tr>
-            @empty
-            <tr class="table-empty">
-                <td colspan="9">@lang('dialogs.table_empty')</td>
-            </tr>                
-            @endforelse
-        </tbody>
-    </table>
+<div style="display: flex; flex-direction: column; height: 100%;">
+    <div class="navbar navbar-page">
+        <div class="navbar-page-group">
+            <span class="strong">@lang('admin/hubs.device_filter'):</span>
+            <select id="deviceFilter" class="custom-select" style="width: 300px;">
+            <option value="">-- @lang('admin/hubs.device_filter_null') --</option>
+            <option value="empty" {{ $groupID == 'empty' ? 'selected' : '' }}>-- @lang('admin/hubs.device_group_empty') --</option>
+            @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
+            <option value="{{ $row->id }}" {{ $row->id == $groupID ? 'selected' : '' }}>{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->name }}</option>
+            @endforeach
+            </select>
+        </div>
+    </div>
+    <div class="content-body" scroll-store="devicesList">
+        <table id="devices_table" class="table table-sm table-hover table-bordered table-fixed-header">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 60px;"><span>@lang('admin/hubs.device_ID')</span></th>
+                    <th scope="col" style="width: 80px;"><span>@lang('admin/hubs.device_TYP')</span></th>
+                    <th scope="col" style="width: 100px;"><span>@lang('admin/hubs.device_NAME')</span></th>
+                    <th scope="col" style="width: 150px;"><span>@lang('admin/hubs.device_COMM')</span></th>
+                    <th scope="col" style="width: 150px;"><span>@lang('admin/hubs.device_GROUP')</span></th>
+                    <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_APP_CONTROL')</span></th>
+                    <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_VALUE')</span></th>
+                    <th scope="col" style="width: 50px;"><span>@lang('admin/hubs.device_CHANNEL')</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($data as $row)
+                <tr data-id="{{ $row->id }}" class="{{ $row->with_events ? 'row-with-events' : '' }}">
+                    <td>{{ $row->id }}</td>
+                    <td>{{ $row->typ }}</td>
+                    <td>{{ $row->name }}</td>
+                    <td>{{ $row->comm }}</td>
+                    <td>{{ $row->group_name ?? '-- '.Lang::get('admin/hubs.device_group_empty').' --'  }}</td>
+                    <td>{{ Lang::get('admin/hubs.app_control.'.$row->app_control) }}</td>
+                    <td class="device-value" data-time="{{ \Carbon\Carbon::parse($row->last_update)->timestamp }}">{{ $row->value }}</td>
+                    <td>{{ $row->channel }}</td>
+                </tr>
+                @empty
+                <tr class="table-empty">
+                    <td colspan="9">@lang('dialogs.table_empty')</td>
+                </tr>                
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
 <script>
     const deviceActialityInterval = 15; /* in seconds */
     var deviceActualityBackgroundColor = [255, 193, 7];
     
     $(document).ready(() => {
+        $('#deviceFilter').on('change', function () {
+            window.location.href = '{{ route("admin.hub-devices", [$hubID, ""]) }}/' + $(this).val();
+        });
+        
         $('#devices_table tbody tr').on('click', function () {
             if ($(this).hasClass('table-empty')) return ;
             dialog('{{ route("admin.hub-device-edit", [$hubID, ""]) }}/' + $(this).data('id'));

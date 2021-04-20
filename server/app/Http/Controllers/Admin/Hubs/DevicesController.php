@@ -15,10 +15,26 @@ class DevicesController extends Controller
      * @param int $hubID
      * @return type
      */
-    public function index(int $hubID = null) 
+    public function index(int $hubID = null, $groupID = null) 
     {
         if (!\App\Http\Models\ControllersModel::find($hubID)) {
             return redirect(route('admin.hubs'));
+        }
+        
+        $where = '';
+        switch ($groupID) {
+            case null:
+                break;
+            case 'empty':
+                $where = ' and not exists(select 1 from plan_parts pp where v.group_id = pp.id)';
+                break;
+            default:
+                $groupID = (int)$groupID;
+                $ids = \App\Http\Models\PlanPartsModel::genIDsForGroupAtParent($groupID);
+                if ($ids) {
+                    $where = ' and v.group_id in ('.$ids.') ';
+                }
+                break;
         }
         
         $sql = 'select v.id,
@@ -33,7 +49,8 @@ class DevicesController extends Controller
                        exists(select 1 from core_variable_events e where e.variable_id = v.id) with_events
                   from core_variables v
                  where v.controller_id = '.$hubID.'
-                order by 2, 5';
+                '.$where.'
+                order by v.name';
         
         $data = DB::select($sql);
         
@@ -41,6 +58,7 @@ class DevicesController extends Controller
             'hubID' => $hubID,
             'page' => 'devices',
             'data' => $data,
+            'groupID' => $groupID,
         ]);
     }
     

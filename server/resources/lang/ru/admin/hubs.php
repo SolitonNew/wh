@@ -44,6 +44,10 @@ return [
     'device_VALUE' => 'Значение',
     'device_CHANNEL' => 'Host канал',
     
+    'device_filter' => 'Фильтр',
+    'device_filter_null' => 'Без фильтра',
+    'device_group_empty' => 'Не в комнате',
+    
     'device_add' => 'Добавить новое устройство...',
     'device_add_title' => 'Новое устройство',
     'device_edit_title' => 'Свойства устройства',

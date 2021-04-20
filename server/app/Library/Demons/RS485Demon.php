@@ -397,7 +397,7 @@ class RS485Demon extends BaseDemon
             
             $this->_inVariables = [];
             // Ждем ответа от контроллера
-            switch ($this->_readPacks(75)) {
+            switch ($this->_readPacks(150)) {
                 case 5: // Контроллер попросил данные инициализации
                     $stat = 'INIT';
                     $vars_out = [];

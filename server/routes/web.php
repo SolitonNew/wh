@@ -58,7 +58,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/hubs-reset', 'Admin\HubsController@hubsReset')->name('admin.hubs-reset');
     
     /* Управление устройствами */
-    Route::get('/hubs/{hubID}/devices', 'Admin\Hubs\DevicesController@index')->name('admin.hub-devices');
+    Route::get('/hubs/{hubID}/devices/{groupID?}', 'Admin\Hubs\DevicesController@index')->name('admin.hub-devices');
     Route::match(['get', 'post'], '/hub-device-edit/{hubID}/{id}', 'Admin\Hubs\DevicesController@edit')->name('admin.hub-device-edit');
     Route::delete('/hub-device-delete/{id}', 'Admin\Hubs\DevicesController@delete')->name('admin.hub-device-delete');
     Route::get('/hub-device-host-list/{hubID}', 'Admin\Hubs\DevicesController@hostList')->name('admin.hub-device-host-list');
