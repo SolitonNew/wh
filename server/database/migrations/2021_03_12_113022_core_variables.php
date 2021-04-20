@@ -24,7 +24,7 @@ class CoreVariables extends Migration
             $table->integer('ow_id')->nullable();
             $table->string('channel', 20)->default('');
             $table->integer('app_control')->default(0);
-            $table->integer('group_id')->default(-1);
+            $table->integer('group_id')->nullable();
             $table->string('position', 255)->nullable();
             
             $table->index('controller_id');

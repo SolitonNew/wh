@@ -97,7 +97,9 @@ class DevicesController extends Controller
                 $item->name = $request->post('name');
                 $item->comm = $request->post('comm');
                 $item->channel = $request->post('channel') ?? 0;
-                $item->value = $request->post('value');
+                if ($request->post('value') !== null) {
+                    $item->value = $request->post('value');
+                }
                 $item->group_id = $request->post('group_id');
                 $item->app_control = $request->post('app_control');
                 $item->save();                
@@ -118,7 +120,7 @@ class DevicesController extends Controller
                     'comm' => '',
                     'group_id' => 1,
                     'app_control' => 0,
-                    'value' => 0,
+                    //'value' => 0,
                     'channel' => 0,
                 ];
             }

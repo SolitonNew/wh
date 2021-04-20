@@ -114,10 +114,10 @@
     </div>
     <div class="row" id="value">
         <div class="col-sm-4">
-            <div class="form-label strong">@lang('admin/hubs.device_VALUE')</div>
+            <div class="form-label">@lang('admin/hubs.device_VALUE')</div>
         </div>
         <div class="col-sm-4">
-            <input class="form-control" type="text" name="value" value="{{ $item->value }}" required="">
+            <input class="form-control" type="number" step="0.01" name="value" value="">
             <div class="invalid-feedback"></div>
         </div>
     </div>
