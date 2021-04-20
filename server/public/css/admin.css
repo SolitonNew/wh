@@ -496,3 +496,7 @@ tr.schedule-exec-today td {
 .dropdown-menu-sub:hover .dropdown-menu {
     display: inline-block;
 }
+
+.blueprint {
+    background-color: #001484;
+}

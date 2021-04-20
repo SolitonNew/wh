@@ -15,10 +15,26 @@ class DevicesController extends Controller
      * @param int $hubID
      * @return type
      */
-    public function index(int $hubID = null) 
+    public function index(int $hubID = null, $groupID = null) 
     {
         if (!\App\Http\Models\ControllersModel::find($hubID)) {
             return redirect(route('admin.hubs'));
+        }
+        
+        $where = '';
+        switch ($groupID) {
+            case null:
+                break;
+            case 'empty':
+                $where = ' and not exists(select 1 from plan_parts pp where v.group_id = pp.id)';
+                break;
+            default:
+                $groupID = (int)$groupID;
+                $ids = \App\Http\Models\PlanPartsModel::genIDsForGroupAtParent($groupID);
+                if ($ids) {
+                    $where = ' and v.group_id in ('.$ids.') ';
+                }
+                break;
         }
         
         $sql = 'select v.id,
@@ -28,10 +44,13 @@ class DevicesController extends Controller
                        v.app_control,
                        v.value,
                        v.channel,
+                       v.last_update,
+                       (select p.name from plan_parts p where p.id = v.group_id) group_name,
                        exists(select 1 from core_variable_events e where e.variable_id = v.id) with_events
                   from core_variables v
                  where v.controller_id = '.$hubID.'
-                order by 2, 5';
+                '.$where.'
+                order by v.name';
         
         $data = DB::select($sql);
         
@@ -39,6 +58,7 @@ class DevicesController extends Controller
             'hubID' => $hubID,
             'page' => 'devices',
             'data' => $data,
+            'groupID' => $groupID,
         ]);
     }
     
@@ -77,7 +97,9 @@ class DevicesController extends Controller
                 $item->name = $request->post('name');
                 $item->comm = $request->post('comm');
                 $item->channel = $request->post('channel') ?? 0;
-                $item->value = $request->post('value');
+                if ($request->post('value') !== null) {
+                    $item->value = $request->post('value');
+                }
                 $item->group_id = $request->post('group_id');
                 $item->app_control = $request->post('app_control');
                 $item->save();                
@@ -98,7 +120,7 @@ class DevicesController extends Controller
                     'comm' => '',
                     'group_id' => 1,
                     'app_control' => 0,
-                    'value' => 0,
+                    //'value' => 0,
                     'channel' => 0,
                 ];
             }

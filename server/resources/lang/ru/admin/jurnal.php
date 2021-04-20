@@ -7,7 +7,7 @@ return [
     'history' => 'История',    
     'history_delete_all_visible' => 'Удалить все отображенные записи',
     'history_delete_all_visible_confirm' => 'Удалить все отображенные записи?',
-    'history_var_filtr' => 'Фильтр по названию переменной',
+    'history_var_filtr' => 'Фильтр по названию устройства',
     'history_date_filtr' => 'Дата записей',
     'history_sql_filtr' => 'SQL выражение',
     'history_show' => 'Применить',

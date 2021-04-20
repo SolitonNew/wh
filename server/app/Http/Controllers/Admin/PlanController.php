@@ -482,7 +482,7 @@ class PlanController extends Controller
             // Данные по положению устройства
             $device = \App\Http\Models\VariablesModel::find($deviceID);
             if ($device) {
-                $position = json_decode($device->position);
+                $position = json_decode($device->position) ?? (object)[];
             } else {
                 $position = (object)[
                     'surface' => 'top',

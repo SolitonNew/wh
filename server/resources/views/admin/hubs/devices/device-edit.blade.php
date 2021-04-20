@@ -104,7 +104,7 @@
         </div>
         <div class="col-sm-8">
             <select class="custom-select" name="group_id">
-                <option value="-1">-//-</option>
+                <option value="">-- @lang('admin/hubs.device_group_empty') --</option>
                 @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
                 <option value="{{ $row->id }}" {{ $row->id == $item->group_id ? 'selected' : '' }}>{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->name }}</option>
                 @endforeach
@@ -114,10 +114,10 @@
     </div>
     <div class="row" id="value">
         <div class="col-sm-4">
-            <div class="form-label strong">@lang('admin/hubs.device_VALUE')</div>
+            <div class="form-label">@lang('admin/hubs.device_VALUE')</div>
         </div>
         <div class="col-sm-4">
-            <input class="form-control" type="text" name="value" value="{{ $item->value }}" required="">
+            <input class="form-control" type="number" step="0.01" name="value" value="">
             <div class="invalid-feedback"></div>
         </div>
     </div>

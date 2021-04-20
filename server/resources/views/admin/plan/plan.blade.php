@@ -72,6 +72,8 @@
 <script>
     const planMouseScrollDelta = 15;
     const planZoomStep = 1.25;
+    const planZoomMax = 1000;
+    const planZoomMin = 5;
     const planPenZoomScale = 50;
     const planMinPenWidth = 0.5;
     
@@ -168,10 +170,10 @@
     function planResize() {
         let penWidth2Parts = new Array(); /* Нужен кеш с вычислениями бордеров, что бы правильно позиционировать устройства */
         
-        let minX = 999999;
-        let minY = 999999;
-        let maxX = -999999;
-        let maxY = -999999;
+        let minX = 99999999;
+        let minY = 99999999;
+        let maxX = -99999999;
+        let maxY = -99999999;
 
         $('#planContent .plan-part').css({
             'transition-duration': '0s',
@@ -308,7 +310,7 @@
 
     function planZoomIn() {
         let z = planZoom * planZoomStep;
-        if (z > 400) z = 400;
+        if (z > planZoomMax) z = planZoomMax;
         
         let z_off = z / planZoom;
         let s_w = $('#planContentScroll').width();
@@ -329,7 +331,7 @@
 
     function planZoomOut() {
         let z = planZoom / planZoomStep;
-        if (z < 2) z = 2;
+        if (z < planZoomMin) z = planZoomMin;
         
         let z_off = z / planZoom;
         let s_w = $('#planContentScroll').width();
