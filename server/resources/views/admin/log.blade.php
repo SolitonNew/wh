@@ -5,11 +5,11 @@
     <div class="log-time text-primary">[{{ \Carbon\Carbon::parse($row->change_date)->format('H:i:s') }}]</div>
     <div class="log-text">
         @if($row->app_control > 0)
-        '@lang('admin/hubs.log_app_control.'.$row->app_control). {{ $row->comm }}'
+        '@lang('admin/hubs.log_app_control.'.$row->app_control). {{ $row->comm ?? $row->group_name }}'
         @else
-        '{{ $row->comm }}'
+        '{{ $row->comm ?? $row->group_name }}'
         @endif
-        {{ \App\Http\Models\VariableChangesMemModel::decodeLogValue($row->app_control, $row->value) }}
+        <span class="strong">{{ \App\Http\Models\VariableChangesMemModel::decodeLogValue($row->app_control, $row->value) }}</span>
     </div>
 </div>
 @endforeach
