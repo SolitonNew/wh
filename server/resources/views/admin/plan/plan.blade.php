@@ -22,9 +22,9 @@
 @if($partID)
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
-        @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
+        @foreach(\App\Http\Models\PlanPartsModel::generateTree(null, false) as $row)
         <a href="{{ route('admin.plan', $row->id) }}"
-           class="tree-item {{ $row->id == $partID ? 'active' : '' }}" style="padding-left: {{ $row->level + 1 }}rem">{{ $row->name }}</a>
+           class="tree-item {{ $row->id == $partID ? 'active' : '' }}"><span class="tree-item-path">{!! $row->treePath !!}</span>&nbsp{{ $row->name }}</a>
         @endforeach
     </div>
     <div id="planContentScroll" class="content-body" style="display:flex; user-select: none;" scroll-store="planContentScroll">

@@ -26,13 +26,13 @@
         <div style="position:relative; display: flex; flex-direction: row; height: 100%;">
             <div class="tree" style="width: 320px; min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" 
                  scroll-store="jurnalHistoryVarList">
-                @foreach(\App\Http\Models\VariablesModel::orderBy('name')->get() as $row)
+                @foreach($devices as $row)
                 <a href="{{ route('admin.jurnal-history', $row->id) }}"
                     class="tree-item {{ $row->id == $id ? 'active' : '' }}"
-                    style="display: block;">
+                    style="display: block; justify-content: space-between; white-space: normal;">
                     {{ $row->name }}
                     <div class="text-muted" style="display: flex;justify-content: space-between;flex-wrap: wrap;margin-right: 0.5rem;">
-                        <small class="nowrap">{{ $row->comm }}</small>
+                        <small class="nowrap">{{ $row->comm ?? $row->group_name }}</small>
                         @if($row->app_control > 0)
                         <small class="nowrap">@lang('admin/hubs.app_control.'.$row->app_control)</small>
                         @endif

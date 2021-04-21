@@ -28,13 +28,13 @@
             <div class="form-label">@lang('admin/plan.table_PARENT_ID')</div>
         </div>
         <div class="col-sm-9">
-            <select class="custom-select" name="parent_id">
+            <select class="custom-select select-tree" name="parent_id">
             <option value="">-//-</option>
             @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
             <option value="{{ $row->id }}"
                 {{ $row->id == $item->parent_id ? 'selected' : '' }}
                 {{ App\Http\Models\PlanPartsModel::checkIdAsChildOfParentID($row->id, $item->id) ? '' : 'disabled' }}
-                >{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->name }}</option>
+                >{!! $row->treePath !!} {{ $row->name }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>

@@ -50,13 +50,15 @@ class VariableChangesMemModel extends Model
     static public function getLastVariables() 
     {
         if (self::$_lastVariableID > 0) {
-            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.variable_id
+            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.variable_id,
+                           (select p.name from plan_parts p where p.id = v.group_id) group_name
                       from core_variable_changes_mem m, core_variables v
                      where m.variable_id = v.id
                        and m.id > '.self::$_lastVariableID.'
                     order by m.id desc';
         } else {
-            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.variable_id
+            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.variable_id,
+                           (select p.name from plan_parts p where p.id = v.group_id) group_name
                       from core_variable_changes_mem m, core_variables v
                      where m.variable_id = v.id
                     order by m.id desc
@@ -75,7 +77,11 @@ class VariableChangesMemModel extends Model
     {
         $dim = Lang::get('admin/hubs.log_app_control_dim.'.$app_control);
         if (is_array($dim)) {
-            return $dim[$value];
+            if (isset($dim[$value])) {
+                return $dim[$value];
+            } else {
+                return $value;
+            }
         } else {
             return $value.$dim;
         }

@@ -36,7 +36,7 @@
     <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="hubsList">
         @foreach(\App\Http\Models\ControllersModel::orderBy('rom', 'asc')->get() as $row)
         <a href="{{ route('admin.hubs', $row->id).'/'.$page }}"
-            class="tree-item {{ $row->id == $hubID ? 'active' : '' }}">
+           class="tree-item {{ $row->id == $hubID ? 'active' : '' }}" style="white-space: normal;">
             <div>
                 <div class="" >{{ $row->name }}</div>
                 <small class="text-muted">{{ $row->comm }}</small>
