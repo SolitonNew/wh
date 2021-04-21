@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Hubs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
+use Session;
 
 class HostsController extends Controller
 {
@@ -46,6 +47,8 @@ class HostsController extends Controller
                                            and v.ow_id = '.$row->id.'
                                         order by v.channel');
         }
+        
+        Session::put('HUB_INDEX_ID', $hubID);
         
         return view('admin.hubs.hosts.hosts', [
             'hubID' => $hubID,

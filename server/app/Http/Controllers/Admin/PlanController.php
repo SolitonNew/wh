@@ -23,6 +23,7 @@ class PlanController extends Controller
             if (\App\Http\Models\PlanPartsModel::find($id)) {
                 return redirect(route('admin.plan', $id));
             }
+            $id = null;
         }
         
         if (!$id) {
