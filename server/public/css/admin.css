@@ -242,7 +242,8 @@ tr.table-empty:hover td {
     padding-left: 1rem;
     padding-bottom: 0.55rem;
     line-height: 1.1rem;
-    justify-content: space-between;
+    white-space: nowrap;
+    #justify-content: space-between;
 }
 
 .tree-item:hover {
@@ -253,6 +254,15 @@ tr.table-empty:hover td {
 .tree-item.active {
     background-color: rgba(0, 0, 0, 0.15);
     color: #000000;
+}
+
+.tree-item-path {
+    font-family: Courier New;
+    font-size: 1.8rem;
+    margin-top: 0.25rem;
+    margin-left: -0.5rem;
+    line-height: 0px;
+    color: #aaaaaa;
 }
 
 .code-keyword {
@@ -495,6 +505,17 @@ tr.schedule-exec-today td {
 
 .dropdown-menu-sub:hover .dropdown-menu {
     display: inline-block;
+}
+
+select.select-tree {
+    font-family: monospace;
+    white-space: pre;
+    font-size: 1.231rem;
+}
+
+select.select-tree option {
+    white-space: pre;
+    line-height: 10px;
 }
 
 .blueprint {

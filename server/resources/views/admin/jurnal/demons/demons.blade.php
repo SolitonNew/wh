@@ -8,7 +8,8 @@
 
 @section('page-content')
 <div style="position:relative; display: flex; flex-direction: row; height: 100%;">
-    <div class="tree" style="width: 250px; min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" 
+    <div class="tree" 
+         style="width: 250px; min-width:250px; border-right: 1px solid rgba(0,0,0,0.125); justify-content: space-between;" 
          scroll-store="jurnalDemonsList">
         @foreach($demons as $row)
         <a href="{{ route('admin.jurnal-demons', $row->id) }}"
@@ -22,7 +23,7 @@
                 <div class="badge badge-pill badge-warning" style="margin-top: 0; margin-bottom: 0px;">STOP</div>
                 @endif
             </div>
-            <small class="text-muted">@lang('admin/demons/'.$row->id.'.title')</small>
+            <small class="text-muted" style="white-space: normal;">@lang('admin/demons/'.$row->id.'.title')</small>
         </a>
         @endforeach
     </div>

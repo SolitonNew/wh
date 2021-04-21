@@ -103,10 +103,10 @@
             <div class="form-label">@lang('admin/hubs.device_GROUP')</div>
         </div>
         <div class="col-sm-8">
-            <select class="custom-select" name="group_id">
+            <select class="custom-select select-tree" name="group_id">
                 <option value="">-- @lang('admin/hubs.device_group_empty') --</option>
                 @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
-                <option value="{{ $row->id }}" {{ $row->id == $item->group_id ? 'selected' : '' }}>{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->name }}</option>
+                <option value="{{ $row->id }}" {{ $row->id == $item->group_id ? 'selected' : '' }}>{!! $row->treePath !!} {{ $row->name }}</option>
                 @endforeach
             </select>
             <div class="invalid-feedback"></div>

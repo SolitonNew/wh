@@ -37,7 +37,7 @@ class PlanPartsModel extends Model
      * 
      * @return array
      */
-    static public function generateTree(int $id = null) 
+    static public function generateTree(int $id = null, bool $doubleSpace = true) 
     {       
         $data = [];
         
@@ -61,6 +61,47 @@ class PlanPartsModel extends Model
         }
         
         $treeLevel($id, 0);
+        
+        // Формируем древовидность с помощью символов псевдографики
+        $levels = [];
+        $prev_level = -1;
+        for ($i = count($data) - 1; $i > -1; $i--) {
+            // Чистим существующие записи уровней до текущего вложения
+            for ($n = $prev_level + 1; $n <= $data[$i]->level; $n++) {
+                $levels[$n] = false;
+            }
+            
+            // Заносим состояния уровней в путь вывода
+            $path = [];
+            for ($n = 0; $n < $data[$i]->level; $n++) {
+                if (isset($levels[$n]) && $levels[$n]) {
+                    $path[] = $doubleSpace ? '│&nbsp;&nbsp;' : '│';
+                } else {
+                    $path[] = $doubleSpace ? '&nbsp;&nbsp;&nbsp;' : '&nbsp;';
+                }
+            }
+            
+            // Проверяем является ли запис последним узлом
+            $n = $data[$i]->level;
+            if (isset($levels[$n]) && $levels[$n]) {
+                $path[count($path)] = $doubleSpace ? '├─' : '├';
+            } else {
+                $path[count($path)] = $doubleSpace ? '└─' : '└';
+            }
+            
+            // Отмечаем, что этот уровень мы используем
+            $levels[$n] = true;
+            
+            $prev_level = $n;
+            
+            if (count($path)) {
+                $path = array_slice($path, 1);
+            }
+            
+            $data[$i]->treePath = implode('', $path);
+        }
+        
+        // --------------------------------------------------------
         
         return $data;
     }

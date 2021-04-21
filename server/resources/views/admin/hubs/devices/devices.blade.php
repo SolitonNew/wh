@@ -25,12 +25,12 @@
     <div class="navbar navbar-page">
         <div class="navbar-page-group">
             <span class="strong">@lang('admin/hubs.device_filter'):</span>
-            <select id="deviceFilter" class="custom-select" style="width: 300px;">
-            <option value="">-- @lang('admin/hubs.device_filter_null') --</option>
-            <option value="empty" {{ $groupID == 'empty' ? 'selected' : '' }}>-- @lang('admin/hubs.device_group_empty') --</option>
-            @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
-            <option value="{{ $row->id }}" {{ $row->id == $groupID ? 'selected' : '' }}>{!! str_repeat('&nbsp;-&nbsp;', $row->level) !!} {{ $row->name }}</option>
-            @endforeach
+            <select id="deviceFilter" class="custom-select select-tree" style="width: 300px;">
+                <option value="" class="italic">-- @lang('admin/hubs.device_filter_null') --</option>
+                <option value="empty" class="italic" {{ $groupID == 'empty' ? 'selected' : '' }}>-- @lang('admin/hubs.device_group_empty') --</option>
+                @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
+                <option value="{{ $row->id }}" {{ $row->id == $groupID ? 'selected' : '' }}>{!! $row->treePath !!} {{ $row->name }}</option>
+                @endforeach
             </select>
         </div>
     </div>

@@ -29,7 +29,7 @@
                 @foreach(\App\Http\Models\VariablesModel::orderBy('name')->get() as $row)
                 <a href="{{ route('admin.jurnal-history', $row->id) }}"
                     class="tree-item {{ $row->id == $id ? 'active' : '' }}"
-                    style="display: block;">
+                    style="display: block; justify-content: space-between; white-space: normal;">
                     {{ $row->name }}
                     <div class="text-muted" style="display: flex;justify-content: space-between;flex-wrap: wrap;margin-right: 0.5rem;">
                         <small class="nowrap">{{ $row->comm }}</small>
