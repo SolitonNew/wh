@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use \Illuminate\Support\Facades\DB;
 use Lang;
 use Log;
+use Session;
 
 class ScriptsController extends Controller
 {
@@ -18,6 +19,28 @@ class ScriptsController extends Controller
      */
     public function index(int $scriptID = null) 
     {
+        if (!$scriptID) {
+            $scriptID = Session::get('SCRIPT_INDEX_ID');
+            if (\App\Http\Models\ScriptsModel::find($scriptID)) {
+                return redirect(route('admin.scripts', $scriptID));
+            } else {
+                $scriptID = null;
+            }
+        }
+        
+        if (!$scriptID) {
+            $first = \App\Http\Models\ScriptsModel::orderBy('comm', 'asc')->first();
+            if ($first) {
+                return redirect(route('admin.scripts', $first->id));
+            }
+        }
+        
+        $item = \App\Http\Models\ScriptsModel::find($scriptID);
+        if ($scriptID && !$item) {
+            return redirect(route('admin.scripts', ''));
+        }
+        
+        
         $sql = "select s.*, 
                        (select count(*) 
                           from core_variables v, core_variable_events e
@@ -25,16 +48,9 @@ class ScriptsController extends Controller
                            and e.script_id = s.id) var_count
                   from core_scripts s
                 order by s.comm asc";
-        $list = DB::select($sql);        
+        $list = DB::select($sql);
         
-        $item = \App\Http\Models\ScriptsModel::find($scriptID);
-        
-        if (!$item) {
-            $first = \App\Http\Models\ScriptsModel::orderBy('comm', 'asc')->first();
-            if ($first) {
-                return redirect(route('admin.scripts', $first->id));
-            }
-        }
+        Session::put('SCRIPT_INDEX_ID', $scriptID);
         
         return view('admin.scripts.scripts', [
             'scriptID' => $scriptID,
