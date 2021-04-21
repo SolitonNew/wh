@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\Hubs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
+use Session;
+use Log;
 
 class DevicesController extends Controller
 {
@@ -16,14 +18,27 @@ class DevicesController extends Controller
      * @return type
      */
     public function index(int $hubID = null, $groupID = null) 
-    {
+    {        
         if (!\App\Http\Models\ControllersModel::find($hubID)) {
             return redirect(route('admin.hubs'));
         }
         
+        if (!$groupID) {
+            $groupID = Session::get('DEVICES_GROUP_ID');
+            /*if (\App\Http\Models\PlanPartsModel::find($groupID)) {
+                return redirect(route('admin.hub-devices', [$hubID, $groupID]));
+            } else {
+                $groupID = null;
+            }*/
+        }
+        
+        if (!$groupID) {
+            $groupID = 'none';
+        }
+        
         $where = '';
         switch ($groupID) {
-            case null:
+            case 'none':
                 break;
             case 'empty':
                 $where = ' and not exists(select 1 from plan_parts pp where v.group_id = pp.id)';
@@ -53,6 +68,9 @@ class DevicesController extends Controller
                 order by v.name';
         
         $data = DB::select($sql);
+        
+        Session::put('HUB_INDEX_ID', $hubID);
+        Session::put('DEVICES_GROUP_ID', $groupID);
         
         return view('admin.hubs.devices.devices', [
             'hubID' => $hubID,

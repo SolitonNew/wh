@@ -243,7 +243,6 @@ tr.table-empty:hover td {
     padding-bottom: 0.55rem;
     line-height: 1.1rem;
     white-space: nowrap;
-    #justify-content: space-between;
 }
 
 .tree-item:hover {
@@ -257,12 +256,30 @@ tr.table-empty:hover td {
 }
 
 .tree-item-path {
-    font-family: Courier New;
-    font-size: 1.8rem;
-    margin-top: 0.25rem;
-    margin-left: -0.5rem;
+    display: inline-block;
+    width: 16px;
+    height: 33px;
     line-height: 0px;
-    color: #aaaaaa;
+    margin: -0.5rem 0px;
+    margin-right: 4px;
+    margin-left: -4px;
+    opacity: 0.5;
+}
+
+.tree-item-path.tree-item-path-1 {
+    background-image: url('/img/tree/1.png');
+}
+
+.tree-item-path.tree-item-path-2 {
+    background-image: url('/img/tree/2.png');
+}
+
+.tree-item-path.tree-item-path-3 {
+    background-image: url('/img/tree/3.png');
+}
+
+.tree-item-path.tree-item-path-4 {
+    background-image: url('/img/tree/4.png');
 }
 
 .code-keyword {

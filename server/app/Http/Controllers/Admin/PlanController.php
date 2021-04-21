@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Log;
 use DB;
+use Session;
 
 class PlanController extends Controller
 {
@@ -17,6 +18,14 @@ class PlanController extends Controller
      */
     public function index(int $id = null) 
     {
+        if (!$id) {
+            $id = Session::get('PLAN_INDEX_ID');
+            if (\App\Http\Models\PlanPartsModel::find($id)) {
+                return redirect(route('admin.plan', $id));
+            }
+            $id = null;
+        }
+        
         if (!$id) {
             $first = \App\Http\Models\PlanPartsModel::whereParentId(null)
                         ->orderBy('order_num', 'asc')
@@ -72,6 +81,8 @@ class PlanController extends Controller
                 $devices[] = $device;
             }
         }
+        
+        Session::put('PLAN_INDEX_ID', $id);
         
         return view('admin.plan.plan', [
             'partID' => $id,
@@ -512,11 +523,11 @@ class PlanController extends Controller
                 }
                 $device->label .= $device->name;
                 $app_control = \App\Http\Models\VariablesModel::decodeAppControl($device->app_control);
-                $device->label .= ' '.$app_control->label;
+                $device->label .= ' '."'$app_control->label'";
             }
             
             usort($devices, function ($item1, $item2) {
-                return $item1->inPlan > $item2->inPlan;
+                return $item1->inPlan < $item2->inPlan || $item1->label > $item2->label;
             });
             
             // Параметры комнаты

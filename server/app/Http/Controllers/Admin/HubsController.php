@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use DB;
 use Log;
 use Lang;
+use Session;
 
 class HubsController extends Controller
 {
@@ -18,9 +19,18 @@ class HubsController extends Controller
      * @return type
      */
     public function index(int $hubID = null) 
-    {
+    {   
         if (!$hubID) {
-            $hubID = \App\Http\Models\ControllersModel::orderBy('name', 'asc')->first();
+            $hubID = Session::get('HUB_INDEX_ID');
+            if (\App\Http\Models\ControllersModel::find($hubID)) {
+                //
+            } else {
+                $hubID = null;
+            }
+        }
+        
+        if (!$hubID) {
+            $hubID = \App\Http\Models\ControllersModel::orderBy('rom', 'asc')->first();
             if ($hubID) {
                 $hubID = $hubID->id;
             } else {
@@ -29,6 +39,7 @@ class HubsController extends Controller
         }
         
         if ($hubID) {
+            Session::put('HUB_INDEX_ID', $hubID);
             return redirect(route('admin.hub-devices', [$hubID]));
         } else {
             return view('admin/hubs/hubs', [
