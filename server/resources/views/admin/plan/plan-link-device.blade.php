@@ -25,7 +25,7 @@
         <select class="custom-select" name="device">
         @foreach($devices as $row)
         <option value="{{ $row->id }}" {{ $row->id == $deviceID ? 'selected' : '' }} 
-                style="{{ $row->inPlan ? 'font-weight: bold;' : '' }}" >{{ $row->label }}</option>
+                class="{{ $row->inPlan ? 'italic' : '' }}" >{{ $row->label }}</option>
         @endforeach
         </select>
     </div>
