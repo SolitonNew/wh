@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use \Carbon\Carbon;
 use Session;
+use DB;
 
 class HistoryController extends Controller
 {
@@ -53,8 +54,15 @@ class HistoryController extends Controller
             }
         }
         
+        $sql_devs = "select v.*,
+                            (select p.name from plan_parts p where p.id = v.group_id) group_name
+                       from core_variables v
+                     order by v.name";
+        $devices = DB::select($sql_devs);
+        
         return view('admin.jurnal.history.history', [
             'id' => $id,
+            'devices' => $devices,
             'data' => $data,
         ])->withErrors($errors);
     }
