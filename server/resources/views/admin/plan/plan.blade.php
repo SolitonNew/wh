@@ -24,7 +24,12 @@
     <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
         @foreach(\App\Http\Models\PlanPartsModel::generateTree(null, false) as $row)
         <a href="{{ route('admin.plan', $row->id) }}"
-           class="tree-item {{ $row->id == $partID ? 'active' : '' }}"><span class="tree-item-path">{!! $row->treePath !!}</span>&nbsp{{ $row->name }}</a>
+            class="tree-item {{ $row->id == $partID ? 'active' : '' }}">
+            @foreach($row->treePath as $v)
+            <span class="tree-item-path tree-item-path-{{ $v }}"></span>
+            @endforeach
+            {{ $row->name }}
+        </a>
         @endforeach
     </div>
     <div id="planContentScroll" class="content-body" style="display:flex; user-select: none;" scroll-store="planContentScroll">

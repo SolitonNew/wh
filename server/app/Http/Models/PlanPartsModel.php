@@ -37,7 +37,7 @@ class PlanPartsModel extends Model
      * 
      * @return array
      */
-    static public function generateTree(int $id = null, bool $doubleSpace = true) 
+    static public function generateTree(int $id = null, bool $asChars = true) 
     {       
         $data = [];
         
@@ -75,18 +75,18 @@ class PlanPartsModel extends Model
             $path = [];
             for ($n = 0; $n < $data[$i]->level; $n++) {
                 if (isset($levels[$n]) && $levels[$n]) {
-                    $path[] = $doubleSpace ? '│&nbsp;&nbsp;' : '│';
+                    $path[] = $asChars ? '│&nbsp;&nbsp;' : 1;
                 } else {
-                    $path[] = $doubleSpace ? '&nbsp;&nbsp;&nbsp;' : '&nbsp;';
+                    $path[] = $asChars ? '&nbsp;&nbsp;&nbsp;' : 2;
                 }
             }
             
             // Проверяем является ли запис последним узлом
             $n = $data[$i]->level;
             if (isset($levels[$n]) && $levels[$n]) {
-                $path[count($path)] = $doubleSpace ? '├─' : '├';
+                $path[count($path)] = $asChars ? '├─' : 3;
             } else {
-                $path[count($path)] = $doubleSpace ? '└─' : '└';
+                $path[count($path)] = $asChars ? '└─' : 4;
             }
             
             // Отмечаем, что этот уровень мы используем
@@ -98,7 +98,11 @@ class PlanPartsModel extends Model
                 $path = array_slice($path, 1);
             }
             
-            $data[$i]->treePath = implode('', $path);
+            if ($asChars) {
+                $data[$i]->treePath = implode('', $path);
+            } else {
+                $data[$i]->treePath = $path;
+            }
         }
         
         // --------------------------------------------------------
