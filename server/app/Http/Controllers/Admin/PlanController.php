@@ -350,6 +350,58 @@ class PlanController extends Controller
     }
     
     /**
+     * Маршрут для измения положения комнаты по ИД.
+     * 
+     * @param Request $request
+     * @param int $id
+     * @param float $newX
+     * @param float $newY
+     * @return string
+     */
+    public function move(Request $request, int $id, float $newX, float $newY) 
+    {
+        try {
+            $item = \App\Http\Models\PlanPartsModel::find($id);
+            if ($item) {
+                $bounds = json_decode($item->bounds);
+                $bounds->X = $newX;
+                $bounds->Y = $newY;
+                $item->bounds = json_encode($bounds);
+                $item->save();
+            }
+            return 'OK';
+        } catch (\Exception $ex) {
+            return 'ERROR';
+        }
+    }
+    
+    /**
+     * Маршрут для изменения размера комнаты по ИД.
+     * 
+     * @param Request $request
+     * @param int $id
+     * @param float $newW
+     * @param float $newH
+     * @return string
+     */
+    public function size(Request $request, int $id, float $newW, float $newH)
+    {
+        try {
+            $item = \App\Http\Models\PlanPartsModel::find($id);
+            if ($item) {
+                $bounds = json_decode($item->bounds);
+                $bounds->W = $newW;
+                $bounds->H = $newH;
+                $item->bounds = json_encode($bounds);
+                $item->save();
+            }
+            return 'OK';
+        } catch (\Exception $ex) {
+            return 'ERROR';
+        }
+    }
+    
+    /**
      * Маршрут для импорта плана из файла.
      * GET: отображает окно для выбора файла.
      * POST: Выполняет нужные манипуляции с данными и полученым файлом.

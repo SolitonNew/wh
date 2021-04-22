@@ -38,6 +38,8 @@ return [
     
     'menu_plan_edit' => 'Свойства записи плана...',
     'menu_sel_in_tree' => 'Выбрать в дереве',
+    'menu_toolbar_move' => 'Позиция...',
+    'menu_toolbar_size' => 'Размер...',
     'menu_clone_part' => 'Клонировать запись',
     'menu_clone_part_top' => 'Вверх...',
     'menu_clone_part_right' => 'Вправо...',
@@ -48,7 +50,12 @@ return [
     'plan_add_device_title' => 'Разместить устройство',
     'plan_edit_device_title' => 'Позиция устройства',
     
-
+    'toolbar_move' => 'позиция',
+    'toolbar_move_x' => 'X',
+    'toolbar_move_y' => 'Y',
+    'toolbar_size' => 'размер',
+    'toolbar_size_w' => 'W',
+    'toolbar_size_h' => 'H',
     
     'device_list' => 'Устройство',
     'device_surface' => 'Поверхность',

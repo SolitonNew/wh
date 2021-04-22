@@ -77,6 +77,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/plan-clone/{id}/{direction}', 'Admin\PlanController@planClone')->name('admin.plan-clone');
     Route::match(['get', 'post'], '/plan-move-childs/{id}', 'Admin\PlanController@moveChilds')->name('admin.plan-move-childs');
     Route::match(['get', 'post'], '/plan-order/{id}', 'Admin\PlanController@order')->name('admin.plan-order');
+    Route::post('/plan-move/{id}/{newX}/{newY}', 'Admin\PlanController@move')->name('admin.plan-move');
+    Route::post('/plan-size/{id}/{newW}/{newH}', 'Admin\PlanController@size')->name('admin.plan-size');
     Route::match(['get', 'post'], '/plan-import', 'Admin\PlanController@planImport')->name('admin.plan-import');
     Route::get('/plan-export', 'Admin\PlanController@planExport')->name('admin.plan-export');
     Route::match(['get', 'post'], '/plan-link-device/{planID}/{deviceID?}', 'Admin\PlanController@linkDevice')->name('admin.plan-link-device');
