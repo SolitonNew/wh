@@ -245,9 +245,14 @@ tr.table-empty:hover td {
     white-space: nowrap;
 }
 
-.tree-item:hover {
+.tree-item:hover,
+.tree-item.hover {
     background-color: rgba(0,0,0,0.075);
     text-decoration: none;
+}
+
+.tree-item.hover {
+    transition-duration: 0.25s;
 }
 
 .tree-item.active {
@@ -260,7 +265,8 @@ tr.table-empty:hover td {
     width: 16px;
     height: 33px;
     line-height: 0px;
-    margin: -0.5rem 0px;
+    margin-top: -0.45rem;
+    margin-bottom: -0.55rem;
     margin-right: 4px;
     margin-left: -4px;
     opacity: 0.5;
@@ -337,7 +343,8 @@ tr.table-empty:hover td {
     cursor: pointer;
 }
 
-.plan-part:hover {
+.plan-part:hover,
+.plan-part.hover {
     background-color: #dddddd!important;
 }
 

@@ -21,9 +21,9 @@
 @section('content')
 @if($partID)
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
-    <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
+    <div id="planParts" class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
         @foreach(\App\Http\Models\PlanPartsModel::generateTree(null, false) as $row)
-        <a href="{{ route('admin.plan', $row->id) }}"
+        <a href="{{ route('admin.plan', $row->id) }}" data-id="{{ $row->id }}"
             class="tree-item {{ $row->id == $partID ? 'active' : '' }}">
             @foreach($row->treePath as $v)
             <span class="tree-item-path tree-item-path-{{ $v }}"></span>
@@ -116,8 +116,12 @@
                 left: x + 'px',
                 top: y + 'px',
             }).show();
-            planContextMenuID = $(this).attr('data-id');
+            planContextMenuID = $(this).data('id');
             return false;
+        }).on('mouseover', function () {
+            $('#planParts a.tree-item[data-id="' + $(this).data('id') + '"]').addClass('hover'); 
+        }).on('mouseleave', function () {
+            $('#planParts a.tree-item[data-id="' + $(this).data('id') + '"]').removeClass('hover');
         });
         
         $('#planContent .plan-device').on('click', function (e) {
@@ -169,7 +173,13 @@
             }
         }).on('mouseup', function (e) {
             $('div', this).css('cursor', '');
-        });        
+        });
+        
+        $('#planParts a.tree-item').on('mouseover', function () {
+            $('#planContent .plan-part[data-id="' + $(this).data('id') + '"]').addClass('hover');
+        }).on('mouseleave', function () {
+            $('#planContent .plan-part[data-id="' + $(this).data('id') + '"]').removeClass('hover');
+        });
     });
 
     function planResize() {
