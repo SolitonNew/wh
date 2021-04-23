@@ -117,7 +117,7 @@
         </div>
         <div class="col-sm-5">
             <select class="custom-select" name="fill">
-            @foreach(['background', 'pen', 'diagonal'] as $row)
+            @foreach(['background', 'pen', 'diagonal-left', 'diagonal-right', 'cross'] as $row)
             <option value="{{ $row }}" {{ $itemStyle->fill == $row ? 'selected' : '' }}>{{ $row }}</option>
             @endforeach
             </select>

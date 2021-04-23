@@ -350,9 +350,19 @@ tr.table-empty:hover td {
     background-color: #000000;
 }
 
-.plan-part.diagonal {
+.plan-part.diagonal-left {
     background-color: #ffffff;
-    background-image: url('/img/plan/bg/bg_1.png');
+    background-image: url('/img/plan/bg/diagonal_l.png');
+}
+
+.plan-part.diagonal-right {
+    background-color: #ffffff;
+    background-image: url('/img/plan/bg/diagonal_r.png');
+}
+
+.plan-part.cross {
+    background-color: #ffffff;
+    background-image: url('/img/plan/bg/cross.png');
 }
 
 .plan-part.background:hover,
@@ -365,8 +375,12 @@ tr.table-empty:hover td {
     background-color: #222222;
 }
 
-.plan-part.diagonal:hover,
-.plan-part.diagonal.hover {
+.plan-part.diagonal-left:hover,
+.plan-part.diagonal-left.hover,
+.plan-part.diagonal-right:hover,
+.plan-part.diagonal-right.hover,
+.plan-part.cross:hover,
+.plan-part.cross.hover {
     background-color: #eeeeee;
 }
 
