@@ -543,7 +543,8 @@
     function planToolbarValue1(event) {
         switch ($('#planToolbar').data('operation')) {
             case 'move':
-                planToolbarPart.data('x', $(event.target).val());
+                let newX = parseFloat($('#toolbarValue1').val()) + parseFloat($('#toolbarValue1').data('parent'));
+                planToolbarPart.data('x', newX);
                 planResize();
                 break;
             case 'size':
@@ -556,7 +557,8 @@
     function planToolbarValue2(event) {
         switch ($('#planToolbar').data('operation')) {
             case 'move':
-                planToolbarPart.data('y', $(event.target).val());
+                let newY = parseFloat($('#toolbarValue2').val()) + parseFloat($('#toolbarValue2').data('parent'));
+                planToolbarPart.data('y', newY);
                 planResize();
                 break;
             case 'size':
