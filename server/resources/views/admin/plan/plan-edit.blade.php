@@ -100,22 +100,27 @@
         <div class="col-sm-3">
             <div class="form-label">@lang('admin/plan.table_STYLE_PEN')</div>
         </div>
-        <div class="col-sm-9" style="display: flex; max-width: 335px; justify-content: space-between;">
+        <div class="col-sm-3">
             <select class="custom-select" name="pen_style" style="width: 100px;">
             @foreach(['none', 'solid', 'dotted', 'dashed', 'double', 'groove', 'ridge', 'insert', 'outset'] as $val)
             <option {{ $itemStyle->pen_style == $val ? 'selected' : '' }}>{{ $val }}</option>
             @endforeach
             </select>
+        </div>
+        <div class="col-sm-3">
             <input type="number" class="form-control" style="width: 70px;" name="pen_width" value="{{ $itemStyle->pen_width }}">
-            <input type="text" class="form-control" style="width: 100px;" name="pen_color" value="{{ $itemStyle->pen_color }}">
         </div>
     </div>
     <div class="row">
         <div class="col-sm-3">
             <div class="form-label">@lang('admin/plan.table_STYLE_FILL')</div>
         </div>
-        <div class="col-sm-9">
-            <input type="text" class="form-control" style="width: 100px;" name="fill_color" value="{{ $itemStyle->fill_color }}">
+        <div class="col-sm-5">
+            <select class="custom-select" name="fill">
+            @foreach(['background', 'pen', 'diagonal'] as $row)
+            <option value="{{ $row }}" {{ $itemStyle->fill == $row ? 'selected' : '' }}>{{ $row }}</option>
+            @endforeach
+            </select>
         </div>
     </div>
 </form>
