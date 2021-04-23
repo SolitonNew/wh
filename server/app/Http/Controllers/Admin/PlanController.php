@@ -61,8 +61,7 @@ class PlanController extends Controller
             
             $row->pen_style = isset($v->pen_style) ? $v->pen_style : 'solid';
             $row->pen_width = isset($v->pen_width) ? $v->pen_width : 1;
-            $row->pen_color = isset($v->pen_color) ? $v->pen_color : '#000000';
-            $row->fill_color = isset($v->fill_color) ? $v->fill_color : '#EEEEEE';
+            $row->fill = isset($v->fill) ? $v->fill : 'background';
         }
         
         // Читаем список устройств
@@ -143,8 +142,7 @@ class PlanController extends Controller
                 $item->style = json_encode([
                     'pen_style' => $request->post('pen_style'),
                     'pen_width' => $request->post('pen_width'),
-                    'pen_color' => $request->post('pen_color'),
-                    'fill_color' => $request->post('fill_color'),
+                    'fill' => $request->post('fill'),
                 ]);
                 $item->save();
                 
@@ -202,8 +200,7 @@ class PlanController extends Controller
             
             if (!isset($itemStyle->pen_style)) $itemStyle->pen_style = 'solid';
             if (!isset($itemStyle->pen_width)) $itemStyle->pen_width = 1;
-            if (!isset($itemStyle->pen_color)) $itemStyle->pen_color = '#000000';
-            if (!isset($itemStyle->fill_color)) $itemStyle->fill_color = '#EEEEEE';
+            if (!isset($itemStyle->fill)) $itemStyle->fill = 'background';
             
             return view('admin.plan.plan-edit', [
                 'item' => $item,

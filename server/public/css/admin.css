@@ -339,13 +339,35 @@ tr.table-empty:hover td {
     position: absolute;
     display: inline-block;
     border: 1px solid #000000;
-    background-color: #eeeeee;
     cursor: pointer;
 }
 
-.plan-part:hover,
-.plan-part.hover {
-    background-color: #dddddd!important;
+.plan-part.background {
+    background-color: #ffffff;
+}
+
+.plan-part.pen {
+    background-color: #000000;
+}
+
+.plan-part.diagonal {
+    background-color: #ffffff;
+    background-image: url('/img/plan/bg/bg_1.png');
+}
+
+.plan-part.background:hover,
+.plan-part.background.hover {
+    background-color: #eeeeee;
+}
+
+.plan-part.pen:hover,
+.plan-part.pen.hover {
+    background-color: #222222;
+}
+
+.plan-part.diagonal:hover,
+.plan-part.diagonal.hover {
+    background-color: #eeeeee;
 }
 
 .plan-device {

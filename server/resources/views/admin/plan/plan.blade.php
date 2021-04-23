@@ -56,6 +56,16 @@
 @endsection
 
 @section('content')
+<style>
+    .content-body {
+        background-image: url('/img/plan/grid.png');
+    }
+    
+    #planContentOff {
+        opacity: 0.65;
+    }
+</style>
+
 @if($partID)
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div id="planParts" class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
@@ -74,8 +84,8 @@
             <div id="planContent" class="plan-parts-content" style="position:absolute;">
             @foreach($data as $row)
                 @if($row->W > 0 && $row->H > 0)
-                <div class="plan-part" data-id="{{ $row->id }}" data-parent-id="{{ $row->parent_id }}"
-                     style="border: {{ $row->pen_width }}px {{ $row->pen_style }} {{ $row->pen_color }}; background-color: {{ $row->fill_color }}"
+                <div class="plan-part {{ $row->fill }}" data-id="{{ $row->id }}" data-parent-id="{{ $row->parent_id }}"
+                     style="border: {{ $row->pen_width }}px {{ $row->pen_style }};"
                      data-x="{{ $row->X }}" data-y="{{ $row->Y }}" 
                      data-w="{{ $row->W }}" data-h="{{ $row->H }}"
                      data-pen-style="{{ $row->pen_style }}" data-pen-width="{{ $row->pen_width }}"></div>
@@ -129,6 +139,7 @@
     var planMinY = 0;    
     var planContextMenuID = -1;
     var planToolbarPart = false;
+    var planRootPenWidth2 = false;
 
     $(document).ready(() => {
         $('#planToolbar').hide();
@@ -216,6 +227,12 @@
             }
         }).on('mouseup', function (e) {
             $('div', this).css('cursor', '');
+        }).on('scroll', function () {
+            let pos = $('#planContent').position();
+            $(this).css({
+                'background-position-x': pos.left + planMinX + planRootPenWidth2 - $(this).scrollLeft() + 'px',
+                'background-position-y': pos.top + planMinY + planRootPenWidth2 - $(this).scrollTop() + 'px',                
+            });
         });
         
         $('#planParts a.tree-item').on('mouseover', function () {
@@ -236,6 +253,8 @@
         $('#planContent .plan-part').css({
             'transition-duration': '0s',
         });
+        
+        planRootPenWidth2 = false;
 
         /* Настраиваем отображение комнат */
         $('#planContent .plan-part').each(function() {
@@ -253,6 +272,10 @@
             }
             let penWidth2 = Math.ceil(penWidth / 2);
             penWidth = penWidth2 + penWidth2;
+            
+            if (planRootPenWidth2 === false) {
+                planRootPenWidth2 = penWidth2;
+            }
             
             penWidth2Parts.push({
                 id: $(this).data('id'),
@@ -277,6 +300,8 @@
                 'border-width': penWidth + 'px',
             });
         });
+        
+        
         
         /* Настраиваем отображение устройств */
         $('#planContent .plan-device').each(function () {
@@ -364,6 +389,12 @@
         
         planMinX = minX;
         planMinY = minY;
+        
+        $('#planContentScroll').css({
+            'background-size': planZoom + 'px',
+            'background-position-x': nx + planMinX + planRootPenWidth2 - $('#planContentScroll').scrollLeft() + 'px',
+            'background-position-y': ny + planMinY + planRootPenWidth2 - $('#planContentScroll').scrollTop() + 'px',
+        });
     }
 
     function planZoomIn() {
