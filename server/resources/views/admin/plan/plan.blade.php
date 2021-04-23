@@ -296,6 +296,8 @@
             if (y < minY) minY = y;
             if (x + w > maxX) maxX = x + w;
             if (y + h > maxY) maxY = y + h;
+            
+            let bg_z = planZoom * 1.25 / Math.sqrt(planZoom);
 
             $(this).css({
                 left: x + 'px',
@@ -303,6 +305,7 @@
                 width: w + 'px',
                 height: h + 'px',
                 'border-width': penWidth + 'px',
+                'background-size': bg_z + 'px',
             });
         });
         
