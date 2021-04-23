@@ -138,6 +138,7 @@
     var planMinX = 0;    
     var planMinY = 0;    
     var planContextMenuID = -1;
+    var planContextMenuMouse = false;
     var planToolbarPart = false;
     var planRootPenWidth2 = false;
 
@@ -171,6 +172,10 @@
                 top: y + 'px',
             }).show();
             planContextMenuID = $(this).data('id');
+            planContextMenuMouse = {
+                x: e.offsetX,
+                y: e.offsetY,
+            };
             return false;
         }).on('mouseover', function () {
             $('#planParts a.tree-item[data-id="' + $(this).data('id') + '"]').addClass('hover'); 
@@ -300,8 +305,6 @@
                 'border-width': penWidth + 'px',
             });
         });
-        
-        
         
         /* Настраиваем отображение устройств */
         $('#planContent .plan-device').each(function () {
@@ -475,7 +478,39 @@
     }
         
     function planMenuAddDevice() {
-        dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + planContextMenuID + '/-1');
+        let part = $('#planContent .plan-part[data-id="' + planContextMenuID + '"]');
+        
+        let w = part.width();
+        let h = part.height();
+        
+        let b = Math.min(w, h) / 4;
+        
+        let surface = 'top';
+        let offset = 0;
+        let cross = 0;
+        
+        if (planContextMenuMouse.y < b) {
+            surface = 'top';
+            offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
+        } else
+        if (planContextMenuMouse.x > w - b) {
+            surface = 'right';
+            offset = Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+        } else
+        if (planContextMenuMouse.y > h - b) {
+            surface = 'bottom';
+            offset = part.data('w') - Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
+        } else
+        if (planContextMenuMouse.x < b) {
+            surface = 'left';
+            offset = part.data('h') - Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+        } else {
+            surface = 'roof';
+            offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
+            cross = Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+        }
+        
+        dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + planContextMenuID + '/-1?surface=' + surface + '&offset=' + offset + '&cross=' + cross);
     }
     
     function planMenuClonePart(direction) {

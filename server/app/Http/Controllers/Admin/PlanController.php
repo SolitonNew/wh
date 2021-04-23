@@ -545,9 +545,9 @@ class PlanController extends Controller
                 $position = json_decode($device->position) ?? (object)[];
             } else {
                 $position = (object)[
-                    'surface' => 'top',
-                    'offset' => 0,
-                    'cross' => 0,
+                    'surface' => $request->get('surface') ?? 'top',
+                    'offset' => $request->get('offset') ?? 0,
+                    'cross' => $request->get('cross') ?? 0,
                 ];
             }
             
