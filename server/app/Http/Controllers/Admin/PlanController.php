@@ -570,15 +570,32 @@ class PlanController extends Controller
                     $device->inPlan = false;
                     $device->label = '';
                 }
-                $device->label .= $device->name;
+                $device->label .= $device->name.' '.($device->comm);
                 $app_control = \App\Http\Models\VariablesModel::decodeAppControl($device->app_control);
                 $device->label .= ' '."'$app_control->label'";
             }
             
             usort($devices, function ($item1, $item2) {
-                return $item1->inPlan < $item2->inPlan || $item1->label > $item2->label;
+                $sort = 0;
+                if ($item1->inPlan > $item2->inPlan) {
+                    $sort = 1;
+                } else
+                if ($item1->inPlan < $item2->inPlan) {
+                    $sort = -1;
+                }
+                
+                $sort += strcmp($item1->label, $item2->label);
+                
+                if ($sort > 0) {
+                    return 1;
+                } else
+                if ($sort < 0) {
+                    return -1;
+                } else {
+                    return 0;
+                }
             });
-            
+                        
             // Параметры комнаты
             $part = \App\Http\Models\PlanPartsModel::find($planID);
             if ($part && $part->bounds) {
