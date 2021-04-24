@@ -269,12 +269,12 @@
             let h = $(this).data('h');
             let penStyle = $(this).data('pen-style');
             let penWidth = 0; 
-            if (penStyle !== 'none') {
+            //if (penStyle !== 'none') {
                 let pw = parseInt($(this).data('pen-width'));
                 penWidth = pw ? pw : 1;
                 penWidth = penWidth * planZoom / planPenZoomScale;
                 if (penWidth < planMinPenWidth) penWidth = planMinPenWidth;
-            }
+            //}
             let penWidth2 = Math.ceil(penWidth / 2);
             penWidth = penWidth2 + penWidth2;
             
@@ -297,7 +297,7 @@
             if (x + w > maxX) maxX = x + w;
             if (y + h > maxY) maxY = y + h;
             
-            let bg_z = planZoom * 1.25 / Math.sqrt(planZoom);
+            let bg_z = planZoom * 2.5 / Math.sqrt(planZoom);
 
             $(this).css({
                 left: x + 'px',
