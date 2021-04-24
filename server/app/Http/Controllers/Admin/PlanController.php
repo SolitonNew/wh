@@ -575,25 +575,11 @@ class PlanController extends Controller
                 $device->label .= ' '."'$app_control->label'";
             }
             
+            // Сортируем, как строки, но добавленные в план сдвигаем в конец списка
             usort($devices, function ($item1, $item2) {
-                $sort = 0;
-                if ($item1->inPlan > $item2->inPlan) {
-                    $sort = 1;
-                } else
-                if ($item1->inPlan < $item2->inPlan) {
-                    $sort = -1;
-                }
-                
-                $sort += strcmp($item1->label, $item2->label);
-                
-                if ($sort > 0) {
-                    return 1;
-                } else
-                if ($sort < 0) {
-                    return -1;
-                } else {
-                    return 0;
-                }
+                $s1 = strcmp($item1->label, $item2->label);
+                $s2 = $item1->inPlan == $item2->inPlan ? 0 : ($item1->inPlan < $item2->inPlan ? -1 : 1);
+                return ($s2 !== 0) ? $s2 : $s1;
             });
                         
             // Параметры комнаты
