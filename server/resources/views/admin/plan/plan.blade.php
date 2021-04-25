@@ -92,7 +92,7 @@
                 @endif
             @endforeach
             @foreach($devices as $row)
-            <div class="plan-device" 
+            <div class="plan-device dev-{{ $row->app_control }}" 
                  data-id="{{ $row->id }}" data-part-id="{{ $row->group_id }}"
                  data-position="{{ $row->position }}"
                  data-part-bounds="{{ $row->partBounds }}"></div>
@@ -184,6 +184,7 @@
         });
         
         $('#planContent .plan-device').on('click', function (e) {
+            if (planMouseScroll) return ;
             dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('id'));
         });
         @endif
@@ -268,13 +269,11 @@
             let w = $(this).data('w');
             let h = $(this).data('h');
             let penStyle = $(this).data('pen-style');
-            let penWidth = 0; 
-            //if (penStyle !== 'none') {
-                let pw = parseInt($(this).data('pen-width'));
-                penWidth = pw ? pw : 1;
-                penWidth = penWidth * planZoom / planPenZoomScale;
-                if (penWidth < planMinPenWidth) penWidth = planMinPenWidth;
-            //}
+            let pw = parseInt($(this).data('pen-width'));
+            let penWidth = pw ? pw : 1;
+            penWidth = penWidth * planZoom / planPenZoomScale;
+            if (penWidth < planMinPenWidth) penWidth = planMinPenWidth;
+
             let penWidth2 = Math.ceil(penWidth / 2);
             penWidth = penWidth2 + penWidth2;
             
@@ -310,6 +309,15 @@
         });
         
         /* Настраиваем отображение устройств */
+        let z = planZoom * 0.01;
+        let devicePenWidth = planZoom / planPenZoomScale;
+        if (devicePenWidth < planMinPenWidth) devicePenWidth = planMinPenWidth;
+        let devicePenWidth2 = Math.ceil(devicePenWidth / 2);
+        devicePenWidth = devicePenWidth2 + devicePenWidth2;
+        let deviceW = 20 * z;
+        let deviceH = 20 * z;
+        let deviceR = 5 * z;
+        
         $('#planContent .plan-device').each(function () {
             let partId = $(this).data('part-id');
             let partPenWidth2 = 1;
@@ -324,46 +332,63 @@
             let position = $(this).data('position');
             let partBounds = $(this).data('partBounds');
             
-            let w = $(this).width() + 4; /* Учитывается толщина обводки */
-            let h = $(this).height() + 4;
-            
             let partX = partBounds.X * planZoom + partPenWidth2;
             let partY = partBounds.Y * planZoom + partPenWidth2;
             let partW = partBounds.W * planZoom - partPenWidth;
             let partH = partBounds.H * planZoom - partPenWidth;
             
-            let kx = (partW - w) / partBounds.W;
-            let ky = (partH - h) / partBounds.H;
+            let kx = (partW - deviceW) / partBounds.W;
+            let ky = (partH - deviceH) / partBounds.H;
             
             switch (position.surface) {
                 case 'top':
                     $(this).css({
+                        'border-width': devicePenWidth + 'px',
+                        'border-radius': deviceR + 'px',
                         left: (partX + position.offset * kx) + 'px',
                         top: (partY) + 'px',
+                        width: deviceW + 'px',
+                        height: deviceH + 'px',
                     });
                     break;
                 case 'right':
                     $(this).css({
-                        left: (partX + partW - w) + 'px',
+                        'border-width': devicePenWidth + 'px',
+                        'border-radius': deviceR + 'px',
+                        left: (partX + partW - deviceW) + 'px',
                         top: (partY + position.offset * ky) + 'px',
+                        width: deviceW + 'px',
+                        height: deviceH + 'px',
                     });
                     break;
                 case 'bottom':
                     $(this).css({
-                        left: (partX + partW - position.offset * kx - w) + 'px',
-                        top: (partY + partH - h) + 'px',
+                        'border-width': devicePenWidth + 'px',
+                        'border-radius': deviceR + 'px',
+                        left: (partX + partW - position.offset * kx - deviceW) + 'px',
+                        top: (partY + partH - deviceH) + 'px',
+                        width: deviceW + 'px',
+                        height: deviceH + 'px',
                     });
                     break;
                 case 'left':
                     $(this).css({
+                        'border-width': devicePenWidth + 'px',
+                        'border-radius': deviceR + 'px',
                         left: (partX) + 'px',
-                        top: (partY + partH - h - position.offset * ky) + 'px',
+                        top: (partY + partH - deviceH - position.offset * ky) + 'px',
+                        width: deviceW + 'px',
+                        height: deviceH + 'px',
                     });
                     break;
                 case 'roof':
                     $(this).css({
+                        'border-width': devicePenWidth + 'px',
+                        'border-radius': deviceR + 'px',
                         left: (partX + position.offset * kx) + 'px',
                         top: (partY + position.cross * ky) + 'px',
+                        width: deviceW + 'px',
+                        height: deviceH + 'px',
                     });
                     break;
             }
@@ -502,11 +527,11 @@
         } else
         if (planContextMenuMouse.y > h - b) {
             surface = 'bottom';
-            offset = part.data('w') - Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
+            offset = Math.round((part.data('w') - part.data('w') * planContextMenuMouse.x / w) * 10) / 10;
         } else
         if (planContextMenuMouse.x < b) {
             surface = 'left';
-            offset = part.data('h') - Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+            offset = Math.round((part.data('h') - part.data('h') * planContextMenuMouse.y / h) * 10) / 10;
         } else {
             surface = 'roof';
             offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;

@@ -22,10 +22,11 @@
     <input type="hidden" name="add_device_id">
     <div class="form-group">
         <label class="">@lang('admin/plan.device_list'):</label>
-        <select class="custom-select" name="device">
+        <select class="custom-select" name="device" data-app-control="0">
         @foreach($devices as $row)
         <option value="{{ $row->id }}" {{ $row->id == $deviceID ? 'selected' : '' }} 
-                class="{{ $row->inPlan ? 'italic' : '' }}" >{{ $row->label }}</option>
+                class="{{ $row->inPlan ? 'italic' : '' }}" 
+                data-app-control="{{ $row->app_control }}">{{ $row->label }}</option>
         @endforeach
         </select>
     </div>
@@ -48,7 +49,7 @@
                     <div style="position: absolute; left: 0px; top: 0px; display: flex; width: 100%;height: 100%;align-items: center;justify-content: center;">
                         <small class="text-muted">{{ $partBounds->W }}x{{ $partBounds->H }}</small>
                     </div>
-                    <div class="plan-device"></div>
+                    <div class="plan-device" style="cursor: default;"></div>
                 </div>                
             </div>
         </div>
@@ -95,6 +96,19 @@
                 dialogShowErrors(data);
             }
         });
+        
+        $('#plan_link_device_form select[name="device"]').on('change', function () {
+            let devClass = 'dev-';
+            let device = $('#plan_link_device_form .plan-device');
+            device.attr('class').split(/\s+/).forEach(function (item) {
+                if (item.length <= devClass.length + 2) {
+                    if (item.substr(0, devClass.length) == devClass) {
+                        device.removeClass(item);
+                    }
+                }
+            });
+            device.addClass(devClass + $('#plan_link_device_form option[value="' + $(this).val() + '"]').data('app-control'));
+        }).trigger('change');
         
         $('#plan_link_device_form select[name="surface"]').on('change', function () {
             planViewUpdate();
@@ -190,8 +204,8 @@
         // Двигаем устройство
         let device = $('#deviceLinkView .plan-device');
         
-        let w = $('#deviceLinkView').width() - 4; /* Учитываем толщину обводки */
-        let h = $('#deviceLinkView').height() - 4;
+        let w = $('#deviceLinkView').width() - 2; /* Учитываем толщину обводки */
+        let h = $('#deviceLinkView').height() - 2;
         let kx = (w - device.width()) / b_w;
         let ky = (h - device.height()) / b_h;
         
