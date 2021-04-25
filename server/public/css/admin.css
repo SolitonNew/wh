@@ -394,10 +394,15 @@ tr.table-empty:hover td {
     height: 20px;
     cursor: pointer;
     opacity: 0.75;
+    background-size: 100%;
 }
 
 .plan-device:hover {
     opacity: 1;
+}
+
+.plan-device.dev-1 {
+    background-image: url('/img/plan/devices/dev_light.png');
 }
 
 option:disabled {

@@ -92,7 +92,7 @@
                 @endif
             @endforeach
             @foreach($devices as $row)
-            <div class="plan-device" 
+            <div class="plan-device dev-{{ $row->app_control }}" 
                  data-id="{{ $row->id }}" data-part-id="{{ $row->group_id }}"
                  data-position="{{ $row->position }}"
                  data-part-bounds="{{ $row->partBounds }}"></div>
@@ -184,6 +184,7 @@
         });
         
         $('#planContent .plan-device').on('click', function (e) {
+            if (planMouseScroll) return ;
             dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('id'));
         });
         @endif
@@ -526,11 +527,11 @@
         } else
         if (planContextMenuMouse.y > h - b) {
             surface = 'bottom';
-            offset = part.data('w') - Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
+            offset = Math.round((part.data('w') - part.data('w') * planContextMenuMouse.x / w) * 10) / 10;
         } else
         if (planContextMenuMouse.x < b) {
             surface = 'left';
-            offset = part.data('h') - Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+            offset = Math.round((part.data('h') - part.data('h') * planContextMenuMouse.y / h) * 10) / 10;
         } else {
             surface = 'roof';
             offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
