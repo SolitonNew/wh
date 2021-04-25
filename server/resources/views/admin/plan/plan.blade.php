@@ -198,10 +198,10 @@
             planResize();
         }).trigger('resize');
         
-        $('#planContentScroll').on('mousewheel', function (e) {
+        $('#planContentScroll').on('wheel', function (e) {
             e.preventDefault();
             $('#planPartMenu').hide();
-            if (e.originalEvent.wheelDelta > 0) {
+            if (e.originalEvent.deltaY < 0) {
                 planZoomIn();
             } else {
                 planZoomOut();

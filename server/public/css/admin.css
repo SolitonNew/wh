@@ -401,6 +401,7 @@ tr.table-empty:hover td {
 
 .plan-device:hover {
     opacity: 1;
+    background-color: #eeee00;
 }
 
 .plan-device.dev-1 {
