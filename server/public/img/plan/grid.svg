@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">    
+    <path fill="none" stroke="black" stroke-width="3" stroke-opacity="0.3" d="M0,200 V0 H200"/>
+    <path fill="none" stroke="black" stroke-width="1" stroke-opacity="0.3" d="M0,100 H200 M100,0 V200"/>
+    <path fill="none" stroke="black" stroke-width="1" stroke-opacity="0.15" d="M 0 20 L 200 20 M 0 40 L 200 40 M 0 60 L 200 60 M 0 80 L 200 80"/>
+    <path fill="none" stroke="black" stroke-width="1" stroke-opacity="0.15" d="M 0 120 L 200 120 M 0 140 L 200 140 M 0 160 L 200 160 M 0 180 L 200 180"/>
+    <path fill="none" stroke="black" stroke-width="1" stroke-opacity="0.15" d="M 20 0 L 20 200 M 40 0 L 40 200 M 60 0 L 60 200 M 80 0 L 80 200"/>
+    <path fill="none" stroke="black" stroke-width="1" stroke-opacity="0.15" d="M 120 0 L 120 200 M 140 0 L 140 200 M 160 0 L 160 200 M 180 0 L 180 200"/>
+</svg>
