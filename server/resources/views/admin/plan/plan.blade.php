@@ -58,7 +58,7 @@
 @section('content')
 <style>
     .content-body {
-        background-image: url('/img/plan/grid.png');
+        background-image: url('/img/plan/grid.svg');
     }
     
     #planContentOff {
@@ -309,14 +309,13 @@
         });
         
         /* Настраиваем отображение устройств */
-        let z = planZoom * 0.01;
         let devicePenWidth = planZoom / planPenZoomScale;
         if (devicePenWidth < planMinPenWidth) devicePenWidth = planMinPenWidth;
         let devicePenWidth2 = Math.ceil(devicePenWidth / 2);
         devicePenWidth = devicePenWidth2 + devicePenWidth2;
-        let deviceW = 20 * z;
-        let deviceH = 20 * z;
-        let deviceR = 5 * z;
+        let deviceW = 0.20 * planZoom;
+        let deviceH = 0.20 * planZoom;
+        let deviceR = 0.05 * planZoom;
         
         $('#planContent .plan-device').each(function () {
             let partId = $(this).data('part-id');
