@@ -190,8 +190,8 @@
         // Двигаем устройство
         let device = $('#deviceLinkView .plan-device');
         
-        let w = $('#deviceLinkView').width() - 4; /* Учитываем толщину обводки */
-        let h = $('#deviceLinkView').height() - 4;
+        let w = $('#deviceLinkView').width() - 2; /* Учитываем толщину обводки */
+        let h = $('#deviceLinkView').height() - 2;
         let kx = (w - device.width()) / b_w;
         let ky = (h - device.height()) / b_h;
         
