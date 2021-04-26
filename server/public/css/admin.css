@@ -337,9 +337,17 @@ tr.table-empty:hover td {
 
 .plan-part {
     position: absolute;
-    display: inline-block;
-    border: 1px solid #000000;
+    display: flex;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #000000;
     cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+
+.plan-part > span {
+    
 }
 
 .plan-part.background {
@@ -348,6 +356,10 @@ tr.table-empty:hover td {
 
 .plan-part.pen {
     background-color: #000000;
+}
+
+.plan-part.pen > span {
+    color: #ffffff;
 }
 
 .plan-part.diagonal-left {
@@ -579,7 +591,6 @@ tr.schedule-exec-today td {
 select.select-tree {
     font-family: monospace;
     white-space: pre;
-    font-size: 1.231rem;
 }
 
 select.select-tree option {
