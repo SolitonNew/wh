@@ -29,6 +29,9 @@ return [
     'table_DY' => 'Сместить вдоль оси Y на',
     'table_STYLE_PEN' => 'Линия',
     'table_STYLE_FILL' => 'Заливка',
+    'table_NAME_POSITION' => 'Надпись',
+    'table_NAME_POSITION_DX' => 'DX',
+    'table_NAME_POSITION_DY' => 'DY',
     
     'plan_add_title' => 'Новая запись плана',
     'plan_edit_title' => 'Свойства записи плана',

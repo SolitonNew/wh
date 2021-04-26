@@ -62,6 +62,8 @@ class PlanController extends Controller
             $row->pen_style = isset($v->pen_style) ? $v->pen_style : 'solid';
             $row->pen_width = isset($v->pen_width) ? $v->pen_width : 1;
             $row->fill = isset($v->fill) ? $v->fill : 'background';
+            $row->name_dx = isset($v->name_dx) ? $v->name_dx : 0;
+            $row->name_dy = isset($v->name_dy) ? $v->name_dy : 0;
         }
         
         // Читаем список устройств
@@ -110,6 +112,9 @@ class PlanController extends Controller
                     'Y' => 'required|numeric',
                     'W' => 'required|numeric',
                     'H' => 'required|numeric',
+                    'pen_width' => 'nullable|numeric',
+                    'name_dx' => 'nullable|numeric',
+                    'name_dy' => 'nullable|numeric',
                 ]);
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->validator->errors());
@@ -143,6 +148,8 @@ class PlanController extends Controller
                     'pen_style' => $request->post('pen_style'),
                     'pen_width' => $request->post('pen_width'),
                     'fill' => $request->post('fill'),
+                    'name_dx' => $request->post('name_dx') ?? 0,
+                    'name_dy' => $request->post('name_dy') ?? 0,
                 ]);
                 $item->save();
                 
@@ -201,6 +208,8 @@ class PlanController extends Controller
             if (!isset($itemStyle->pen_style)) $itemStyle->pen_style = 'solid';
             if (!isset($itemStyle->pen_width)) $itemStyle->pen_width = 1;
             if (!isset($itemStyle->fill)) $itemStyle->fill = 'background';
+            if (!isset($itemStyle->name_dx)) $itemStyle->name_dx = 0;
+            if (!isset($itemStyle->name_dy)) $itemStyle->name_dy = 0;
             
             return view('admin.plan.plan-edit', [
                 'item' => $item,

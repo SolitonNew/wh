@@ -88,7 +88,10 @@
                      style="border: {{ $row->pen_width }}px {{ $row->pen_style }};"
                      data-x="{{ $row->X }}" data-y="{{ $row->Y }}" 
                      data-w="{{ $row->W }}" data-h="{{ $row->H }}"
-                     data-pen-style="{{ $row->pen_style }}" data-pen-width="{{ $row->pen_width }}"></div>
+                     data-pen-style="{{ $row->pen_style }}" data-pen-width="{{ $row->pen_width }}"
+                     data-name-dx="{{ $row->name_dx }}" data-name-dy="{{ $row->name_dy }}">
+                    <span>{{ $row->name }}</span>
+                </div>
                 @endif
             @endforeach
             @foreach($devices as $row)
@@ -293,7 +296,6 @@
             let y = $(this).data('y');
             let w = $(this).data('w');
             let h = $(this).data('h');
-            let penStyle = $(this).data('pen-style');
             let pw = parseInt($(this).data('pen-width'));
             let penWidth = pw ? pw : 1;
             penWidth = penWidth * planZoom / planPenZoomScale;
@@ -322,6 +324,7 @@
             if (y + h > maxY) maxY = y + h;
             
             let bg_z = planZoom * 2.5 / Math.sqrt(planZoom);
+            let f_size = planZoom * 2 / Math.sqrt(planZoom);
 
             $(this).css({
                 left: x + 'px',
@@ -330,6 +333,15 @@
                 height: h + 'px',
                 'border-width': penWidth + 'px',
                 'background-size': bg_z + 'px',
+                'font-size': f_size + 'px',
+            });
+            
+            let span = $('span', this);
+            let w2 = w / 2;
+            let h2 = h / 2;
+            span.css({
+                left: w2 + w2 * $(this).data('name-dx') / 100 - span.width() / 2 + 'px',
+                top: h2 + h2 * $(this).data('name-dy') / 100 - span.height() / 2 + 'px',
             });
         });
         

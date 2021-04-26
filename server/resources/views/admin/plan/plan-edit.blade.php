@@ -123,6 +123,27 @@
             </select>
         </div>
     </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="form-label">@lang('admin/plan.table_NAME_POSITION')</label>
+        </div>
+        <div class="col-sm-9">
+            <div class="row" style="margin-bottom: 0;">
+                <div class="col-sm-2">
+                    <label class="form-label">@lang('admin/plan.table_NAME_POSITION_DX')</label>
+                </div>
+                <div class="col-sm-4">
+                    <input class="form-control" name="name_dx" value="{{ $itemStyle->name_dx }}">
+                </div>
+                <div class="col-sm-2">
+                    <label class="form-label">@lang('admin/plan.table_NAME_POSITION_DY')</label>
+                </div>
+                <div class="col-sm-4">
+                    <input class="form-control" name="name_dy" value="{{ $itemStyle->name_dy }}">
+                </div>
+            </div>
+        </div>
+    </div>
 </form>
 @endsection
 
