@@ -337,17 +337,16 @@ tr.table-empty:hover td {
 
 .plan-part {
     position: absolute;
-    display: flex;
+    display: inline-block;
     border-width: 1px;
     border-style: solid;
     border-color: #000000;
     cursor: pointer;
-    align-items: center;
-    justify-content: center;
 }
 
 .plan-part > span {
-    
+    position: absolute;
+    display: inline-block;
 }
 
 .plan-part.background {
