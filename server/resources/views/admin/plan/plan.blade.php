@@ -337,8 +337,15 @@
             });
             
             let span = $('span', this);
-            let w2 = w / 2;
-            let h2 = h / 2;
+            let w2 = 0;
+            let h2 = 0;
+            if ($(this).data('pen-style') !== 'none') {
+                w2 = (w - penWidth - penWidth) / 2;
+                h2 = (h - penWidth - penWidth) / 2;
+            } else {
+                w2 = w / 2;
+                h2 = h / 2;
+            }
             span.css({
                 left: w2 + w2 * $(this).data('name-dx') / 100 - span.width() / 2 + 'px',
                 top: h2 + h2 * $(this).data('name-dy') / 100 - span.height() / 2 + 'px',
