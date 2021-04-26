@@ -101,25 +101,32 @@
         </div>
     </div>
     <div id="planPartMenu" class="dropdown-menu">
-        <a class="dropdown-item strong" href="#" onclick="planMenuPlanEdit(); return false;">@lang('admin/plan.menu_plan_edit')</a>
-        <a class="dropdown-item" href="#" onclick="planSelInTree(); return false;">@lang('admin/plan.menu_sel_in_tree')</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#" onclick="planMenuToolbar('move'); return false;">@lang('admin/plan.menu_toolbar_move')</a>
-        <a class="dropdown-item" href="#" onclick="planMenuToolbar('size'); return false;">@lang('admin/plan.menu_toolbar_size')</a>
-        <div class="dropdown-divider"></div>
-        <div class="dropdown-item dropdown-menu-sub">
-            <div><span>@lang('admin/plan.menu_clone_part')</span></div>
-            <div class="dropdown-menu">
-                <a class="dropdown-item" href="#" onclick="planMenuClonePart('top'); return false;">@lang('admin/plan.menu_clone_part_top')</a>
-                <a class="dropdown-item" href="#" onclick="planMenuClonePart('right'); return false;">@lang('admin/plan.menu_clone_part_right')</a>
-                <a class="dropdown-item" href="#" onclick="planMenuClonePart('bottom'); return false;">@lang('admin/plan.menu_clone_part_bottom')</a>
-                <a class="dropdown-item" href="#" onclick="planMenuClonePart('left'); return false;">@lang('admin/plan.menu_clone_part_left')</a>
+        <div class="plan-part-context">
+            <a class="dropdown-item strong" href="#" onclick="planMenuPlanEdit(); return false;">@lang('admin/plan.menu_plan_edit')</a>
+            <a class="dropdown-item" href="#" onclick="planSelInTree(); return false;">@lang('admin/plan.menu_sel_in_tree')</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" onclick="planMenuToolbar('move'); return false;">@lang('admin/plan.menu_toolbar_move')</a>
+            <a class="dropdown-item" href="#" onclick="planMenuToolbar('size'); return false;">@lang('admin/plan.menu_toolbar_size')</a>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item dropdown-menu-sub">
+                <div><span>@lang('admin/plan.menu_clone_part')</span></div>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('top'); return false;">@lang('admin/plan.menu_clone_part_top')</a>
+                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('right'); return false;">@lang('admin/plan.menu_clone_part_right')</a>
+                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('bottom'); return false;">@lang('admin/plan.menu_clone_part_bottom')</a>
+                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('left'); return false;">@lang('admin/plan.menu_clone_part_left')</a>
+                </div>
             </div>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" onclick="planMenuAddPart(); return false;">@lang('admin/plan.menu_add_part')</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" onclick="planMenuAddDevice(); return false;">@lang('admin/plan.menu_add_device')</a>
         </div>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#" onclick="planMenuAddPart(); return false;">@lang('admin/plan.menu_add_part')</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#" onclick="planMenuAddDevice(); return false;">@lang('admin/plan.menu_add_device')</a>
+        <div class="plan-device-context">
+            <a class="dropdown-item strong" href="#" onclick="planMenuDeviceLink(); return false;">@lang('admin/plan.menu_device_link')</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" onclick="planMenuDeviceEdit(); return false;">@lang('admin/plan.menu_device_edit')</a>
+        </div>
     </div>
 </div>
 @endif
@@ -160,22 +167,7 @@
             if (planMouseScroll) return ;
             dialog('{{ route("admin.plan-edit", "") }}/' + $(this).attr('data-id'));
         }).on('contextmenu', function (e) {
-            let h = $('#planPartMenu').height();
-            let x = e.pageX;
-            let y = e.pageY;
-            let pageH = window.innerHeight - 40; /* 40 - это заглушка */
-            if (y + h > pageH) {
-                y = pageH - h;
-            }
-            $('#planPartMenu').css({
-                left: x + 'px',
-                top: y + 'px',
-            }).show();
-            planContextMenuID = $(this).data('id');
-            planContextMenuMouse = {
-                x: e.offsetX,
-                y: e.offsetY,
-            };
+            planShowContextMenu(e, 'part');
             return false;
         }).on('mouseover', function () {
             $('#planParts a.tree-item[data-id="' + $(this).data('id') + '"]').addClass('hover'); 
@@ -186,6 +178,9 @@
         $('#planContent .plan-device').on('click', function (e) {
             if (planMouseScroll) return ;
             dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('id'));
+        }).on('contextmenu', function (e) {
+            planShowContextMenu(e, 'device');
+            return false;
         });
         @endif
 
@@ -247,6 +242,36 @@
             $('#planContent .plan-part[data-id="' + $(this).data('id') + '"]').removeClass('hover');
         });
     });
+    
+    function planShowContextMenu(e, typ) {
+        $('#planPartMenu > div').hide();
+        
+        switch (typ) {
+            case 'part':
+                $('#planPartMenu > .plan-part-context').show();
+                break;
+            case 'device':
+                $('#planPartMenu > .plan-device-context').show();
+                break;
+        }
+        
+        let h = $('#planPartMenu').height();
+        let x = e.pageX;
+        let y = e.pageY;
+        let pageH = window.innerHeight - 40; /* 40 - это заглушка */
+        if (y + h > pageH) {
+            y = pageH - h;
+        }
+        $('#planPartMenu').css({
+            left: x + 'px',
+            top: y + 'px',
+        }).show();
+        planContextMenuID = $(e.target).data('id');
+        planContextMenuMouse = {
+            x: e.offsetX,
+            y: e.offsetY,
+        };
+    }
 
     function planResize() {
         let penWidth2Parts = new Array(); /* Нужен кеш с вычислениями бордеров, что бы правильно позиционировать устройства */
@@ -684,6 +709,15 @@
         planToolbarPart = false;
         
         $('#planToolbar').fadeOut(fast ? 0 : 250);
+    }
+    
+    function planMenuDeviceLink() {
+        let device = $('#planContentOff .plan-device[data-id="' + planContextMenuID + '"]');
+        dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + device.data('part-id') + '/' + device.data('id'));
+    }
+    
+    function planMenuDeviceEdit() {       
+        dialog('{{ route("admin.hub-device-edit", [-1, ""]) }}/' + planContextMenuID);
     }
     
     @endif

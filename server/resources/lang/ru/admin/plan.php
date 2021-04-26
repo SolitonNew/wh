@@ -47,6 +47,9 @@ return [
     'menu_clone_part_left' => 'Влево...',
     'menu_add_part' => 'Создать вложеную запись плана...',
     'menu_add_device' => 'Разместить новое устройство...',
+    'menu_device_link' => 'Позиция устройства...',
+    'menu_device_edit' => 'Свойства устройства...',
+    
     'plan_add_device_title' => 'Разместить устройство',
     'plan_edit_device_title' => 'Позиция устройства',
     
