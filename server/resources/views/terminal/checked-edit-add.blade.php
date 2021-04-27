@@ -8,7 +8,7 @@
     
     <div class="alert alert-dark" style="margin-bottom: 1rem;">
         <select id="filter" class="form-control">
-            <option value="-1">-- ВСЕ --</option>
+            <option value="-1">-- @lang('terminal.all') --</option>
             @foreach($appControls as $row)
             <option value="{{ $row->key }}" {{ $row->key == $selKey ? 'selected' : '' }}>{{ $row->value }}</option>>
             @endforeach

@@ -11,13 +11,13 @@
 
 <div class="nav nav-tabs justify-content-center" style="margin: 0 -1rem; margin-bottom: 1rem;">
     <div class="nav-item">
-        <a href="{{ route('terminal.checked-edit-add') }}" class="nav-link {{ $page == 'add' ? 'active' : '' }}">ДОБАВИТЬ</a>
+        <a href="{{ route('terminal.checked-edit-add') }}" class="nav-link {{ $page == 'add' ? 'active' : '' }}">@lang('terminal.page_append')</a>
     </div>
     <div class="nav-item">
-        <a href="{{ route('terminal.checked-edit-order') }}" class="nav-link {{ $page == 'order' ? 'active' : '' }}">ПОРЯДОК</a>
+        <a href="{{ route('terminal.checked-edit-order') }}" class="nav-link {{ $page == 'order' ? 'active' : '' }}">@lang('terminal.page_order')</a>
     </div>
     <div class="nav-item">
-        <a href="{{ route('terminal.checked-edit-color') }}" class="nav-link {{ $page == 'color' ? 'active' : '' }}">ЦВЕТ</a>
+        <a href="{{ route('terminal.checked-edit-color') }}" class="nav-link {{ $page == 'color' ? 'active' : '' }}">@lang('terminal.page_color')</a>
     </div>
 </div>
 

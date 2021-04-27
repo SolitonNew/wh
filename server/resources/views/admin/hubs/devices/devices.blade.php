@@ -55,7 +55,7 @@
                     <td>{{ $row->typ }}</td>
                     <td>{{ $row->name }}</td>
                     <td>{{ $row->comm }}</td>
-                    <td>{{ $row->group_name ?? '-- '.Lang::get('admin/hubs.device_group_empty').' --'  }}</td>
+                    <td class="nowrap">{{ $row->group_name ?? '-- '.Lang::get('admin/hubs.device_group_empty').' --'  }}</td>
                     <td>{{ Lang::get('admin/hubs.app_control.'.$row->app_control) }}</td>
                     <td class="device-value" data-time="{{ \Carbon\Carbon::parse($row->last_update)->timestamp }}">{{ $row->value }}</td>
                     <td>{{ $row->channel }}</td>

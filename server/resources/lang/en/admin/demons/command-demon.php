@@ -1,12 +1,11 @@
 <?php
 
 return [
-   
-    
-    'command-demon' => 'Командный процессор',
-    'command-demon-title' => '-- КОМАНДНЫЙ ПРОЦЕССОР',
-    'command-demon-line' => '[:datetime] Выполнена команда ":command"',
-    'command-demon-hours' => [
+    'title' => 'Command processor',
+    'description' => '-- COMMAND PROCESSOR',
+    'line' => '[:datetime] The command ":command" was executed.',
+    /* not translated */
+    'hours' => [   
         1 => 'Один час ночи',
         2 => 'Два час*а ночи',
         3 => 'Три час*а ночи',
@@ -32,7 +31,7 @@ return [
         23 => 'Одинадцать часов ночи',
         24 => 'Двенадцать часов ночи',
     ],
-    'command-demon-minutes-2' => [
+    'minutes-2' => [
         0 => '',
         1 => 'одна',
         2 => 'две',
@@ -44,7 +43,7 @@ return [
         8 => 'восемь',
         9 => 'девять',
     ],
-    'command-demon-minutes-1' => [
+    'minutes-1' => [
         0 => '',
         1 => '',
         2 => 'двадцать',
@@ -53,7 +52,7 @@ return [
         5 => 'пятдесят',
         6 => 'шестьдесят',
     ],
-    'command-demon-minutes' => [
+    'minutes' => [
         0 => 'минут',
         1 => 'минута',
         2 => 'минуты',
@@ -65,7 +64,7 @@ return [
         8 => 'минут',
         9 => 'минут',
     ],
-    'command-demon-temps' => [
+    'temps' => [
         0 => 'градусов',
         1 => 'градус',
         2 => 'градуса', 
@@ -77,10 +76,9 @@ return [
         8 => 'градусов',
         9 => 'градусов',
     ],
-    'command-demon-info-temp' =>  'Температура на улице :temp',
-    'command-demon-info-temp-znak' => [
+    'info-temp' =>  'Температура на улице :temp',
+    'info-temp-znak' => [
         0 => 'мороза',
         1 => 'тепла',
-    ],    
-    
+    ],
 ];
