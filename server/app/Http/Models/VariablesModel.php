@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use \App\Library\AffectsFirmwareModel;
+use Lang;
 
 class VariablesModel extends AffectsFirmwareModel
 {    
@@ -33,7 +34,7 @@ class VariablesModel extends AffectsFirmwareModel
         $varStep = 1;    
         switch ($app_control) {
             case 1: // Лампочка
-                $control = 'СВЕТ';
+                $control = Lang::get('admin/hubs.log_app_control.1');
                 $typ = 2;
                 break;
             case 3: // Розетка
@@ -41,12 +42,12 @@ class VariablesModel extends AffectsFirmwareModel
                 $typ = 2;
                 break;
             case 4: // Термометр
-                $control = 'ТЕРМОМЕТР';
+                $control = Lang::get('admin/hubs.log_app_control.4');
                 $typ = 1;
                 $resolution = '°C';
                 break;
             case 5: // Термостат
-                $control = 'ТЕРМОСТАТ';
+                $control = Lang::get('admin/hubs.log_app_control.5');
                 $typ = 3;
                 $resolution = '°C';
                 $varMin = 15;
@@ -54,7 +55,7 @@ class VariablesModel extends AffectsFirmwareModel
                 $varStep = 1;
                 break;
             case 7: //Вентилятор
-                $control = 'ВЕНТИЛЯЦИЯ';
+                $control = Lang::get('admin/hubs.log_app_control.7');
                 $typ = 3;
                 $resolution = '%';
                 $varMin = 0;
@@ -62,12 +63,12 @@ class VariablesModel extends AffectsFirmwareModel
                 $varStep = 10;
                 break;
             case 10: //Гигрометр
-                $control = 'ВЛАЖНОСТЬ';
+                $control = Lang::get('admin/hubs.log_app_control.10');
                 $typ = 1;
                 $resolution = '%';
                 break;
             case 11: // Датчик газа
-                $control = 'СО';
+                $control = Lang::get('admin/hubs.log_app_control.11');
                 $typ = 1;
                 $resolution = 'ppm';
                 break;
@@ -77,7 +78,7 @@ class VariablesModel extends AffectsFirmwareModel
                 $resolution = 'mm';
                 break;
             case 14: // Датчик тока
-                $control = 'ТОК';
+                $control = Lang::get('admin/hubs.log_app_control.14');
                 $typ = 1;
                 $resolution = 'A';
                 break;

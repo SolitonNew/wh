@@ -32,6 +32,7 @@
                 @if(\App\Http\Models\PropertysModel::getFirmwareChanges() > 0)
                 <a class="btn btn-danger" href="#" onclick="firmware(); return false;" style="margin-right: 0.5rem;">@lang('admin/admin.menu_firmware') ({{ \App\Http\Models\PropertysModel::getFirmwareChanges() }})</a>
                 @endif
+                <a class="btn btn-primary" href="{{ route('home') }}" target="_blank">@lang('admin/admin.menu_home')</a>
                 <a class="btn btn-primary" href="{{ route('logout') }}" style="margin-right: 0;">@lang('admin/admin.menu_logout')</a>
             </nav>
         </div>
