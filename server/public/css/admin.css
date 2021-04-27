@@ -419,6 +419,39 @@ tr.table-empty:hover td {
     background-image: url('/img/plan/devices/dev_light.svg');
 }
 
+.plan-device.dev-2 {
+    background-image: url('/img/plan/devices/dev_switch.svg');
+}
+
+.plan-device.dev-3 {
+    background-image: url('/img/plan/devices/dev_socket.svg');
+}
+
+.plan-device.dev-4 {
+    background-image: url('/img/plan/devices/dev_termometr.svg');
+}
+
+.plan-device.dev-5 {
+    background-image: url('/img/plan/devices/dev_termostat.svg');
+}
+
+.plan-device.dev-6 {
+    background-image: url('/img/plan/devices/dev_videcam.svg');
+}
+
+.plan-device.dev-7 {
+    background-image: url('/img/plan/devices/dev_venting.svg');
+}
+
+.plan-device.dev-8 {
+    background-image: url('/img/plan/devices/dev_motion.svg');
+}
+
+
+.plan-device.dev-10 {
+    background-image: url('/img/plan/devices/dev_humidity.svg');
+}
+
 option:disabled {
     color: #dddddd;
 }
