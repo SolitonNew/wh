@@ -211,7 +211,11 @@ class PlanPartsModel extends Model
         
         if ($maxLevel > 2) $maxLevel = 2;
         
-        PropertysModel::setPlanMaxLevel($maxLevel + 1);
+        $maxLevel++;
+        
+        if (PropertysModel::getPlanMaxLevel() > $maxLevel) {
+            PropertysModel::setPlanMaxLevel($maxLevel);
+        }
     }
     
     /**

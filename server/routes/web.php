@@ -131,4 +131,9 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     /* Статистика потребления */    
     Route::get('/jurnal/power', 'Admin\Jurnal\PowerController@index')->name('admin.jurnal-power');
+    
+    
+    /* Terminal settings  --------------------------------------------------- */
+    Route::get('/terminal', 'Admin\TerminalController@index')->name('admin.terminal');
+    Route::post('/terminal-set-max-level/{value}', 'Admin\TerminalController@setMaxLevel')->name('admin.terminal-set-max-level');
 });

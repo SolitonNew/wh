@@ -79,9 +79,9 @@
                             <span class="label">@lang('admin/users.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Http\Models\UsersModel::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{{ route('home') }}" target="_blank">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('terminal')" href="{{ route('admin.terminal') }}">
                             <img src="/img/menus/phone-2x.png">
-                            <span class="label">@lang('admin/admin.menu_home')</span>
+                            <span class="label">@lang('admin/terminal.menu')</span>
                         </a>
                     </div>
                 </div>
