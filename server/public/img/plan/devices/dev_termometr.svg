@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8">
+    <circle cx="4" cy="1.5" r="1" style="fill:none; stroke:black; stroke-width:1px;"
+            stroke-dasharray="3.14" stroke-dashoffset="3.14" />
+    <path d="M3,1.43 V5 M5,1.43 V5 M4,3.5 V5" style="fill:none; stroke:black; stroke-width:1px;" />
+    <circle cx="4" cy="6" r="1.5" style="fill:black; stroke:black; stroke-width:1px;" />
+</svg>
