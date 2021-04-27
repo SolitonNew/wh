@@ -447,9 +447,16 @@ tr.table-empty:hover td {
     background-image: url('/img/plan/devices/dev_motion.svg');
 }
 
+.plan-device.dev-9 {
+    background-image: url('/img/plan/devices/dev_leakage.svg');
+}
 
 .plan-device.dev-10 {
     background-image: url('/img/plan/devices/dev_humidity.svg');
+}
+
+.plan-device.dev-11 {
+    background-image: url('/img/plan/devices/dev_co.svg');
 }
 
 option:disabled {
