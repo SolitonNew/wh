@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8">
-  <path d="M3.41 0a.5.5 0 0 0-.13.06l-3 1.5a.5.5 0 1 0 .44.88l3-1.5a.5.5 0 0 0-.31-.94zm1 1.5a.5.5 0 0 0-.13.06l-4 2a.5.5 0 1 0 .44.88l4-2a.5.5 0 0 0-.31-.94zm0 2a.5.5 0 0 0-.13.06l-3 1.5a.5.5 0 0 0 .22.94h2a.5.5 0 0 0 .16-1l1.06-.56a.5.5 0 0 0-.31-.94zm-2.56 3.5a.5.5 0 0 0 .16 1h1a.5.5 0 1 0 0-1h-1a.5.5 0 0 0-.09 0 .5.5 0 0 0-.06 0z"
-  transform="translate(1.5)" />
+    <circle cx="4" cy="3" r="2.3" style="fill:none; stroke:black; stroke-width:1px;"
+        stroke-dasharray="15.7" stroke-dashoffset="4.85" transform="rotate(134, 4, 3)"/>
+    <circle cx="-1" cy="6.8" r="4" style="fill:none; stroke:black; stroke-width:1px;"
+        stroke-dasharray="25.12" stroke-dashoffset="23" transform="rotate(-35, -1, 6.8)"/>
+    <circle cx="9" cy="6.8" r="4" style="fill:none; stroke:black; stroke-width:1px;"
+        stroke-dasharray="25.12" stroke-dashoffset="23" transform="rotate(185, 9, 6.8)"/>
+    <circle cx="4" cy="6.5" r="1" style="fill:black; stroke:black; stroke-width:1px;" />
+    <rect x="3" y="5.5" width="2" height="0.5" style="fill:black; stroke:black; stroke-width:1px;" />
 </svg>
