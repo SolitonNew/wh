@@ -634,4 +634,49 @@ class PlanController extends Controller
             return 'ERROR';
         }
     }
+    
+    /**
+     * This route is used to add or update the port item of the plan_part item.
+     * 
+     * @param Request $request
+     * @param int $planID
+     * @param int $portID
+     * @return type
+     */
+    public function portEdit(Request $request, int $planID, int $portIndex = -1) 
+    {
+        if ($request->method() == 'POST') {
+            
+        } else {
+            
+            return view('admin.plan.plan-port-edit', [
+                
+            ]);
+        }
+    }
+    
+    /**
+     * This route is used to delete the port element of the plan_parts item.
+     * 
+     * @param int $planID
+     * @param int $portIndex
+     * @return string
+     */
+    public function portDelete(int $planID, int $portIndex) 
+    {
+        try {
+            $plan = \App\Http\Models\PlanPartsModel::find($plan);
+            if ($plan) {
+                $ports = json_decode($plan->ports);
+                if (isset($ports[$portIndex])) {
+                    unset($ports[$portIndex]);
+                    $plan->ports = json_encode($ports);
+                    $plan->save();
+                }
+            }
+            return 'OK';
+        } catch (\Exception $ex) {
+            return 'ERROR';
+        }
+    }
 }

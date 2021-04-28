@@ -52,6 +52,7 @@ return [
     'menu_add_device' => 'Разместить новое устройство...',
     'menu_device_link' => 'Позиция устройства...',
     'menu_device_edit' => 'Свойства устройства...',
+    'menu_add_port' => 'Разместить новый проем...',
     
     'plan_add_device_title' => 'Разместить устройство',
     'plan_edit_device_title' => 'Позиция устройства',

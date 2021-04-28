@@ -96,8 +96,21 @@ class RoomsController extends Controller
                     case 0:
                         break;
                     case 1:
+                        $parentTitle = '';
+                        foreach($this->_groups as $p_g) {
+                            if ($p_g->id == $row->parent_id) {
+                                $parentTitle = mb_strtoupper($p_g->name);
+                                break;
+                            }
+                        }
+                        
+                        $itemTitle = mb_strtoupper($row->name);
+                        if ($parentTitle != '' && $parentTitle != $itemTitle) {
+                            $itemTitle = $parentTitle.' '.$itemTitle;
+                        }
+                        
                         $data[] = (object)[
-                            'title' => mb_strtoupper($row->name),  
+                            'title' => $itemTitle,  
                             'rooms' => [],
                         ];
                         break;

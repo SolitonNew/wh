@@ -123,6 +123,7 @@
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#" onclick="planMenuAddPart(); return false;">@lang('admin/plan.menu_add_part')</a>
             <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" onclick="planMenuAddPort(); return false;">@lang('admin/plan.menu_add_port')</a>
             <a class="dropdown-item" href="#" onclick="planMenuAddDevice(); return false;">@lang('admin/plan.menu_add_device')</a>
         </div>
         <div class="plan-device-context">
@@ -737,6 +738,10 @@
     
     function planMenuDeviceEdit() {       
         dialog('{{ route("admin.hub-device-edit", [-1, ""]) }}/' + planContextMenuID);
+    }
+    
+    function planMenuAddPort() {
+        alert('This function is under development.')
     }
     
     @endif

@@ -83,6 +83,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/plan-export', 'Admin\PlanController@planExport')->name('admin.plan-export');
     Route::match(['get', 'post'], '/plan-link-device/{planID}/{deviceID?}', 'Admin\PlanController@linkDevice')->name('admin.plan-link-device');
     Route::delete('/plan-unlink-device/{deviceID}', 'Admin\PlanController@unlinkDevice')->name('admin.plan-unlink-device');
+    Route::match(['get', 'post'], '/plan-port/{planID}/{portIndex?}', 'Admin\PlanController@portEdit')->name('admin.plan-port');
+    Route::delete('/plan-port-delete/{portIndex}', 'Admin\PlanController@portDelete')->name('admin.plan-delete-port');
        
     
     /* Управление скриптами (сценариями) системы  --------------------------- */
