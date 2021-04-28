@@ -49,13 +49,16 @@ return [
     'menu_clone_part_bottom' => 'Down...',
     'menu_clone_part_left' => 'Left...',
     'menu_add_part' => 'Create a plan sub-item...',
-    'menu_add_device' => 'Put new device...',
+    'menu_add_device' => 'Put a new device...',
     'menu_device_link' => 'Device position...',
     'menu_device_edit' => 'Device propertys...',
-    'menu_add_port' => 'Put new port...',
+    'menu_add_port' => 'Put a new port...',
     
-    'plan_add_device_title' => 'Put new device',
+    'plan_add_device_title' => 'Put a new device',
     'plan_edit_device_title' => 'Device position',
+    
+    'plan_add_port_title' => 'Put a new port',
+    'plan_edit_port_title' => 'Port propertys',
     
     'toolbar_move' => 'position',
     'toolbar_move_x' => 'X',
@@ -70,7 +73,13 @@ return [
     'device_cross' => 'Height',
     'device_offset_roof' => 'X',
     'device_cross_roof' => 'Y',
-    'device_unlink_confirm' => 'Delete device from item of the plan?',
+    'device_unlink_confirm' => 'Delete this device from item of the plan?',
+    
+    'port_surface' => 'Surface',
+    'port_offset' => 'Offset',
+    'port_width' => 'Width',
+    'port_depth' => 'Depth',
+    'port_delete_confirm' => 'Delete this port from item of the part?',
     
     'zoom_in' => 'Zoom in',
     'zoom_out' => 'Zoom out',

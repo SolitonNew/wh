@@ -56,6 +56,8 @@ return [
     
     'plan_add_device_title' => 'Разместить устройство',
     'plan_edit_device_title' => 'Позиция устройства',
+    'plan_add_port_title' => 'Разместить проем',
+    'plan_edit_port_title' => 'Свойства проема',
     
     'toolbar_move' => 'позиция',
     'toolbar_move_x' => 'X',
@@ -70,7 +72,13 @@ return [
     'device_cross' => 'Высота',
     'device_offset_roof' => 'X',
     'device_cross_roof' => 'Y',
-    'device_unlink_confirm' => 'Удалить устройство из записи плана?',
+    'device_unlink_confirm' => 'Удалить это устройство из записи плана?',
+    
+    'port_surface' => 'Поверхность',
+    'port_offset' => 'Смещение',
+    'port_width' => 'Ширина',
+    'port_depth' => 'Глубина',
+    'port_delete_confirm' => 'Удалить этот проем из записи плана?',
     
     'zoom_in' => 'Увеличить',
     'zoom_out' => 'Уменьшить',

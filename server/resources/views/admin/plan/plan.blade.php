@@ -94,6 +94,12 @@
                 </div>
                 @endif
             @endforeach
+            @foreach($ports as $port)
+            <div class="plan-port" 
+                 data-index="{{ $port->index }}" data-part-id="{{ $port->partID }}"
+                 data-position="{{ $port->position }}" 
+                 data-part-bounds="{{ $port->partBounds }}"></div>
+            @endforeach
             @foreach($devices as $row)
             <div class="plan-device dev-{{ $row->app_control }}" 
                  data-id="{{ $row->id }}" data-part-id="{{ $row->group_id }}"
@@ -177,6 +183,14 @@
             $('#planParts a.tree-item[data-id="' + $(this).data('id') + '"]').addClass('hover'); 
         }).on('mouseleave', function () {
             $('#planParts a.tree-item[data-id="' + $(this).data('id') + '"]').removeClass('hover');
+        });
+        
+        $('#planContent .plan-port').on('click', function (e) {
+            if (planMouseScroll) return ;
+            dialog('{{ route("admin.plan-port-edit", ["", ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('index'));
+        }).on('contextmenu', function (e) {
+            planShowContextMenu(e, 'port');
+            return false;
         });
         
         $('#planContent .plan-device').on('click', function (e) {
@@ -291,7 +305,7 @@
         
         planRootPenWidth2 = false;
 
-        /* Настраиваем отображение комнат */
+        /* Setting the display of rooms */
         $('#planContent .plan-part').each(function() {
             let x = $(this).data('x');
             let y = $(this).data('y');
@@ -353,7 +367,64 @@
             });
         });
         
-        /* Настраиваем отображение устройств */
+        $('#planContent .plan-port').each(function () {
+            let partId = $(this).data('part-id');
+            let position = $(this).data('position');
+            let partBounds = $(this).data('partBounds');            
+            
+            let partX = partBounds.X * planZoom;
+            let partY = partBounds.Y * planZoom;
+            let partW = partBounds.W * planZoom;
+            let partH = partBounds.H * planZoom;
+            
+            let pw = 0;
+            let ph = 0;
+            
+            switch (position.surface) {
+                case 'top':
+                    pw = position.width * planZoom;
+                    ph = position.depth * planZoom;
+                    $(this).css({
+                        left: (partX + position.offset * planZoom) + 'px',
+                        top: (partY - ph) + 'px',
+                        width: pw + 'px',
+                        height: ph + 'px',
+                    });
+                    break;
+                case 'right':
+                    pw = position.depth * planZoom;
+                    ph = position.width * planZoom;                    
+                    $(this).css({
+                        left: (partX + partW) + 'px',
+                        top: (partY + position.offset * planZoom) + 'px',
+                        width: pw + 'px',
+                        height: ph + 'px',
+                    });
+                    break;
+                case 'bottom':
+                    pw = position.width * planZoom;
+                    ph = position.depth * planZoom;                    
+                    $(this).css({
+                        left: (partX + partW - position.offset * planZoom - pw) + 'px',
+                        top: (partY + partH) + 'px',
+                        width: pw + 'px',
+                        height: ph + 'px',
+                    });
+                    break;
+                case 'left':
+                    pw = position.depth * planZoom;
+                    ph = position.width * planZoom;  
+                    $(this).css({
+                        left: (partX - pw) + 'px',
+                        top: (partY + partH - ph - position.offset * planZoom) + 'px',
+                        width: pw + 'px',
+                        height: ph + 'px',
+                    });
+                    break;
+            }
+        });
+        
+        /* Setting the display of devices */
         let devicePenWidth = planZoom / planPenZoomScale;
         if (devicePenWidth < planMinPenWidth) devicePenWidth = planMinPenWidth;
         let devicePenWidth2 = Math.ceil(devicePenWidth / 2);
@@ -438,7 +509,7 @@
             }
         });
         
-        /* Настраиваем область отображения */
+        /* Setting a view port */
         let w = maxX - minX;
         let h = maxY - minY;
 
@@ -741,7 +812,39 @@
     }
     
     function planMenuAddPort() {
-        alert('This function is under development.')
+        let part = $('#planContent .plan-part[data-id="' + planContextMenuID + '"]');
+        
+        let w = part.width();
+        let h = part.height();
+        
+        let b = Math.min(w, h) / 4;
+        
+        let surface = 'top';
+        let offset = 0;
+        
+        let x1 = b;
+        let x2 = w - b;
+        let y1 = b;
+        let y2 = h - b;
+        
+        if (planContextMenuMouse.y < y1) {
+            surface = 'top';
+            offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
+        } else
+        if (planContextMenuMouse.x > x2) {
+            surface = 'right';
+            offset = Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+        } else
+        if (planContextMenuMouse.y > y2) {
+            surface = 'bottom';
+            offset = Math.round((part.data('w') - part.data('w') * planContextMenuMouse.x / w) * 10) / 10;
+        } else
+        if (planContextMenuMouse.x < x1) {
+            surface = 'left';
+            offset = Math.round((part.data('h') - part.data('h') * planContextMenuMouse.y / h) * 10) / 10;
+        }        
+        
+        dialog('{{ route("admin.plan-port-edit", ["", ""]) }}/' + planContextMenuID + '/-1?surface=' + surface + '&offset=' + offset);
     }
     
     @endif
