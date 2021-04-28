@@ -398,12 +398,16 @@ tr.table-empty:hover td {
 .plan-port {
     position: absolute;
     display: inline-block;
-    border: 2px solid #000000;
+    border: 2px solid rgba(0,0,0,0.85);
     background-color: #ffffff;
     width: 10px;
     height: 10px;
     cursor: pointer;
     opacity: 0.75;
+}
+
+.plan-port:hover {
+    background-color: #eeeeee;
 }
 
 .plan-device {

@@ -379,44 +379,56 @@
             
             let pw = 0;
             let ph = 0;
+            let pw2 = 1;
+            
+            for (let i = 0; i < penWidth2Parts.length; i++) {
+                if (penWidth2Parts[i].id == partId) {
+                    pw2 = penWidth2Parts[i].width;
+                    break;
+                }
+            }
             
             switch (position.surface) {
                 case 'top':
-                    pw = position.width * planZoom;
-                    ph = position.depth * planZoom;
+                    pw = position.width * planZoom + pw2 + pw2;
+                    ph = position.depth * planZoom + pw2 + pw2;
                     $(this).css({
-                        left: (partX + position.offset * planZoom) + 'px',
-                        top: (partY - ph) + 'px',
+                        'border-width': (pw2 + pw2) + 'px',
+                        left: (partX + position.offset * planZoom - pw2) + 'px',
+                        top: (partY - ph + pw2) + 'px',
                         width: pw + 'px',
                         height: ph + 'px',
                     });
                     break;
                 case 'right':
-                    pw = position.depth * planZoom;
-                    ph = position.width * planZoom;                    
+                    pw = position.depth * planZoom + pw2 + pw2;
+                    ph = position.width * planZoom + pw2 + pw2;
                     $(this).css({
-                        left: (partX + partW) + 'px',
-                        top: (partY + position.offset * planZoom) + 'px',
+                        'border-width': (pw2 + pw2) + 'px',
+                        left: (partX + partW - pw2) + 'px',
+                        top: (partY + position.offset * planZoom - pw2) + 'px',
                         width: pw + 'px',
                         height: ph + 'px',
                     });
                     break;
                 case 'bottom':
-                    pw = position.width * planZoom;
-                    ph = position.depth * planZoom;                    
+                    pw = position.width * planZoom + pw2 + pw2;
+                    ph = position.depth * planZoom + pw2 + pw2;
                     $(this).css({
-                        left: (partX + partW - position.offset * planZoom - pw) + 'px',
-                        top: (partY + partH) + 'px',
+                        'border-width': (pw2 + pw2) + 'px',
+                        left: (partX + partW - position.offset * planZoom - pw - pw2) + 'px',
+                        top: (partY + partH - pw2) + 'px',
                         width: pw + 'px',
                         height: ph + 'px',
                     });
                     break;
                 case 'left':
-                    pw = position.depth * planZoom;
-                    ph = position.width * planZoom;  
+                    pw = position.depth * planZoom + pw2 + pw2;
+                    ph = position.width * planZoom + pw2 + pw2;
                     $(this).css({
-                        left: (partX - pw) + 'px',
-                        top: (partY + partH - ph - position.offset * planZoom) + 'px',
+                        'border-width': (pw2 + pw2) + 'px',
+                        left: (partX - pw + pw2) + 'px',
+                        top: (partY + partH - ph - position.offset * planZoom + pw2) + 'px',
                         width: pw + 'px',
                         height: ph + 'px',
                     });
