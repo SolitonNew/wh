@@ -20,6 +20,7 @@ class PlanParts extends Migration
             $table->integer('order_num')->default(0);
             $table->string('bounds', 1000)->nullable();
             $table->string('style', 1000)->nullable();
+            $table->string('ports', 1000)->nullable();
         });
     }
 
