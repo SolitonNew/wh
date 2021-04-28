@@ -447,9 +447,28 @@ tr.table-empty:hover td {
     background-image: url('/img/plan/devices/dev_motion.svg');
 }
 
+.plan-device.dev-9 {
+    background-image: url('/img/plan/devices/dev_leakage.svg');
+}
 
 .plan-device.dev-10 {
     background-image: url('/img/plan/devices/dev_humidity.svg');
+}
+
+.plan-device.dev-11 {
+    background-image: url('/img/plan/devices/dev_co.svg');
+}
+
+.plan-device.dev-12 {
+    background-image: url('/img/plan/devices/dev_door.svg');
+}
+
+.plan-device.dev-13 {
+    background-image: url('/img/plan/devices/dev_atm_pressure.svg');
+}
+
+.plan-device.dev-14 {
+    background-image: url('/img/plan/devices/dev_currency.svg');
 }
 
 option:disabled {
