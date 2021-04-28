@@ -449,6 +449,7 @@ class PlanController extends Controller
                     $plan->name = $item->name;
                     $plan->bounds = $item->bounds;
                     $plan->style = $item->style;
+                    $plan->ports = $item->ports;
                     $plan->order_num = $i++;
                     $plan->save();                    
                     $storeLevel($item->childs, $item->id);
@@ -502,6 +503,7 @@ class PlanController extends Controller
                         'name' => $part->name,
                         'bounds' => $part->bounds,
                         'style' => $part->style,
+                        'ports' => $part->ports,
                         'childs' => $loadLevel($part->id),
                     ];
                 }
