@@ -11,7 +11,7 @@ use Session;
 class PlanController extends Controller
 {
     /**
-     * Индексный маршрут для работы с планом системы.
+     * This is the index route for the system plan page to work.
      * 
      * @param int $id
      * @return type
@@ -35,7 +35,8 @@ class PlanController extends Controller
             }
         }
         
-        // Читаем список записей плана
+        // Load plan records
+        $ports = [];
         $data = \App\Http\Models\PlanPartsModel::generateTree($id);
         foreach($data as $row) {
             if ($row->bounds) {
@@ -64,9 +65,21 @@ class PlanController extends Controller
             $row->fill = isset($v->fill) ? $v->fill : 'background';
             $row->name_dx = isset($v->name_dx) ? $v->name_dx : 0;
             $row->name_dy = isset($v->name_dy) ? $v->name_dy : 0;
+
+            // Packed port data
+            if ($row->ports) {
+                foreach(json_decode($row->ports) as $index => $port) {
+                    $ports[] = (object)[
+                        'index' => $index,
+                        'partID' => $row->id,
+                        'position' => json_encode($port),
+                        'partBounds' => $row->bounds,
+                    ];
+                }
+            }
         }
         
-        // Читаем список устройств
+        // Load list of the devices
         $devices = [];
         foreach(\App\Http\Models\VariablesModel::get() as $device) {
             $part = false;
@@ -88,6 +101,7 @@ class PlanController extends Controller
         return view('admin.plan.plan', [
             'partID' => $id,
             'data' => $data,
+            'ports' => $ports,
             'devices' => $devices,
         ]);
     }
@@ -645,12 +659,68 @@ class PlanController extends Controller
      */
     public function portEdit(Request $request, int $planID, int $portIndex = -1) 
     {
-        if ($request->method() == 'POST') {
-            
+        $part = \App\Http\Models\PlanPartsModel::find($planID);
+        $ports = json_decode($part->ports) ?? [];
+        
+        if (isset($ports[$portIndex])) {
+            $position = $ports[$portIndex];
         } else {
+            $position = (object)[];
+        }
+        
+        if ($request->method() == 'POST') {
+            try {
+                $this->validate($request, [
+                    'offset' => 'numeric|required',
+                    'width' => 'numeric|required',
+                    'depth' => 'numeric|required',
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $ex) {
+                return response()->json($ex->errors());
+            }
+            
+            try {
+                $position->surface = $request->post('surface');
+                $position->offset = $request->post('offset');
+                $position->width = $request->post('width');
+                $position->depth = $request->post('depth');
+                if ($portIndex == -1) {
+                    $portIndex = count($ports);
+                }
+                $ports[$portIndex] = $position;
+                array_values($ports);
+                $part->ports = json_encode($ports);
+                $part->save();
+            } catch (\Exception $ex) {
+                return response()->json([
+                    'error' => [$ex->getMessage()],
+                ]);
+            }
+            return 'OK';
+        } else {    
+            if (!isset($position->surface)) $position->surface = $request->get('surface') ?? 'top';
+            if (!isset($position->offset)) $position->offset = $request->get('offset') ?? 0;
+            if (!isset($position->width)) $position->width = $request->get('width') ?? 0.8;
+            if (!isset($position->depth)) $position->depth = $request->get('depth') ?? 0.3;
+            
+            // Room settings
+            $part = \App\Http\Models\PlanPartsModel::find($planID);
+            if ($part && $part->bounds) {
+                $partBounds = json_decode($part->bounds);
+            } else {
+                $partBounds = (object)[
+                    'X' => 0,
+                    'Y' => 0,
+                    'W' => 5,
+                    'H' => 5,
+                ];
+            }
             
             return view('admin.plan.plan-port-edit', [
-                
+                'planID' => $planID,
+                'portIndex' => $portIndex,
+                'partBounds' => $partBounds,
+                'position' => $position,
             ]);
         }
     }
@@ -665,11 +735,11 @@ class PlanController extends Controller
     public function portDelete(int $planID, int $portIndex) 
     {
         try {
-            $plan = \App\Http\Models\PlanPartsModel::find($plan);
+            $plan = \App\Http\Models\PlanPartsModel::find($planID);
             if ($plan) {
                 $ports = json_decode($plan->ports);
                 if (isset($ports[$portIndex])) {
-                    unset($ports[$portIndex]);
+                    array_splice($ports, $portIndex, 1);
                     $plan->ports = json_encode($ports);
                     $plan->save();
                 }
