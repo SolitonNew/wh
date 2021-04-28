@@ -463,6 +463,14 @@ tr.table-empty:hover td {
     background-image: url('/img/plan/devices/dev_door.svg');
 }
 
+.plan-device.dev-13 {
+    background-image: url('/img/plan/devices/dev_atm_pressure.svg');
+}
+
+.plan-device.dev-14 {
+    background-image: url('/img/plan/devices/dev_currency.svg');
+}
+
 option:disabled {
     color: #dddddd;
 }
