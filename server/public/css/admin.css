@@ -459,6 +459,10 @@ tr.table-empty:hover td {
     background-image: url('/img/plan/devices/dev_co.svg');
 }
 
+.plan-device.dev-12 {
+    background-image: url('/img/plan/devices/dev_door.svg');
+}
+
 option:disabled {
     color: #dddddd;
 }
