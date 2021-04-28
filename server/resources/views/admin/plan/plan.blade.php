@@ -632,25 +632,67 @@
         let offset = 0;
         let cross = 0;
         
-        if (planContextMenuMouse.y < b) {
+        let x1 = b;
+        let x2 = w - b;
+        let y1 = b;
+        let y2 = h - b;
+        
+        if (planContextMenuMouse.y < y1) {
             surface = 'top';
-            offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
+            if (planContextMenuMouse.y > planContextMenuMouse.x) {
+                surface = 'left';
+            } else
+            if (planContextMenuMouse.y > w - planContextMenuMouse.x) {
+                surface = 'right';
+            }
         } else
-        if (planContextMenuMouse.x > w - b) {
+        if (planContextMenuMouse.x > x2) {
             surface = 'right';
-            offset = Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+            if (w - planContextMenuMouse.x > planContextMenuMouse.y) {
+                surface = 'top';
+            } else
+            if (w - planContextMenuMouse.x > h - planContextMenuMouse.y) {
+                surface = 'bottom';
+            }
         } else
-        if (planContextMenuMouse.y > h - b) {
+        if (planContextMenuMouse.y > y2) {
             surface = 'bottom';
-            offset = Math.round((part.data('w') - part.data('w') * planContextMenuMouse.x / w) * 10) / 10;
+            if (h - planContextMenuMouse.y > planContextMenuMouse.x) {
+                surface = 'left';
+            } else
+            if (h - planContextMenuMouse.y > w - planContextMenuMouse.x) {
+                surface = 'right';
+            }
         } else
-        if (planContextMenuMouse.x < b) {
+        if (planContextMenuMouse.x < x1) {
             surface = 'left';
-            offset = Math.round((part.data('h') - part.data('h') * planContextMenuMouse.y / h) * 10) / 10;
+            if (planContextMenuMouse.x > planContextMenuMouse.y) {
+                surface = 'top';
+            } else
+            if (planContextMenuMouse.x > h - planContextMenuMouse.y) {
+                surface = 'bottom';
+            }
         } else {
             surface = 'roof';
-            offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
-            cross = Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+        }
+        
+        switch (surface) {
+            case 'top':
+                offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
+                break;
+            case 'right':
+                offset = Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+                break;
+            case 'bottom':
+                offset = Math.round((part.data('w') - part.data('w') * planContextMenuMouse.x / w) * 10) / 10;
+                break;
+            case 'left':
+                offset = Math.round((part.data('h') - part.data('h') * planContextMenuMouse.y / h) * 10) / 10;
+                break;
+            default:
+                offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
+                cross = Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+                break;
         }
         
         dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + planContextMenuID + '/-1?surface=' + surface + '&offset=' + offset + '&cross=' + cross);
