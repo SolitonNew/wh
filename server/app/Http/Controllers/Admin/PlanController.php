@@ -565,7 +565,7 @@ class PlanController extends Controller
                 ]);
             }
         } else {
-            // Данные по положению устройства
+            // Device position data
             $device = \App\Http\Models\VariablesModel::find($deviceID);
             if ($device) {
                 $position = json_decode($device->position) ?? (object)[];
@@ -581,34 +581,31 @@ class PlanController extends Controller
             if (!isset($position->offset)) $position->offset = 0;
             if (!isset($position->cross)) $position->cross = 0;
             
-            // Список устройств с информацией по присоединению к комнатам
-            $sql = "select v.*
-                      from core_variables v
-                    order by v.name";
-            $devices = DB::select($sql);
+            // Generation of data for a single device or a list of devices.
+            $device = (object)[];
+            $devices = [];
             
-            foreach($devices as $device) {
-                $path = \App\Http\Models\PlanPartsModel::getPath($device->group_id, '/');
-                if ($path) {
-                    $device->inPlan = true;
-                    $device->label = '['.$path.'] ';
-                } else {
-                    $device->inPlan = false;
-                    $device->label = '';
+            if ($deviceID == -1) {
+                $sql = "select v.*
+                          from core_variables v
+                         where not exists(select 1 from plan_parts p where p.id = v.group_id)
+                        order by v.name";
+                $devices = DB::select($sql);
+                
+                foreach($devices as $dev) {
+                    $dev->label = $dev->name.' '.($dev->comm);
+                    $app_control = \App\Http\Models\VariablesModel::decodeAppControl($dev->app_control);
+                    $dev->label .= ' '."'$app_control->label'";
                 }
-                $device->label .= $device->name.' '.($device->comm);
+            } else {
+                $device = \App\Http\Models\VariablesModel::find($deviceID);
+                if (!$device) abort(404);
+                $device->label = $device->name.' '.($device->comm);
                 $app_control = \App\Http\Models\VariablesModel::decodeAppControl($device->app_control);
                 $device->label .= ' '."'$app_control->label'";
             }
-            
-            // Сортируем, как строки, но добавленные в план сдвигаем в конец списка
-            usort($devices, function ($item1, $item2) {
-                $s1 = strcmp($item1->label, $item2->label);
-                $s2 = $item1->inPlan == $item2->inPlan ? 0 : ($item1->inPlan < $item2->inPlan ? -1 : 1);
-                return ($s2 !== 0) ? $s2 : $s1;
-            });
                         
-            // Параметры комнаты
+            // Room settings
             $part = \App\Http\Models\PlanPartsModel::find($planID);
             if ($part && $part->bounds) {
                 $partBounds = json_decode($part->bounds);
@@ -624,8 +621,10 @@ class PlanController extends Controller
             return view('admin.plan.plan-link-device', [
                 'planID' => $planID,
                 'deviceID' => $deviceID,
-                'position' => $position,
+                'planPath' => \App\Http\Models\PlanPartsModel::getPath($planID, ' / '),
+                'device' => $device,
                 'devices' => $devices,
+                'position' => $position,
                 'partBounds' => $partBounds,
             ]);
         }

@@ -68,7 +68,8 @@ return [
     'toolbar_size_w' => 'W',
     'toolbar_size_h' => 'H',
     
-    'device_list' => 'Device',
+    'device_path' => 'Room',
+    'device' => 'Device',
     'device_surface' => 'Surface',
     'device_offset' => 'Offset',
     'device_cross' => 'Height',

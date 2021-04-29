@@ -661,7 +661,6 @@ select.select-tree {
 
 select.select-tree option {
     white-space: pre;
-    line-height: 10px;
 }
 
 .blueprint {
