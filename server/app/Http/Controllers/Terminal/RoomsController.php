@@ -21,8 +21,7 @@ class RoomsController extends Controller
     private $_variables = [];
     
     /**
-     * ByИндексный маршрут для отображения упорядоченого списка комнат и 
-     * заглавных устройств.
+     * Route to view an ordered list of rooms and titled devices.
      * 
      * @return type
      */
@@ -76,8 +75,7 @@ class RoomsController extends Controller
     }
     
     /**
-     * Метод формирует по исходным параметрам данные для отображения 
-     * списка комнат.
+     * This method to creates data to display a list of rooms.
      * 
      * @param type $parentID
      * @param type $level
@@ -173,8 +171,7 @@ class RoomsController extends Controller
     }
     
     /**
-     * Метод ищет устройство в хранилище устройств 
-     * по ИД и названию комнаты.
+     * This method of finding a device in the device storage by id and room name.
      * 
      * @param type $roomID
      * @param type $roomNameUpper

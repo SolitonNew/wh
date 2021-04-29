@@ -10,7 +10,7 @@ use Log;
 class RoomController extends Controller
 {
     /**
-     * Маршрут для отображения устройств комнаты.
+     * Route to view the list of devices.
      * 
      * @param type $roomID
      * @return type

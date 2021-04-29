@@ -105,8 +105,7 @@ class CheckedController extends Controller
     }
     
     /**
-     * Индексный маршрут для работы со списком избранных для 
-     * отображения устройств.
+     * Route to manage favorites page entries.
      * 
      * @param type $selKey
      * @return type
@@ -163,9 +162,9 @@ class CheckedController extends Controller
     }
     
     /**
-     * Маршрут для добавления устройства в список избранных.
+     * Route to add devices to favorites page.
      * 
-     * @param type $id
+     * @param int $id
      * @return string
      */
     public function editAdd_ADD(int $id) 
@@ -189,9 +188,9 @@ class CheckedController extends Controller
     }
     
     /**
-     * Маршрутдля удаления устройства из списка избранных.
+     * Route to remove devices from favorites page.
      * 
-     * @param type $id
+     * @param int $id
      * @return string
      */
     public function editAdd_DEL(int $id) 
@@ -216,7 +215,7 @@ class CheckedController extends Controller
     }
     
     /**
-     * Маршрут для упорядочивания списка избранных.
+     * Route for ordering favorites page entries.
      * 
      * @return type
      */
@@ -262,9 +261,9 @@ class CheckedController extends Controller
     }
     
     /**
-     * Маршрут для перемещения устройства вверх в списке избранных.
+     * Route to move up entries of favorites page.
      * 
-     * @param type $id
+     * @param int $id
      * @return string
      */
     public function editOrder_UP(int $id) 
@@ -292,7 +291,7 @@ class CheckedController extends Controller
     }
     
     /**
-     * Маршрут для перемещения устройства вниз в списке избранных.
+     * Route to move down entries of favorites page
      * 
      * @param type $id
      * @return string
@@ -322,7 +321,7 @@ class CheckedController extends Controller
     }
 
     /**
-     * Маршрут для изменения цвета отображения устройства по шаблону.
+     * Route to change the displayed color of the device.
      * 
      * @return type
      */
@@ -336,7 +335,7 @@ class CheckedController extends Controller
     }
     
     /**
-     * Маршрут для установки цвета устройства по шаблону.
+     * Route to action to change the displayed color of the device.
      * 
      * @param Request $request
      * @param type $action
