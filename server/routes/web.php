@@ -8,14 +8,14 @@ Route::group(['middleware'=>'role:terminal'], function () {
     /* Отображение сгруппированых данных по комнатам  ----------------------- */
     Route::get('/', 'Terminal\RoomsController@index')->name('home');
     Route::get('/room/{roomID}', 'Terminal\RoomController@index')->name('terminal.room');
-    Route::get('/variable/{variableID}', 'Terminal\VariableController@index')->name('terminal.variable');
+    Route::get('/device/{deviceID}', 'Terminal\DeviceController@index')->name('terminal.device');
 
     
-    /* Страница "Избранное"  ------------------------------------------------ */
+    /* Page "Favorites"  ---------------------------------------------------- */
+    /* Index  */
     Route::get('/checked', 'Terminal\CheckedController@index')->name('terminal.checked');
     
-    
-    /* Страница выбора переменных для отображения на страницах "Избранное"  - */
+    /* The page for selecting devices to display on the "Favorites" page */
     Route::get('/checked/edit/add/{selKey?}', 'Terminal\CheckedController@editAdd')->name('terminal.checked-edit-add');
     Route::get('/checked/edit/add-add/{id}', 'Terminal\CheckedController@editAdd_ADD')->name('terminal.checked-edit-add-add');
     Route::get('/checked/edit/add-del/{id}', 'Terminal\CheckedController@editAdd_DEL')->name('terminal.checked-edit-add-del');
@@ -33,11 +33,11 @@ Route::group(['middleware'=>'role:terminal'], function () {
 
     
     /* Запрос изменений переменных  ----------------------------------------- */
-    Route::get('/variable-changes/{lastID}', 'Terminal\VariableController@variableChanges')->name('terminal.variable-changes');
+    Route::get('/device-changes/{lastID}', 'Terminal\DeviceController@changes')->name('terminal.device-changes');
     
     
     /* Установка значения переменной  --------------------------------------- */
-    Route::post('/variable-set/{varID}/{varValue}', 'Terminal\VariableController@variableSet')->name('terminal.variable-set');
+    Route::post('/device-set/{deviceID}/{value}', 'Terminal\DeviceController@set')->name('terminal.device-set');
 });
 
 Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {

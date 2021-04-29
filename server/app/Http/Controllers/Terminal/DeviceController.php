@@ -7,27 +7,27 @@ use App\Http\Controllers\Controller;
 use DB;
 use Log;
 
-class VariableController extends Controller
+class DeviceController extends Controller
 {
     /**
-     * Индексный маршрут для управления значением устройства.
+     * This route is for the device management page.
      * 
-     * @param type $variableID
+     * @param type $deviceID
      * @return string
      */
-    public function index($variableID) 
+    public function index($deviceID) 
     {
-        $sql = "select p.name group_title, v.comm variable_title, v.app_control, v.group_id, v.value ".
+        $sql = "select p.name group_title, v.comm device_title, v.app_control, v.group_id, v.value ".
                "  from core_variables v, plan_parts p ".
-               " where v.id = $variableID ".
+               " where v.id = $deviceID ".
                "   and p.id = v.group_id";        
         $row = DB::select($sql)[0];
         
         $roomID = $row->group_id;
         $roomTitle = mb_strtoupper($row->group_title);
-        $variableTitle = $row->variable_title;
+        $deviceTitle = $row->device_title;
         $control = \App\Http\Models\VariablesModel::decodeAppControl($row->app_control);
-        $variableTitle = \App\Http\Models\VariablesModel::groupVariableName($roomTitle, mb_strtoupper($variableTitle), $control->label);
+        $deviceTitle = \App\Http\Models\VariablesModel::groupVariableName($roomTitle, mb_strtoupper($deviceTitle), $control->label);
 
         
         switch ($control->typ) {
@@ -36,26 +36,25 @@ class VariableController extends Controller
             case 2:
                 return 'ERROR';
             case 3:
-                return view('terminal.variable_3', [
+                return view('terminal.device_3', [
                     'roomID' => $roomID,
                     'roomTitle' => $roomTitle,
-                    'variableTitle' => $variableTitle,
-                    'variableID' => $variableID,
-                    'variableValue' => $row->value,
+                    'deviceTitle' => $deviceTitle,
+                    'deviceID' => $deviceID,
+                    'deviceValue' => $row->value,
                     'control' => $control,
                 ]);
         }
     }
     
     /**
-     * Маршрут возвращает список последних изменений устройств.
+     * This route return the latest device changes.
      * 
      * @param type $lastID
      * @return type
      */
-    public function variableChanges($lastID) 
+    public function changes(int $lastID) 
     {
-        $lastID = (int)$lastID;
         if ($lastID > 0) {
             $res = DB::select("select c.id, c.variable_id, c.value, UNIX_TIMESTAMP(c.change_date) * 1000 change_date ".
                               "  from core_variable_changes_mem c ".
@@ -68,19 +67,16 @@ class VariableController extends Controller
     }
     
     /**
-     * Маршрут устанавливает указанное значение указанному устройству.
+     * This route sets the device value.
      * 
-     * @param type $varID
-     * @param type $varValue
+     * @param type $deviceID
+     * @param type $value
      * @return string
      */
-    public function variableSet($varID, $varValue) 
+    public function set(int $deviceID, int $value) 
     {
-        $varID = (int)$varID;
-        $varValue = (int)$varValue;
-        
         try {
-            DB::select("CALL CORE_SET_VARIABLE($varID, $varValue, -1)");
+            DB::select("CALL CORE_SET_VARIABLE($deviceID, $value, -1)");
         } catch (\Exception $e) {
             Log::error($e);
         }
