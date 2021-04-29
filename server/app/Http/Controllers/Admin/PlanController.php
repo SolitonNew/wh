@@ -70,6 +70,7 @@ class PlanController extends Controller
             if ($row->ports) {
                 foreach(json_decode($row->ports) as $index => $port) {
                     $ports[] = (object)[
+                        'id' => count($ports),
                         'index' => $index,
                         'partID' => $row->id,
                         'position' => json_encode($port),

@@ -53,6 +53,7 @@ return [
     'menu_device_link' => 'Device position...',
     'menu_device_edit' => 'Device propertys...',
     'menu_add_port' => 'Put a new port...',
+    'menu_port_edit' => 'Port propertys...',
     
     'plan_add_device_title' => 'Put a new device',
     'plan_edit_device_title' => 'Device position',
