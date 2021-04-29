@@ -67,7 +67,7 @@
             }
             $.ajax({
                 method: "POST",
-                url: "{{ route('terminal.variable-set', ['', '']) }}/" + varID + "/" + varVal,
+                url: "{{ route('terminal.device-set', ['', '']) }}/" + varID + "/" + varVal,
                 data: {_token: '{{ csrf_token() }}'},
             }).done((data)=>{
                 if (data) {
@@ -108,11 +108,11 @@
         $('.body-page-main > div').css('opacity', 1);
     });
     
-    let lastVariableID = {{ App\Http\Models\VariableChangesMemModel::lastVariableID() }};
+    let lastVariableID = {{ \App\Http\Models\VariableChangesMemModel::lastVariableID() ?? -1 }};
     
     function loadChanges() {
         $.ajax({
-            url: '{{ route("terminal.variable-changes", '') }}/' + lastVariableID, 
+            url: '{{ route("terminal.device-changes", '') }}/' + lastVariableID, 
             success: (data) => {
                 setTimeout(loadChanges, 500);
 
@@ -130,7 +130,7 @@
                         let varID = parseInt(rec.variable_id);
                         let varValue = parseFloat(rec.value);
                         let varTime = parseInt(rec.change_date);
-                        lastVariableID = rec.ID;
+                        lastVariableID = rec.id;
 
                         /* Call Event */
                         variableOnChanged(varID, varValue, varTime);

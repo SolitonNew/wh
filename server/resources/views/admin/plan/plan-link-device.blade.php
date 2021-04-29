@@ -20,15 +20,30 @@
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
     <input type="hidden" name="add_device_id">
-    <div class="form-group">
-        <label class="">@lang('admin/plan.device_list'):</label>
-        <select class="custom-select" name="device" data-app-control="0">
-        @foreach($devices as $row)
-        <option value="{{ $row->id }}" {{ $row->id == $deviceID ? 'selected' : '' }} 
-                class="{{ $row->inPlan ? 'italic' : '' }}" 
-                data-app-control="{{ $row->app_control }}">{{ $row->label }}</option>
-        @endforeach
-        </select>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="form-label">@lang('admin/plan.device_path')</label>
+        </div>
+        <div class="col-sm-9">
+            <div class="form-control">{{ $planPath }}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="form-label">@lang('admin/plan.device')</label>
+        </div>
+        <div class="col-sm-9">
+            @if($deviceID == -1)
+            <select class="custom-select" name="device" data-app-control="0">
+            @foreach($devices as $row)
+            <option value="{{ $row->id }}" {{ $row->id == $deviceID ? 'selected' : '' }} 
+                    data-app-control="{{ $row->app_control }}">{{ $row->label }}</option>
+            @endforeach
+            </select>
+            @else
+            <div class="form-control">{{ $device->label }}</div>
+            @endif
+        </div>
     </div>
     <div class="row">
         <div class="col-sm-3">
@@ -97,7 +112,7 @@
             }
         });
         
-        $('#plan_link_device_form select[name="device"]').on('change', function () {
+        let updateAppControl = function (appControl) {
             let devClass = 'dev-';
             let device = $('#plan_link_device_form .plan-device');
             device.attr('class').split(/\s+/).forEach(function (item) {
@@ -107,8 +122,16 @@
                     }
                 }
             });
-            device.addClass(devClass + $('#plan_link_device_form option[value="' + $(this).val() + '"]').data('app-control'));
+            device.addClass(devClass + appControl);
+        };
+        
+        @if($deviceID == -1)
+        $('#plan_link_device_form select[name="device"]').on('change', function () {
+            updateAppControl($('#plan_link_device_form option[value="' + $(this).val() + '"]').data('app-control'));
         }).trigger('change');
+        @else
+        updateAppControl({{ $device->app_control }});
+        @endif
         
         $('#plan_link_device_form select[name="surface"]').on('change', function () {
             planViewUpdate();

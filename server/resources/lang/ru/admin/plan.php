@@ -67,7 +67,8 @@ return [
     'toolbar_size_w' => 'W',
     'toolbar_size_h' => 'H',
     
-    'device_list' => 'Устройство',
+    'device_path' => 'Комната',
+    'device' => 'Устройство',
     'device_surface' => 'Поверхность',
     'device_offset' => 'Смещение',
     'device_cross' => 'Высота',
