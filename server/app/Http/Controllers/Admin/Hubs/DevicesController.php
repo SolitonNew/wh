@@ -115,12 +115,12 @@ class DevicesController extends Controller
                 $item->name = $request->post('name');
                 $item->comm = $request->post('comm');
                 $item->channel = $request->post('channel') ?? 0;
-                if ($request->post('value') !== null) {
-                    $item->value = $request->post('value');
-                }
                 $item->group_id = $request->post('group_id');
                 $item->app_control = $request->post('app_control');
-                $item->save();                
+                $item->save();
+                if ($request->post('value') !== null) {
+                    \App\Http\Models\VariablesModel::setValue($item->id, $request->post('value'));
+                }                
                 return 'OK';
             } catch (\Exception $ex) {
                 return response()->json([

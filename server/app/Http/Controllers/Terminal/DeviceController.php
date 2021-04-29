@@ -75,11 +75,7 @@ class DeviceController extends Controller
      */
     public function set(int $deviceID, int $value) 
     {
-        try {
-            DB::select("CALL CORE_SET_VARIABLE($deviceID, $value, -1)");
-        } catch (\Exception $e) {
-            Log::error($e);
-        }
+        \App\Http\Models\VariablesModel::setValue($deviceID, $value);
         
         return '';
     }
