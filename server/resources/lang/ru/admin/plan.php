@@ -53,6 +53,7 @@ return [
     'menu_device_link' => 'Позиция устройства...',
     'menu_device_edit' => 'Свойства устройства...',
     'menu_add_port' => 'Разместить новый проем...',
+    'menu_port_edit' => 'Свойства проема...',
     
     'plan_add_device_title' => 'Разместить устройство',
     'plan_edit_device_title' => 'Позиция устройства',
@@ -72,7 +73,7 @@ return [
     'device_cross' => 'Высота',
     'device_offset_roof' => 'X',
     'device_cross_roof' => 'Y',
-    'device_unlink_confirm' => 'Удалить это устройство из записи плана?',
+    'device_unlink_confirm' => 'Изъять это устройство из записи плана?',
     
     'port_surface' => 'Поверхность',
     'port_offset' => 'Смещение',

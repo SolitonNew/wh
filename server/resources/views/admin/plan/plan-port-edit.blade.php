@@ -5,11 +5,10 @@
 @lang('admin/plan.plan_add_port_title')
 @else
 @lang('admin/plan.plan_edit_port_title')
-@endif {{ $portIndex }}
+@endif
 @endsection
 
 @section('content')
-
 <form id="plan_port_form" class="container" method="POST" action="{{ route('admin.plan-port-edit', [$planID, $portIndex]) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>

@@ -96,7 +96,7 @@
             @endforeach
             @foreach($ports as $port)
             <div class="plan-port" 
-                 data-index="{{ $port->index }}" data-part-id="{{ $port->partID }}"
+                 data-id="{{ $port->id }}" data-index="{{ $port->index }}" data-part-id="{{ $port->partID }}" 
                  data-position="{{ $port->position }}" 
                  data-part-bounds="{{ $port->partBounds }}"></div>
             @endforeach
@@ -137,6 +137,9 @@
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#" onclick="planMenuDeviceEdit(); return false;">@lang('admin/plan.menu_device_edit')</a>
         </div>
+        <div class="plan-port-context">
+            <a class="dropdown-item strong" href="#" onclick="planMenuPortEdit(); return false;">@lang('admin/plan.menu_port_edit')</a>
+        </div>
     </div>
 </div>
 @endif
@@ -156,6 +159,7 @@
     var planMinY = 0;    
     var planContextMenuID = -1;
     var planContextMenuMouse = false;
+    var planContextMenuOpened = false;
     var planToolbarPart = false;
     var planRootPenWidth2 = false;
 
@@ -163,6 +167,8 @@
         $('#planToolbar').hide();
         
         window.addEventListener('mousedown', function (e) {
+            planContextMenuOpened = ($('#planPartMenu').css('display') != 'none');
+            
             if ($('#planPartMenu').find(e.target).length == 0) {
                 $('#planPartMenu').hide();
             }
@@ -175,6 +181,7 @@
         @if($partID)
         $('#planContent .plan-part').on('click', function (e) {
             if (planMouseScroll) return ;
+            if (planContextMenuOpened) return ;
             dialog('{{ route("admin.plan-edit", "") }}/' + $(this).attr('data-id'));
         }).on('contextmenu', function (e) {
             planShowContextMenu(e, 'part');
@@ -187,6 +194,7 @@
         
         $('#planContent .plan-port').on('click', function (e) {
             if (planMouseScroll) return ;
+            if (planContextMenuOpened) return ;
             dialog('{{ route("admin.plan-port-edit", ["", ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('index'));
         }).on('contextmenu', function (e) {
             planShowContextMenu(e, 'port');
@@ -195,6 +203,7 @@
         
         $('#planContent .plan-device').on('click', function (e) {
             if (planMouseScroll) return ;
+            if (planContextMenuOpened) return ;
             dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('id'));
         }).on('contextmenu', function (e) {
             planShowContextMenu(e, 'device');
@@ -267,6 +276,9 @@
         switch (typ) {
             case 'part':
                 $('#planPartMenu > .plan-part-context').show();
+                break;
+            case 'port':
+                $('#planPartMenu > .plan-port-context').show();
                 break;
             case 'device':
                 $('#planPartMenu > .plan-device-context').show();
@@ -688,22 +700,25 @@
             surface = 'roof';
         }
         
+        let m_x = planContextMenuMouse.x;
+        let m_y = planContextMenuMouse.y;
+        
         switch (surface) {
             case 'top':
-                offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
+                offset = Math.round(part.data('w') * m_x / w * 10) / 10;
                 break;
             case 'right':
-                offset = Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+                offset = Math.round(part.data('h') * m_y / h * 10) / 10;
                 break;
             case 'bottom':
-                offset = Math.round((part.data('w') - part.data('w') * planContextMenuMouse.x / w) * 10) / 10;
+                offset = Math.round((part.data('w') - part.data('w') * m_x / w) * 10) / 10;
                 break;
             case 'left':
-                offset = Math.round((part.data('h') - part.data('h') * planContextMenuMouse.y / h) * 10) / 10;
+                offset = Math.round((part.data('h') - part.data('h') * m_y / h) * 10) / 10;
                 break;
             default:
-                offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
-                cross = Math.round(part.data('h') * planContextMenuMouse.y / h * 10) / 10;
+                offset = Math.round(part.data('w') * m_x / w * 10) / 10;
+                cross = Math.round(part.data('h') * m_y / h * 10) / 10;
                 break;
         }
         
@@ -934,6 +949,11 @@
         }
         
         dialog('{{ route("admin.plan-port-edit", ["", ""]) }}/' + planContextMenuID + '/-1?surface=' + surface + '&offset=' + offset);
+    }
+    
+    function planMenuPortEdit() {
+        let port = $('#planContentOff .plan-port[data-id="' + planContextMenuID + '"]');
+        dialog('{{ route("admin.plan-port-edit", ["", ""]) }}/' + port.data('part-id') + '/' + port.data('index'));
     }
     
     @endif

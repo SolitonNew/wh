@@ -53,6 +53,7 @@ return [
     'menu_device_link' => 'Device position...',
     'menu_device_edit' => 'Device propertys...',
     'menu_add_port' => 'Put a new port...',
+    'menu_port_edit' => 'Port propertys...',
     
     'plan_add_device_title' => 'Put a new device',
     'plan_edit_device_title' => 'Device position',
@@ -73,7 +74,7 @@ return [
     'device_cross' => 'Height',
     'device_offset_roof' => 'X',
     'device_cross_roof' => 'Y',
-    'device_unlink_confirm' => 'Delete this device from item of the plan?',
+    'device_unlink_confirm' => 'Remove this device from item of the plan?',
     
     'port_surface' => 'Surface',
     'port_offset' => 'Offset',

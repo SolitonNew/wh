@@ -77,7 +77,7 @@
 
 @section('buttons')
     @if($deviceID > 0)
-    <button type="button" class="btn btn-danger" onclick="planLinkDeviceDelete()">@lang('dialogs.btn_delete')</button>
+    <button type="button" class="btn btn-danger" onclick="planLinkDeviceDelete()">@lang('dialogs.btn_remove')</button>
     <div style="flex-grow: 1"></div>
     @endif
     <button type="button" class="btn btn-primary" onclick="planLinkDeviceOK()">@lang('dialogs.btn_save')</button>
