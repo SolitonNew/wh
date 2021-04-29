@@ -12,6 +12,7 @@ return [
     'btn_close' => 'Закрыть',
     'btn_save' => 'Сохранить',
     'btn_delete' => 'Удалить',
+    'btn_remove' => 'Изъять',
     
     'btn_up' => 'Вверх',
     'btn_down' => 'Вниз',

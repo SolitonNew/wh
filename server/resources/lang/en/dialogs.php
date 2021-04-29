@@ -12,6 +12,7 @@ return [
     'btn_close' => 'Close',
     'btn_save' => 'Save',
     'btn_delete' => 'Delete',
+    'btn_remove' => 'Remove',
     
     'btn_up' => 'Up',
     'btn_down' => 'Down',

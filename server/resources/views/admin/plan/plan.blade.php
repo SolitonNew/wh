@@ -159,6 +159,7 @@
     var planMinY = 0;    
     var planContextMenuID = -1;
     var planContextMenuMouse = false;
+    var planContextMenuOpened = false;
     var planToolbarPart = false;
     var planRootPenWidth2 = false;
 
@@ -166,6 +167,8 @@
         $('#planToolbar').hide();
         
         window.addEventListener('mousedown', function (e) {
+            planContextMenuOpened = ($('#planPartMenu').css('display') != 'none');
+            
             if ($('#planPartMenu').find(e.target).length == 0) {
                 $('#planPartMenu').hide();
             }
@@ -178,6 +181,7 @@
         @if($partID)
         $('#planContent .plan-part').on('click', function (e) {
             if (planMouseScroll) return ;
+            if (planContextMenuOpened) return ;
             dialog('{{ route("admin.plan-edit", "") }}/' + $(this).attr('data-id'));
         }).on('contextmenu', function (e) {
             planShowContextMenu(e, 'part');
@@ -190,6 +194,7 @@
         
         $('#planContent .plan-port').on('click', function (e) {
             if (planMouseScroll) return ;
+            if (planContextMenuOpened) return ;
             dialog('{{ route("admin.plan-port-edit", ["", ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('index'));
         }).on('contextmenu', function (e) {
             planShowContextMenu(e, 'port');
@@ -198,6 +203,7 @@
         
         $('#planContent .plan-device').on('click', function (e) {
             if (planMouseScroll) return ;
+            if (planContextMenuOpened) return ;
             dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('id'));
         }).on('contextmenu', function (e) {
             planShowContextMenu(e, 'device');

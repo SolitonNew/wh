@@ -73,7 +73,7 @@ return [
     'device_cross' => 'Высота',
     'device_offset_roof' => 'X',
     'device_cross_roof' => 'Y',
-    'device_unlink_confirm' => 'Удалить это устройство из записи плана?',
+    'device_unlink_confirm' => 'Изъять это устройство из записи плана?',
     
     'port_surface' => 'Поверхность',
     'port_offset' => 'Смещение',
