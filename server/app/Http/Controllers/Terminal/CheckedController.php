@@ -11,7 +11,7 @@ use \App\Http\Models\PropertysModel;
 class CheckedController extends Controller
 {
     /**
-     * Индексный маршрут для страницы избранных устройств.
+     * Route for favorites index page.
      * 
      * @return type
      */
