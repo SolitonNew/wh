@@ -12,8 +12,8 @@ use Session;
 class HubsController extends Controller
 {
     /**
-     * Индексный маршрут.
-     * Если есть хотя бы один хаб делает переадресацию на страницу devices
+     * This is index route.
+     * If the hub exists, to redirect to the device page.
      * 
      * @param int $hubID
      * @return type
@@ -49,7 +49,7 @@ class HubsController extends Controller
     }
     
     /**
-     * Маршрут создания/редактирования записи хаба.
+     * Route to create or update a hub property.
      * 
      * @param Request $request
      * @param int $id
@@ -108,7 +108,7 @@ class HubsController extends Controller
     }
     
     /**
-     * Маршрут удаления хаба по ИД
+     * Route to delete the hub by id.
      * 
      * @param int $id
      * @return type
@@ -134,8 +134,8 @@ class HubsController extends Controller
     }
     
     /**
-     * Маршрут запускает команду сканирования хабами подчиненных хостов.
-     * Результатом работы будет вьюха диалога с отчетом по сканированию.
+     * This route scans child hosts.
+     * Returns a view with scan dialog report.
      * 
      * @return type
      */
@@ -163,27 +163,28 @@ class HubsController extends Controller
     }
     
     /**
-     * Создает запись устройства по каждому каналу хоста, если такой записи еще нет.
+     * This method creted devices entries on each channel if the channel 
+     * does not exists.
      * 
      * @return string
      */
     public function _generateDevs() 
     {
         $channelControl = [
-            1 => ['R1', 'R2', 'R3', 'R4'],    // Свет
-            2 => ['LEFT', 'RIGHT'],           // Выключатель
-            //3 => [],                          // Розетка
-            4 => ['T', 'TEMP'],               // Термометр
-            //5 => [],                          // Термостат
-            //6 => [],                          // Камера
-            7 => ['F1', 'F2', 'F3', 'F4'],    // Вентиляция
-            8 => ['P1', 'P2', 'P3', 'P4'],    // Датчик движения
-            //9 => [],                          // Датчик затопления
-            10 => ['H'],                      // Гигрометр
-            11 => ['CO'],                     // Датчик газа
-            //12 => [],                       // Датчик двери
-            //13 => [],                       // Атмосферное давление
-            14 => ['AMP'],                    // Датчик тока
+            1 => ['R1', 'R2', 'R3', 'R4'],    // Light
+            2 => ['LEFT', 'RIGHT'],           // Switch
+            //3 => [],                          // Socket
+            4 => ['T', 'TEMP'],               // Termometr
+            //5 => [],                          // Termostat
+            //6 => [],                          // Videcam
+            7 => ['F1', 'F2', 'F3', 'F4'],    // Venting
+            8 => ['P1', 'P2', 'P3', 'P4'],    // Motion sensor
+            //9 => [],                          // Leakage sensor
+            10 => ['H'],                      // Humidity
+            11 => ['CO'],                     // Gas sensor
+            //12 => [],                       // Door sensor
+            //13 => [],                       // Atm. pressure
+            14 => ['AMP'],                    // Currency sensor
         ];     
         
         $decodeChannel = function ($channel) use ($channelControl) {
@@ -195,7 +196,7 @@ class HubsController extends Controller
             return -1;
         };
         
-        // Генерация устройств для каналов хостов
+        // Generation of devices by channel
         $din_channels = config('firmware.channels.'.config('firmware.mmcu'));
         $vars = DB::select('select controller_id, channel from core_variables where typ = "din"');
         foreach(\App\Http\Models\ControllersModel::get() as $din) {
@@ -230,7 +231,7 @@ class HubsController extends Controller
             }
         }
         
-        // Генерация устройств для сетевых хабов        
+        // Ceneration of devices for network hubs
         $devs = DB::select('select d.id, d.controller_id, t.channels, t.comm
                               from core_ow_devs d, core_ow_types t
                              where d.rom_1 = t.code');
@@ -274,9 +275,8 @@ class HubsController extends Controller
     }
     
     /**
-     * Маршрут выполняет код по генерации прошивки хабов
-     * и возвращает вьюху с отчетом по сборке, а также элементами управления 
-     * обновлением
+     * This route builds the firmware and returns a build report view 
+     * containing the update controls.
      * 
      * @return type
      */
@@ -308,8 +308,8 @@ class HubsController extends Controller
     }
     
     /**
-     * Маршрут посылает команду rs485-demon которая инициализирует процесс 
-     * закачки прошивки в контроллеры.
+     * This route sends the rs485-demon command to start uploading firmware 
+     * to the controllers.
      * 
      * @return string
      */
@@ -321,7 +321,7 @@ class HubsController extends Controller
     }
     
     /**
-     * Маршрут возвращает теекущее состояние процесса прошивки
+     * This route to query the firmware status now.
      * 
      * @return type
      */
@@ -356,8 +356,7 @@ class HubsController extends Controller
     }
     
     /**
-     * Маршрут посылает команду rs485-demon которая инициализирует перезагрузку 
-     * всех хабов.
+     * This route sends the rs485-demon command to reboot all hubs. 
      * 
      * @return string
      */
@@ -372,7 +371,7 @@ class HubsController extends Controller
     }
     
     /**
-     * Перезапускает демон rs485-demon
+     * This is the rs485-demon reboot method.
      * 
      * @param \App\Http\Controllers\Admin\DemonManager $demonManager
      * @return string
