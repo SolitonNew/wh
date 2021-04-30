@@ -18,16 +18,16 @@ class DatabaseSeeder extends Seeder
         $item->access = 2;
         $item->save();
         
-        // Заполняем справочник core_ow_types
+        // Filling out of the core_ow_types table
         $data = [
-            '40|DS18B20|TEMP|1',
-            '240|Выключатель 2 кнопки|LEFT,RIGHT|100',
-            '241|ШИМ контроллер|F1,F2,F3,F4|100',
-            '242|Пин-конвертор|P1,P2,P3,P4|100',
-            '243|Гигрометр|H,T|100',
-            '244|Датчик CO|CO|0',
-            '245|Датчик тока|AMP|0',
-            '246|Реле|R1,R2,R3,R4|100',
+            '40|DS18B20|Termometr|1',
+            '240|Two buttons switch|LEFT,RIGHT|100',
+            '241|Venting|F1,F2,F3,F4|100',
+            '242|Pin converter|P1,P2,P3,P4|100',
+            '243|Humidity sensor|H,T|100',
+            '244|Gas sensor|CO|0',
+            '245|Currency sensor|AMP|0',
+            '246|Relay|R1,R2,R3,R4|100',
         ];
         
         foreach($data as $row) {
@@ -40,16 +40,16 @@ class DatabaseSeeder extends Seeder
             ])->save();
         }
         
-        // Заполняем core_propertys
+        // Filling out of the core_propertys table
         $data = [
-            '1|SYNC_STATE|Состояние синхронизации сревера и контроллеров: Запущен/Остановлен|STOP',
-            '2|RS485_COMMAND|Команда, адресуемая демону RS485|',
-            '3|RS485_COMMAND_INFO|Текст, поочередно меняющийся инициализатором или исполнителем команды.|',
-            '4|FIRMWARE_CHANGES|Количество изменений внесенных в БД (которые влияют на прошивку) с момента последнего успешного обновления|',
-            '5|WEB_CHECKED|ИДшники для веб версии клиента|',
-            '6|WEB_COLOR|Раскраска по ключевым словам|',
-            '7|RUNNING_DEMONS|Список отмеченых для автоматического запуска демонов|schedule-demon;command-demon',
-            '8|PLAN_MAX_LEVEL|Глубина структуры системы|',
+            '1|SYNC_STATE|Synchronization state of the server and controllers: Running/Stoped|STOP',
+            '2|RS485_COMMAND|Command addressed to the RS485-demon|',
+            '3|RS485_COMMAND_INFO|Text that is alternately changed by the initializer or executor of the command|',
+            '4|FIRMWARE_CHANGES|The number of changes made to the database (which affect the firmware) since the last successful update|',
+            '5|WEB_CHECKED|IDs for the web version of the client|',
+            '6|WEB_COLOR|Coloring by keywords|',
+            '7|RUNNING_DEMONS|List of daemons marked for automatic start|schedule-demon;command-demon',
+            '8|PLAN_MAX_LEVEL|System structure depth|',
         ];
 
         foreach($data as $row) {
@@ -61,5 +61,10 @@ class DatabaseSeeder extends Seeder
                 'value' => $attrs[3],
             ])->save();
         }
+        
+        // Filling out of the plan_parts table
+        $data = file_get_contents(base_path().'/database/seeds/sample.plan.json');
+        App\Http\Models\PlanPartsModel::importFromString($data);
+        
     }
 }
