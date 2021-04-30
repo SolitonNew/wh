@@ -9,6 +9,13 @@ use Session;
 
 class HostsController extends Controller
 {
+    /**
+     * This is an index route for displaying a list of host.
+     * If the hub id does not exists, redirect to the owner route.
+     * 
+     * @param int $hubID
+     * @return type
+     */
     public function index(int $hubID = null) 
     {
         if (!\App\Http\Models\ControllersModel::find($hubID)) {
@@ -57,6 +64,14 @@ class HostsController extends Controller
         ]);
     }
     
+    /**
+     * Route to create or update host propertys.
+     * 
+     * @param Request $request
+     * @param int $nubId
+     * @param int $id
+     * @return type
+     */
     public function edit(Request $request, int $nubId, int $id)
     {
         $sql = 'select d.id, 
@@ -101,6 +116,12 @@ class HostsController extends Controller
         ]);
     }
     
+    /**
+     * Route to delete host by id.
+     * 
+     * @param int $id
+     * @return string
+     */
     public function delete(int $id) 
     {
         try {

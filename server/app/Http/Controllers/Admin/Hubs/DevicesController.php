@@ -11,8 +11,8 @@ use Log;
 class DevicesController extends Controller
 {
     /**
-     * Индексный маршрут для отображения списка устройств хаба.
-     * Если ИД хаба не существует делает переадресацию на заглавный маршрут.
+     * This is an index route for displaying devices a list of the hub.
+     * If the hub id does not exist, redirect to the owner route.
      * 
      * @param int $hubID
      * @return type
@@ -81,7 +81,7 @@ class DevicesController extends Controller
     }
     
     /**
-     * Маршрут для создания/редактирования свойств устройства.
+     * Route to create or update device propertys.
      * 
      * @param int $nubId
      * @param int $id
@@ -157,7 +157,7 @@ class DevicesController extends Controller
     }
     
     /**
-     * Маршрут для удаления устройства по ИД
+     * Route to delete the device by id.
      * 
      * @param int $id
      * @return string
@@ -176,7 +176,7 @@ class DevicesController extends Controller
     }
     
     /**
-     * Маршрут запроса списка хабов по ИД хоста.
+     * Route for requesting a list of hubs by host id.
      * 
      * @param int $hubID
      * @return type
@@ -194,7 +194,7 @@ class DevicesController extends Controller
     }
     
     /**
-     * Маршрут запроса списка каналов по типу хоста и его ИД.
+     * Route for requesting a list of host channels by id.
      * 
      * @param string $typ [din, ow, variable]
      * @param int $hostID
