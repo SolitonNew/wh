@@ -2,9 +2,7 @@
 
 @section('page')
 <div style="width: 40rem;">
-    <div class="alert alert-warning">
-        INFO
-    </div>
+    <div class="alert alert-warning">@lang('terminal.checked_color_info')</div>
     
     <div class="alert alert-dark checked-edit-color-panel">
         <input id="keyword" type="text" class="form-control" value="" style="flex-grow:1;margin-right:1rem;">

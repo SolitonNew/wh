@@ -26,6 +26,10 @@ return [
         14 => 'CURRENT',
     ],
     
+    'checked_add_info' => 'Check all devices to be displayed on the Favorites page.',
+    'checked_order_info' => 'For the convenience of perception of devices on the "Favorites" page, you can arrange them in the desired order.',
+    'checked_color_info' => 'You can define the rules for colorizing graphs using partial matching by device name.',
+    
     'page_append' => 'APPEND',
     'page_order' => 'ORDER',
     'page_color' => 'COLOR',
