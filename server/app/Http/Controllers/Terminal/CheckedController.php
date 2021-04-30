@@ -135,9 +135,10 @@ class CheckedController extends Controller
             $where = " and v.app_control = $selKey ";
         }
 
-        $sql = "select v.* ".
-               "  from core_variables v ".
-               " where v.app_control in ($app_controls_ids) ".
+        $sql = "select v.*,
+                       (select p.name from plan_parts p where id = v.group_id) group_name
+                 from core_variables v
+                where v.app_control in ($app_controls_ids) ".
                $where.
                " order by v.comm";
         
@@ -147,7 +148,7 @@ class CheckedController extends Controller
             $c = \App\Http\Models\VariablesModel::decodeAppControl($row->app_control);
             $data[] = (object)[
                 'id' => $row->id,
-                'comm' => $row->comm,
+                'comm' => $row->comm ?? $row->group_name,
                 'typLabel' => $c->label,
             ];
         }
@@ -224,16 +225,22 @@ class CheckedController extends Controller
         $checks = PropertysModel::getWebChecks();
         
         if ($checks) {
-            $sql = "select v.* ".
-                   "  from core_variables v ".
-                   " where v.ID in ($checks) ";
+            $sql = "select v.*,
+                           (select p.name from plan_parts p where id = v.group_id) group_name
+                      from core_variables v
+                     where v.ID in ($checks) ";
         } else {
-            $sql = "select v.* ".
-                   "  from core_variables v ".
-                   " where v.ID = 0 ";
+            $sql = "select v.*,
+                           (select p.name from plan_parts p where id = v.group_id) group_name
+                      from core_variables v
+                     where v.ID = 0 ";
         }
         
         $q = DB::select($sql);
+        
+        foreach($q as $row) {
+            $row->comm = $row->comm ?? $row->group_name;
+        }
 
         $data = [];
 
