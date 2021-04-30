@@ -11,15 +11,17 @@ class PlanPartsModel extends Model
     public $timestamps = false;
     
     /**
-     * Кеш всех записей, которые могут использоваться для построения деревьев
-     * Используется во многих местах в одном сеансе.
+     * The chache of the all plan records used to build the tree.
+     * Used in many places in one session.
      * 
      * @var type 
      */
     static private $_all_parts_cache = null;
     
     /**
-     * Возвращает кеш полного списка. Если список изначально не инициализирован - делает запрос к БД
+     * Returns a cache of all plan entries.
+     * If the cache is not initialized, loading from the database is performed.
+     * 
      * @return type
      */
     static public function getAllPartsCache() 
@@ -33,7 +35,7 @@ class PlanPartsModel extends Model
     }
         
     /**
-     * Формирует набор данных для дерева помещений.
+     * The tree data generator.
      * 
      * @return array
      */
@@ -62,7 +64,7 @@ class PlanPartsModel extends Model
         
         $treeLevel($id, 0);
         
-        // Формируем древовидность с помощью символов псевдографики
+        // Forming a tree using pseudo-graphic symbols
         $levels = [];
         $prev_level = -1;
         for ($i = count($data) - 1; $i > -1; $i--) {
@@ -71,7 +73,7 @@ class PlanPartsModel extends Model
                 $levels[$n] = false;
             }
             
-            // Заносим состояния уровней в путь вывода
+            // Putting the states of the levels in the output path
             $path = [];
             for ($n = 0; $n < $data[$i]->level; $n++) {
                 if (isset($levels[$n]) && $levels[$n]) {
@@ -81,7 +83,7 @@ class PlanPartsModel extends Model
                 }
             }
             
-            // Проверяем является ли запис последним узлом
+            // Checking if the entry is the last node
             $n = $data[$i]->level;
             if (isset($levels[$n]) && $levels[$n]) {
                 $path[count($path)] = $asChars ? '├─' : 3;
@@ -89,7 +91,7 @@ class PlanPartsModel extends Model
                 $path[count($path)] = $asChars ? '└─' : 4;
             }
             
-            // Отмечаем, что этот уровень мы используем
+            // Note that we are using this level
             $levels[$n] = true;
             
             $prev_level = $n;
@@ -111,6 +113,7 @@ class PlanPartsModel extends Model
     }
        
     /**
+     * Returns ids of all child plans starting with parent_id
      * 
      * @param type $id
      * @return type
@@ -134,7 +137,8 @@ class PlanPartsModel extends Model
     }
     
     /**
-     * Выполняет перемещение вложенных записей плана с перещетом их координат.
+     * Performs movement of nested plan records with recalculation of their 
+     * coordinates.
      * 
      * @param float $dx
      * @param float $dy
@@ -163,7 +167,7 @@ class PlanPartsModel extends Model
     }
     
     /**
-     * Выполняет проверку записи плана является ли она вложенной записью.
+     * Checks if a plan entry is a nested entry.
      * 
      * @param int $id
      * @param int $parentID
@@ -194,8 +198,7 @@ class PlanPartsModel extends Model
     }
     
     /**
-     * Выполняет расчет количества вложений в структуре плана и записывает 
-     * результат в propertys.
+     * 
      */
     static public function calcAndStoreMaxLevel() 
     {
@@ -219,7 +222,7 @@ class PlanPartsModel extends Model
     }
     
     /**
-     * Возвращает координаты $parentId
+     * Returns $parentId coords
      *
      * @param type $parentId
      * @return type
@@ -242,7 +245,8 @@ class PlanPartsModel extends Model
     }
     
     /**
-     * Возвращает строку пути к $id, где отдельные узлы разделены $delimeter.
+     * Returns the path string to $id, where the individual nodes are 
+     * separated by $delimiter.
      * 
      * @param type $id
      * @param type $delimeter
@@ -265,5 +269,79 @@ class PlanPartsModel extends Model
         $genLevel($id);
         
         return implode($delimeter, array_reverse($path));
+    }
+    
+    /**
+     * Performs import of the plan records from a string.
+     * 
+     * @param string $data
+     * @return string
+     */
+    static public function importFromString(string $data) 
+    {
+        $storeLevel = function ($level, $parentID) use (&$storeLevel) {
+            $i = 1;
+            foreach($level as $item) {
+                $plan = new \App\Http\Models\PlanPartsModel();
+                $plan->id = $item->id;
+                $plan->parent_id = $parentID;
+                $plan->name = $item->name;
+                $plan->bounds = $item->bounds;
+                $plan->style = $item->style;
+                $plan->ports = $item->ports;
+                $plan->order_num = $i++;
+                $plan->save();                    
+                $storeLevel($item->childs, $item->id);
+            }
+        };
+            
+        try {
+            // Декодируем
+            $parts = json_decode($data);
+
+            // Удаляем все существующиезаписи из БД
+            \App\Http\Models\PlanPartsModel::truncate();
+
+            // Рекурсивно заливаем новые записи
+            $storeLevel($parts, null);
+
+            // Нужно пересчитать максимальный уровень вложения структуры
+            \App\Http\Models\PlanPartsModel::calcAndStoreMaxLevel();
+
+            return 'OK';
+        } catch (\Exception $ex) {
+            return response()->json([
+                'error' => [$ex->getMessage()],
+            ]);
+        }
+    }
+    
+    /**
+     * Performs export of the plan records to a string
+     * 
+     * @return string
+     */
+    static public function exportToString(): string
+    {
+        $parts = self::orderBy('order_num', 'asc')->get();
+        
+        $loadLevel = function ($parentID) use (&$loadLevel, $parts) {
+            $res = [];
+            foreach($parts as $part) {
+                if ($part->parent_id == $parentID) {
+                    $res[] = (object)[
+                        'id' => $part->id,
+                        'name' => $part->name,
+                        'bounds' => $part->bounds,
+                        'style' => $part->style,
+                        'ports' => $part->ports,
+                        'childs' => $loadLevel($part->id),
+                    ];
+                }
+            }
+            return $res;
+        };
+        
+        return json_encode($loadLevel(null));
     }
 }

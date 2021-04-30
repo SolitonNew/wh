@@ -108,7 +108,7 @@ class PlanController extends Controller
     }
     
     /**
-     * Маршрут создать/изменить запись плана.
+     * Route to create or update plan entries.
      * 
      * @param Request $request
      * @param int $id
@@ -177,7 +177,7 @@ class PlanController extends Controller
                     $item->save();
                 }
                 
-                // Нужно пересчитать максимальный уровень вложения структуры
+                // Recalc max level
                 \App\Http\Models\PlanPartsModel::calcAndStoreMaxLevel();
                 
                 return 'OK';
@@ -235,7 +235,7 @@ class PlanController extends Controller
     }
     
     /**
-     * Маршрут для удаления записи плана.
+     * Route to delete plan entries.
      * 
      * @param type $id
      * @return string
@@ -246,7 +246,7 @@ class PlanController extends Controller
             $item = \App\Http\Models\PlanPartsModel::find($id);
             $item->delete();
             
-            // Нужно пересчитать максимальный уровень вложения структуры
+            // Recalc max level
             \App\Http\Models\PlanPartsModel::calcAndStoreMaxLevel();
             
             return 'OK';
@@ -256,10 +256,10 @@ class PlanController extends Controller
     }
     
     /**
-     * Маршрут для клонирования записи плана.
-     * Делает копию записи но изменяет координаты новой записи с учетом 
-     * входного параметра $direction таким образом, что бы новая запись 
-     * прилегала к исходной.
+     * Route to clone plan entries.
+     * Makes a copy of the record but changes the coordinates of the new 
+     * record given the $ direction input parameter so that the new record 
+     * is adjacent to the original.
      * 
      * @param int $id
      * @param string $direction
@@ -306,8 +306,7 @@ class PlanController extends Controller
     }
     
     /**
-     * Маршрут для отображения окна перемещения к другому подчиненному 
-     * записи плана.
+     * Route to displaying the plan owner change window.
      * 
      * @param Request $request
      * @param int $id
@@ -342,7 +341,7 @@ class PlanController extends Controller
     }
     
     /**
-     * Маршрут для отображения окна упорядолчивания записей плана.
+     * Route to displaying the plan ordering window.
      * 
      * @param Request $request
      * @param int $id
@@ -371,7 +370,7 @@ class PlanController extends Controller
     }
     
     /**
-     * Маршрут для измения положения комнаты по ИД.
+     * Route to move of the plan entries by id.
      * 
      * @param Request $request
      * @param int $id
@@ -397,7 +396,7 @@ class PlanController extends Controller
     }
     
     /**
-     * Маршрут для изменения размера комнаты по ИД.
+     * Route to resize of the plan entries.
      * 
      * @param Request $request
      * @param int $id
@@ -423,9 +422,9 @@ class PlanController extends Controller
     }
     
     /**
-     * Маршрут для импорта плана из файла.
-     * GET: отображает окно для выбора файла.
-     * POST: Выполняет нужные манипуляции с данными и полученым файлом.
+     * Route to import plan from file.
+     * GET: displaying window for choise file.
+     * POST: run import.
      * 
      * @param Request $request
      * @return string
@@ -441,38 +440,9 @@ class PlanController extends Controller
                 return response()->json($ex->errors());
             }
             
-            $storeLevel = function ($level, $parentID) use (&$storeLevel) {
-                $i = 1;
-                foreach($level as $item) {
-                    $plan = new \App\Http\Models\PlanPartsModel();
-                    $plan->id = $item->id;
-                    $plan->parent_id = $parentID;
-                    $plan->name = $item->name;
-                    $plan->bounds = $item->bounds;
-                    $plan->style = $item->style;
-                    $plan->ports = $item->ports;
-                    $plan->order_num = $i++;
-                    $plan->save();                    
-                    $storeLevel($item->childs, $item->id);
-                }
-            };
-            
             try {
-                // Принимаем файл
-                $json = file_get_contents($request->file('file'));
-                
-                // Декодируем
-                $parts = json_decode($json);
-                
-                // Удаляем все существующиезаписи из БД
-                \App\Http\Models\PlanPartsModel::truncate();
-                
-                // Рекурсивно заливаем новые записи
-                $storeLevel($parts, null);
-                
-                // Нужно пересчитать максимальный уровень вложения структуры
-                \App\Http\Models\PlanPartsModel::calcAndStoreMaxLevel();
-                
+                $data = file_get_contents($request->file('file'));
+                \App\Http\Models\PlanPartsModel::importFromString($data);
                 return 'OK';
             } catch (\Exception $ex) {
                 return response()->json([
@@ -485,45 +455,27 @@ class PlanController extends Controller
     }
     
     /**
+     * Route to export plan entries to file.
      * Маршрут для экспорта плана системы.
-     * Данные плана собираются в виде вложенных (древовидных) объектов и 
-     * серриализируются в виде json строки.
+     * The plan data is collected as nested (tree-like) objects and serialized 
+     * as a json string.
      * 
      * @return type
      */
     public function planExport() 
     {
-        $parts = \App\Http\Models\PlanPartsModel::orderBy('order_num', 'asc')->get();
+        $data = \App\Http\Models\PlanPartsModel::exportToString();
         
-        $loadLevel = function ($parentID) use (&$loadLevel, $parts) {
-            $res = [];
-            foreach($parts as $part) {
-                if ($part->parent_id == $parentID) {
-                    $res[] = (object)[
-                        'id' => $part->id,
-                        'name' => $part->name,
-                        'bounds' => $part->bounds,
-                        'style' => $part->style,
-                        'ports' => $part->ports,
-                        'childs' => $loadLevel($part->id),
-                    ];
-                }
-            }
-            return $res;
-        };
-        
-        $file = json_encode($loadLevel(null));
-        
-        return response($file, 200, [
-            'Content-Length' => strlen($file),
+        return response($data, 200, [
+            'Content-Length' => strlen($data),
             'Content-Disposition' => 'attachment; filename="'.\Carbon\Carbon::now()->format('Ymd_His').'_plan.json"',
             'Pragma' => 'public',
         ]);
     }
     
     /**
-     * Маршрут для установки/переустановки связи между устройством и 
-     * фрагментом плана, а также определения положения устройства на плане.
+     * Route fro binding the device to plan entries and determines the 
+     * position of the device on the plan.
      * 
      * @param Request $request
      * @param int $planID
@@ -631,7 +583,7 @@ class PlanController extends Controller
     }
     
     /**
-     * Маршрут для открепления устройства от фрагмента плана.
+     * Route to remove the device from the plan etries.
      * 
      * @param int $deviceID
      * @return string
