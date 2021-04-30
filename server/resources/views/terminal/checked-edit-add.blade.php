@@ -2,9 +2,7 @@
 
 @section('page')
 <div style="width: 40rem;">
-    <div class="alert alert-warning">
-        INFO
-    </div>
+    <div class="alert alert-warning">@lang('terminal.checked_add_info')</div>
     
     <div class="alert alert-dark" style="margin-bottom: 1rem;">
         <select id="filter" class="form-control">

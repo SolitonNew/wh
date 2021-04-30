@@ -2,9 +2,7 @@
 
 @section('page')
 <div style="width: 40rem;">
-    <div class="alert alert-warning">
-        INFO
-    </div>    
+    <div class="alert alert-warning">@lang('terminal.checked_order_info')</div>
     
     <div class="list-group">
         @foreach($data as $row)
