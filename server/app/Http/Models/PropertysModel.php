@@ -187,13 +187,13 @@ class PropertysModel extends Model
     }
     
     /**
-     * Кэш для getFirmwareChanges
+     * The cache for getFirmwareChanges.
      */
     static protected $_firmwareChanges = false;
     
     /**
-     * Возвращает количество изменений в БД (которые влияют на прошивку) 
-     * с момента последнего обновления.
+     * Returns the number of changes to the DB (what affects the firmware)
+     * siens the last update.
      * 
      * @return int
      */
@@ -211,8 +211,7 @@ class PropertysModel extends Model
     }
     
     /**
-     * Устанавливает значение количества изменений в БД (которые влияют на 
-     * прошивку)
+     * Sets the number of changes to the DB (what affects the firmware).
      * 
      * @param int $count
      */
