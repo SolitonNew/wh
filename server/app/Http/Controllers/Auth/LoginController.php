@@ -11,10 +11,9 @@ class LoginController extends Controller
     use AuthenticatesUsers;
     
     /**
-     * Перегруженный метод корректирует переадресацию в зависимости от 
-     * прав пользователя.
+     * Override method for correcting redirection
      * 
-     * @return type
+     * @return string
      */
     protected function redirectTo() 
     {

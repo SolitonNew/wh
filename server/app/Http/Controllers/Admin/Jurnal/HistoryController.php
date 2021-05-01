@@ -11,6 +11,7 @@ use DB;
 class HistoryController extends Controller
 {
     /**
+     * Index route to display device history data.
      * 
      * @param Request $request
      * @param int $id
@@ -68,6 +69,7 @@ class HistoryController extends Controller
     }
     
     /**
+     * This route to display device history by id.
      * 
      * @param int $id
      * @return type
@@ -82,6 +84,7 @@ class HistoryController extends Controller
     }
     
     /**
+     * This route to delete device history record by id.
      * 
      * @param int $id
      * @return string
@@ -98,6 +101,7 @@ class HistoryController extends Controller
     }
     
     /**
+     * This route to delete all visible device history reccords.
      * 
      * @param int $id
      * @return string

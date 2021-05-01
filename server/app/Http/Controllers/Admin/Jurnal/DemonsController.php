@@ -10,7 +10,8 @@ use App\Library\DemonManager;
 class DemonsController extends Controller
 {
     /**
-     *
+     * Index route to display a list of daemons.
+     * 
      * @param string $id
      * @return type
      */
@@ -46,7 +47,8 @@ class DemonsController extends Controller
     }
 
     /**
-     *
+     * This route returns the output of the daemons.
+     * 
      * @param string $id
      * @param int $lastID
      * @return string
@@ -77,6 +79,7 @@ class DemonsController extends Controller
     }
 
     /**
+     * This route starts the daemon by id.
      * 
      * @param string $id
      * @return string
@@ -98,6 +101,7 @@ class DemonsController extends Controller
     }
 
     /**
+     * This route stops the daemon by id.
      * 
      * @param string $id
      * @return string
@@ -119,6 +123,7 @@ class DemonsController extends Controller
     }
 
     /**
+     * This route restarts the daemon by id.
      * 
      * @param string $id
      * @return string

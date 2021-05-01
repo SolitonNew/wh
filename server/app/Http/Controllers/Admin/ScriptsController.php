@@ -12,7 +12,7 @@ use Session;
 class ScriptsController extends Controller
 {
     /**
-     * Индексный маршрут для работы ос сценариями системы.
+     * The index route to display a list of scripts.
      * 
      * @param int $scriptID
      * @return type
@@ -60,7 +60,7 @@ class ScriptsController extends Controller
     }
     
     /**
-     * Маршрут создать/изменить свойства записи сценария.
+     * The route to create or update script record propertys.
      * 
      * @param Request $request
      * @param int $id
@@ -106,7 +106,7 @@ class ScriptsController extends Controller
     }
     
     /**
-     * Маршрут для удаления записи сценария.
+     * The route to delete the script record by id.
      * 
      * @param int $id
      * @return string
@@ -124,7 +124,7 @@ class ScriptsController extends Controller
     }
     
     /**
-     * Маршрут для сохранения исходного кода сценария.
+     * The route to save the source code of the script.
      * 
      * @param Request $request
      * @param int $id
@@ -143,8 +143,7 @@ class ScriptsController extends Controller
     }
     
     /**
-     * Маршурт для окна назначения сценария как события изменения 
-     * значения устройства.
+     * The route to set the script record as device change event.
      * 
      * @param Request $request
      * @param int $id
@@ -158,12 +157,12 @@ class ScriptsController extends Controller
                 $ids[] = 0;
                 $ids_sql = implode(', ', $ids);
 
-                // Удаляем записи которые не отмечены
+                // Delete old not checked records
                 $changes = \App\Http\Models\VariableEventsModel::whereScriptId($id)
                                 ->whereNotIn('variable_id', $ids)
                                 ->delete();
                 
-                // Добавляем новые
+                // Add new records
                 $sql = "select v.id
                           from core_variables v
                          where v.id in ($ids_sql)
@@ -205,7 +204,7 @@ class ScriptsController extends Controller
     }
     
     /**
-     * Маршрут фонового тестирования исходного кода сценария.
+     * The route performs a script test.
      * 
      * @param Request $request
      */
