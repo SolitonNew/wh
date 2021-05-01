@@ -10,8 +10,7 @@ use Log;
 class CamsController extends Controller
 {
     /**
-     * Индексный маршрут. 
-     * Возвращает вьюху со списком камер.
+     * This is an index route. Returns the videcam list view.
      * 
      * @return type
      */
@@ -31,7 +30,7 @@ class CamsController extends Controller
     }
     
     /**
-     * Маршрут создать/изменить запись камеры.
+     * Route to create or update the videcam entries.
      * 
      * @param Request $request
      * @param int $id
@@ -92,7 +91,7 @@ class CamsController extends Controller
     }
     
     /**
-     * Маршурт для удаления записи камеры.
+     * Route to delete the videcam entries by id.
      * 
      * @param int $id
      * @return string

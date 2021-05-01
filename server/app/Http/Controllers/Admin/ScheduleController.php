@@ -11,9 +11,9 @@ use Log;
 class ScheduleController extends Controller
 {
     /**
-     * Индексный маршрут для работы с расписанием.
+     * The index route for working with schedule entries.
      * 
-     * @return type
+     * @return view
      */
     public function index() 
     {    
@@ -58,7 +58,7 @@ class ScheduleController extends Controller
     }
     
     /**
-     * Маршрут создать/изменить запись расписания.
+     * The route to create or update schedule entries.
      * 
      * @param Request $request
      * @param int $id
@@ -118,7 +118,7 @@ class ScheduleController extends Controller
     }
     
     /**
-     * Маршрут для удаления записи расписания.
+     * The route to delete schedule entries by id.
      * 
      * @param int $id
      * @return string
