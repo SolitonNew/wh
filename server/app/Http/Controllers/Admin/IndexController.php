@@ -8,10 +8,10 @@ use App\Http\Controllers\Controller;
 class IndexController extends Controller
 {
     /**
-     * Индексный маршрут. 
-     * Выполняет переадресацию на страницу хабов.
+     * The index route.
+     * Redirects to the hubs page.
      * 
-     * @return type
+     * @return redirect
      */
     public function index() 
     {
@@ -19,11 +19,11 @@ class IndexController extends Controller
     }
         
     /**
-     * Маршрут для запроса последних изменений значений устройств.
-     * Результат выводится в главном окне в виде лога.
+     * This route is for requests for the latest device changes.
+     * The result is displayed in the main window as a list.
      * 
      * @param int $lastID
-     * @return type
+     * @return view
      */
     public function variableChanges(int $lastID) 
     {
