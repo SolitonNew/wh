@@ -9,7 +9,7 @@ use Auth;
 class UsersController extends Controller
 {
     /**
-     * Индексный маршрут для работы со списком пользователей системы.
+     * The index route for working with the list of the system users.
      * 
      * @return type
      */
@@ -23,7 +23,7 @@ class UsersController extends Controller
     }
     
     /**
-     * Маршрут создать/изменить свойства записи пользователя.
+     * The route to create or update the user entries.
      * 
      * @param Request $request
      * @param int $id
@@ -80,7 +80,7 @@ class UsersController extends Controller
     }
     
     /**
-     * Маршрут для удаления записи пользователя.
+     * The route to delete the user entries by id.
      * 
      * @param int $id
      * @return string
