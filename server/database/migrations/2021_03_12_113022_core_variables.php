@@ -20,7 +20,7 @@ class CoreVariables extends Migration
             $table->string('name');
             $table->string('comm')->nullable();
             $table->float('value')->default(0);
-            $table->timestamp('last_update')->useCurrentOnUpdate();
+            $table->timestamp('last_update')->nullable()->useCurrentOnUpdate();
             $table->integer('ow_id')->nullable();
             $table->string('channel', 20)->default('');
             $table->integer('app_control')->default(0);
