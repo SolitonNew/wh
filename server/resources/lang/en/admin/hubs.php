@@ -99,6 +99,7 @@ return [
     ],
     
     'log_app_control_dim' => [
+        -1 => '',
         0 => '',
         1 => [0 => 'OFF', 1 => 'ON'],
         2 => [0 => 'UNPRESSED', 1 => 'PRESSET'],
