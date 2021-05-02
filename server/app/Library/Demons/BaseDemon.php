@@ -5,14 +5,14 @@ namespace App\Library\Demons;
 use Log;
 
 /**
- * Базовый класс для всех демонов системы
+ * This is the base class for all daemons.
  *
  * @author soliton
  */
 class BaseDemon {
     
     /**
-     * Сигнатура (ИД) демона
+     * Signature (id) of the daemon
      * @var type 
      */
     protected $_signature = '';
@@ -23,7 +23,7 @@ class BaseDemon {
     }
 
     /**
-     * Метод делает запись лога демонов в БД.
+     * This method of adding a log entry into DB.
      * 
      * @param type $text
      */
@@ -42,9 +42,9 @@ class BaseDemon {
     }
     
     /**
-     * Метод вызывает автоматически при запуске.
-     * Каждый наследник этого класса должен переопределить его и разместить 
-     * внутри код который должен выполнять демон.
+     * The launch of this method is automated.
+     * Each inheritor of this class must override it and place it inside 
+     * the code that the daemon should execute.
      */
     public function execute() 
     {

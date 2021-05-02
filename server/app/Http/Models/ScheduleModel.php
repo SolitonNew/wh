@@ -13,9 +13,9 @@ class ScheduleModel extends Model
     public $timestamps = false;
     
     /**
-     * Создает новую запись расписания для одноразового выполнения.
-     * Это для INTERVAL_TYPE = 4
-     * Настройки минимальны.
+     * Creates a new record of the schedule for one-time execution.
+     * This is for INTERVAL_TYPE = 4
+     * The settings are minimal.
      * 
      * @param type $comm
      * @param type $action
@@ -38,8 +38,9 @@ class ScheduleModel extends Model
     
     
     /**
-     * Специальные ключевые слова для переменных временных меток
-     * @var type 
+     * The special keywords for variable labels of time.
+     * 
+     * @var string
      */
     private $_KEYS = [
         'SUNRISE',  // Восход солнца
@@ -47,6 +48,7 @@ class ScheduleModel extends Model
     ];
     
     /**
+     * This method creates a time label using the propertys of the entry.
      * 
      * @return type
      */
@@ -55,17 +57,17 @@ class ScheduleModel extends Model
         $action_datetime = Carbon::parse($this->action_datetime);
         $now = now()->startOfDay();
         
-        // Разбираемся с интервалами дат
+        // Processing time intervals
         $dates = [];
         switch ($this->interval_type) {
             case 0: // Каждый день
                 $dates[] = $now;
                 $dates[] = $now->copy()->addDay();
                 break;
-            case 1: // Каждую неделю
-                // Получаем дату понедельника этой недели
+            case 1: // Every week
+                // Retrieve date of this week's monday
                 $dw = $now->copy()->addDay(-$now->dayOfWeek);
-                // Получаем дату понедельника следующей недели
+                // Retrieve date of next week's monday
                 $dw_next = $dw->copy()->addWeek();
                 $week_days = Lang::get('admin/schedule.week_days');
                 foreach(explode(',', $this->interval_day_of_type) as $w) {
@@ -78,10 +80,10 @@ class ScheduleModel extends Model
                     }
                 }
                 break;
-            case 2: // Каждый месяц
-                // Получаем дату первого дня месяца
+            case 2: // Every month
+                // Retrieve date of the first day of this month
                 $dw = $now->copy()->addDay(-$now->day + 1);
-                // Получаем дату первого дня следующего месяца
+                // Retrieve date of the first day of next month
                 $dw_next = $dw->copy()->addMonth();
                 foreach(explode(',', $this->interval_day_of_type) as $n) {
                     try {
@@ -93,8 +95,8 @@ class ScheduleModel extends Model
                     }
                 }
                 break;
-            case 3: // Каждый год
-            case 4: // Одноразово
+            case 3: // Every year
+            case 4: // one time
                 foreach(explode(',', $this->interval_day_of_type) as $day) {
                     $d = explode('-', $day);
                     if (count($d) > 1) {
@@ -112,8 +114,7 @@ class ScheduleModel extends Model
         }
         
         
-        // Разбираемся с интервалами времени и собираем дат и время в одно 
-        // число для сортировки
+        // Combining date and time into one number for sorting
         $dt = [];
         foreach($dates as $dat) {
             foreach($this->_makeTime($dat) as $tim) {
@@ -121,10 +122,10 @@ class ScheduleModel extends Model
             }
         }
         
-        // Сортируем дату и время
+        // Sorting date and time
         sort($dt);
 
-        // Проверяем какая дата из расписания ближайшая для выполнения
+        // We check which date from the schedule is the closest to be fulfilled
         foreach($dt as $d) {
             $curr = Carbon::createFromTimestamp($d);
             if ($curr->gt($action_datetime)) {
@@ -136,7 +137,9 @@ class ScheduleModel extends Model
     }
     
     /**
-     * Парсит строку с временными метками и вовзращает конвертированые метки в секундах
+     * Parses a string with timestamps and returns converted timestamps in seconds
+     * 
+     * @param Carbon $date
      * @return type
      */
     private function _makeTime(Carbon $date) 
@@ -146,7 +149,7 @@ class ScheduleModel extends Model
         foreach(explode(',', $time_of_day) as $time_val) {
             $time_type = '';
             $time_str = trim($time_val);
-            // Проверяем ВОСХОД/ЗАКАТ
+            // Check sunrise/sunset
             foreach($this->_KEYS as $key) {
                 if (strpos($key, $time_str) !== false) {
                     $time_type = $key;
@@ -154,7 +157,7 @@ class ScheduleModel extends Model
                 }
             }
             
-            if ($time_type == '') { // Это просто время
+            if ($time_type == '') { // Is it time
                 try {
                     $t = explode(':', $time_str);
                     $h = 0;
@@ -173,7 +176,7 @@ class ScheduleModel extends Model
                 } catch (\Exception $ex) {
                     Log::error($ex->getMessage());
                 }
-            } else { // Это восход/закат
+            } else { // Is it sunrise or sunset
                 try {
                     $latitude = config('app.location_latitude');
                     $longitude = config('app.location_longitude');

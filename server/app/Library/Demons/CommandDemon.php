@@ -15,10 +15,10 @@ use Log;
 class CommandDemon extends BaseDemon 
 {    
     /**
-     * Переопределенный метод.
-     * 1. Очищается лог команд на выполнение.
-     * 2. Запускается бесконечный цикл.
-     * 3. Отслеживает лог команд на выполнение и выполняет их
+     * The overridden method.
+     * 1. Clear command log
+     * 2. Start infinity loop
+     * 3. Listening to the command log and executing commands.
      */
     public function execute() 
     {        

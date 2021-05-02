@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'menu' => 'Videcam',
+    'menu' => 'Videcams',
     'title' => '',
     
     'table_ID' => 'ID',
