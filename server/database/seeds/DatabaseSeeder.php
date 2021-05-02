@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         
         // Filling out of the core_ow_types table
         $data = [
-            '40|DS18B20|Termometr|1',
+            '40|DS18B20|TEMP|1',
             '240|Two buttons switch|LEFT,RIGHT|100',
             '241|Venting|F1,F2,F3,F4|100',
             '242|Pin converter|P1,P2,P3,P4|100',
