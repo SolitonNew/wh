@@ -496,7 +496,8 @@ class PlanController extends Controller
             }
             
             try {
-                $deviceID = $request->post('device');
+                $deviceID = $request->post('device') ?? $deviceID;
+                
                 $device = \App\Http\Models\VariablesModel::find($deviceID);
                 if ($device) {
                     $position = (object)[
