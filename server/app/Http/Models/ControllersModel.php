@@ -26,13 +26,13 @@ class ControllersModel extends AffectsFirmwareModel
             'din',
             'ow',
         ],
-        'onewire' => [
+        /*'onewire' => [
             'variable',
             'ow',
         ],
         'zigbee' => [
             'variable',
-        ],
+        ],*/
     ];
     
     /**
