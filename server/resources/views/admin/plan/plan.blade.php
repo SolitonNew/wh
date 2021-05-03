@@ -296,7 +296,7 @@
             left: x + 'px',
             top: y + 'px',
         }).show();
-        planContextMenuID = $(e.target).data('id');
+        planContextMenuID = $(e.currentTarget).data('id');
         planContextMenuMouse = {
             x: e.offsetX,
             y: e.offsetY,
