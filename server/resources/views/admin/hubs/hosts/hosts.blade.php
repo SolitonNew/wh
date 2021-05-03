@@ -1,8 +1,7 @@
 @extends('admin.hubs.hubs')
 
 @section('page-down-menu')
-<div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onclick="hostAdd(); return false;">@lang('admin/hubs.host_add')</a>
+
 @endsection
 
 @section('page-content')

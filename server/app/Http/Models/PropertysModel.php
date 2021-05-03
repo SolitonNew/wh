@@ -228,4 +228,5 @@ class PropertysModel extends Model
         
         self::$_firmwareChanges = $count;
     }
+    
 }

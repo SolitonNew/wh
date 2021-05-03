@@ -60,12 +60,23 @@ class HubsController extends Controller
         $item = \App\Http\Models\ControllersModel::find($id);
 
         if ($request->method() == 'POST') {
+            $itemTyp = $item ? $item->typ : $request->post('typ');
+            
             try {
-                $this->validate($request, [
-                    'name' => 'string|required',
-                    'comm' => 'string|nullable',
-                    'rom' => 'numeric|required|unique:core_controllers,rom,'.($id > 0 ? $id : ''),
-                ]);
+                if ($itemTyp == 'din') {
+                    $this->validate($request, [
+                        'name' => 'string|required',
+                        'typ' => ($item ? 'nullable' : 'string|required'),
+                        'rom' => 'numeric|required|min:1|max:15|unique:core_controllers,rom,'.($id > 0 ? $id : ''),
+                        'comm' => 'string|nullable',
+                    ]);
+                } else {
+                    $this->validate($request, [
+                        'name' => 'string|required',
+                        'typ' => ($item ? 'nullable' : 'string|required'),
+                        'comm' => 'string|nullable',
+                    ]);
+                }
             } catch (\Illuminate\Validation\ValidationException $ex) {
                 return response()->json($ex->errors());
             }
@@ -74,19 +85,22 @@ class HubsController extends Controller
                 if (!$item) {
                     $item = new \App\Http\Models\ControllersModel();
                 }
-                
                 $item->name = $request->post('name');
-                $item->rom = $request->post('rom');
+                $item->typ = $itemTyp;
+                if ($itemTyp == 'din') {
+                    $item->rom = $request->post('rom');
+                } else {
+                    $item->rom = null;
+                }
                 $item->comm = $request->post('comm');
-                $item->save();
-                
+                $item->save();                
             } catch (\Exception $ex) {
                 return response()->json([
-                    'errors' => $ex->getMessage(),
+                    'errors' => [$ex->getMessage()],
                 ]);
             }
             
-            // Перезапускаем rs485-demon
+            // Restart rs485-demon
             $this->_restartRs485Demon();
             
             return 'OK';
@@ -95,6 +109,7 @@ class HubsController extends Controller
                 $item = (object)[
                     'id' => -1,
                     'name' => '',
+                    'typ' => 'virtual',
                     'rom' => null,
                     'comm' => '',
                     'status' => 1,
@@ -143,7 +158,7 @@ class HubsController extends Controller
     {
         \App\Http\Models\PropertysModel::setRs485Command('OW SEARCH');
         $i = 0;
-        while ($i++ < 500) { // 5 sec
+        while ($i++ < 50) { // 5 sec
             usleep(100000);
             $text = \App\Http\Models\PropertysModel::getRs485CommandInfo();
             if ($t = strpos($text, 'END_OW_SCAN')) {
@@ -152,8 +167,8 @@ class HubsController extends Controller
             }
         }
         
-        // Сразу же запускаем генератор устройств
-        // Если устройства небыло - он создаст
+        // Starting devices generator
+        // If the device is not found, it will create
         $this->_generateDevs();
         // --------------------------------------
         
@@ -199,7 +214,7 @@ class HubsController extends Controller
         // Generation of devices by channel
         $din_channels = config('firmware.channels.'.config('firmware.mmcu'));
         $vars = DB::select('select controller_id, channel from core_variables where typ = "din"');
-        foreach(\App\Http\Models\ControllersModel::get() as $din) {
+        foreach(\App\Http\Models\ControllersModel::whereTyp('din')->get() as $din) {
             try {
                 foreach($din_channels as $chan) {
                     $find = false;
@@ -231,7 +246,7 @@ class HubsController extends Controller
             }
         }
         
-        // Ceneration of devices for network hubs
+        // Generation of devices for network hubs
         $devs = DB::select('select d.id, d.controller_id, t.channels, t.comm
                               from core_ow_devs d, core_ow_types t
                              where d.rom_1 = t.code');

@@ -115,7 +115,6 @@ class DevicesController extends Controller
                 $item->name = $request->post('name');
                 $item->comm = $request->post('comm');
                 $item->channel = $request->post('channel') ?? 0;
-                $item->group_id = $request->post('group_id');
                 $item->app_control = $request->post('app_control');
                 $item->save();
                 if ($request->post('value') !== null) {
@@ -136,7 +135,7 @@ class DevicesController extends Controller
                     'ow_id' => '',
                     'name' => '',
                     'comm' => '',
-                    'group_id' => 1,
+                    'group_id' => null,
                     'app_control' => 0,
                     //'value' => 0,
                     'channel' => 0,
@@ -149,9 +148,12 @@ class DevicesController extends Controller
                 'variable' => 'variable',
             ];
             
+            $groupPath = \App\Http\Models\PlanPartsModel::getPath($item->group_id, '/');
+            
             return view('admin.hubs.devices.device-edit', [
                 'item' => $item,
                 'typs' => $typs,
+                'groupPath' => $groupPath,
             ]);            
         }
     }

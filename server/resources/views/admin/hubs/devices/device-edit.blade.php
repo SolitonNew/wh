@@ -43,7 +43,9 @@
         <div class="col-sm-6">
             <select class="custom-select" name="controller_id">
             @foreach(\App\Http\Models\ControllersModel::orderBy('name', 'asc')->get() as $row)
-            <option value="{{ $row->id }}" {{ $row->id == $item->controller_id ? 'selected' : '' }}>{{ $row->name }}</option>
+            <option value="{{ $row->id }}" 
+                    {{ $row->id == $item->controller_id ? 'selected' : '' }}
+                    data-typs="{{ implode('|', \App\Http\Models\ControllersModel::$typs[$row->typ]) }}">{{ $row->name }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>
@@ -103,13 +105,7 @@
             <div class="form-label">@lang('admin/hubs.device_GROUP')</div>
         </div>
         <div class="col-sm-8">
-            <select class="custom-select select-tree" name="group_id">
-                <option value="">-- @lang('admin/hubs.device_group_empty') --</option>
-                @foreach(\App\Http\Models\PlanPartsModel::generateTree() as $row)
-                <option value="{{ $row->id }}" {{ $row->id == $item->group_id ? 'selected' : '' }}>{!! $row->treePath !!} {{ $row->name }}</option>
-                @endforeach
-            </select>
-            <div class="invalid-feedback"></div>
+            <div class="form-control">{{ $groupPath }}</div>
         </div>
     </div>
     <div class="row" id="value">
@@ -152,6 +148,7 @@
         });
 
         $('#device_edit_form select[name="controller_id"]').on('change', () => {
+            reloadTyps();
             reloadOwList();
             reloadChannels();
         });
@@ -166,6 +163,8 @@
             l.attr('data-value', l.val());
             reloadChannels();
         });
+        
+        reloadTyps();
 
         reloadOwList(() => {
             reloadChannels(() => {
@@ -173,6 +172,29 @@
             });
         });
     });
+    
+    function reloadTyps() {
+        let controller = $('#device_edit_form select[name="controller_id"]').val();
+        let typs = $('#device_edit_form select[name="controller_id"] option[value="' + controller + '"]').data('typs').split('|');
+        
+        let typSelect = $('#device_edit_form select[name="typ"]');
+        let currTyp = typSelect.val();
+        typSelect.html('');
+        
+        let a = new Array();
+        for (let i = 0; i < typs.length; i++) {
+            a.push('<option val="' + typs[i] + '">' + typs[i] + '</option>');
+        }
+        typSelect.html(a.join(''));
+        
+        if (typs.indexOf(currTyp) > -1) {
+            typSelect.val(currTyp);
+        } else {
+            typSelect.val(typs[0]);
+        }
+        
+        typSelect.trigger('change');
+    }
 
     function reloadOwList(afterHandle = null) {
         let controller = $('#device_edit_form select[name="controller_id"]').val();
