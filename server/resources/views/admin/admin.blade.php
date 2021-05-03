@@ -29,7 +29,7 @@
                 <div style="display: flex; flex-grow: 1; align-items: center;">
                 @yield('top-menu')
                 </div>
-                @if(\App\Http\Models\PropertysModel::getFirmwareChanges() > 0)
+                @if(\App\Http\Models\ControllersModel::existsFirmwareHubs() && \App\Http\Models\PropertysModel::getFirmwareChanges() > 0)
                 <a class="btn btn-danger" href="#" onclick="firmware(); return false;">@lang('admin/admin.menu_firmware') ({{ \App\Http\Models\PropertysModel::getFirmwareChanges() }})</a>
                 @endif
                 <a class="btn btn-primary" href="{{ route('home') }}" target="_blank">@lang('admin/admin.menu_home')</a>

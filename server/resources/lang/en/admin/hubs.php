@@ -16,6 +16,7 @@ return [
     'hub_delete_confirm' => 'Delete this hub?',
     'hub_ID' => 'ID',
     'hub_NAME' => 'Name',
+    'hub_TYP' => 'Type',
     'hub_ROM' => 'ROM',
     'hub_COMM' => 'Description',
     

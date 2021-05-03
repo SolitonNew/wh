@@ -11,10 +11,12 @@
 @if($hubID)
 <a href="#" class="dropdown-item" onclick="hubEdit(); return false;">@lang('admin/hubs.hub_edit')</a>
 @yield('page-down-menu')
+@if(\App\Http\Models\ControllersModel::existsFirmwareHubs())
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="hubsScan(); return false;">@lang('admin/hubs.hubs_scan')</a>
 <a href="#" class="dropdown-item" onclick="firmware(); return false;">@lang('admin/hubs.firmware')</a>
 <a href="#" class="dropdown-item" onclick="hubsReset(); return false;">@lang('admin/hubs.hubs_reset')</a>
+@endif
 @endif
 @endsection
 
@@ -37,8 +39,11 @@
         @foreach(\App\Http\Models\ControllersModel::orderBy('rom', 'asc')->get() as $row)
         <a href="{{ route('admin.hubs', $row->id).'/'.$page }}"
            class="tree-item {{ $row->id == $hubID ? 'active' : '' }}" style="white-space: normal;">
-            <div>
-                <div class="" >{{ $row->name }}</div>
+            <div style="flex-grow: 1;">
+                <div style="display: flex; justify-content: space-between; width: 100%;">
+                    <div>{{ $row->name }}</div>
+                    <div class="text-muted">{{ $row->typ }}</div>
+                </div>
                 <small class="text-muted">{{ $row->comm }}</small>
             </div>
         </a>

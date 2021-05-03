@@ -22,6 +22,7 @@ return [
     'hub_delete_confirm' => 'Удалить текущий хаб?',
     'hub_ID' => 'ID',
     'hub_NAME' => 'Название',
+    'hub_TYP' => 'Тип',
     'hub_ROM' => 'ROM',
     'hub_COMM' => 'Примечания',
     

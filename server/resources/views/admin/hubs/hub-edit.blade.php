@@ -25,6 +25,23 @@
     @endif
     <div class="row">
         <div class="col-sm-3">
+            <label class="form-label strong">@lang('admin/hubs.hub_TYP')</label>
+        </div>
+        <div class="col-sm-4">
+            @if($item->id > 0)
+            <div class="form-control">{{ $item->typ }}</div>
+            @else
+            <select class="custom-select" name="typ">
+            @foreach(\App\Http\Models\ControllersModel::$typs as $key => $val)
+            <option value="{{ $key }}" {{ $item->typ == $key ? 'selected' : '' }}>{{ $key }}</option>
+            @endforeach
+            </select>
+            <div class="invalid-feedback"></div>
+            @endif
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
             <div class="form-label strong">@lang('admin/hubs.hub_NAME')</div>
         </div>
         <div class="col-sm-9">
@@ -32,7 +49,8 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
-    <div class="row">
+    @if($item->id < 1 || $item->typ == 'din')
+    <div id="rowROM" class="row">
         <div class="col-sm-3">
             <div class="form-label strong">@lang('admin/hubs.hub_ROM')</div>
         </div>
@@ -41,6 +59,7 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>    
+    @endif
     <div class="row">
         <div class="col-sm-3">
             <div class="form-label">@lang('admin/hubs.hub_COMM')</div>
@@ -76,6 +95,14 @@
                 dialogShowErrors(data);
             }
         });
+        
+        $('#hub_edit_form select[name="typ"]').on('change', function () {
+            if ($(this).val() == 'din') {
+                $('#rowROM').show(150);
+            } else {
+                $('#rowROM').hide(150);
+            }
+        }).trigger('change');
     });
 
     function hubEditOK() {
