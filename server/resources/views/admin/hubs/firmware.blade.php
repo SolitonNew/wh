@@ -62,7 +62,6 @@
         $.ajax({
             url: "{{ route('admin.firmware-status') }}",
             success: function (data) {
-                console.log(data);
                 if (data.error) {
                     alert(data.error);
                     firmwareButtons(1);
