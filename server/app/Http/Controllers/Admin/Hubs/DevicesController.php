@@ -148,7 +148,7 @@ class DevicesController extends Controller
                 'variable' => 'variable',
             ];
             
-            $groupPath = \App\Http\Models\PlanPartsModel::getPath($item->group_id, '/');
+            $groupPath = \App\Http\Models\PlanPartsModel::getPath($item->group_id, ' / ');
             
             return view('admin.hubs.devices.device-edit', [
                 'item' => $item,
