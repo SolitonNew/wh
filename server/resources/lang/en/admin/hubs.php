@@ -25,7 +25,7 @@ return [
     'firmware_start' => 'Start update',
     'firmware_start_progress' => 'Update is running',
     'firmware_complete' => 'Update completed successfully',
-    
+    'firmware_notpossible' => 'Update is not possible',
     
     'devices' => 'Device',
     'device_ID' => 'ID',
