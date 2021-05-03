@@ -16,7 +16,7 @@ class CoreVariableChanges extends Migration
         Schema::create('core_variable_changes', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('variable_id');
-            $table->timestamp('change_date')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('change_date')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->float('value');
             $table->integer('from_id')->nullable();
             
