@@ -1,8 +1,8 @@
 # WISE HOUSE
 <p>
-<img src="logo.png" width="33%">
-<img src="logo_2.png" width="33%">
-<img src="logo_3.png" width="33%">
+<img src="logo.png" width="30%">
+<img src="logo_2.png" width="30%">
+<img src="logo_3.png" width="30%">
 </p>
 
 ## Short installation guide
