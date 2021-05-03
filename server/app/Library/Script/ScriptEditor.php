@@ -18,13 +18,13 @@ use Lang;
 class ScriptEditor 
 {
     /**
-     * Создает набор списков: keywords, functions, strings
+     * Creating lists: keywords, functions, strings
      * 
      * @return type
      */
     static public function makeKeywords() 
     {
-        // Обращаемся к транслятору за списками ключевых слов
+        // Referring to the translator for keyword lists
         $translate = new \App\Library\Script\Translate('');
         
         $keywords = [];        

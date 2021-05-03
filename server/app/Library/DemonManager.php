@@ -5,7 +5,7 @@ namespace App\Library;
 use Log;
 
 /**
- * Менеджер процессов DemonManager
+ * DemonManager Process Manager.
  *
  * @author soliton
  */
@@ -31,7 +31,7 @@ class DemonManager
     }
     
     /**
-     * Проверяет корректность ИД сверяя со списком зарегистрированных
+     * Checks the correctness of the ID by checking the list of registered.
      * 
      * @param type $id
      * @return type
@@ -42,7 +42,7 @@ class DemonManager
     }
     
     /**
-     * Проверяет запущен ли процесс в системе
+     * Checks if a process is running on the system.
      * 
      * @param type $id
      */
@@ -51,12 +51,12 @@ class DemonManager
         if ($this->exists($id)) {
             return count($this->findDemonPID($id)) > 0;
         } else {
-            throw new \Exception('Несуществуюущий ID процесса');
+            throw new \Exception('Non-existent process ID');
         }
     }
     
     /**
-     * Запускает процесс
+     * Starts a process.
      * 
      * @param type $id
      */
@@ -65,12 +65,12 @@ class DemonManager
         if ($this->exists($id)) {
             exec('php '.base_path().'/artisan '.$id.'>/dev/null &');
         } else {
-            throw new \Exception('Несуществуюущий ID процесса');
+            throw new \Exception('Non-existent process ID');
         }
     }
     
     /**
-     * Останавливает процесс
+     * Stops a process.
      * 
      * @param type $id
      */
@@ -81,12 +81,12 @@ class DemonManager
                 exec('kill -9 '.$pid);
             }
         } else {
-            throw new \Exception('Несуществуюущий ID процесса');
+            throw new \Exception('Non-existent process ID');
         }
     }
     
     /**
-     * Перезапускает процесс. Если процесс был остановлен - запускает его.
+     * Restarts the process. If the process was stopped, it starts it.
      * 
      * @param type $id
      */
@@ -98,12 +98,13 @@ class DemonManager
             }
             $this->start($id);
         } else {
-            throw new \Exception('Несуществуюущий ID процесса');
+            throw new \Exception('Non-existent process ID');
         }
     }
     
     /**
-     * Выполняет запрос к ОС и вовзращает результат поиска демонов в виде массива
+     * Executes a query to the OS and returns the search result for daemons 
+     * in the form of an array.
      * 
      * @param string $id
      * @return type
