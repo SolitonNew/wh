@@ -103,6 +103,7 @@ class RS485Demon extends BaseDemon
         $this->printLine('');
         
         $this->_controllers = \App\Http\Models\ControllersModel::where('id', '>', 0)
+                                ->whereTyp('din')
                                 ->orderBy('rom', 'asc')
                                 ->get();
         
