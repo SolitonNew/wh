@@ -340,9 +340,15 @@ class HubsController extends Controller
      * 
      * @return type
      */
-    public function firmwareStatus() 
+    public function firmwareStatus(\App\Library\DemonManager $demonManager) 
     {
         try {
+            if (!$demonManager->isStarted('rs485-demon')) {
+                return response()->json([                    
+                    'firmware' => 'NOTPOSSIBLE',
+                ]);
+            }
+            
             $info = \App\Http\Models\PropertysModel::getRs485CommandInfo();
             if ($info == 'COMPLETE') {
                 return response()->json([                    

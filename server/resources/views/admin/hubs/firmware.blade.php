@@ -83,6 +83,11 @@
                         
                         firmwareButtons(1);
                         return ;
+                    } else {
+                        alert('@lang("admin/hubs.firmware_notpossible")', () => {
+                            window.location.reload();
+                        });
+                        return ;
                     }
                 } else {
                     $('#firmwareController').text(data.controller);

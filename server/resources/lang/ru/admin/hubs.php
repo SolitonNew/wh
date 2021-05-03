@@ -30,8 +30,8 @@ return [
     'firmware_make_title' => 'Отчет по сборке',
     'firmware_start' => 'Начать обновление',
     'firmware_start_progress' => 'Выполняется обновление',
-    'firmware_complete' => 'Обновление успешно выполнено',    
-    
+    'firmware_complete' => 'Обновление успешно выполнено',
+    'firmware_notpossible' => 'Обновление невозможно',
     
     'devices' => 'Устройства',
     'device_ID' => 'ID',
