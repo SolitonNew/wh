@@ -19,7 +19,8 @@ use Log;
 class Translate 
 {
     /**
-     * Cловарь синтаксических конструкций
+     * Dictionary of syntactic constructions.
+     * 
      * @var type 
      */
     private $_keywords = [
@@ -33,7 +34,8 @@ class Translate
     ];
     
     /**
-     * Cловарь синтаксических конструкций
+     * Dictionary of syntactic constructions.
+     * 
      * @return type
      */
     public function getKeywords() 
@@ -42,11 +44,11 @@ class Translate
     }
     
     /**
-     * Словарь функций
-     * 
-     * $key - Имя функции
-     * helper - Описание функции для редактора скрипта
-     * args - Возможное количество параметров
+     * Dictionary of functions
+     *
+     * $key - Function name
+     * helper - Description of the function for the script editor
+     * args - Possible number of parameters
      * 
      * @var type 
      */    
@@ -86,13 +88,13 @@ class Translate
     ];
     
     /**
-     * Словарь функций
+     * Dictionary of functions
+     *
+     * $key - Function name
+     * helper - Description of the function for the script editor
+     * args - Possible number of parameters
      * 
-     * $key - Имя функции
-     * helper - Описание функции для редактора скрипта
-     * args - Возможное количество параметров
-     * 
-     * @return type
+     * @var type 
      */
     public function getFunctions() 
     {
@@ -123,11 +125,11 @@ class Translate
     }
     
     /**
-     *  Разбираем исходный текст на части. 
+     * Breaks the source code into pieces.
      */
     protected function _split() 
     {
-        // Разделитель для фрагментации исходного кода
+        // Separator for fragmenting source code.
         $delimeters = [
             ' ' => [],
             ';' => [],
@@ -219,34 +221,35 @@ class Translate
             
             $empty++;
             
-            if ($part == $to_char) { // Конец блока
+            if ($part == $to_char) { // End block
                 if ($empty == 1) $func_args = 0;
                 return $i;
             } else
-            if ($part == '{') { // Новый блок
+            if ($part == '{') { // New block
                 $args = 0;
                 $i = $this->_prepareBlock($i, $args);
             } else
             if ($part == ',') {
                 $func_args++;
             } else
-            if (preg_match('/[0-9]/', $part[0])) { // Это число
+            if (preg_match('/[0-9]/', $part[0])) { // Is it a number
                 $this->_prepared_numbers[$part] = (isset($this->_prepared_numbers[$part]) ? $this->_prepared_numbers[$part] + 1 : 1);
             } else
-            if (preg_match('/[a-zA-Z]/', $part[0])) { // Это функция, фраза или переменная
+            if (preg_match('/[a-zA-Z]/', $part[0])) { // Is it a function, phrase or variable
                 if ($i < count($this->_parts) - 1) {
                     $is_keyword = false;
                     for ($k = $i + 1; $k < count($this->_parts); $k++) {
                         if (in_array($this->_parts[$k], $spaces)) continue;
-                        if ($this->_parts[$k] == '(') { // Это функция или конструкция
+                        if ($this->_parts[$k] == '(') { // Is it a function or construction
                             $args = 1;
                             $new_i = $this->_prepareBlock($k, $args);                            
-                            if (isset($this->_functions[$part])) { // Это наша функция
-                                // Проверяем кол-во аргументов
+                            if (isset($this->_functions[$part])) { // Is it a function
+                                // Check the number of arguments
                                 if (!in_array($args, $this->_functions[$part]['args'])) {
                                     throw new \Exception('Invalid number of arguments "'.$args.'" for "'.$part.'"');
                                 }
-                                // Подменяем строку записи на объект с расширеной информацией
+                                // Replace the record string with an object 
+                                // with extended information.
                                 $this->_parts[$i] = (object)[
                                     'type' => 'function',
                                     'name' => $part,
@@ -297,10 +300,10 @@ class Translate
         
         if (count($this->_parts) == 0) return ;
         
-        // Чистим коментарии
+        // Deleting comments
         for ($i = 0; $i < count($this->_parts); $i++) {
             $part = $this->_parts[$i];
-            if ($part == '/*') { // Начало многострочного коментария
+            if ($part == '/*') { // Start of a multi-line comment
                 $this->_parts[$i] = '';
                 for ($k = $i + 1; $k < count($this->_parts); $k++) {
                     if ($this->_parts[$k] == '*/') {
@@ -311,7 +314,7 @@ class Translate
                     $this->_parts[$k] = '';
                 }
             } else
-            if ($part == '//') { // Коментарий до конца строки
+            if ($part == '//') { // Comment in line
                 for ($k = $i; $k < count($this->_parts); $k++) {
                     if ($this->_parts[$k] == chr(10) || $this->_parts[$k] == chr(13)) {
                         $i = $k;
@@ -323,7 +326,7 @@ class Translate
             }
         }
         
-        // Собираем строки
+        // Make strings
         for ($i = 0; $i < count($this->_parts); $i++) {
             $part = $this->_parts[$i];
             if ($part == '"' || $part == "'") {
@@ -349,7 +352,7 @@ class Translate
     }
     
     /**
-     * Собирает исходный код из частей спользуя указаный транслятор.
+     * Builds source code from parts using the specified translator.
      * 
      * @param ITranslator $translator
      * @param array $report

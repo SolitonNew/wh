@@ -197,7 +197,7 @@ class RS485Demon extends BaseDemon
     }
     
     /**
-     * Обработка команды перезагрузки контроллера
+     * Controller reboot processing command.
      * 
      * @param type $conrollerROM
      */
@@ -209,7 +209,7 @@ class RS485Demon extends BaseDemon
     }
     
     /**
-     * Обработка команды сканирования onewire сети
+     * One Wire scan processing command.
      * 
      * @param type $conrollerROM
      */
@@ -220,8 +220,8 @@ class RS485Demon extends BaseDemon
         $this->_transmitCMD($controller->rom, 7, 0);
         $this->_readPacks(500);
         
-        // Данные получили. Нужно их совместить с тем, что уже есть в системе и 
-        // выдать отчет по операции
+        // We got the data. You need to combine them with what is already in 
+        // the system and issue a report on the operation.
         
         $new = 0;
         $lost = 0;
@@ -253,7 +253,7 @@ class RS485Demon extends BaseDemon
             $owOld->save();
         }
         
-        // Ищем кого нашли
+        // Check found entries.
         foreach ($this->_inRooms as $rom) {
             $find = false;
             foreach ($owOldList as $owOld) {
@@ -271,7 +271,7 @@ class RS485Demon extends BaseDemon
             }
             if (!$find) {
                 $new++;
-                // Сразу же добавляем в список
+                // Add to the list immediately.
                 $ow = new \App\Http\Models\OwDevsModel();
                 $ow->controller_id = $controller->id;
                 $ow->name = '';
@@ -311,6 +311,7 @@ class RS485Demon extends BaseDemon
     }
     
     /**
+     * Firmware processing command.
      * 
      * @param type $controller
      */
@@ -373,8 +374,7 @@ class RS485Demon extends BaseDemon
     }
     
     /**
-     * Обработка синхронизации переменных.
-     * Здесь также код обработки инициализации контроллера
+     * Devices sync processing and initializing controllers.
      * 
      * @param type $conrollerROM
      */
@@ -384,22 +384,22 @@ class RS485Demon extends BaseDemon
         $vars_out = [];
         $errorText = '';
         try {
-            // Шлем команду (приготовиться принимать)
+            // Send command "prepare to receive"
             $this->_transmitCMD($controller->rom, 2, count($variables));
 
-            // Шлем поочередно переменные. 
+            // Send devace values
             foreach ($variables as $variable) {
                 $this->_transmitVAR($controller->rom, $variable->variable_id, $variable->value);
                 $vars_out[] = "$variable->variable_id: $variable->value";
             }
 
-            // Шлем команду приготовиться отдавать свои изменения
+            // Send command "prepare to give your changes"
             $this->_transmitCMD($controller->rom, 3, 0);
             
             $this->_inVariables = [];
-            // Ждем ответа от контроллера
+            // Waiting for a controller's response.
             switch ($this->_readPacks(100)) {
-                case 5: // Контроллер попросил данные инициализации
+                case 5: // Controller request of the initialization data
                     $stat = 'INIT';
                     $vars_out = [];
                     $variablesInit = \App\Http\Models\VariablesModel::orderBy('ID', 'asc')->get();
@@ -409,16 +409,16 @@ class RS485Demon extends BaseDemon
                         $this->_transmitVAR($controller->rom, $variable->id, $variable->value);
                         $vars_out[] = "$variable->id: $variable->value";
                         if ($counter++ > 5) {
-                            usleep(75000); // Притормаживаем переодически. Контроллер на том конце не мощный.
+                            usleep(75000); // We slow down periodically. The controller on the other end is not powerful.
                             $counter = 0;
                         }
                     }
                     $this->_readPacks(250);        
                     break;
-                case 26: // Контроллер попросил прошивку
+                case 26: // The controller asked for the firmware
                     $stat = 'FIRMWARE QUERY';
                     break;
-                case 27: // Контроллер в буте (вероятно перегружался)
+                case 27: // Controller in boot (probably overloaded)
                     $stat = 'BOOTLOADER';
                     break;
                 case -1:
@@ -479,11 +479,11 @@ class RS485Demon extends BaseDemon
     }
     
     /**
-     * Чтение очереди входящего пакета.
-     * Устанавливается индивидуальное значение таймаута для получения данных
+     * Reading the queue of the incoming packet.
+     * An individual timeout value for receiving data is set.
      * 
-     * @param integer $utimeout  Допустимое время ожидания новых данных
-     * @return int    -1 - данные не получили. >= 0 - что-то получали
+     * @param integer $utimeout  Allowable waiting time for new data
+     * @return int    -1 - no data received. >= 0 - received something
      */
     private function _readPacks($utimeout = 250) 
     {
@@ -514,10 +514,13 @@ class RS485Demon extends BaseDemon
     }
     
     /**
-     * Главный обработчик всех входных пакетов.
+     * The main handler for all incoming packets.
      * 
-     * @param integer $returnCmd  код последней обработаной команды в этой итерации. Если команд небыло будет 0.
-     * @return boolean  true - хоть один пакет обработан. false - ниодного пакета не обнаружено.
+     * @param integer $returnCmd  the code of the last command processed in this 
+     *                            iteration. If there were no commands, there 
+     *                            will be 0.
+     * @return boolean  true -    at least one packet was processed. false - no 
+     *                            package was found.
      */
     private function _processedInBuffer(&$returnCmd) 
     {
@@ -551,7 +554,6 @@ class RS485Demon extends BaseDemon
                     $size = 0;
                 }
                 break;
-            
             case 'VAR':
                 if (strlen($this->_inBuffer) < 9) return $result;
                 $size = 9;
@@ -575,7 +577,6 @@ class RS485Demon extends BaseDemon
                     Log::info('RS485 CRC');
                 }
                 break;
-            
             case 'ROM':
                 if (strlen($this->_inBuffer) < 13) return $result;
                 $size = 13;
@@ -596,11 +597,9 @@ class RS485Demon extends BaseDemon
                     $size = 0;
                 }
                 break;
-                
             default:
                 $sign = '';
         }
-        
         
         if ($sign == '' || $size === 0) {
             for ($i = 1; $i < strlen($this->_inBuffer) - 2; $i++) {
@@ -613,7 +612,6 @@ class RS485Demon extends BaseDemon
             }
         }
         
-
         if ($size === 0) {
             $this->_inBuffer = '';
             return $result;
@@ -628,6 +626,7 @@ class RS485Demon extends BaseDemon
     }
     
     /**
+     * CRC calculating.
      * 
      * @param int $data
      * @return type
@@ -712,6 +711,6 @@ class RS485Demon extends BaseDemon
         fwrite($this->_port, $pack);
         fflush($this->_port);
         
-        usleep(10000); // Иначе контроллер не успевает обработать
+        usleep(10000); // Otherwise, the controller does not have time to process.
     }
 }
