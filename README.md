@@ -86,6 +86,8 @@ sudo nano /etc/cron.d/wh
 sudo apt-get install avr-libc gcc-avr
 ```
 
+Admin Login/Password: wh/wh
+
 ## License
 
 The WiseHouse system is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
