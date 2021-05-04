@@ -20,6 +20,7 @@ class ControllersModel extends AffectsFirmwareModel
     static public $typs = [
         'software' => [
             'variable',
+            'software',
         ],
         'din' => [
             'variable',
