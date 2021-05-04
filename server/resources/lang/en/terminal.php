@@ -5,7 +5,7 @@ return [
     'menu_checked' => 'FAVORITES',
     'menu_checked_edit' => 'SETTINGS',
     'menu_back' => 'BACK',
-    'video_title' => 'VIDECAM',
+    'video_title' => 'VIDECAMS',
     
     'all' => 'ALL',
   
