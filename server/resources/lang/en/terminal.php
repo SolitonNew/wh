@@ -6,6 +6,7 @@ return [
     'menu_checked_edit' => 'SETTINGS',
     'menu_back' => 'BACK',
     'video_title' => 'VIDECAMS',
+    'location_title' => 'LOCATION',
     
     'all' => 'ALL',
   

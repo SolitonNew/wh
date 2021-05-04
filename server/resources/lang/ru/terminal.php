@@ -6,6 +6,7 @@ return [
     'menu_checked_edit' => 'НАСТРОЙКИ',
     'menu_back' => 'НАЗАД',
     'video_title' => 'ВИДЕО',
+    'location_title' => 'ЛОКАЦИЯ',
     
     'all' => 'ВСЕ',
   

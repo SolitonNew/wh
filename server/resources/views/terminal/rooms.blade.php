@@ -9,7 +9,7 @@
     </ol>
 </nav>
 
-<div style="display: flex; flex-direction: column; min-height: calc(100vh - 6rem);">
+<div id="roomsDiv" style="display: flex; flex-direction: column; min-height: calc(100vh - 6rem);">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-{{ $columnCount }}" style="flex-grow: 1;">
     @foreach($data as $group)
     <div class="col">
@@ -48,6 +48,7 @@
     @endforeach
     </div>
     @include('terminal.video-list')
+    @include('terminal.location')
 </div>
 
 <script>
