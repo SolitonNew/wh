@@ -16,6 +16,32 @@ class UsersModel extends Authenticatable
     
     /**
      * 
+     * @return type
+     */
+    static public function listAll()
+    {
+        return UsersModel::orderBy('login', 'asc')->get();
+    }
+    
+    /**
+     * 
+     * @param int $id
+     * @return \App\Http\Models\UsersModel
+     */
+    static public function findOrCreate(int $id)
+    {
+        $item = UsersModel::find($id);
+        if (!$item) {
+            $item = new UsersModel();
+            $item->id = -1;
+            $item->access = 1;
+        }
+        
+        return $item;
+    }
+    
+    /**
+     * 
      * @param Request $request
      * @param int $id
      */

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UsersRequest;
+use \App\Http\Models\UsersModel;
 use Auth;
 
 class UsersController extends Controller
@@ -15,7 +16,7 @@ class UsersController extends Controller
      */
     public function index() 
     {
-        $data = \App\Http\Models\UsersModel::orderBy('login', 'asc')->get();
+        $data = UsersModel::listAll();
         
         return view('admin.users.users', [
             'data' => $data,
@@ -30,15 +31,8 @@ class UsersController extends Controller
      */
     public function editShow(int $id) 
     {
-        $item = \App\Http\Models\UsersModel::find($id);
-        if (!$item) {
-            $item = (object)[
-                'id' => -1,
-                'login' => '',
-                'email' => '',
-                'access' => 1,
-            ];
-        }
+        $item = UsersModel::findOrCreate($id);
+        
         return view('admin.users.user-edit', [
             'item' => $item,
         ]);
@@ -54,6 +48,7 @@ class UsersController extends Controller
     public function editPost(UsersRequest $request, int $id)
     {
         \App\Http\Models\UsersModel::storeFromRequest($request, $id);
+        
         return 'OK';
     }
     
@@ -66,6 +61,7 @@ class UsersController extends Controller
     public function delete(int $id) 
     {
         \App\Http\Models\UsersModel::deleteById($id);
+        
         return 'OK';
     }
 }
