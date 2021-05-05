@@ -15,7 +15,7 @@
     @if($item->id > 0)
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/cams.table_ID')</div>
+            <label class="form-label">@lang('admin/cams.table_ID')</label>
         </div>
         <div class="col-sm-3">
             <div class="form-control">{{ $item->id > 0 ? $item->id : '' }}</div>
@@ -25,7 +25,7 @@
     @endif
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin/cams.table_NAME')</div>
+            <label class="form-label strong">@lang('admin/cams.table_NAME')</label>
         </div>
         <div class="col-sm-9">
             <input class="form-control" type="text" name="name" value="{{ $item->name }}" required="">
@@ -33,22 +33,22 @@
         </div>
     </div>
     <div class="form-group">
-        <div class="strong">@lang('admin/cams.table_URL'):</div>
+        <label class="strong">@lang('admin/cams.table_URL'):</label>
         <textarea class="form-control" name="url" rows="3">{!! $item->url !!}</textarea>
         <div class="invalid-feedback"></div>
     </div>
     <div class="form-group">
-        <div class="strong">@lang('admin/cams.table_URL_LOW'):</div>
+        <label class="strong">@lang('admin/cams.table_URL_LOW'):</label>
         <textarea class="form-control" name="url_low" rows="3">{!! $item->url_low !!}</textarea>
         <div class="invalid-feedback"></div>
     </div>
     <div class="form-group">
-        <div class="strong">@lang('admin/cams.table_URL_HIGH'):</div>
+        <label class="strong">@lang('admin/cams.table_URL_HIGH'):</label>
         <textarea class="form-control" name="url_high" rows="3">{!! $item->url_high !!}</textarea>
         <div class="invalid-feedback"></div>
     </div>
     <div class="form-group">
-        <div>@lang('admin/cams.table_ALERT_VAR_ID'):</div>
+        <label>@lang('admin/cams.table_ALERT_VAR_ID'):</label>
         <select class="custom-select" name="alert_var_id">
         <option value="-1">-//-</option>
         @foreach(\App\Http\Models\VariablesModel::orderBy('name')->get() as $row)
