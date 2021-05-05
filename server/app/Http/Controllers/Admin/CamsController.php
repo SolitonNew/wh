@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CamsRequest;
-use DB;
+use \App\Http\Models\PlanVideoModel;
 
 class CamsController extends Controller
 {
@@ -15,13 +15,7 @@ class CamsController extends Controller
      */
     public function index() 
     {
-        $sql = 'select c.*,
-                       v.name var_name
-                  from plan_video c
-                left join core_variables v on c.alert_var_id = v.id
-                order by c.name';
-        
-        $data = DB::select($sql);
+        $data = PlanVideoModel::listAll();
         
         return view('admin.cams.cams', [
             'data' => $data,
@@ -36,17 +30,8 @@ class CamsController extends Controller
      */
     public function editShow(int $id) 
     {
-        $item = \App\Http\Models\PlanVideoModel::find($id);
-        if (!$item) {
-            $item = (object)[
-                'id' => -1,
-                'name' => '',
-                'url' => '',
-                'url_low' => '',
-                'url_high' => '',
-                'alert_var_id' => -1,
-            ];
-        }
+        $item = PlanVideoModel::findOrCreate($id);
+        
         return view('admin.cams.cam-edit', [
             'item' => $item,
         ]);
@@ -62,6 +47,7 @@ class CamsController extends Controller
     public function editPost(CamsRequest $request, int $id)
     {
         \App\Http\Models\PlanVideoModel::storeFromRequest($request);
+        
         return 'OK';
     }
     
@@ -74,6 +60,7 @@ class CamsController extends Controller
     public function delete(int $id) 
     {
         \App\Http\Models\PlanVideoModel::deleteById($id);
+        
         return 'OK';
     }
 }
