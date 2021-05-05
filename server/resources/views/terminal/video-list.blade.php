@@ -24,7 +24,7 @@
        
         $(window).on('resize', (e) => {
             videoViewW = $('.video-list-view').width();
-            videoItemW = $('.video-list-item').width();
+            videoItemW = $('.video-list-item').width() + 20;
             videoItemW_2 = videoItemW / 2;
             videoViewRecalc();
             
@@ -98,7 +98,7 @@
             
             if (prevO > 0) {
                 let s = scrollX + prevX - cx + 0.5;
-                $('.video-list').stop().animate({scrollLeft: s}, 250);
+                $('.video-list').stop().animate({scrollLeft: s}, 150);
             }
         }
     }

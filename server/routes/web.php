@@ -87,30 +87,35 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::delete('/plan-port-delete/{planID}/{portIndex}', 'Admin\PlanController@portDelete')->name('admin.plan-port-delete');
        
     
-    /* Управление скриптами (сценариями) системы  --------------------------- */
+    /* Scripts management routes  ------------------------------------------- */
     Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('admin.scripts');
-    Route::match(['get', 'post'], '/script-edit/{id}', 'Admin\ScriptsController@edit')->name('admin.script-edit');
+    Route::get('/script-edit/{id}', 'Admin\ScriptsController@editShow')->name('admin.script-edit');
+    Route::post('/script-edit/{id}', 'Admin\ScriptsController@editPost')->name('admin.script-edit');
     Route::delete('/script-delete/{id}', 'Admin\ScriptsController@delete')->name('admin.script-delete');
-    Route::match(['get', 'post'], '/script-events/{id}', 'Admin\ScriptsController@attacheEvents')->name('admin.script-events');
+    Route::get('/script-events/{id}', 'Admin\ScriptsController@attacheEventsShow')->name('admin.script-events');
+    Route::post('/script-events/{id}', 'Admin\ScriptsController@attacheEventsPost')->name('admin.script-events');
     Route::post('/script-save/{id}', 'Admin\ScriptsController@saveScript')->name('admin.script-save');
     Route::post('/script-test', 'Admin\ScriptsController@scriptTest')->name('admin.script-test');
     
     
-    /* Управление учетными записями пользователей  -------------------------- */
+    /* User management routes  ---------------------------------------------- */
     Route::get('/users', 'Admin\UsersController@index')->name('admin.users');
-    Route::match(['get', 'post'], '/user-edit/{id}', 'Admin\UsersController@edit')->name('admin.user-edit');
+    Route::get('/user-edit/{id}', 'Admin\UsersController@editShow')->name('admin.user-edit');
+    Route::post('/user-edit/{id}', 'Admin\UsersController@editPost')->name('admin.user-edit');
     Route::delete('/user-delete/{id}', 'Admin\UsersController@delete')->name('admin.user-delete');
     
     
-    /* Настройка событий системы по расписанию  ----------------------------- */
+    /* Schedule management routes  ------------------------------------------ */
     Route::get('/schedule', 'Admin\ScheduleController@index')->name('admin.schedule');
-    Route::match(['get', 'post'], '/schedule-edit/{id}', 'Admin\ScheduleController@edit')->name('admin.schedule-edit');
+    Route::get('/schedule-edit/{id}', 'Admin\ScheduleController@editShow')->name('admin.schedule-edit');
+    Route::post('/schedule-edit/{id}', 'Admin\ScheduleController@editPost')->name('admin.schedule-edit');
     Route::delete('/schedule-delete/{id}', 'Admin\ScheduleController@delete')->name('admin.schedule-delete');
     
     
-    /* Управление камерами видеонаблюдения  --------------------------------- */
+    /* Videcam management routes  ------------------------------------------- */
     Route::get('/cams', 'Admin\CamsController@index')->name('admin.cams');
-    Route::match(['get', 'post'], '/cam-edit/{id}', 'Admin\CamsController@edit')->name('admin.cam-edit');
+    Route::get('/cam-edit/{id}', 'Admin\CamsController@editShow')->name('admin.cam-edit');
+    Route::post('/cam-edit/{id}', 'Admin\CamsController@editPost')->name('admin.cam-edit');
     Route::delete('/cam-delete/{id}', 'Admin\CamsController@delete')->name('admin.cam-delete');
     
     

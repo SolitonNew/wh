@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use \Illuminate\Support\Facades\DB;
-use Log;
+use App\Http\Requests\CamsRequest;
+use \App\Http\Models\PlanVideoModel;
 
 class CamsController extends Controller
 {
@@ -16,78 +15,40 @@ class CamsController extends Controller
      */
     public function index() 
     {
-        $sql = 'select c.*,
-                       v.name var_name
-                  from plan_video c
-                left join core_variables v on c.alert_var_id = v.id
-                order by c.name';
-        
-        $data = DB::select($sql);
+        $data = PlanVideoModel::listAll();
         
         return view('admin.cams.cams', [
             'data' => $data,
+        ]);
+    }
+        
+    /**
+     * Route to create or update the videcam entries.
+     * 
+     * @param int $id
+     * @return type
+     */
+    public function editShow(int $id) 
+    {
+        $item = PlanVideoModel::findOrCreate($id);
+        
+        return view('admin.cams.cam-edit', [
+            'item' => $item,
         ]);
     }
     
     /**
      * Route to create or update the videcam entries.
      * 
-     * @param Request $request
+     * @param CamsRequest $request
      * @param int $id
      * @return string
      */
-    public function edit(Request $request, int $id) 
+    public function editPost(CamsRequest $request, int $id)
     {
-        $item = \App\Http\Models\PlanVideoModel::find($id);
-        if ($request->method() == 'POST') {
-            try {
-                $this->validate($request, [
-                    'name' => 'required|string|unique:plan_video,name,'.($id > 0 ? $id : ''),
-                    'url' => 'required|string',
-                    'url_low' => 'required|string',
-                    'url_high' => 'required|string',
-                ]);
-            } catch (\Illuminate\Validation\ValidationException $ex) {
-                return response()->json($ex->validator->errors());
-            }
-            
-            try {
-                if (!$item) {
-                    $item = new \App\Http\Models\PlanVideoModel();
-                }
-                
-                $item->name = $request->post('name');
-                $item->url = $request->post('url');
-                $item->url_low = $request->post('url_low');
-                $item->url_high = $request->post('url_high');
-                $item->alert_var_id = $request->post('alert_var_id');
-                $item->save();
-                if ($id == -1) {
-                    $item->order_num = $item->id;
-                    $item->save();
-                }
-                return 'OK';
-            } catch (\Exception $ex) {
-                return response()->json([
-                    'errors' => [$ex->getMessage()],
-                ]);
-            }
-            
-        } else {
-            if (!$item) {
-                $item = (object)[
-                    'id' => -1,
-                    'name' => '',
-                    'url' => '',
-                    'url_low' => '',
-                    'url_high' => '',
-                    'alert_var_id' => -1,
-                ];
-            }
-            return view('admin.cams.cam-edit', [
-                'item' => $item,
-            ]);
-        }
+        \App\Http\Models\PlanVideoModel::storeFromRequest($request);
+        
+        return 'OK';
     }
     
     /**
@@ -98,12 +59,8 @@ class CamsController extends Controller
      */
     public function delete(int $id) 
     {
-        try {
-            $item = \App\Http\Models\PlanVideoModel::find($id);
-            $item->delete();
-            return 'OK';
-        } catch (\Exception $ex) {
-            return 'ERROR';
-        }
+        \App\Http\Models\PlanVideoModel::deleteById($id);
+        
+        return 'OK';
     }
 }

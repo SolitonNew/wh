@@ -3,8 +3,9 @@
 namespace App\Http\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use \Illuminate\Http\Request;
+use Auth;
 
 class UsersModel extends Authenticatable
 {
@@ -12,4 +13,76 @@ class UsersModel extends Authenticatable
     
     protected $table = 'web_users';
     public $timestamps = false;
+    
+    /**
+     * 
+     * @return type
+     */
+    static public function listAll()
+    {
+        return UsersModel::orderBy('login', 'asc')->get();
+    }
+    
+    /**
+     * 
+     * @param int $id
+     * @return \App\Http\Models\UsersModel
+     */
+    static public function findOrCreate(int $id)
+    {
+        $item = UsersModel::find($id);
+        if (!$item) {
+            $item = new UsersModel();
+            $item->id = -1;
+            $item->access = 1;
+        }
+        
+        return $item;
+    }
+    
+    /**
+     * 
+     * @param Request $request
+     * @param int $id
+     */
+    static public function storeFromRequest(Request $request, int $id)
+    {
+        try {
+            $item = UsersModel::find($id);
+            if (!$item) {
+                $item = new UsersModel();
+            }
+            $item->login = $request->login;
+            $item->email = $request->email;
+            if ($request->password) {
+                $item->password = bcrypt($request->password);
+            }
+            if ($id != Auth::user()->id) {
+                $item->access = $request->access;
+            }
+            $item->save();
+        } catch (\Exception $ex) {
+            abord(response()->json([
+                'errors' => [$ex->getMessage()],
+            ]), 422);
+        }
+    }
+    
+    /**
+     * 
+     * @param int $id
+     */
+    static public function deleteById(int $id) 
+    {
+        $item = \App\Http\Models\UsersModel::find($id);
+        if ($item) {
+            try {
+                $item->delete();
+            } catch (\Exception $ex) {
+                abort(response()->json([
+                    'errors' => [$ex->getMessage()],
+                ]), 422);
+            }
+        }
+    }
 }

@@ -92,6 +92,12 @@ body {
     transition-duration: 0.25s;
 }
 
+#roomsDiv .col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .main-column {
     
 }
@@ -306,6 +312,7 @@ body {
     overflow: auto;
     width: 100%;
     padding: 0 calc((100vw - 340px) / 2);
+    font-size: 0px;
 }
 
 .video-list-item {
@@ -313,7 +320,7 @@ body {
     text-align: center;
     display: inline-block;
     padding: 10px 10px;
-    width: 320px;
+    width: 340px;
     height: 200px;
 }
 
@@ -334,4 +341,37 @@ body {
     .video-list-item {
         padding: 10px 5px;
     }
+}
+
+.location-view {
+    margin: 0 -15px;
+    margin-top: 2rem;
+    background-color: #ffffff;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.25rem 2.25rem;
+}
+
+.location-title {
+    display: inline-block;
+    text-align: left;
+    margin-bottom: 0;
+    padding: 0.25rem 0rem;
+    margin-right: 1.25rem;
+}
+
+@media(max-width: 575px) {
+    .location-view {
+        padding: 0.25rem 1rem;
+    }
+}
+
+.location-data {
+    display: flex;
+    padding: 0.25rem 0rem;
+    flex-wrap: wrap;
+}
+
+.location-data-value {
+    margin-right: 0.75rem;
 }

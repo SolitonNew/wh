@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\ScriptsRequest;
 use App\Http\Controllers\Controller;
-use \Illuminate\Support\Facades\DB;
-use Lang;
-use Log;
+use App\Http\Models\ScriptsModel;
 use Session;
 
 class ScriptsController extends Controller
@@ -17,7 +16,7 @@ class ScriptsController extends Controller
      * @param int $scriptID
      * @return type
      */
-    public function index(int $scriptID = null) 
+    public function index(int $scriptID = null)
     {
         if (!$scriptID) {
             $scriptID = Session::get('SCRIPT_INDEX_ID');
@@ -40,17 +39,9 @@ class ScriptsController extends Controller
             return redirect(route('admin.scripts', ''));
         }
         
-        
-        $sql = "select s.*, 
-                       (select count(*) 
-                          from core_variables v, core_variable_events e
-                         where v.id = e.variable_id
-                           and e.script_id = s.id) var_count
-                  from core_scripts s
-                order by s.comm asc";
-        $list = DB::select($sql);
-        
         Session::put('SCRIPT_INDEX_ID', $scriptID);
+        
+        $list = ScriptsModel::listAll();
         
         return view('admin.scripts.scripts', [
             'scriptID' => $scriptID,
@@ -62,47 +53,30 @@ class ScriptsController extends Controller
     /**
      * The route to create or update script record propertys.
      * 
-     * @param Request $request
+     * @param int $id
+     * @return view
+     */
+    public function editShow(int $id)
+    {
+        $item = ScriptsModel::findOrCreate($id);
+        
+        return view('admin.scripts.script-edit', [
+            'item' => $item,
+        ]);
+    }
+    
+    /**
+     * The route to create or update script record propertys.
+     * 
+     * @param ScriptsRequest $request
      * @param int $id
      * @return string
      */
-    public function edit(Request $request, int $id) 
+    public function editPost(ScriptsRequest $request, int $id)
     {
-        $item = \App\Http\Models\ScriptsModel::find($id);
-        if ($request->method() == 'POST') {
-            try {
-                $this->validate($request, [
-                    'comm' => 'required|string|unique:core_scripts,comm,'.($id > 0 ? $id : ''),
-                ]);
-            } catch (\Illuminate\Validation\ValidationException $ex) {
-                return response()->json($ex->validator->errors());
-            }
-            
-            try {
-                if (!$item) {
-                    $item = new \App\Http\Models\ScriptsModel();
-                    $item->data = '/* NEW SCRIPT */';
-                }
-                $item->comm = $request->post('comm');
-                $item->save();
-                return 'OK';
-            } catch (\Exception $ex) {
-                return response()->json([
-                    'errors' => [$ex->getMessage()],
-                ]);
-            }
-        } else {
-            if (!$item) {
-                $item = (object)[
-                    'id' => -1,
-                    'comm' => '',
-                 ];
-            }
-            
-            return view('admin.scripts.script-edit', [
-                'item' => $item,
-            ]);
-        }
+        ScriptsModel::storeFromRequest($request, $id);
+        
+        return 'OK';
     }
     
     /**
@@ -113,14 +87,9 @@ class ScriptsController extends Controller
      */
     public function delete(int $id) 
     {
-        try {            
-            \App\Http\Models\VariableEventsModel::whereScriptId($id)->delete();
-            $item = \App\Http\Models\ScriptsModel::find($id);
-            $item->delete();
-            return 'OK';
-        } catch (\Exception $ex) {
-            return 'ERROR';
-        }
+        ScriptsModel::deleteById($id);
+        
+        return 'OK';
     }
     
     /**
@@ -132,75 +101,37 @@ class ScriptsController extends Controller
      */
     public function saveScript(Request $request, int $id) 
     {
-        $item = \App\Http\Models\ScriptsModel::find($id);
-        if ($item) {
-            $item->data = $request->post('data') ? $request->post('data') : '/* NEW SCRIPT */';
-            $item->save();
-            return 'OK';
-        } else {
-            return 'ERROR';
-        }
+        ScriptsModel::storeDataFromRequest($request, $id);
+        
+        return 'OK';
     }
     
     /**
-     * The route to set the script record as device change event.
      * 
-     * @param Request $request
      * @param int $id
      * @return type
      */
-    public function attacheEvents(Request $request, int $id) 
+    public function attacheEventsShow(int $id)
     {
-        if ($request->method() == 'POST') {
-            try {
-                $ids = $request->post('variables');
-                $ids[] = 0;
-                $ids_sql = implode(', ', $ids);
+        $data = ScriptsModel::attachedDevicesIds($id);
 
-                // Delete old not checked records
-                $changes = \App\Http\Models\VariableEventsModel::whereScriptId($id)
-                                ->whereNotIn('variable_id', $ids)
-                                ->delete();
-                
-                // Add new records
-                $sql = "select v.id
-                          from core_variables v
-                         where v.id in ($ids_sql)
-                           and not exists(select *
-                                            from core_variable_events t
-                                           where t.script_id = $id
-                                             and t.variable_id = v.id)";
-                foreach(DB::select($sql) as $row) {
-                    $rec = new \App\Http\Models\VariableEventsModel();
-                    $rec->event_type = 0;
-                    $rec->variable_id = $row->id;
-                    $rec->script_id = $id;
-                    $rec->save();
-                    $changes++;
-                }
-                
-                if ($changes) { // Шлем вручную событие изменения
-                    event(new \App\Http\Events\FirmwareChangedEvent());
-                }
-                return 'OK';
-            } catch (\Exception $ex) {
-                return response()->json([
-                    'errors' => [
-                        $ex->getMessage()
-                    ]
-                ]);
-            }
-        } else {
-            $data = [];
-            foreach(DB::select('select variable_id from core_variable_events where script_id = '.$id) as $row) {
-                $data[] = $row->variable_id;
-            }
-            
-            return view('admin.scripts.script-events', [
-                'id' => $id,
-                'data' => $data,
-            ]);
-        }
+        return view('admin.scripts.script-events', [
+            'id' => $id,
+            'data' => $data,
+        ]);
+    }
+    
+    /**
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return string
+     */
+    public function attacheEventsPost(Request $request, int $id)
+    {
+        ScriptsModel::attachDevicesFromRequest($request, $id);
+        
+        return 'OK';
     }
     
     /**
@@ -210,27 +141,6 @@ class ScriptsController extends Controller
      */
     public function scriptTest(Request $request) 
     {
-        try {
-            $execute = new \App\Library\Script\PhpExecute($request->post('command'));
-            $report = [];
-            $res = $execute->run(true, $report);
-            
-            if (!$res) {
-                $log = [];
-                $log[] = 'Testing completed successfully';
-                $log[] = str_repeat('-', 40);
-                $log[] = 'FUNCTIONS ['.count($report['functions']).']';
-                foreach($report['functions'] as $key => $val) {
-                    $log[] = '    '.$key;
-                }
-                $log[] = '';
-                
-                $res = implode("\n", $log);
-            }
-            
-            return $res;
-        } catch (\Exception $ex) {
-            return $ex->getMessage();
-        }
+        return \App\Library\Script\ScriptEditor::scriptTest($request->command);
     }
 }
