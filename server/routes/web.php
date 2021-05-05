@@ -87,11 +87,13 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::delete('/plan-port-delete/{planID}/{portIndex}', 'Admin\PlanController@portDelete')->name('admin.plan-port-delete');
        
     
-    /* Управление скриптами (сценариями) системы  --------------------------- */
+    /* Scripts management routes  ------------------------------------------- */
     Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('admin.scripts');
-    Route::match(['get', 'post'], '/script-edit/{id}', 'Admin\ScriptsController@edit')->name('admin.script-edit');
+    Route::get('/script-edit/{id}', 'Admin\ScriptsController@editShow')->name('admin.script-edit');
+    Route::post('/script-edit/{id}', 'Admin\ScriptsController@editPost')->name('admin.script-edit');
     Route::delete('/script-delete/{id}', 'Admin\ScriptsController@delete')->name('admin.script-delete');
-    Route::match(['get', 'post'], '/script-events/{id}', 'Admin\ScriptsController@attacheEvents')->name('admin.script-events');
+    Route::get('/script-events/{id}', 'Admin\ScriptsController@attacheEventsShow')->name('admin.script-events');
+    Route::post('/script-events/{id}', 'Admin\ScriptsController@attacheEventsPost')->name('admin.script-events');
     Route::post('/script-save/{id}', 'Admin\ScriptsController@saveScript')->name('admin.script-save');
     Route::post('/script-test', 'Admin\ScriptsController@scriptTest')->name('admin.script-test');
     
