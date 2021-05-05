@@ -98,7 +98,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     /* Управление учетными записями пользователей  -------------------------- */
     Route::get('/users', 'Admin\UsersController@index')->name('admin.users');
-    Route::match(['get', 'post'], '/user-edit/{id}', 'Admin\UsersController@edit')->name('admin.user-edit');
+    Route::get('/user-edit/{id}', 'Admin\UsersController@editShow')->name('admin.user-edit');
+    Route::post('/user-edit/{id}', 'Admin\UsersController@editPost')->name('admin.user-edit');
     Route::delete('/user-delete/{id}', 'Admin\UsersController@delete')->name('admin.user-delete');
     
     
@@ -108,9 +109,8 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::delete('/schedule-delete/{id}', 'Admin\ScheduleController@delete')->name('admin.schedule-delete');
     
     
-    /* Управление камерами видеонаблюдения  --------------------------------- */
+    /* Videcam control routes  ---------------------------------------------- */
     Route::get('/cams', 'Admin\CamsController@index')->name('admin.cams');
-    //Route::match(['get', 'post'], '/cam-edit/{id}', 'Admin\CamsController@edit')->name('admin.cam-edit');
     Route::get('/cam-edit/{id}', 'Admin\CamsController@editShow')->name('admin.cam-edit');
     Route::post('/cam-edit/{id}', 'Admin\CamsController@editPost')->name('admin.cam-edit');
     Route::delete('/cam-delete/{id}', 'Admin\CamsController@delete')->name('admin.cam-delete');
