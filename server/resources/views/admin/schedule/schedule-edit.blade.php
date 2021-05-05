@@ -15,7 +15,7 @@
     @if($item->id > 0)
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/schedule.table_ID')</div>
+            <label class="form-label">@lang('admin/schedule.table_ID')</label>
         </div>
         <div class="col-sm-3">
             <div class="form-control">{{ $item->id > 0 ? $item->id : '' }}</div>
@@ -25,7 +25,7 @@
     @endif
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin/schedule.table_COMM')</div>
+            <label class="form-label strong">@lang('admin/schedule.table_COMM')</label>
         </div>
         <div class="col-sm-9">
             <input class="form-control" name="comm" value="{{ $item->comm }}">
@@ -34,14 +34,14 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <div class="strong">@lang('admin/schedule.table_ACTION'):</div>
+            <label class="strong">@lang('admin/schedule.table_ACTION'):</label>
             <div id="actionEditor" class="border" style="height: 10rem;"></div>
             <div class="invalid-feedback" data-formfield="action"></div>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/schedule.table_ENABLE')</div>
+            <label class="form-label">@lang('admin/schedule.table_ENABLE')</label>
         </div>
         <div class="col-sm-5">
             <select class="custom-select" name="enable">
@@ -57,7 +57,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/schedule.table_INTERVAL_TYPE')</div>
+            <label class="form-label">@lang('admin/schedule.table_INTERVAL_TYPE')</label>
         </div>
         <div class="col-sm-5">
             <select class="custom-select" name="interval_type">
@@ -70,7 +70,7 @@
     </div>
     <div class="row" id="day_of_type">
         <div class="col-sm-3">
-            <div class="form-label strong nowrap">@lang('admin/schedule.table_INTERVAL_DAY_OF_TYPE')</div>
+            <label class="form-label strong nowrap">@lang('admin/schedule.table_INTERVAL_DAY_OF_TYPE')</label>
         </div>
         <div class="col-sm-9">
             <textarea class="form-control" name="interval_day_of_type">{{ $item->interval_day_of_type }}</textarea>
@@ -79,7 +79,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label strong nowrap">@lang('admin/schedule.table_INTERVAL_TIME_OF_DAY')</div>
+            <label class="form-label strong nowrap">@lang('admin/schedule.table_INTERVAL_TIME_OF_DAY')</label>
         </div>
         <div class="col-sm-9">
             <textarea class="form-control" name="interval_time_of_day">{{ $item->interval_time_of_day }}</textarea>

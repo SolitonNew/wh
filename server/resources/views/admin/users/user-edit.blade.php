@@ -15,7 +15,7 @@
     @if($item->id > 0)
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/users.table_ID')</div>
+            <label class="form-label">@lang('admin/users.table_ID')</label>
         </div>
         <div class="col-sm-3">
             <div class="form-control">{{ $item->id > 0 ? $item->id : '' }}</div>
@@ -25,7 +25,7 @@
     @endif
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin/users.table_LOGIN')</div>
+            <label class="form-label strong">@lang('admin/users.table_LOGIN')</label>
         </div>
         <div class="col-sm-6">
             <input class="form-control" type="text" name="login" value="{{ $item->login }}" required="">
@@ -34,7 +34,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label {{ $item->id > 0 ?: 'strong' }}">@lang('admin/users.table_PASSWORD')</div>
+            <label class="form-label {{ $item->id > 0 ?: 'strong' }}">@lang('admin/users.table_PASSWORD')</label>
         </div>
         <div class="col-sm-6">
             <input class="form-control" type="text" name="password">
@@ -50,7 +50,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/users.table_EMAIL')</div>
+            <label class="form-label">@lang('admin/users.table_EMAIL')</label>
         </div>
         <div class="col-sm-9">
             <input class="form-control" type="text" name="email" value="{{ $item->email }}">
@@ -59,7 +59,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/users.table_ACCESS')</div>
+            <label class="form-label">@lang('admin/users.table_ACCESS')</label>
         </div>
         <div class="col-sm-6">
             <select class="custom-select" name="access" {{ $item->id == Auth::user()->id ? 'disabled' : '' }} >

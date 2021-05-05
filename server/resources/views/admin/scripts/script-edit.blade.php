@@ -15,7 +15,7 @@
     @if($item->id > 0)
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/scripts.table_ID')</div>
+            <label class="form-label">@lang('admin/scripts.table_ID')</label>
         </div>
         <div class="col-sm-3">
             <div class="form-control">{{ $item->id > 0 ? $item->id : '' }}</div>
@@ -25,7 +25,7 @@
     @endif
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin/scripts.table_COMM')</div>
+            <label class="form-label strong">@lang('admin/scripts.table_COMM')</label>
         </div>
         <div class="col-sm-9">
             <input class="form-control" type="text" name="comm" value="{{ $item->comm }}" required="">
