@@ -96,20 +96,21 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::post('/script-test', 'Admin\ScriptsController@scriptTest')->name('admin.script-test');
     
     
-    /* Управление учетными записями пользователей  -------------------------- */
+    /* User management routes  ---------------------------------------------- */
     Route::get('/users', 'Admin\UsersController@index')->name('admin.users');
     Route::get('/user-edit/{id}', 'Admin\UsersController@editShow')->name('admin.user-edit');
     Route::post('/user-edit/{id}', 'Admin\UsersController@editPost')->name('admin.user-edit');
     Route::delete('/user-delete/{id}', 'Admin\UsersController@delete')->name('admin.user-delete');
     
     
-    /* Настройка событий системы по расписанию  ----------------------------- */
+    /* Schedule management routes  ------------------------------------------ */
     Route::get('/schedule', 'Admin\ScheduleController@index')->name('admin.schedule');
-    Route::match(['get', 'post'], '/schedule-edit/{id}', 'Admin\ScheduleController@edit')->name('admin.schedule-edit');
+    Route::get('/schedule-edit/{id}', 'Admin\ScheduleController@editShow')->name('admin.schedule-edit');
+    Route::post('/schedule-edit/{id}', 'Admin\ScheduleController@editPost')->name('admin.schedule-edit');
     Route::delete('/schedule-delete/{id}', 'Admin\ScheduleController@delete')->name('admin.schedule-delete');
     
     
-    /* Videcam control routes  ---------------------------------------------- */
+    /* Videcam management routes  ------------------------------------------- */
     Route::get('/cams', 'Admin\CamsController@index')->name('admin.cams');
     Route::get('/cam-edit/{id}', 'Admin\CamsController@editShow')->name('admin.cam-edit');
     Route::post('/cam-edit/{id}', 'Admin\CamsController@editPost')->name('admin.cam-edit');

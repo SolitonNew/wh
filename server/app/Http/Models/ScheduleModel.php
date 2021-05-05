@@ -3,7 +3,9 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use \Illuminate\Http\Request;
 use \Carbon\Carbon;
+use DB;
 use Lang;
 use Log;
 
@@ -11,6 +13,112 @@ class ScheduleModel extends Model
 {
     protected $table = 'core_schedule';
     public $timestamps = false;
+    
+    /**
+     * 
+     * @return type
+     */
+    static public function listAll()
+    {
+        $data = DB::select('select s.id,
+                                   s.comm,
+                                   s.action_datetime,
+                                   s.action,
+                                   s.interval_time_of_day,
+                                   s.interval_day_of_type,
+                                   s.interval_type,
+                                   "" interval_text,
+                                   s.enable
+                              from core_schedule s
+                             where s.temp_variable_id = 0
+                            order by s.comm');
+        
+        $types = Lang::get('admin/schedule.interval');
+        $interval_time = Lang::get('admin/schedule.interval_time');
+        $interval_day = Lang::get('admin/schedule.interval_day');
+        
+        foreach($data as &$row) {
+            $s = $types[$row->interval_type];
+            $s .= ' '.$interval_time.': <b>'.$row->interval_time_of_day.'</b>';
+            
+            switch($row->interval_type) {
+                case 0: // Каждый день
+                    //
+                    break;
+                case 1: // Каждую неделю
+                case 2: // Каждый месяц
+                case 3: // Каждый год
+                    $s .= ' '.$interval_day.': <b>'.$row->interval_day_of_type.'</b>';
+                    break;
+            }
+            
+            $row->interval_text = $s;
+        }
+        
+        return $data;
+    }
+    
+    /**
+     * 
+     * @param int $id
+     * @return \App\Http\Models\ScheduleModel
+     */
+    static public function findOrCreate(int $id)
+    {
+        $item = ScheduleModel::find($id);
+        if (!$item) {
+            $item = new ScheduleModel();
+            $item->id = -1;
+            $item->interval_type = 0;
+            $item->enable = 0;
+        }
+        
+        return $item;
+    }
+    
+    /**
+     * 
+     * @param Request $request
+     * @param int $id
+     */
+    static public function storeFromRequest(Request $request, int $id) 
+    {
+        try {
+            $item = ScheduleModel::find($id);
+            if (!$item) {
+                $item = new ScheduleModel();
+                $item->temp_variable_id = 0;
+            }
+            $item->comm = $request->comm;
+            $item->action = $request->action;
+            $item->action_datetime = null;
+            $item->interval_time_of_day = $request->interval_time_of_day;
+            $item->interval_day_of_type = $request->interval_day_of_type;
+            $item->interval_type = $request->interval_type;
+            $item->enable = $request->enable;
+            $item->save();
+        } catch (\Exception $ex) {
+            abort(response()->json([
+                'errors' => [$ex->getMessage()],
+            ]), 422);
+        }
+    }
+    
+    /**
+     * 
+     * @param int $id
+     */
+    static public function deleteById(int $id)
+    {
+        try {
+            $item = \App\Http\Models\ScheduleModel::find($id);
+            $item->delete();
+        } catch (\Exception $ex) {
+            abort(response()->json([
+                'errors' => [$ex->getMessage()],
+            ]), 422);
+        }
+    }
     
     /**
      * Creates a new record of the schedule for one-time execution.
