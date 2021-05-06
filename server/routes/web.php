@@ -46,6 +46,29 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/variable-changes/{lastID}', 'Admin\IndexController@variableChanges')->name('admin.variable-changes');
 
     
+    /* Раздел "Планирование" помещений  ------------------------------------- */
+    Route::get('/plan/{id?}', 'Admin\PlanController@index')->name('admin.plan');
+    Route::get('/plan-edit/{id}/{p_id?}', 'Admin\PlanController@editShow')->name('admin.plan-edit');
+    Route::post('/plan-edit/{id}/{p_id?}', 'Admin\PlanController@editPost')->name('admin.plan-edit');
+    Route::delete('/plan-delete/{id}', 'Admin\PlanController@delete')->name('admin.plan-delete');
+    Route::get('/plan-clone/{id}/{direction}', 'Admin\PlanController@planClone')->name('admin.plan-clone');
+    Route::get('/plan-move-childs/{id}', 'Admin\PlanController@moveChildsShow')->name('admin.plan-move-childs');
+    Route::post('/plan-move-childs/{id}', 'Admin\PlanController@moveChildsPost')->name('admin.plan-move-childs');
+    Route::get('/plan-order/{id}', 'Admin\PlanController@orderShow')->name('admin.plan-order');
+    Route::post('/plan-order/{id}', 'Admin\PlanController@orderPost')->name('admin.plan-order');
+    Route::post('/plan-move/{id}/{newX}/{newY}', 'Admin\PlanController@move')->name('admin.plan-move');
+    Route::post('/plan-size/{id}/{newW}/{newH}', 'Admin\PlanController@size')->name('admin.plan-size');
+    Route::get('/plan-import', 'Admin\PlanController@planImportShow')->name('admin.plan-import');
+    Route::post('/plan-import', 'Admin\PlanController@planImportPost')->name('admin.plan-import');
+    Route::get('/plan-export', 'Admin\PlanController@planExport')->name('admin.plan-export');
+    Route::get('/plan-link-device/{planID}/{deviceID?}', 'Admin\PlanController@linkDeviceShow')->name('admin.plan-link-device');
+    Route::post('/plan-link-device/{planID}/{deviceID?}', 'Admin\PlanController@linkDevicePost')->name('admin.plan-link-device');
+    Route::delete('/plan-unlink-device/{deviceID}', 'Admin\PlanController@unlinkDevice')->name('admin.plan-unlink-device');
+    Route::get('/plan-port-edit/{planID}/{portIndex?}', 'Admin\PlanController@portEditShow')->name('admin.plan-port-edit');
+    Route::post('/plan-port-edit/{planID}/{portIndex?}', 'Admin\PlanController@portEditPost')->name('admin.plan-port-edit');
+    Route::delete('/plan-port-delete/{planID}/{portIndex}', 'Admin\PlanController@portDelete')->name('admin.plan-port-delete');
+    
+    
     /* Конфигурация  -------------------------------------------------------- */
     /* Управление хабами */
     Route::get('/hubs/{hubID?}', 'Admin\HubsController@index')->name('admin.hubs');
@@ -69,23 +92,6 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::match(['get', 'post'], '/hub-host-edit/{hubID}/{id}', 'Admin\Hubs\HostsController@edit')->name('admin.hub-host-edit');
     Route::delete('/hub-host-delete/{id}', 'Admin\Hubs\HostsController@delete')->name('admin.hub-host-delete');
     
-    
-    /* Раздел "Планирование" помещений  ------------------------------------- */
-    Route::get('/plan/{id?}', 'Admin\PlanController@index')->name('admin.plan');
-    Route::match(['get', 'post'], '/plan-edit/{id}/{p_id?}', 'Admin\PlanController@edit')->name('admin.plan-edit');
-    Route::delete('/plan-delete/{id}', 'Admin\PlanController@delete')->name('admin.plan-delete');
-    Route::get('/plan-clone/{id}/{direction}', 'Admin\PlanController@planClone')->name('admin.plan-clone');
-    Route::match(['get', 'post'], '/plan-move-childs/{id}', 'Admin\PlanController@moveChilds')->name('admin.plan-move-childs');
-    Route::match(['get', 'post'], '/plan-order/{id}', 'Admin\PlanController@order')->name('admin.plan-order');
-    Route::post('/plan-move/{id}/{newX}/{newY}', 'Admin\PlanController@move')->name('admin.plan-move');
-    Route::post('/plan-size/{id}/{newW}/{newH}', 'Admin\PlanController@size')->name('admin.plan-size');
-    Route::match(['get', 'post'], '/plan-import', 'Admin\PlanController@planImport')->name('admin.plan-import');
-    Route::get('/plan-export', 'Admin\PlanController@planExport')->name('admin.plan-export');
-    Route::match(['get', 'post'], '/plan-link-device/{planID}/{deviceID?}', 'Admin\PlanController@linkDevice')->name('admin.plan-link-device');
-    Route::delete('/plan-unlink-device/{deviceID}', 'Admin\PlanController@unlinkDevice')->name('admin.plan-unlink-device');
-    Route::match(['get', 'post'], '/plan-port-edit/{planID}/{portIndex?}', 'Admin\PlanController@portEdit')->name('admin.plan-port-edit');
-    Route::delete('/plan-port-delete/{planID}/{portIndex}', 'Admin\PlanController@portDelete')->name('admin.plan-port-delete');
-       
     
     /* Scripts management routes  ------------------------------------------- */
     Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('admin.scripts');

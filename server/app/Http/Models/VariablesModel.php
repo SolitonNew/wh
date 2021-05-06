@@ -128,4 +128,37 @@ class VariablesModel extends AffectsFirmwareModel
             Log::error($e);
         }
     }
+    
+    /**
+     * 
+     * @param int $id
+     * @return type
+     */
+    static public function findOrCreate(int $id)
+    {
+        $item = VariablesModel::find($id);
+        if (!$item) {
+            $item = new VariablesModel();
+            $item->id = -1;
+            $item->position = '';
+        }
+        
+        return $item;
+    }
+    
+    /**
+     * 
+     * @param type $defaults
+     * @return type
+     */
+    public function getPosition($defaults = null)
+    {
+        $position = $this->position ? json_decode($this->position) : (object)[];
+        
+        if (!isset($position->surface)) $position->surface = ($defaults && isset($defaults->surface)) ? $defaults->surface : 'top';
+        if (!isset($position->offset)) $position->offset = ($defaults && isset($defaults->offset)) ? $defaults->offset : 0;
+        if (!isset($position->cross)) $position->cross = ($defaults && isset($defaults->cross)) ? $defaults->cross : 0;
+        
+        return $position;
+    }
 }
