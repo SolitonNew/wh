@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use \App\Library\AffectsFirmwareModel;
+use \Illuminate\Http\Request;
 
 class ControllersModel extends AffectsFirmwareModel
 {
@@ -12,6 +13,69 @@ class ControllersModel extends AffectsFirmwareModel
     protected $_affectFirmwareFields = [
         'rom',
     ];
+    
+    /**
+     * 
+     * @param int $id
+     * @return \App\Http\Models\ControllersModel
+     */
+    static public function findOrCreate(int $id)
+    {
+        $item = ControllersModel::find($id);
+        if (!$item) {
+            $item = new ControllersModel();
+            $item->id = -1;
+        }
+        
+        return $item;
+    }
+    
+    /**
+     * 
+     * @param Request $request
+     * @param int $id
+     */
+    static public function storeFromRequest(Request $request, int $id)
+    {
+        try {
+            $item = ControllersModel::find($id);
+            
+            if (!$item) {
+                $item = new ControllersModel();
+            }
+            $item->name = $request->name;
+            $item->typ = $request->typ;
+            if ($item->typ == 'din') {
+                $item->rom = $request->rom;
+            } else {
+                $item->rom = null;
+            }
+            $item->comm = $request->comm;
+            $item->save();                
+        } catch (\Exception $ex) {
+            abort(response()->json([
+                'errors' => [$ex->getMessage()],
+            ]), 422);
+        }
+    }
+    
+    /**
+     * 
+     * @param int $id
+     */
+    static public function deleteById(int $id)
+    {
+        try {
+            $item = ControllersModel::find($id);
+            if (!$item) abort(404);
+
+            $item->delete();
+        } catch (\Exception $ex) {
+            abort(response()->json([
+                'errors' => [$ex->getMessage()],
+            ]), 422);
+        }
+    }
     
     /**
      *

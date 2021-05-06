@@ -30,6 +30,7 @@
         <div class="col-sm-4">
             @if($item->id > 0)
             <div class="form-control">{{ $item->typ }}</div>
+            <input type="hidden" name="typ" value="{{ $item->typ }}">
             @else
             <select class="custom-select" name="typ">
             @foreach(\App\Http\Models\ControllersModel::$typs as $key => $val)

@@ -41,12 +41,12 @@ Route::group(['middleware'=>'role:terminal'], function () {
 });
 
 Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
-    /* Индексный контроллер  ------------------------------------------------ */
+    /* Index controller ----------------------------------------------------- */
     Route::get('/', 'Admin\IndexController@index')->name('admin');
     Route::get('/variable-changes/{lastID}', 'Admin\IndexController@variableChanges')->name('admin.variable-changes');
 
     
-    /* Раздел "Планирование" помещений  ------------------------------------- */
+    /* Planning rooms  ------------------------------------------------------ */
     Route::get('/plan/{id?}', 'Admin\PlanController@index')->name('admin.plan');
     Route::get('/plan-edit/{id}/{p_id?}', 'Admin\PlanController@editShow')->name('admin.plan-edit');
     Route::post('/plan-edit/{id}/{p_id?}', 'Admin\PlanController@editPost')->name('admin.plan-edit');
@@ -69,10 +69,11 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::delete('/plan-port-delete/{planID}/{portIndex}', 'Admin\PlanController@portDelete')->name('admin.plan-port-delete');
     
     
-    /* Конфигурация  -------------------------------------------------------- */
-    /* Управление хабами */
+    /* Configuration  ------------------------------------------------------- */
+    /* Hubs management routes */
     Route::get('/hubs/{hubID?}', 'Admin\HubsController@index')->name('admin.hubs');
-    Route::match(['get', 'post'], '/hub-edit/{id}', 'Admin\HubsController@edit')->name('admin.hub-edit');
+    Route::get('/hub-edit/{id}', 'Admin\HubsController@editShow')->name('admin.hub-edit');
+    Route::post('/hub-edit/{id}', 'Admin\HubsController@editPost')->name('admin.hub-edit');
     Route::delete('/hub-delete/{id}', 'Admin\HubsController@delete')->name('admin.hub-delete');
     Route::get('/hubs-scan', 'Admin\HubsController@hubsScan')->name('admin.hubs-scan');
     Route::get('/hubs-firmware', 'Admin\HubsController@firmware')->name('admin.firmware');
@@ -80,14 +81,14 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::get('/hubs-firmware-status', 'Admin\HubsController@firmwareStatus')->name('admin.firmware-status');
     Route::get('/hubs-reset', 'Admin\HubsController@hubsReset')->name('admin.hubs-reset');
     
-    /* Управление устройствами */
+    /* Devices management routes */
     Route::get('/hubs/{hubID}/devices/{groupID?}', 'Admin\Hubs\DevicesController@index')->name('admin.hub-devices');
     Route::match(['get', 'post'], '/hub-device-edit/{hubID}/{id}', 'Admin\Hubs\DevicesController@edit')->name('admin.hub-device-edit');
     Route::delete('/hub-device-delete/{id}', 'Admin\Hubs\DevicesController@delete')->name('admin.hub-device-delete');
     Route::get('/hub-device-host-list/{hubID}', 'Admin\Hubs\DevicesController@hostList')->name('admin.hub-device-host-list');
     Route::get('/hub-device-host-channel-list/{typ}/{hostID?}', 'Admin\Hubs\DevicesController@hostChannelList')->name('admin.hub-device-host-channel-list');
     
-    /* Управление хостами */
+    /* Hosts management routes */
     Route::get('/hubs/{hubID}/hosts', 'Admin\Hubs\HostsController@index')->name('admin.hub-hosts');
     Route::match(['get', 'post'], '/hub-host-edit/{hubID}/{id}', 'Admin\Hubs\HostsController@edit')->name('admin.hub-host-edit');
     Route::delete('/hub-host-delete/{id}', 'Admin\Hubs\HostsController@delete')->name('admin.hub-host-delete');
