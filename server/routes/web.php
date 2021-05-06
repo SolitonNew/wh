@@ -5,7 +5,7 @@ Route::post('/login', 'Auth\LoginController@login')->name('loginPost');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::group(['middleware'=>'role:terminal'], function () {
-    /* Отображение сгруппированых данных по комнатам  ----------------------- */
+    /* Displaying grouped data by room  ------------------------------------- */
     Route::get('/', 'Terminal\RoomsController@index')->name('home');
     Route::get('/room/{roomID}', 'Terminal\RoomController@index')->name('terminal.room');
     Route::get('/device/{deviceID}', 'Terminal\DeviceController@index')->name('terminal.device');
@@ -21,22 +21,22 @@ Route::group(['middleware'=>'role:terminal'], function () {
     Route::get('/checked/edit/add-del/{id}', 'Terminal\CheckedController@editAdd_DEL')->name('terminal.checked-edit-add-del');
 
     
-    /* Страница настройки порядка отображения переменных на странице "Избранное" */
+    /* The page for configuring the order of displaying variables on the Favorites page */
     Route::get('/checked/edit/order', 'Terminal\CheckedController@editOrder')->name('terminal.checked-edit-order');
     Route::get('/checked/edit/order-up/{id}', 'Terminal\CheckedController@editOrder_UP')->name('terminal.checked-edit-order-up');
     Route::get('/checked/edit/order-down/{id}', 'Terminal\CheckedController@editOrder_DOWN')->name('terminal.checked-edit-order-down');
 
     
-    /* Страница настройки цвета переменных по текстовой маске  -------------- */
+    /* Page for setting the color of variables by text mask  ---------------- */
     Route::get('/checked/edit/color', 'Terminal\CheckedController@editColor')->name('terminal.checked-edit-color');
     Route::post('/checked/edit/color-action/{action}', 'Terminal\CheckedController@editColor_ACTION')->name('terminal.checked-edit-color-action');
 
     
-    /* Запрос изменений переменных  ----------------------------------------- */
+    /* Requesting variable changes  ----------------------------------------- */
     Route::get('/device-changes/{lastID}', 'Terminal\DeviceController@changes')->name('terminal.device-changes');
     
     
-    /* Установка значения переменной  --------------------------------------- */
+    /* Setting device value  ------------------------------------------------ */
     Route::post('/device-set/{deviceID}/{value}', 'Terminal\DeviceController@set')->name('terminal.device-set');
 });
 
@@ -127,24 +127,24 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::delete('/cam-delete/{id}', 'Admin\CamsController@delete')->name('admin.cam-delete');
     
     
-    /* Журнал системы  ------------------------------------------------------ */
-    /* Управление разделом "Журнал" */
+    /* System jurnal  ------------------------------------------------------- */
+    /* Jurnal management routes */
     Route::get('/jurnal', 'Admin\JurnalController@index')->name('admin.jurnal');
     
-    /* История устройств */
+    /* Devices history management routes */
     Route::match(['get', 'post'], '/jurnal/history/{id?}', 'Admin\Jurnal\HistoryController@index')->name('admin.jurnal-history');
     Route::get('/jurnal/history-value-view/{id}', 'Admin\Jurnal\HistoryController@valueView')->name('admin.jurnal-history-value-view');
     Route::delete('/jurnal/history-value-delete/{id}', 'Admin\Jurnal\HistoryController@valueDelete')->name('admin.jurnal-history-value-delete');
     Route::delete('/jurnal/history-delete-all-visible/{id}', 'Admin\Jurnal\HistoryController@deleteAllVisibleValues')->name('admin.jurnal-history-delete-all-visible');
     
-    /* Фоновые процессы */
+    /* Processes management routes */
     Route::get('/jurnal/demons/{id?}', 'Admin\Jurnal\DemonsController@index')->name('admin.jurnal-demons');
     Route::get('/jurnal/demon-data/{id}/{lastID?}', 'Admin\Jurnal\DemonsController@data')->name('admin.jurnal-demon-data');
     Route::get('/jurnal/demon-start/{id}', 'Admin\Jurnal\DemonsController@demonStart')->name('admin.jurnal-demon-start');
     Route::get('/jurnal/demon-stop/{id}', 'Admin\Jurnal\DemonsController@demonStop')->name('admin.jurnal-demon-stop');
     Route::get('/jurnal/demon-restart/{id}', 'Admin\Jurnal\DemonsController@demonRestart')->name('admin.jurnal-demon-restart');
     
-    /* Статистика потребления */    
+    /* Power management routes */    
     Route::get('/jurnal/power', 'Admin\Jurnal\PowerController@index')->name('admin.jurnal-power');
     
     
