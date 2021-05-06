@@ -4,8 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Log;
-use DB;
+use App\Http\Models\PlanPartsModel;
+use App\Http\Models\VariablesModel;
+use App\Http\Requests\PlanRequest;
+use App\Http\Requests\PlanMoveChildsRequest;
+use App\Http\Requests\PlanImportRequest;
+use App\Http\Requests\PlanLinkDeviceRequest;
+use App\Http\Requests\PlanPortRequest;
 use Session;
 
 class PlanController extends Controller
@@ -20,14 +25,14 @@ class PlanController extends Controller
     {
         if (!$id) {
             $id = Session::get('PLAN_INDEX_ID');
-            if (\App\Http\Models\PlanPartsModel::find($id)) {
+            if (PlanPartsModel::find($id)) {
                 return redirect(route('admin.plan', $id));
             }
             $id = null;
         }
         
         if (!$id) {
-            $first = \App\Http\Models\PlanPartsModel::whereParentId(null)
+            $first = PlanPartsModel::whereParentId(null)
                         ->orderBy('order_num', 'asc')
                         ->first();
             if ($first) {
@@ -35,73 +40,14 @@ class PlanController extends Controller
             }
         }
         
-        // Load plan records
-        $ports = [];
-        $data = \App\Http\Models\PlanPartsModel::generateTree($id);
-        foreach($data as $row) {
-            if ($row->bounds) {
-                $v = json_decode($row->bounds);
-            } else {
-                $v = (object)[
-                    'X' => 0,
-                    'Y' => 0,
-                    'W' => 10,
-                    'H' => 6,
-                ];
-            }
-            $row->X = $v->X;
-            $row->Y = $v->Y;
-            $row->W = $v->W;
-            $row->H = $v->H;
-            
-            if ($row->style) {
-                $v = json_decode($row->style);
-            } else {
-                $v = (object)[];
-            }
-            
-            $row->pen_style = isset($v->pen_style) ? $v->pen_style : 'solid';
-            $row->pen_width = isset($v->pen_width) ? $v->pen_width : 1;
-            $row->fill = isset($v->fill) ? $v->fill : 'background';
-            $row->name_dx = isset($v->name_dx) ? $v->name_dx : 0;
-            $row->name_dy = isset($v->name_dy) ? $v->name_dy : 0;
-
-            // Packed port data
-            if ($row->ports) {
-                foreach(json_decode($row->ports) as $index => $port) {
-                    $ports[] = (object)[
-                        'id' => count($ports),
-                        'index' => $index,
-                        'partID' => $row->id,
-                        'position' => json_encode($port),
-                        'partBounds' => $row->bounds,
-                    ];
-                }
-            }
-        }
-        
-        // Load list of the devices
-        $devices = [];
-        foreach(\App\Http\Models\VariablesModel::get() as $device) {
-            $part = false;
-            foreach($data as $row) {
-                if ($device->group_id == $row->id) {
-                    $part = $row;
-                    break;
-                }
-            }
-            
-            if ($part) {
-                $device->partBounds = $part->bounds;
-                $devices[] = $device;
-            }
-        }
-        
         Session::put('PLAN_INDEX_ID', $id);
+        
+        // Load plan records with port records and with devices
+        list($parts, $ports, $devices) = PlanPartsModel::listAllForIndex($id);
         
         return view('admin.plan.plan', [
             'partID' => $id,
-            'data' => $data,
+            'data' => $parts,
             'ports' => $ports,
             'devices' => $devices,
         ]);
@@ -110,128 +56,34 @@ class PlanController extends Controller
     /**
      * Route to create or update plan entries.
      * 
-     * @param Request $request
+     * @param int $id
+     * @param int $p_id
+     * @return type
+     */
+    public function editShow(int $id, int $p_id = -1)
+    {
+        $item = PlanPartsModel::findOrCreate($id, $p_id);
+        
+        return view('admin.plan.plan-edit', [
+            'item' => $item,
+            'itemBounds' => $item->getBoundsRelativeParent(),
+            'itemStyle' => $item->getStyle(),
+        ]);
+    }
+    
+    /**
+     * Route to create or update plan entries.
+     * 
+     * @param PlanRequest $request
      * @param int $id
      * @param int $p_id
      * @return string
      */
-    public function edit(Request $request, int $id, int $p_id = -1) 
+    public function editPost(PlanRequest $request, int $id, int $p_id = -1)
     {
-        $item = \App\Http\Models\PlanPartsModel::find($id);
+        PlanPartsModel::storeFromRequest($request, $id, $p_id);
         
-        if ($request->method() == 'POST') {
-            try {
-                $this->validate($request, [
-                    'name' => 'required|string',
-                    'X' => 'required|numeric',
-                    'Y' => 'required|numeric',
-                    'W' => 'required|numeric',
-                    'H' => 'required|numeric',
-                    'pen_width' => 'nullable|numeric',
-                    'name_dx' => 'nullable|numeric',
-                    'name_dy' => 'nullable|numeric',
-                ]);
-            } catch (\Illuminate\Validation\ValidationException $ex) {
-                return response()->json($ex->validator->errors());
-            }
-            
-            try {
-                $off = \App\Http\Models\PlanPartsModel::parentOffset($request->post('parent_id'));
-                
-                $dx = 0;
-                $dy = 0;                
-                if (!$item) {
-                    $item = new \App\Http\Models\PlanPartsModel();
-                } else {
-                    $bounds = json_decode($item->bounds);
-                    if ($bounds) {
-                        $dx = $request->post('X') + $off->X - $bounds->X;
-                        $dy = $request->post('Y') + $off->Y - $bounds->Y;
-                    }
-                }
-                
-                $item->parent_id = $request->post('parent_id');
-                $item->name = $request->post('name');
-                
-                $item->bounds = json_encode([
-                    'X' => $request->post('X') + $off->X,
-                    'Y' => $request->post('Y') + $off->Y,
-                    'W' => $request->post('W'),
-                    'H' => $request->post('H'),
-                ]);
-                $item->style = json_encode([
-                    'pen_style' => $request->post('pen_style'),
-                    'pen_width' => $request->post('pen_width'),
-                    'fill' => $request->post('fill'),
-                    'name_dx' => $request->post('name_dx') ?? 0,
-                    'name_dy' => $request->post('name_dy') ?? 0,
-                ]);
-                $item->save();
-                
-                if (($dx != 0) || ($dy != 0)) {
-                    $item->moveChilds($dx, $dy);
-                }
-                
-                if ($id == -1) {
-                    $item->order_num = $item->id;
-                    $item->save();
-                }
-                
-                // Recalc max level
-                \App\Http\Models\PlanPartsModel::calcAndStoreMaxLevel();
-                
-                return 'OK';
-            } catch (\Exception $ex) {
-                return response()->json([
-                    'error' => [$ex->getMessage()],
-                ]);
-            }
-        } else {
-            if (!$item) {
-                $item = (object)[
-                    'id' => -1,
-                    'name' => '',
-                    'parent_id' => $p_id,
-                    'order_num' => null,
-                    'bounds' => null,
-                    'style' => null,
-                ];
-            }
-            
-            if ($item->bounds) {
-                $itemBounds = json_decode($item->bounds);
-                if ($item instanceof \App\Http\Models\PlanPartsModel) {
-                    $off = \App\Http\Models\PlanPartsModel::parentOffset($item->parent_id);
-                    $itemBounds->X -= $off->X;
-                    $itemBounds->Y -= $off->Y;
-                }
-            } else {
-                $itemBounds = (object)[
-                    'X' => 0,
-                    'Y' => 0,
-                    'W' => 10,
-                    'H' => 6,
-                ];
-            }
-            
-            if ($item->style) {
-                $itemStyle = json_decode($item->style);
-            } else {
-                $itemStyle = (object)[];
-            }
-            
-            if (!isset($itemStyle->pen_style)) $itemStyle->pen_style = 'solid';
-            if (!isset($itemStyle->pen_width)) $itemStyle->pen_width = 1;
-            if (!isset($itemStyle->fill)) $itemStyle->fill = 'background';
-            if (!isset($itemStyle->name_dx)) $itemStyle->name_dx = 0;
-            if (!isset($itemStyle->name_dy)) $itemStyle->name_dy = 0;
-            
-            return view('admin.plan.plan-edit', [
-                'item' => $item,
-                'itemBounds' => $itemBounds,
-                'itemStyle' => $itemStyle,
-            ]);
-        }
+        return 'OK';
     }
     
     /**
@@ -240,19 +92,11 @@ class PlanController extends Controller
      * @param type $id
      * @return string
      */
-    public function delete($id) 
+    public function delete(int $id) 
     {
-        try {
-            $item = \App\Http\Models\PlanPartsModel::find($id);
-            $item->delete();
-            
-            // Recalc max level
-            \App\Http\Models\PlanPartsModel::calcAndStoreMaxLevel();
-            
-            return 'OK';
-        } catch (\Exception $ex) {
-            return 'ERROR';
-        }
+        PlanPartsModel::deleteById($id);
+        
+        return 'OK';
     }
     
     /**
@@ -267,42 +111,22 @@ class PlanController extends Controller
      */
     public function planClone(int $id, string $direction) 
     {
-        try {
-            $part = \App\Http\Models\PlanPartsModel::find($id);
-            if ($part) {
-                $new_part = new \App\Http\Models\PlanPartsModel();
-                
-                $new_part->parent_id = $part->parent_id;
-                $new_part->name = $part->name.' copy';
-                $new_part->style = $part->style;
-                
-                $bounds = json_decode($part->bounds);
-                switch ($direction) {
-                    case 'top':
-                        $bounds->Y -= $bounds->H;
-                        break;
-                    case 'right':
-                        $bounds->X += $bounds->W;
-                        break;
-                    case 'bottom':
-                        $bounds->Y += $bounds->H;
-                        break;
-                    case 'left':
-                        $bounds->X -= $bounds->W;
-                        break;
-                }
-                $new_part->bounds = json_encode($bounds);
-                
-                $new_part->save();
-                $new_part->order_num = $new_part->id;
-                $new_part->save();
-                
-                return 'OK';
-            }            
-            return 'ERROR';
-        } catch (\Exception $ex) {
-            return 'ERROR';
-        }
+        PlanPartsModel::cloneNearby($id, $direction);
+        
+        return 'OK';
+    }
+    
+    /**
+     * Route to displaying the plan owner change window.
+     * 
+     * @param int $id
+     * @return type
+     */
+    public function moveChildsShow(int $id) 
+    {
+        return view('admin.plan.plan-move-childs', [
+            'partID' => $id,
+        ]);        
     }
     
     /**
@@ -312,34 +136,29 @@ class PlanController extends Controller
      * @param int $id
      * @return string
      */
-    public function moveChilds(Request $request, int $id) 
+    public function moveChildsPost(PlanMoveChildsRequest $request, int $id)
     {
-        if ($request->method() == 'POST') {
-            try {
-                $this->validate($request, [
-                    'DX' => 'required|numeric',
-                    'DY' => 'required|numeric',
-                ]);
-            } catch (\Illuminate\Validation\ValidationException $ex) {
-                return response()->json($ex->validator->errors());
-            }
-            
-            try {
-                $item = \App\Http\Models\PlanPartsModel::find($id);
-                $item->moveChilds($request->post('DX'), $request->post('DY'));
-                return 'OK';
-            } catch (\Exception $ex) {
-                return response()->json([
-                    'error' => [$ex->getMessage()],
-                ]);
-            }
-        } else {
-            return view('admin.plan.plan-move-childs', [
-                'partID' => $id,
-            ]);
-        }
+        PlanPartsModel::moveChildsFromRequest($request, $id);
+        
+        return 'OK';
     }
     
+    /**
+     * Route to displaying the plan ordering window.
+     * 
+     * @param int $id
+     * @return type
+     */
+    public function orderShow(int $id)
+    {
+        $data = PlanPartsModel::childList($id);
+        
+        return view('admin.plan.plan-order', [
+            'partID' => $id,
+            'data' => $data,
+        ]);
+    }
+        
     /**
      * Route to displaying the plan ordering window.
      * 
@@ -347,111 +166,66 @@ class PlanController extends Controller
      * @param int $id
      * @return string
      */
-    public function order(Request $request, int $id) 
+    public function orderPost(Request $request, int $id)
     {
-        if ($request->method() == 'POST') {
-            $ids = explode(',', $request->post('orderIds'));
-            for ($i = 0; $i < count($ids); $i++) {
-                $item = \App\Http\Models\PlanPartsModel::find($ids[$i]);
-                if ($item) {
-                    $item->order_num = $i + 1;
-                    $item->save();
-                }
-            }
-            return 'OK';
-        } else {
-            $data = DB::select("select p.* from plan_parts p where p.parent_id = $id order by p.order_num");
-            
-            return view('admin.plan.plan-order', [
-                'partID' => $id,
-                'data' => $data,
-            ]);
-        }
+        PlanPartsModel::setChildListOrdersFromRequest($request);
+        
+        return 'OK';
     }
     
     /**
      * Route to move of the plan entries by id.
      * 
-     * @param Request $request
      * @param int $id
      * @param float $newX
      * @param float $newY
      * @return string
      */
-    public function move(Request $request, int $id, float $newX, float $newY) 
+    public function move(int $id, float $newX, float $newY) 
     {
-        try {
-            $item = \App\Http\Models\PlanPartsModel::find($id);
-            if ($item) {
-                $bounds = json_decode($item->bounds);
-                $bounds->X = $newX;
-                $bounds->Y = $newY;
-                $item->bounds = json_encode($bounds);
-                $item->save();
-            }
-            return 'OK';
-        } catch (\Exception $ex) {
-            return 'ERROR';
-        }
+        PlanPartsModel::move($id, $newX, $newY);
+        
+        return 'OK';
     }
     
     /**
      * Route to resize of the plan entries.
      * 
-     * @param Request $request
      * @param int $id
      * @param float $newW
      * @param float $newH
      * @return string
      */
-    public function size(Request $request, int $id, float $newW, float $newH)
+    public function size(int $id, float $newW, float $newH)
     {
-        try {
-            $item = \App\Http\Models\PlanPartsModel::find($id);
-            if ($item) {
-                $bounds = json_decode($item->bounds);
-                $bounds->W = $newW;
-                $bounds->H = $newH;
-                $item->bounds = json_encode($bounds);
-                $item->save();
-            }
-            return 'OK';
-        } catch (\Exception $ex) {
-            return 'ERROR';
-        }
+        PlanPartsModel::size($id, $newW, $newH);
+        
+        return 'OK';
     }
     
     /**
      * Route to import plan from file.
-     * GET: displaying window for choise file.
-     * POST: run import.
+     * displaying window for choise file.
+     * 
+     * @return type
+     */
+    public function planImportShow()
+    {
+        return view('admin.plan.plan-import', []);
+    }
+    
+    /**
+     * Route to import plan from file.
+     * run import.
      * 
      * @param Request $request
      * @return string
      */
-    public function planImport(Request $request) 
+    public function planImportPost(PlanImportRequest $request) 
     {
-        if ($request->method() == 'POST') {
-            try {
-                $this->validate($request, [
-                    'file' => 'file|required',
-                ]);
-            } catch (\Illuminate\Validation\ValidationException $ex) {
-                return response()->json($ex->errors());
-            }
-            
-            try {
-                $data = file_get_contents($request->file('file'));
-                \App\Http\Models\PlanPartsModel::importFromString($data);
-                return 'OK';
-            } catch (\Exception $ex) {
-                return response()->json([
-                    'error' => [$ex->getMessage()],
-                ]);
-            }
-        } else {
-            return view('admin.plan.plan-import', []);
-        }
+        PlanPartsModel::importFromRequest($request);
+        
+        return 'OK';
     }
     
     /**
@@ -464,7 +238,7 @@ class PlanController extends Controller
      */
     public function planExport() 
     {
-        $data = \App\Http\Models\PlanPartsModel::exportToString();
+        $data = PlanPartsModel::exportToString();
         
         return response($data, 200, [
             'Content-Length' => strlen($data),
@@ -480,107 +254,50 @@ class PlanController extends Controller
      * @param Request $request
      * @param int $planID
      * @param int $deviceID
+     * @return type
+     */
+    public function linkDeviceShow(Request $request, int $planID, int $deviceID = -1) 
+    {        
+        $device = VariablesModel::findOrCreate($deviceID);
+        
+        if ($deviceID == -1) {
+            $devices = PlanPartsModel::devicesForLink();
+        } else {
+            $devices = [];
+            
+            $device->label = $device->name.' '.($device->comm);
+            $app_control = \App\Http\Models\VariablesModel::decodeAppControl($device->app_control);
+            $device->label .= ' '."'$app_control->label'";
+        }
+        
+        $part = PlanPartsModel::find($planID);
+
+        return view('admin.plan.plan-link-device', [
+            'planID' => $planID,
+            'deviceID' => $deviceID,
+            'planPath' => PlanPartsModel::getPath($planID, ' / '),
+            'device' => $device,
+            'devices' => $devices,
+            'position' => $device->getPosition($request),
+            'partBounds' => $part->getBounds(),
+        ]);
+    }
+    
+    /**
+     * Route fro binding the device to plan entries and determines the 
+     * position of the device on the plan.
+     * 
+     * @param Request $request
+     * @param int $planID
+     * @param int $deviceID
      * @return string
      * @throws Exception
      */
-    public function linkDevice(Request $request, int $planID, int $deviceID = -1) 
+    public function linkDevicePost(PlanLinkDeviceRequest $request, int $planID, int $deviceID = -1) 
     {
-        if ($request->method() == 'POST') {
-            try {
-                $this->validate($request, [
-                    'offset' => 'numeric|required',
-                    'cross' => 'numeric|required',
-                ]);
-            } catch (\Illuminate\Validation\ValidationException $ex) {
-                return response()->json($ex->errors());
-            }
-            
-            try {
-                $deviceID = $request->post('device') ?? $deviceID;
-                
-                $device = \App\Http\Models\VariablesModel::find($deviceID);
-                if ($device) {
-                    $position = (object)[
-                        'surface' => $request->post('surface'),
-                        'offset' => $request->post('offset'),
-                        'cross' => $request->post('cross'),
-                    ];
-                    $device->group_id = $planID;
-                    $device->position = json_encode($position);
-                    $device->save();                    
-                    return 'OK';
-                } else {
-                    throw new Exception('Device not found');
-                }
-            } catch (\Exception $ex) {
-                return response()->json([
-                    'error' => [$ex->getMessage()],
-                ]);
-            }
-        } else {
-            // Device position data
-            $device = \App\Http\Models\VariablesModel::find($deviceID);
-            if ($device) {
-                $position = json_decode($device->position) ?? (object)[];
-            } else {
-                $position = (object)[
-                    'surface' => $request->get('surface') ?? 'top',
-                    'offset' => $request->get('offset') ?? 0,
-                    'cross' => $request->get('cross') ?? 0,
-                ];
-            }
-            
-            if (!isset($position->surface)) $position->surface = 'top';
-            if (!isset($position->offset)) $position->offset = 0;
-            if (!isset($position->cross)) $position->cross = 0;
-            
-            // Generation of data for a single device or a list of devices.
-            $device = (object)[];
-            $devices = [];
-            
-            if ($deviceID == -1) {
-                $sql = "select v.*
-                          from core_variables v
-                         where not exists(select 1 from plan_parts p where p.id = v.group_id)
-                        order by v.name";
-                $devices = DB::select($sql);
-                
-                foreach($devices as $dev) {
-                    $dev->label = $dev->name.' '.($dev->comm);
-                    $app_control = \App\Http\Models\VariablesModel::decodeAppControl($dev->app_control);
-                    $dev->label .= ' '."'$app_control->label'";
-                }
-            } else {
-                $device = \App\Http\Models\VariablesModel::find($deviceID);
-                if (!$device) abort(404);
-                $device->label = $device->name.' '.($device->comm);
-                $app_control = \App\Http\Models\VariablesModel::decodeAppControl($device->app_control);
-                $device->label .= ' '."'$app_control->label'";
-            }
-                        
-            // Room settings
-            $part = \App\Http\Models\PlanPartsModel::find($planID);
-            if ($part && $part->bounds) {
-                $partBounds = json_decode($part->bounds);
-            } else {
-                $partBounds = (object)[
-                    'X' => 0,
-                    'Y' => 0,
-                    'W' => 5,
-                    'H' => 5,
-                ];
-            }
-            
-            return view('admin.plan.plan-link-device', [
-                'planID' => $planID,
-                'deviceID' => $deviceID,
-                'planPath' => \App\Http\Models\PlanPartsModel::getPath($planID, ' / '),
-                'device' => $device,
-                'devices' => $devices,
-                'position' => $position,
-                'partBounds' => $partBounds,
-            ]);
-        }
+        PlanPartsModel::linkDeviceFromRequest($request, $planID, $deviceID);
+        
+        return 'OK';
     }
     
     /**
@@ -591,17 +308,29 @@ class PlanController extends Controller
      */
     public function unlinkDevice(int $deviceID) 
     {
-        try {
-            $device = \App\Http\Models\VariablesModel::find($deviceID);
-            if ($device) {
-                $device->group_id = -1;
-                $device->position = null;
-                $device->save();
-            }
-            return 'OK';
-        } catch (\Exception $ex) {
-            return 'ERROR';
-        }
+        PlanPartsModel::unlinkDevice($deviceID);
+        
+        return 'OK';
+    }
+    
+    /**
+     * This route is used to add or update the port item of the plan_part item.
+     * 
+     * @param Request $request
+     * @param int $planID
+     * @param int $portIndex
+     * @return type
+     */
+    public function portEditShow(Request $request, int $planID, int $portIndex = -1)
+    {
+        $part = \App\Http\Models\PlanPartsModel::find($planID);
+        
+        return view('admin.plan.plan-port-edit', [
+            'planID' => $planID,
+            'portIndex' => $portIndex,
+            'partBounds' => $part->getBounds(),
+            'position' => $part->getPort($portIndex, $request),
+        ]);
     }
     
     /**
@@ -612,72 +341,11 @@ class PlanController extends Controller
      * @param int $portID
      * @return type
      */
-    public function portEdit(Request $request, int $planID, int $portIndex = -1) 
+    public function portEditPost(PlanPortRequest $request, int $planID, int $portIndex = -1) 
     {
-        $part = \App\Http\Models\PlanPartsModel::find($planID);
-        $ports = json_decode($part->ports) ?? [];
+        PlanPartsModel::storePortFromRequest($request, $planID, $portIndex);
         
-        if (isset($ports[$portIndex])) {
-            $position = $ports[$portIndex];
-        } else {
-            $position = (object)[];
-        }
-        
-        if ($request->method() == 'POST') {
-            try {
-                $this->validate($request, [
-                    'offset' => 'numeric|required',
-                    'width' => 'numeric|required',
-                    'depth' => 'numeric|required',
-                ]);
-            } catch (\Illuminate\Validation\ValidationException $ex) {
-                return response()->json($ex->errors());
-            }
-            
-            try {
-                $position->surface = $request->post('surface');
-                $position->offset = $request->post('offset');
-                $position->width = $request->post('width');
-                $position->depth = $request->post('depth');
-                if ($portIndex == -1) {
-                    $portIndex = count($ports);
-                }
-                $ports[$portIndex] = $position;
-                array_values($ports);
-                $part->ports = json_encode($ports);
-                $part->save();
-            } catch (\Exception $ex) {
-                return response()->json([
-                    'error' => [$ex->getMessage()],
-                ]);
-            }
-            return 'OK';
-        } else {    
-            if (!isset($position->surface)) $position->surface = $request->get('surface') ?? 'top';
-            if (!isset($position->offset)) $position->offset = $request->get('offset') ?? 0;
-            if (!isset($position->width)) $position->width = $request->get('width') ?? 0.8;
-            if (!isset($position->depth)) $position->depth = $request->get('depth') ?? 0.3;
-            
-            // Room settings
-            $part = \App\Http\Models\PlanPartsModel::find($planID);
-            if ($part && $part->bounds) {
-                $partBounds = json_decode($part->bounds);
-            } else {
-                $partBounds = (object)[
-                    'X' => 0,
-                    'Y' => 0,
-                    'W' => 5,
-                    'H' => 5,
-                ];
-            }
-            
-            return view('admin.plan.plan-port-edit', [
-                'planID' => $planID,
-                'portIndex' => $portIndex,
-                'partBounds' => $partBounds,
-                'position' => $position,
-            ]);
-        }
+        return 'OK';
     }
     
     /**
@@ -689,19 +357,8 @@ class PlanController extends Controller
      */
     public function portDelete(int $planID, int $portIndex) 
     {
-        try {
-            $plan = \App\Http\Models\PlanPartsModel::find($planID);
-            if ($plan) {
-                $ports = json_decode($plan->ports);
-                if (isset($ports[$portIndex])) {
-                    array_splice($ports, $portIndex, 1);
-                    $plan->ports = json_encode($ports);
-                    $plan->save();
-                }
-            }
-            return 'OK';
-        } catch (\Exception $ex) {
-            return 'ERROR';
-        }
+        PlanPartsModel::deletePortByIndex($planID, $portIndex);
+        
+        return 'OK';
     }
 }

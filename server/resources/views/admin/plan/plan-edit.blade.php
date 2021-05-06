@@ -15,7 +15,7 @@
     @if($item->id > 0)
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/plan.table_ID')</div>
+            <label class="form-label">@lang('admin/plan.table_ID')</label>
         </div>
         <div class="col-sm-3">
             <div class="form-control">{{ $item->id > 0 ? $item->id : '' }}</div>
@@ -25,7 +25,7 @@
     @endif
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/plan.table_PARENT_ID')</div>
+            <label class="form-label">@lang('admin/plan.table_PARENT_ID')</label>
         </div>
         <div class="col-sm-9">
             <select class="custom-select select-tree" name="parent_id">
@@ -43,7 +43,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label strong">@lang('admin/plan.table_NAME')</div>
+            <label class="form-label strong">@lang('admin/plan.table_NAME')</label>
         </div>
         <div class="col-sm-9">
             <input class="form-control" type="text" name="name" value="{{ $item->name }}" required="">
@@ -52,19 +52,19 @@
     </div>
     <div class="row" style="margin-bottom: 0;">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/plan.table_BOUNDS_XY')</div>
+            <label class="form-label">@lang('admin/plan.table_BOUNDS_XY')</label>
         </div>
         <div class="col-sm-9">
             <div class="row">
                 <div class="col-sm-2">
-                    <div class="form-label strong">@lang('admin/plan.table_X')</div>
+                    <label class="form-label strong">@lang('admin/plan.table_X')</label>
                 </div>
                 <div class="col-sm-4">
                     <input class="form-control" type="number" name="X" step="0.01" value="{{ $itemBounds->X }}" required="">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="col-sm-2">
-                    <div class="form-label strong">@lang('admin/plan.table_Y')</div>
+                    <label class="form-label strong">@lang('admin/plan.table_Y')</label>
                 </div>
                 <div class="col-sm-4">
                     <input class="form-control" type="number" name="Y" step="0.01" value="{{ $itemBounds->Y }}" required="">
@@ -75,19 +75,19 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/plan.table_BOUNDS_WH')</div>
+            <label class="form-label">@lang('admin/plan.table_BOUNDS_WH')</label>
         </div>
         <div class="col-sm-9">
             <div class="row" style="margin-bottom: 0;">
                 <div class="col-sm-2">
-                    <div class="form-label strong">@lang('admin/plan.table_W')</div>
+                    <label class="form-label strong">@lang('admin/plan.table_W')</label>
                 </div>
                 <div class="col-sm-4">
                     <input class="form-control" type="number" name="W" step="0.01" value="{{ $itemBounds->W }}" required="">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="col-sm-2">
-                    <div class="form-label strong">@lang('admin/plan.table_H')</div>
+                    <label class="form-label strong">@lang('admin/plan.table_H')</label>
                 </div>
                 <div class="col-sm-4">
                     <input class="form-control" type="number" name="H" step="0.01" value="{{ $itemBounds->H }}" required="">
@@ -98,7 +98,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/plan.table_STYLE_PEN')</div>
+            <label class="form-label">@lang('admin/plan.table_STYLE_PEN')</label>
         </div>
         <div class="col-sm-3">
             <select class="custom-select" name="pen_style" style="width: 100px;">
@@ -113,7 +113,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/plan.table_STYLE_FILL')</div>
+            <label class="form-label">@lang('admin/plan.table_STYLE_FILL')</label>
         </div>
         <div class="col-sm-5">
             <select class="custom-select" name="fill">
