@@ -91,7 +91,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     /* Hosts management routes */
     Route::get('/hubs/{hubID}/hosts', 'Admin\Hubs\HostsController@index')->name('admin.hub-hosts');
-    Route::match(['get', 'post'], '/hub-host-edit/{hubID}/{id}', 'Admin\Hubs\HostsController@edit')->name('admin.hub-host-edit');
+    Route::get('/hub-host-edit/{hubID}/{id}', 'Admin\Hubs\HostsController@editShow')->name('admin.hub-host-edit');
     Route::delete('/hub-host-delete/{id}', 'Admin\Hubs\HostsController@delete')->name('admin.hub-host-delete');
     
     

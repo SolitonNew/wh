@@ -209,6 +209,8 @@ class HubsService
      */
     public function firmwareStatus()
     {
+        $demonManager = new DemonManager();
+        
         try {
             if (!$demonManager->isStarted('rs485-demon')) {
                 return response()->json([                    

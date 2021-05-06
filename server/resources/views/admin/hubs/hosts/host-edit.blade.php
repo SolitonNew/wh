@@ -10,7 +10,7 @@
     <button type="submit" style="display: none;"></button>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/hubs.host_ID')</div>
+            <label class="form-label">@lang('admin/hubs.host_ID')</label>
         </div>
         <div class="col-sm-3">
             <div class="form-control">{{ $item->id }}</div>
@@ -18,7 +18,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/hubs.host_CONTROLLER')</div>
+            <label class="form-label">@lang('admin/hubs.host_CONTROLLER')</label>
         </div>
         <div class="col-sm-6">
             <div class="form-control">{{ $item->controller_name }}</div>
@@ -26,7 +26,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/hubs.host_ROM')</div>
+            <label class="form-label">@lang('admin/hubs.host_ROM')</label>
         </div>
         <div class="col-sm-9">
             <div class="form-control">{{ $item->rom }}</div>
@@ -34,7 +34,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/hubs.host_COMM')</div>
+            <label class="form-label">@lang('admin/hubs.host_COMM')</label>
         </div>
         <div class="col-sm-9">
             <div class="form-control">{{ $item->comm }}</div>
@@ -42,14 +42,14 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <div class="form-label">@lang('admin/hubs.host_CHANNELS')</div>
+            <label class="form-label">@lang('admin/hubs.host_CHANNELS')</label>
         </div>
         <div class="col-sm-9">
             <div class="form-control">{{ $item->channels }}</div>
         </div>
     </div>
     <div class="form-group">
-        <div class="">@lang('admin/hubs.host_DEVICES') ({{ count($item->devices) }}):</div>
+        <label class="">@lang('admin/hubs.host_DEVICES') ({{ count($item->devices) }}):</label>
         <div class="form-control" style="height: auto;">
         @forelse($item->devices as $v)
         <div>[{{ $v->channel }}] {{ $v->name }}</div>

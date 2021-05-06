@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\ControllersModel;
 use App\Http\Requests\HubRequest;
@@ -161,7 +160,7 @@ class HubsController extends Controller
      * 
      * @return type
      */
-    public function firmwareStatus(\App\Library\DemonManager $demonManager) 
+    public function firmwareStatus() 
     {
         return $this->_hubsService->firmwareStatus();
     }
