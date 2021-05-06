@@ -15,7 +15,7 @@
     @if($item->id > 0)
     <div class="row">
         <div class="col-sm-4">
-            <div class="form-label">@lang('admin/hubs.device_ID')</div>
+            <label class="form-label">@lang('admin/hubs.device_ID')</label>
         </div>
         <div class="col-sm-3">
             <div class="form-control">{{ $item->id > 0 ? $item->id : '' }}</div>
@@ -25,7 +25,7 @@
     @endif
     <div class="row">
         <div class="col-sm-4">
-            <div class="form-label">@lang('admin/hubs.device_APP_CONTROL')</div>
+            <label class="form-label">@lang('admin/hubs.device_APP_CONTROL')</label>
         </div>
         <div class="col-sm-8">
             <select class="custom-select" name="app_control">
@@ -38,7 +38,7 @@
     </div>
     <div class="row">
         <div class="col-sm-4">
-            <div class="form-label">@lang('admin/hubs.device_CONTROLLER')</div>
+            <label class="form-label">@lang('admin/hubs.device_CONTROLLER')</label>
         </div>
         <div class="col-sm-6">
             <select class="custom-select" name="controller_id">
@@ -53,20 +53,16 @@
     </div>
     <div class="row">
         <div class="col-sm-4">
-            <div class="form-label">@lang('admin/hubs.device_TYP')</div>
+            <label class="form-label">@lang('admin/hubs.device_TYP')</label>
         </div>
         <div class="col-sm-4">
-            <select class="custom-select" name="typ">
-                @foreach($typs as $key => $val)
-                <option value="{{ $key }}" {{ $key == $item->typ ? 'selected' : '' }}>{{ $val }}</option>
-                @endforeach
-            </select>
+            <select class="custom-select" name="typ" data-val="{{ $item->typ }}"></select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
     <div class="row" id="ow_id">
         <div class="col-sm-4">
-            <div class="form-label strong">@lang('admin/hubs.device_OW')</div>
+            <label class="form-label strong">@lang('admin/hubs.device_OW')</label>
         </div>
         <div class="col-sm-8">
             <select class="custom-select" name="ow_id" data-value="{{ $item->ow_id }}"></select>
@@ -75,7 +71,7 @@
     </div>
     <div class="row">
         <div class="col-sm-4">
-            <div class="form-label strong">@lang('admin/hubs.device_NAME')</div>
+            <label class="form-label strong">@lang('admin/hubs.device_NAME')</label>
         </div>
         <div class="col-sm-8">
             <input class="form-control" type="text" name="name" value="{{ $item->name }}" required="">
@@ -84,7 +80,7 @@
     </div>
     <div class="row">
         <div class="col-sm-4">
-            <div class="form-label">@lang('admin/hubs.device_COMM')</div>
+            <label class="form-label">@lang('admin/hubs.device_COMM')</label>
         </div>
         <div class="col-sm-8">
             <input class="form-control" type="text" name="comm" value="{{ $item->comm }}">
@@ -93,7 +89,7 @@
     </div>
     <div class="row" id="channel">
         <div class="col-sm-4">
-            <div class="form-label">@lang('admin/hubs.device_CHANNEL')</div>
+            <label class="form-label">@lang('admin/hubs.device_CHANNEL')</label>
         </div>
         <div class="col-sm-4">
             <select class="custom-select" name="channel" data-value="{{ $item->channel }}"></select>
@@ -102,7 +98,7 @@
     </div>
     <div class="row">
         <div class="col-sm-4">
-            <div class="form-label">@lang('admin/hubs.device_GROUP')</div>
+            <label class="form-label">@lang('admin/hubs.device_GROUP')</label>
         </div>
         <div class="col-sm-8">
             <div class="form-control">{{ $groupPath }}</div>
@@ -110,7 +106,7 @@
     </div>
     <div class="row" id="value">
         <div class="col-sm-4">
-            <div class="form-label">@lang('admin/hubs.device_VALUE')</div>
+            <label class="form-label">@lang('admin/hubs.device_VALUE')</label>
         </div>
         <div class="col-sm-4">
             <input class="form-control" type="number" step="0.01" name="value" value="">
@@ -178,7 +174,8 @@
         let typs = $('#device_edit_form select[name="controller_id"] option[value="' + controller + '"]').data('typs').split('|');
         
         let typSelect = $('#device_edit_form select[name="typ"]');
-        let currTyp = typSelect.val();
+        let currTyp = typSelect.data('val') ? typSelect.data('val') : typSelect.val();
+        typSelect.data('val', null);
         typSelect.html('');
         
         let a = new Array();
