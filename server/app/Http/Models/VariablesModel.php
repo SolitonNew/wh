@@ -2,7 +2,8 @@
 
 namespace App\Http\Models;
 
-use \App\Library\AffectsFirmwareModel;
+use App\Library\AffectsFirmwareModel;
+use Illuminate\Http\Request;
 use Lang;
 use Log;
 use DB;
@@ -129,21 +130,160 @@ class VariablesModel extends AffectsFirmwareModel
         }
     }
     
+    static public function devicesList(int $hubID, $groupID)
+    {
+        $where = '';
+        switch ($groupID) {
+            case 'none':
+                break;
+            case 'empty':
+                $where = ' and not exists(select 1 from plan_parts pp where v.group_id = pp.id)';
+                break;
+            default:
+                $groupID = (int)$groupID;
+                $ids = PlanPartsModel::genIDsForGroupAtParent($groupID);
+                if ($ids) {
+                    $where = ' and v.group_id in ('.$ids.') ';
+                }
+                break;
+        }
+        
+        $sql = 'select v.id,
+                       v.typ,
+                       v.name,
+                       v.comm,
+                       v.app_control,
+                       v.value,
+                       v.channel,
+                       v.last_update,
+                       (select p.name from plan_parts p where p.id = v.group_id) group_name,
+                       exists(select 1 from core_variable_events e where e.variable_id = v.id) with_events
+                  from core_variables v
+                 where v.controller_id = '.$hubID.'
+                '.$where.'
+                order by v.name';
+        
+        return DB::select($sql);
+    }
+    
     /**
      * 
      * @param int $id
-     * @return type
+     * @param int $hubId
+     * @return \App\Http\Models\VariablesModel
      */
-    static public function findOrCreate(int $id)
+    static public function findOrCreate(int $id, int $hubId = -1)
     {
         $item = VariablesModel::find($id);
         if (!$item) {
             $item = new VariablesModel();
             $item->id = -1;
+            $item->controller_id = $hubId;
             $item->position = '';
         }
         
         return $item;
+    }
+    
+    /**
+     * 
+     * @param Request $request
+     * @param int $hubId
+     * @param int $id
+     */
+    static public function storeFromRequest(Request $request, int $hubId, int $id)
+    {
+        try {
+            $item = VariablesModel::find($id);
+            if (!$item) {
+                $item = new VariablesModel();
+            }
+            
+            $item->controller_id = $request->controller_id;
+            $item->typ = $request->typ;
+            $item->ow_id = $request->ow_id;
+            $item->name = $request->name;
+            $item->comm = $request->comm;
+            $item->channel = $request->channel ?? 0;
+            $item->app_control = $request->app_control;
+            $item->save();
+            if ($request->value !== null) {
+                VariablesModel::setValue($item->id, $request->value);
+            }
+        } catch (\Exception $ex) {
+            abort(response()->json([
+                'errors' => [$ex->getMessage()],
+            ]), 422);
+        }
+    }
+    
+    /**
+     * 
+     * @param int $id
+     */
+    static public function deleteById(int $id)
+    {
+        try {
+            $item = VariablesModel::find($id);
+            if (!$item) abort(404);
+            
+            $item->delete();
+        } catch (\Exception $ex) {
+            abort(response()->json([
+                'errors' => [$ex->getMessage()],
+            ]), 422);
+        }
+    }
+    
+    /**
+     * 
+     * @param int $hubID
+     * @return type
+     */
+    static public function hostList(int $hubID)
+    {
+        $sql = "select d.id, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7, d.rom_8,
+                       (select count(1)
+                          from core_variables v 
+                         where v.ow_id = d.id) num
+                  from core_ow_devs d
+                 where d.controller_id = $hubID
+                order by d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7, d.rom_8";
+        return DB::select($sql);
+    }
+    
+    /**
+     * 
+     * @param string $typ
+     * @param int $hostID
+     * @return array
+     */
+    static public function hostChannelList(string $typ, int $hostID = null)
+    {
+        switch ($typ) {
+            case 'din':
+                $data = config('firmware.channels.'.config('firmware.mmcu'));
+                break;
+            case 'ow':
+                if ($hostID) {
+                    $c = DB::select('select t.channels
+                                       from core_ow_devs d, core_ow_types t
+                                      where d.rom_1 = t.code
+                                        and d.id = '.$hostID);
+                    if (count($c)) {
+                        $data = explode(',', $c[0]->channels);
+                    } else {
+                        $data = [];
+                    }
+                } else {
+                    $data = [];
+                }
+                break;
+            default:
+                $data = [];
+        }
+        
+        return $data;
     }
     
     /**
