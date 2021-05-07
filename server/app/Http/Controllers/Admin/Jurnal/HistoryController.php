@@ -5,11 +5,27 @@ namespace App\Http\Controllers\Admin\Jurnal;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use \Carbon\Carbon;
+use App\Http\Services\HistoryService;
 use Session;
 use DB;
 
 class HistoryController extends Controller
 {
+    /**
+     *
+     * @var type 
+     */
+    private $_historyService;
+    
+    /**
+     * 
+     * @param HistoryService $historyService
+     */
+    public function __construct(HistoryService $historyService) 
+    {
+        $this->_historyService = $historyService;
+    }
+    
     /**
      * Index route to display device history data.
      * 

@@ -10,8 +10,8 @@
         href="{{ route('admin.jurnal-history', '') }}">@lang('admin/jurnal.history')</a>
     <a class="nav-link @activeSegment(3, 'demons')" 
         href="{{ route('admin.jurnal-demons', '') }}">@lang('admin/jurnal.demons')</a>
-    <a class="nav-link @activeSegment(3, 'power')" 
-        href="{{ route('admin.jurnal-power', '') }}">@lang('admin/jurnal.power')</a>
+    {{-- <a class="nav-link @activeSegment(3, 'power')" 
+        href="{{ route('admin.jurnal-power', '') }}">@lang('admin/jurnal.power')</a> --}}
 </div>
 @endsection
 
