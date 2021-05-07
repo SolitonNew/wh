@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\HubsIndexRequest;
+use App\Http\Requests\HubRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Models\ControllersModel;
-use App\Http\Requests\HubRequest;
 use App\Http\Services\HubsService;
 
 use Session;
@@ -33,34 +34,13 @@ class HubsController extends Controller
      * @param int $hubID
      * @return type
      */
-    public function index(int $hubID = null) 
-    {   
-        if (!$hubID) {
-            $hubID = Session::get('HUB_INDEX_ID');
-            if (ControllersModel::find($hubID)) {
-                //
-            } else {
-                $hubID = null;
-            }
-        }
+    public function index(HubsIndexRequest $request, int $id = null) 
+    {           
+        $this->_hubsService->storeLastVisibleId($id);
         
-        if (!$hubID) {
-            $hubID = ControllersModel::orderBy('rom', 'asc')->first();
-            if ($hubID) {
-                $hubID = $hubID->id;
-            } else {
-                $hubID = null;
-            }
-        }
-        
-        if ($hubID) {
-            Session::put('HUB_INDEX_ID', $hubID);
-            return redirect(route('admin.hub-devices', [$hubID]));
-        } else {
-            return view('admin/hubs/hubs', [
-                'hubID' => $hubID,
-            ]);
-        }
+        return view('admin/hubs/hubs', [
+            'hubID' => $id,
+        ]);
     }
     
     /**

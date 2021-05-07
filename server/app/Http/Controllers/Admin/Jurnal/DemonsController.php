@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Jurnal;
 
+use App\Http\Requests\DemonsIndexRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Services\DemonsService;
 use App\Http\Models\WebLogsModel;
@@ -29,12 +30,8 @@ class DemonsController extends Controller
      * @param string $id
      * @return type
      */
-    public function index(string $id = null) 
+    public function index(DemonsIndexRequest $request, string $id = null) 
     {        
-        if (!$id) {
-            return redirect(route('admin.jurnal-demons', $this->_demonsService->firstDemonId()));
-        }
-
         return view('admin.jurnal.demons.demons', [
             'id' => $id,
             'stat' => $this->_demonsService->isStarted($id),

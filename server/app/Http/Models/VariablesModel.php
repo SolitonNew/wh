@@ -288,6 +288,20 @@ class VariablesModel extends AffectsFirmwareModel
     
     /**
      * 
+     * @return type
+     */
+    static public function devicesListWithRoomName()
+    {
+        $sql = "select v.*,
+                       (select p.name from plan_parts p where p.id = v.group_id) group_name
+                  from core_variables v
+                order by v.name";
+        
+        return DB::select($sql);
+    }
+    
+    /**
+     * 
      * @param type $defaults
      * @return type
      */

@@ -71,7 +71,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     /* Configuration  ------------------------------------------------------- */
     /* Hubs management routes */
-    Route::get('/hubs/{hubID?}', 'Admin\HubsController@index')->name('admin.hubs');
+    Route::get('/hubs/{id?}', 'Admin\HubsController@index')->name('admin.hubs');
     Route::get('/hub-edit/{id}', 'Admin\HubsController@editShow')->name('admin.hub-edit');
     Route::post('/hub-edit/{id}', 'Admin\HubsController@editPost')->name('admin.hub-edit');
     Route::delete('/hub-delete/{id}', 'Admin\HubsController@delete')->name('admin.hub-delete');
@@ -96,7 +96,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     
     /* Scripts management routes  ------------------------------------------- */
-    Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('admin.scripts');
+    Route::get('/scripts/{id?}', 'Admin\ScriptsController@index')->name('admin.scripts');
     Route::get('/script-edit/{id}', 'Admin\ScriptsController@editShow')->name('admin.script-edit');
     Route::post('/script-edit/{id}', 'Admin\ScriptsController@editPost')->name('admin.script-edit');
     Route::delete('/script-delete/{id}', 'Admin\ScriptsController@delete')->name('admin.script-delete');

@@ -2,11 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Services\TerminalService;
 
 class TerminalController extends Controller
 {
+    /**
+     *
+     * @var type 
+     */
+    private $_terminalService;
+    
+    /**
+     * 
+     * @param TerminalService $terminalService
+     */
+    public function __construct(TerminalService $terminalService) 
+    {
+        $this->_terminalService = $terminalService;
+    }
+    
     /**
      * Index route of the terminal settings module.
      * 
@@ -14,26 +29,12 @@ class TerminalController extends Controller
      */
     public function index()
     {
-        $levels = [
-            1 => '',
-            2 => '',
-            3 => '',
-        ];
-        
-        $parts = \App\Http\Models\PlanPartsModel::generateTree();
-        
-        for ($i = 0; $i < 3; $i++) {
-            for ($k = count($parts) - 1; $k >= 0; $k--) {
-                if ($parts[$k]->level === $i) {
-                    $levels[$i + 1] = (isset($levels[$i]) ? $levels[$i].' - ' : '').$parts[$k]->name;
-                    break;
-                }
-            }
-        }
+        $levels = $this->_terminalService->levels();
+        $currentLevel = $this->_terminalService->getCurrentLevel();
         
         return view('admin.terminal.terminal', [
             'levels' => $levels,
-            'maxLevel' => \App\Http\Models\PropertysModel::getPlanMaxLevel(),
+            'maxLevel' => $currentLevel,
         ]);
     }
     
@@ -45,11 +46,8 @@ class TerminalController extends Controller
      * @return string
      */
     public function setMaxLevel($value) {
-        try {
-            \App\Http\Models\PropertysModel::setPlanMaxLevel($value);
-            return 'OK';
-        } catch (\Exception $ex) {
-            return 'ERROR';
-        }
+        $this->_terminalService->setCurrentLevel($value);
+        
+        return 'OK';
     }
 }
