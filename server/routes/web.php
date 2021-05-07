@@ -96,7 +96,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     
     /* Scripts management routes  ------------------------------------------- */
-    Route::get('/scripts/{scriptID?}', 'Admin\ScriptsController@index')->name('admin.scripts');
+    Route::get('/scripts/{id?}', 'Admin\ScriptsController@index')->name('admin.scripts');
     Route::get('/script-edit/{id}', 'Admin\ScriptsController@editShow')->name('admin.script-edit');
     Route::post('/script-edit/{id}', 'Admin\ScriptsController@editPost')->name('admin.script-edit');
     Route::delete('/script-delete/{id}', 'Admin\ScriptsController@delete')->name('admin.script-delete');

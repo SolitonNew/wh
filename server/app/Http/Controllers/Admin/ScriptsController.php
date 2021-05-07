@@ -3,48 +3,44 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Services\ScriptsService;
+use App\Http\Requests\ScriptsIndexRequest;
 use App\Http\Requests\ScriptsRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Models\ScriptsModel;
-use Session;
 
 class ScriptsController extends Controller
 {
+    /**
+     *
+     * @var type 
+     */
+    private $_scriptsService;
+    
+    /**
+     * 
+     * @param ScriptsService $scriptService
+     */
+    public function __construct(ScriptsService $scriptService) 
+    {
+        $this->_scriptsService = $scriptService;
+    }
+    
     /**
      * The index route to display a list of scripts.
      * 
      * @param int $scriptID
      * @return type
      */
-    public function index(int $scriptID = null)
+    public function index(ScriptsIndexRequest $request, int $id = null)
     {
-        if (!$scriptID) {
-            $scriptID = Session::get('SCRIPT_INDEX_ID');
-            if (\App\Http\Models\ScriptsModel::find($scriptID)) {
-                return redirect(route('admin.scripts', $scriptID));
-            } else {
-                $scriptID = null;
-            }
-        }
-        
-        if (!$scriptID) {
-            $first = \App\Http\Models\ScriptsModel::orderBy('comm', 'asc')->first();
-            if ($first) {
-                return redirect(route('admin.scripts', $first->id));
-            }
-        }
-        
-        $item = \App\Http\Models\ScriptsModel::find($scriptID);
-        if ($scriptID && !$item) {
-            return redirect(route('admin.scripts', ''));
-        }
-        
-        Session::put('SCRIPT_INDEX_ID', $scriptID);
+        $this->_scriptsService->storeLastViewID($id);
         
         $list = ScriptsModel::listAll();
+        $item = ScriptsModel::find($id);
         
         return view('admin.scripts.scripts', [
-            'scriptID' => $scriptID,
+            'scriptID' => $id,
             'list' => $list,
             'data' => $item,
         ]);
