@@ -9,9 +9,31 @@ use App\Library\DemonManager;
 use App\Library\Firmware;
 use DB;
 use Log;
+use Session;
 
 class HubsService 
 {
+    const LAST_VIEW_ID = 'HUB_INDEX_ID';
+    
+    public function storeLastVisibleId(int $id = null)
+    {
+        Session::put(self::LAST_VIEW_ID, $id);
+    }
+    
+    public function getIdForView()
+    {
+        $id = Session::get(self::LAST_VIEW_ID);
+        Session::put(self::LAST_VIEW_ID, null);
+        if (!$id) {
+            $item = ControllersModel::orderBy('name', 'asc')->first();
+            if ($item) {
+                $id = $item->id;
+            }
+        }
+        
+        return $id;
+    }
+    
     /**
      * 
      */
