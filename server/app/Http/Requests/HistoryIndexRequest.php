@@ -7,6 +7,20 @@ use App\Http\Services\HistoryService;
 
 class HistoryIndexRequest extends FormRequest
 {    
+    /**
+     * 
+     * @return boolean
+     */
+    public function authorize()
+    {
+        return true;
+    }
+    
+    /**
+     * 
+     * @param type $keys
+     * @return type
+     */
     public function all($keys = null)
     {
         $data = parent::all($keys);
@@ -14,6 +28,10 @@ class HistoryIndexRequest extends FormRequest
         return $data;
     }
 
+    /**
+     * 
+     * @return type
+     */
     public function rules()
     {        
         if ($this->session()->get(HistoryService::LAST_VIEW_DEVICE) > 0) {

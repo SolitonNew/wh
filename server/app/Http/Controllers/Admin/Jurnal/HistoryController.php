@@ -6,7 +6,6 @@ use App\Http\Requests\HistoryIndexRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Services\HistoryService;
 use App\Http\Models\VariablesModel;
-use Session;
 
 class HistoryController extends Controller
 {
