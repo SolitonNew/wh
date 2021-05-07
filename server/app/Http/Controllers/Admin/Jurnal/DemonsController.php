@@ -2,47 +2,43 @@
 
 namespace App\Http\Controllers\Admin\Jurnal;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Artisan;
-use App\Library\DemonManager;
+use App\Http\Services\DemonsService;
+use App\Http\Models\WebLogsModel;
 
 class DemonsController extends Controller
 {
+    /**
+     *
+     * @var type 
+     */
+    private $_demonsService;
+    
+    /**
+     * 
+     * @param DemonsService $demonsService
+     */
+    public function __construct(DemonsService $demonsService) 
+    {
+        $this->_demonsService = $demonsService;
+    }
+    
     /**
      * Index route to display a list of daemons.
      * 
      * @param string $id
      * @return type
      */
-    public function index(DemonManager $demonManager,  string $id = null) 
+    public function index(string $id = null) 
     {        
         if (!$id) {
-            $id = $demonManager->demons()[0];
-            return redirect(route('admin.jurnal-demons', $id));
-        }
-        
-        if (!$demonManager->exists($id)) {
-            abort(404);
-        }
-
-        $currStat = 0;
-        $demons = [];
-        foreach($demonManager->demons() as $dem) {
-            $stat = $demonManager->isStarted($dem);
-            $demons[] = (object)[
-                'id' => $dem,
-                'stat' => $stat,
-            ];
-            if ($dem == $id) {
-                $currStat = $stat;
-            }
+            return redirect(route('admin.jurnal-demons', $this->_demonsService->firstDemonId()));
         }
 
         return view('admin.jurnal.demons.demons', [
             'id' => $id,
-            'stat' => $currStat,
-            'demons' => $demons,
+            'stat' => $this->_demonsService->isStarted($id),
+            'demons' => $this->_demonsService->demonsList(),
         ]);
     }
 
@@ -53,25 +49,9 @@ class DemonsController extends Controller
      * @param int $lastID
      * @return string
      */
-    public function data(DemonManager $demonManager, string $id, int $lastID = -1) 
+    public function data(string $id, int $lastID = -1) 
     {
-        if (!$demonManager->exists($id)) {
-            abort(404);
-        }
-
-        $data = \App\Http\Models\WebLogsModel::whereDemon($id)
-                    ->where('id', '>', $lastID)
-                    ->orderby('id', 'desc')
-                    ->limit(config("app.admin_demons_log_lines_count"))
-                    ->get();
-
-        foreach($data as &$row) {
-            $str = $row->data;            
-            $str = str_replace('[', '<span class="datetime">[', $str);
-            $str = str_replace(']', ']</span>', $str);
-            
-            $row->data = $str;
-        }
+        $data = WebLogsModel::getDemonDataFromID($id, $lastID);
 
         return view('admin.jurnal.demons.demon-log', [
             'data' => $data,
@@ -84,20 +64,11 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonStart(DemonManager $demonManager, string $id) 
+    public function demonStart(string $id) 
     {
-        if (!$demonManager->exists($id)) {
-            abort(404);
-        }
-
-        try {
-            \App\Http\Models\PropertysModel::setAsRunningDemon($id);
-            $demonManager->start($id);
-            usleep(250000);
-            return 'OK';
-        } catch (\Exception $ex) {
-            return $ex->getMessage();
-        }
+        $this->_demonsService->demonStart($id);
+        
+        return 'OK';
     }
 
     /**
@@ -106,20 +77,11 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonStop(DemonManager $demonManager, string $id) 
+    public function demonStop(string $id) 
     {
-        if (!$demonManager->exists($id)) {
-            abort(404);
-        }
-
-        try {
-            \App\Http\Models\PropertysModel::setAsStoppedDemon($id);
-            $demonManager->stop($id);
-            usleep(250000);
-            return 'OK';
-        } catch (\Exception $ex) {
-            return $ex->getMessage();
-        }
+        $this->_demonsService->demonStop($id);
+        
+        return 'OK';
     }
 
     /**
@@ -128,18 +90,10 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonRestart(DemonManager $demonManager, string $id) 
+    public function demonRestart(string $id) 
     {
-        if (!$demonManager->exists($id)) {
-            abort(404);
-        }
+        $this->_demonsService->demonRestart($id);
         
-        try {
-            \App\Http\Models\PropertysModel::setAsRunningDemon($id);
-            $demonManager->restart($id);
-            return 'OK';
-        } catch (\Exception $ex) {
-            return $ex->getMessage();
-        }
+        return 'OK';
     }    
 }
