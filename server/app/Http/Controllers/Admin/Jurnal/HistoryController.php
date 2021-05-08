@@ -6,6 +6,7 @@ use App\Http\Requests\HistoryIndexRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Services\HistoryService;
 use App\Http\Models\VariablesModel;
+use App\Http\Models\VariableChangesModel;
 
 class HistoryController extends Controller
 {
@@ -33,7 +34,6 @@ class HistoryController extends Controller
      */
     public function index(HistoryIndexRequest $request, int $id = null) 
     {        
-        $this->_historyService->storeLastVisibleDeviceId($id);
         $this->_historyService->storeFilterDataFromRequest($request);
         
         list($data, $errors) = $this->_historyService->getFilteringData($id);        
@@ -55,7 +55,7 @@ class HistoryController extends Controller
      */
     public function valueView(int $id) 
     {
-        $item = \App\Http\Models\VariableChangesModel::find($id);
+        $item = VariableChangesModel::find($id);
         
         return view('admin/jurnal/history/history-value', [
             'item' => $item,

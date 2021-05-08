@@ -9,7 +9,6 @@ use Session;
 
 class HistoryService 
 {
-    const LAST_VIEW_DEVICE = 'STATISTICS-TABLE-ID';
     const FILTER_DATE = 'STATISTICS-TABLE-DATE';
     const FILTER_SQL = 'STATISTICS-TABLE-SQL';
     
@@ -89,13 +88,5 @@ class HistoryService
         }
         
         return 0;
-    }
-    
-    /**
-     * 
-     * @param int $deviceId
-     */
-    public function storeLastVisibleDeviceId(int $deviceId = null) {
-        Session::put(self::LAST_VIEW_DEVICE, $deviceId);
     }
 }

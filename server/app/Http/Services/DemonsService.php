@@ -44,15 +44,6 @@ class DemonsService
     
     /**
      * 
-     * @return type
-     */
-    public function firstDemonId()
-    {
-        return $this->_demonManager->demons()[0];
-    }
-    
-    /**
-     * 
      * @param type $id
      * @return type
      */
