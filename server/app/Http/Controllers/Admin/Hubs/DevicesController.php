@@ -3,38 +3,42 @@
 namespace App\Http\Controllers\Admin\Hubs;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HubsIndexRequest;
 use App\Http\Requests\DeviceRequest;
+use App\Http\Services\DevicesService;
 use App\Http\Models\VariablesModel;
 use App\Http\Models\PlanPartsModel;
-use App\Http\Models\ControllersModel;
-use Session;
 
 class DevicesController extends Controller
 {
     /**
+     *
+     * @var type 
+     */
+    private $_devicesService;
+    
+    /**
+     * 
+     * @param DevicesService $devicesService
+     */
+    public function __construct(DevicesService $devicesService) 
+    {
+        $this->_devicesService = $devicesService;
+    }
+    
+    /**
      * This is an index route for displaying devices a list of the hub.
      * If the hub id does not exist, redirect to the owner route.
      * 
+     * @param HubsIndexRequest $request
      * @param int $hubID
+     * @param type $groupID
      * @return type
      */
-    public function index(int $hubID = null, $groupID = null) 
-    {        
-        if (!ControllersModel::find($hubID)) {
-            return redirect(route('admin.hubs'));
-        }
-        
-        if (!$groupID) {
-            $groupID = Session::get('DEVICES_GROUP_ID');
-        }
-        
-        if (!$groupID) {
-            $groupID = 'none';
-        }
-        
-        Session::put('HUB_INDEX_ID', $hubID);
-        Session::put('DEVICES_GROUP_ID', $groupID);
-        
+    public function index(HubsIndexRequest $request, int $hubID = null, $groupID = null) 
+    {                
+        $groupID = $this->_devicesService->prepareRoomFilter($groupID);
+
         $data = VariablesModel::devicesList($hubID, $groupID);
         
         return view('admin.hubs.devices.devices', [

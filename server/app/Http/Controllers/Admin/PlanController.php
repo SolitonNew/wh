@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\PlanPartsModel;
 use App\Http\Models\VariablesModel;
+use App\Http\Requests\PlanIndexRequest;
 use App\Http\Requests\PlanRequest;
 use App\Http\Requests\PlanMoveChildsRequest;
 use App\Http\Requests\PlanImportRequest;
 use App\Http\Requests\PlanLinkDeviceRequest;
 use App\Http\Requests\PlanPortRequest;
-use Session;
 
 class PlanController extends Controller
 {
@@ -21,27 +21,8 @@ class PlanController extends Controller
      * @param int $id
      * @return type
      */
-    public function index(int $id = null) 
+    public function index(PlanIndexRequest $request, int $id = null) 
     {
-        if (!$id) {
-            $id = Session::get('PLAN_INDEX_ID');
-            if (PlanPartsModel::find($id)) {
-                return redirect(route('admin.plan', $id));
-            }
-            $id = null;
-        }
-        
-        if (!$id) {
-            $first = PlanPartsModel::whereParentId(null)
-                        ->orderBy('order_num', 'asc')
-                        ->first();
-            if ($first) {
-                return redirect(route('admin.plan', $first->id));
-            }
-        }
-        
-        Session::put('PLAN_INDEX_ID', $id);
-        
         // Load plan records with port records and with devices
         list($parts, $ports, $devices) = PlanPartsModel::listAllForIndex($id);
         

@@ -296,10 +296,14 @@
             left: x + 'px',
             top: y + 'px',
         }).show();
-        planContextMenuID = $(e.currentTarget).data('id');
+        
+        let part = $(e.currentTarget);
+        let offset = part.offset();
+        planContextMenuID = part.data('id');
+        
         planContextMenuMouse = {
-            x: e.offsetX,
-            y: e.offsetY,
+            x: e.pageX - offset.left,
+            y: e.pageY - offset.top,
         };
     }
 
