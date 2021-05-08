@@ -71,7 +71,7 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     
     /* Configuration  ------------------------------------------------------- */
     /* Hubs management routes */
-    Route::get('/hubs/{id?}', 'Admin\HubsController@index')->name('admin.hubs');
+    Route::get('/hubs/{hubID?}', 'Admin\HubsController@index')->name('admin.hubs');
     Route::get('/hub-edit/{id}', 'Admin\HubsController@editShow')->name('admin.hub-edit');
     Route::post('/hub-edit/{id}', 'Admin\HubsController@editPost')->name('admin.hub-edit');
     Route::delete('/hub-delete/{id}', 'Admin\HubsController@delete')->name('admin.hub-delete');

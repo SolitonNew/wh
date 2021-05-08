@@ -8,6 +8,8 @@ use DB;
 
 class HostsService 
 {
+    
+    
     /**
      * 
      * @return type

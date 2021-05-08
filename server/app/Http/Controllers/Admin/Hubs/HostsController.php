@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Hubs;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\HubsIndexRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Services\HostsService;
-use DB;
-use Session;
 
 class HostsController extends Controller
 {
@@ -32,14 +30,8 @@ class HostsController extends Controller
      * @param int $hubID
      * @return type
      */
-    public function index(int $hubID = null) 
-    {
-        if (!\App\Http\Models\ControllersModel::find($hubID)) {
-            return redirect(route('admin.hubs'));
-        }
-        
-        Session::put('HUB_INDEX_ID', $hubID);
-        
+    public function index(HubsIndexRequest $request, int $hubID = null) 
+    {        
         $data = $this->_hostsService->getIndexList($hubID);
         
         return view('admin.hubs.hosts.hosts', [

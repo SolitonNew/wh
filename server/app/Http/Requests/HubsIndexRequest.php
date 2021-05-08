@@ -3,10 +3,12 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Services\HubsService;
+use App\Http\Models\ControllersModel;
 
 class HubsIndexRequest extends FormRequest
 {
+    const LAST_VIEW_ID = 'HUB_INDEX_ID';
+    
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,7 +27,7 @@ class HubsIndexRequest extends FormRequest
     public function all($keys = null)
     {
         $data = parent::all($keys);
-        $data['id'] = $this->route('id');
+        $data['hubID'] = $this->route('hubID');
         return $data;
     }
 
@@ -34,23 +36,60 @@ class HubsIndexRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(HubsService $hubsService)
+    public function rules()
     {
-        $id = $this->route('id');
-        if ($id) {
+        $hubID = $this->route('hubID');
+        if ($hubID) {
             return [
-                'id' => 'exists:core_controllers,id',
+                'hubID' => 'exists:core_controllers,id',
             ];
         } else {
-            $newId = $hubsService->getIdForView();
+            $newId = $this->getIdForView();
             if ($newId) {
                 $this->redirect = route('admin.hub-devices', [$newId]);
                 return [
-                    'id' => 'required',
+                    'hubID' => 'required',
                 ];
             } else {
                 return [];
             }
         }
     }
+    
+    /**
+     * 
+     */
+    protected function passedValidation()
+    {
+        $hubID = $this->route('hubID');
+        $this->storeLastVisibleId($hubID);
+    }
+    
+    /**
+     * 
+     * @param int $id
+     */
+    public function storeLastVisibleId(int $id = null)
+    {
+        $this->session()->put(self::LAST_VIEW_ID, $id);
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getIdForView()
+    {
+        $id = $this->session()->get(self::LAST_VIEW_ID);
+        $this->session()->put(self::LAST_VIEW_ID, null);
+        if (!$id) {
+            $item = ControllersModel::orderBy('name', 'asc')->first();
+            if ($item) {
+                $id = $item->id;
+            }
+        }
+        
+        return $id;
+    }
+    
 }

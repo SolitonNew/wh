@@ -34,12 +34,10 @@ class HubsController extends Controller
      * @param int $hubID
      * @return type
      */
-    public function index(HubsIndexRequest $request, int $id = null) 
-    {           
-        $this->_hubsService->storeLastVisibleId($id);
-        
+    public function index(HubsIndexRequest $request, int $hubID = null) 
+    {
         return view('admin/hubs/hubs', [
-            'hubID' => $id,
+            'hubID' => $hubID,
         ]);
     }
     

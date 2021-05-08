@@ -33,9 +33,7 @@ class ScriptsController extends Controller
      * @return type
      */
     public function index(ScriptsIndexRequest $request, int $id = null)
-    {
-        $this->_scriptsService->storeLastViewID($id);
-        
+    {        
         $list = ScriptsModel::listAll();
         $item = ScriptsModel::find($id);
         
