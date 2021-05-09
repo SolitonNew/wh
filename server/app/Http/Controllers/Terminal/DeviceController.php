@@ -2,13 +2,27 @@
 
 namespace App\Http\Controllers\Terminal;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Services\Terminal\DeviceService;
 use DB;
-use Log;
 
 class DeviceController extends Controller
 {
+    /**
+     *
+     * @var type 
+     */
+    private $_deviceService;
+    
+    /**
+     * 
+     * @param DeviceService $deviceService
+     */
+    public function __construct(DeviceService $deviceService) 
+    {
+        $this->_deviceService = $deviceService;
+    }
+    
     /**
      * This route is for the device management page.
      * 
@@ -17,34 +31,7 @@ class DeviceController extends Controller
      */
     public function index($deviceID) 
     {
-        $sql = "select p.name group_title, v.comm device_title, v.app_control, v.group_id, v.value ".
-               "  from core_variables v, plan_parts p ".
-               " where v.id = $deviceID ".
-               "   and p.id = v.group_id";        
-        $row = DB::select($sql)[0];
-        
-        $roomID = $row->group_id;
-        $roomTitle = mb_strtoupper($row->group_title);
-        $deviceTitle = $row->device_title;
-        $control = \App\Http\Models\VariablesModel::decodeAppControl($row->app_control);
-        $deviceTitle = \App\Http\Models\VariablesModel::groupVariableName($roomTitle, mb_strtoupper($deviceTitle), $control->label);
-
-        
-        switch ($control->typ) {
-            case 1:
-                return 'ERROR';
-            case 2:
-                return 'ERROR';
-            case 3:
-                return view('terminal.device_3', [
-                    'roomID' => $roomID,
-                    'roomTitle' => $roomTitle,
-                    'deviceTitle' => $deviceTitle,
-                    'deviceID' => $deviceID,
-                    'deviceValue' => $row->value,
-                    'control' => $control,
-                ]);
-        }
+        return $this->_deviceService->showDeviceView($deviceID);
     }
     
     /**
@@ -55,15 +42,7 @@ class DeviceController extends Controller
      */
     public function changes(int $lastID) 
     {
-        if ($lastID > 0) {
-            $res = DB::select("select c.id, c.variable_id, c.value, UNIX_TIMESTAMP(c.change_date) * 1000 change_date ".
-                              "  from core_variable_changes_mem c ".
-                              " where c.id > $lastID ".
-                              " order by c.id");
-            return response()->json($res);
-        } else {
-            return 'LAST_ID: '.\App\Http\Models\VariableChangesMemModel::lastVariableID();
-        }
+        return $this->_deviceService->getChanges($lastID);
     }
     
     /**
@@ -75,8 +54,8 @@ class DeviceController extends Controller
      */
     public function set(int $deviceID, int $value) 
     {
-        \App\Http\Models\VariablesModel::setValue($deviceID, $value);
+        $this->_deviceService->setValue($deviceID, $value);
         
-        return '';
+        return 'OK';
     }
 }
