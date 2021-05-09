@@ -4,12 +4,21 @@ namespace App\Http\Controllers\Terminal;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use \Illuminate\Support\Facades\Lang;
-use \Illuminate\Support\Facades\DB;
-use \App\Http\Models\PropertysModel;
+use App\Http\Models\PropertysModel;
+use Lang;
+use DB;
+
+use App\Http\Services\Terminal\CheckedService;
 
 class CheckedController extends Controller
 {
+    private $_checkedService;
+    
+    public function __construct(CheckedService $checkedService) 
+    {
+        $this->_checkedService = $checkedService;
+    }
+    
     /**
      * Route for favorites index page.
      * 

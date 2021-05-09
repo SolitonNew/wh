@@ -21,7 +21,7 @@
             <audio id="speech" autoplay onended="speechProcessed();"></audio>
             @yield('content')
             <button class="btn btn-light audio-button" onclick="audioFirstPlay()">
-                <img src="img/volume-high-3x.png"/>
+                <img src="/img/volume-high-3x.png"/>
             </button>
         </div>
     </div>
