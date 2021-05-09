@@ -56,6 +56,6 @@ class DeviceController extends Controller
     {
         $this->_deviceService->setValue($deviceID, $value);
         
-        return 'OK';
+        return '';
     }
 }
