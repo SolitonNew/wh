@@ -16,7 +16,7 @@ class WebQueueMem extends Migration
         Schema::create('web_queue_mem', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('action', 20);
-            $table->string('data', 250);
+            $table->string('data', 1000);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
         

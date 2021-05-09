@@ -10,11 +10,13 @@
         $(window).on('resize', function () {
             let locationViewer = $('#locationViewer');
             let parent = locationViewer.parent();
+            let colCount = 0;
             if ($(this).width() > 992) {
                 /* We are looking for the smallest group and attach a location to it */
                 let col = false;
                 let maxH = 0;
                 $('#roomsDiv .col .main-column').each(function () {
+                    colCount++;
                     maxH = Math.max(maxH, $(this).height());
                     
                     if (col === false) {
@@ -25,10 +27,14 @@
                     }
                 });
                 
-                if (col) {                    
-                    locationViewer.insertAfter(col);
-                    let p_h = col.parent().height();
-                    locationViewer.css('padding-bottom', 'calc(0.75rem + ' + (p_h - maxH) + 'px)');
+                if (col) {
+                    //locationViewer.hide();
+                    let p_h = col.parent().height();// - locationViewer.height();
+                    let d_h = (colCount <= 0) ? 0 : (p_h - maxH);
+                    locationViewer
+                        .insertAfter(col);
+                        //.css('padding-bottom', 'calc(0.75rem + ' + d_h + 'px)');
+                        //.show();
                 }                
             } else {
                 if (parent.attr('id') !== 'roomsDiv') {

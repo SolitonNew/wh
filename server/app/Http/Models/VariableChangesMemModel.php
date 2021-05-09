@@ -24,7 +24,7 @@ class VariableChangesMemModel extends Model
     static public function lastVariableID() 
     {
         if (self::$_lastVariableID == -1) {
-            $res = DB::select('select max(ID) max_id from core_variable_changes_mem');
+            $res = DB::select('select max(id) max_id from core_variable_changes_mem');
             if (count($res) && ($res[0]->max_id > 0)) {
                 self::$_lastVariableID = $res[0]->max_id;
             }

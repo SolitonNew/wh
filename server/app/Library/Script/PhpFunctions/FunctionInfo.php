@@ -26,6 +26,7 @@ trait FunctionInfo
             if ($m < 10) {
                 $minute[] = Lang::get('admin/demons/command-demon.minutes-2.'.$m).' '.Lang::get('admin/demons/command-demon.minutes.'.$m);
             } elseif ($m < 20) {
+                $minute[] = Lang::get('admin/demons/command-demon.minutes-2.'.$m);
                 $minute[] = Lang::get('admin/demons/command-demon.minutes.9');
             } else {
                 $n = $m.'';
