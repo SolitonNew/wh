@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Models\ControllersModel;
+use App\Http\Models\PlanPartsModel;
 
-class HubsIndexRequest extends FormRequest
+class PlanIndexRequest extends FormRequest
 {
-    const LAST_VIEW_ID = 'HUB_INDEX_ID';
+    const LAST_VIEW_ID = 'PLAN_INDEX_ID';
     
     /**
      * Determine if the user is authorized to make this request.
@@ -27,7 +27,7 @@ class HubsIndexRequest extends FormRequest
     public function all($keys = null)
     {
         $data = parent::all($keys);
-        $data['hubID'] = $this->route('hubID');
+        $data['id'] = $this->route('id');
         return $data;
     }
 
@@ -38,17 +38,19 @@ class HubsIndexRequest extends FormRequest
      */
     public function rules()
     {
-        $hubID = $this->route('hubID');
-        if ($hubID) {
+        $id = $this->route('id');
+        
+        if ($id) {
+            $this->redirect = route('admin.plan');
             return [
-                'hubID' => 'exists:core_controllers,id',
+                'id' => 'exists:plan_parts,id',
             ];
         } else {
-            $newId = $this->getIdForView();
-            if ($newId) {
-                $this->redirect = route('admin.hub-devices', [$newId]);
+            $newID = $this->getViewID();
+            if ($newID) {
+                $this->redirect = route('admin.plan', $newID);
                 return [
-                    'hubID' => 'required',
+                    'id' => 'required',
                 ];
             } else {
                 return [];
@@ -61,15 +63,15 @@ class HubsIndexRequest extends FormRequest
      */
     protected function passedValidation()
     {
-        $hubID = $this->route('hubID');
-        $this->storeLastVisibleId($hubID);
+        $id = $this->route('id');
+        $this->storeLastViewID($id);
     }
     
     /**
      * 
      * @param int $id
      */
-    public function storeLastVisibleId(int $id = null)
+    public function storeLastViewID(int $id = null)
     {
         $this->session()->put(self::LAST_VIEW_ID, $id);
     }
@@ -78,18 +80,22 @@ class HubsIndexRequest extends FormRequest
      * 
      * @return type
      */
-    public function getIdForView()
+    public function getViewID()
     {
         $id = $this->session()->get(self::LAST_VIEW_ID);
-        $this->session()->put(self::LAST_VIEW_ID, null);
-        if (!$id) {
-            $item = ControllersModel::orderBy('name', 'asc')->first();
+        $this->storeLastViewID(null);
+        
+        if ($id) {
+            return $id;
+        } else {
+            $item = PlanPartsModel::whereParentId(null)
+                        ->orderBy('order_num', 'asc')
+                        ->first();
             if ($item) {
-                $id = $item->id;
+                return $item->id;
             }
         }
         
-        return $id;
+        return null;
     }
-    
 }

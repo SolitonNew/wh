@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Http\Services\Admin;
 
 use \Illuminate\Http\Request;
 use \App\Http\Models\VariableChangesModel;

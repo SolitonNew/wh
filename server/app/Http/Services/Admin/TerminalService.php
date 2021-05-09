@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Http\Services\Admin;
 
 use App\Http\Models\PlanPartsModel;
 use App\Http\Models\PropertysModel;

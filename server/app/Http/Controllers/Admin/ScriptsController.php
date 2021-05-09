@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Http\Services\ScriptsService;
-use App\Http\Requests\ScriptsIndexRequest;
-use App\Http\Requests\ScriptsRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Services\Admin\ScriptsService;
+use App\Http\Requests\Admin\ScriptsIndexRequest;
+use App\Http\Requests\Admin\ScriptsRequest;
 use App\Http\Models\ScriptsModel;
 
 class ScriptsController extends Controller

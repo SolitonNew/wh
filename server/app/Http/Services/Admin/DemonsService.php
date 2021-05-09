@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Http\Services\Admin;
 
 use App\Library\DemonManager;
 use App\Http\Models\PropertysModel;

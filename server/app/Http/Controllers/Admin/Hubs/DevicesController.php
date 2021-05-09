@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin\Hubs;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\HubsIndexRequest;
-use App\Http\Requests\DeviceRequest;
-use App\Http\Services\DevicesService;
+use App\Http\Requests\Admin\HubsIndexRequest;
+use App\Http\Requests\Admin\DeviceRequest;
+use App\Http\Services\Admin\DevicesService;
 use App\Http\Models\VariablesModel;
 use App\Http\Models\PlanPartsModel;
 

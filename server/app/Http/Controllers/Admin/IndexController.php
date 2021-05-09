@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Models\VariableChangesMemModel;
 
 class IndexController extends Controller
 {
@@ -26,7 +27,7 @@ class IndexController extends Controller
      */
     public function variableChanges(int $lastID) 
     {
-        \App\Http\Models\VariableChangesMemModel::setLastVariableID($lastID);
+        VariableChangesMemModel::setLastVariableID($lastID);
         return view('admin.log');
     }
 }

@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\PlanPartsModel;
 use App\Http\Models\VariablesModel;
-use App\Http\Requests\PlanIndexRequest;
-use App\Http\Requests\PlanRequest;
-use App\Http\Requests\PlanMoveChildsRequest;
-use App\Http\Requests\PlanImportRequest;
-use App\Http\Requests\PlanLinkDeviceRequest;
-use App\Http\Requests\PlanPortRequest;
+use App\Http\Requests\Admin\PlanIndexRequest;
+use App\Http\Requests\Admin\PlanRequest;
+use App\Http\Requests\Admin\PlanMoveChildsRequest;
+use App\Http\Requests\Admin\PlanImportRequest;
+use App\Http\Requests\Admin\PlanLinkDeviceRequest;
+use App\Http\Requests\Admin\PlanPortRequest;
 
 class PlanController extends Controller
 {

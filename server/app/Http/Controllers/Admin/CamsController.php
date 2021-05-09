@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CamsRequest;
+use App\Http\Requests\Admin\CamsRequest;
 use \App\Http\Models\PlanVideoModel;
 
 class CamsController extends Controller
