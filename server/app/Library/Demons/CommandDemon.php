@@ -5,7 +5,6 @@ namespace App\Library\Demons;
 use \Carbon\Carbon;
 use DB;
 use Lang;
-use Log;
 
 /**
  * Description of CommandDemon

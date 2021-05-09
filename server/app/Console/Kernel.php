@@ -67,28 +67,12 @@ class Kernel extends ConsoleKernel
                                                from core_execute) a)');
         })->dailyAt('4:00');
         
-        // Прочистка "app_control_sess"
+        // Прочистка "web_queue"
         $schedule->call(function () {
-            /*DB::delete('delete from app_control_sess
+            DB::delete('delete from web_queue
                          where id < (select a.maxID 
                                        from (select (IFNULL(MAX(id), 0) - 100) maxID 
-                                               from app_control_sess) a)'); */
-        })->dailyAt('4:00');
-        
-        // Прочистка "app_control_queue"
-        $schedule->call(function () {
-            /*DB::delete('delete from app_control_queue
-                         where id < (select a.maxID 
-                                       from (select (IFNULL(MAX(id), 0) - 100) maxID 
-                                               from app_control_queue) a)'); */
-        })->dailyAt('4:00');
-        
-        // Прочистка "app_control_exe_queue"
-        $schedule->call(function () {
-            /*DB::delete('delete from app_control_exe_queue
-                         where id < (select a.maxID 
-                                       from (select (IFNULL(MAX(id), 0) - 100) maxID 
-                                               from app_control_exe_queue) a)'); */
+                                               from web_queue) a)');
         })->dailyAt('4:00');
         
     }
