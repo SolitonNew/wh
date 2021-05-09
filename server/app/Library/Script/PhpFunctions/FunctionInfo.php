@@ -45,7 +45,7 @@ trait FunctionInfo
         // Формируем строку текущей температуры на улице  ------------------
         $temp_item = \App\Http\Models\VariablesModel::find(config('app.command_info_temp_id'));
         if ($temp_item) {
-            $t_out = $temp_item->VALUE;
+            $t_out = $temp_item->value;
             $t_round = round($t_out);
             $t_speach = abs($t_round);
             $t_str = ' '.$t_speach;
