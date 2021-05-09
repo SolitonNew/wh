@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Services\TerminalService;
+use App\Http\Services\Admin\TerminalService;
 
 class TerminalController extends Controller
 {

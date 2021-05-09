@@ -36,6 +36,11 @@ Route::group(['middleware'=>'role:terminal'], function () {
     Route::get('/device-changes/{lastID}', 'Terminal\DeviceController@changes')->name('terminal.device-changes');
     
     
+    /* Requesting queue changes  -------------------------------------------- */
+    Route::get('/quque-changes/{lasID}', 'Terminal\QueueController@changes')->name('terminal.queue-changes');
+    Route::get('/queue-speech-source/{id}', 'Terminal\QueueController@speechSource')->name('terminal.queue-speech-source');
+    
+    
     /* Setting device value  ------------------------------------------------ */
     Route::post('/device-set/{deviceID}/{value}', 'Terminal\DeviceController@set')->name('terminal.device-set');
 });

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Hubs;
 
-use App\Http\Requests\HubsIndexRequest;
+use App\Http\Requests\Admin\HubsIndexRequest;
 use App\Http\Controllers\Controller;
-use App\Http\Services\HostsService;
+use App\Http\Services\Admin\HostsService;
 
 class HostsController extends Controller
 {

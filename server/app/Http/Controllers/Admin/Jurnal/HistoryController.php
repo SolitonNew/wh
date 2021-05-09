@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Jurnal;
 
-use App\Http\Requests\HistoryIndexRequest;
 use App\Http\Controllers\Controller;
-use App\Http\Services\HistoryService;
+use App\Http\Requests\Admin\HistoryIndexRequest;
+use App\Http\Services\Admin\HistoryService;
 use App\Http\Models\VariablesModel;
 use App\Http\Models\VariableChangesModel;
 

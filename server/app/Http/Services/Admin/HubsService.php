@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Http\Services\Admin;
 
 use App\Http\Models\ControllersModel;
 use App\Http\Models\VariablesModel;
@@ -9,7 +9,6 @@ use App\Library\DemonManager;
 use App\Library\Firmware;
 use DB;
 use Log;
-use Session;
 
 class HubsService 
 {

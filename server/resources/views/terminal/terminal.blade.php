@@ -18,7 +18,11 @@
     <div class="body-page-center">
         <div id="dummyNav"></div>
         <div id="mainContainer" class="container-fluid" style="overflow: hidden;">
-        @yield('content')
+            <audio id="speech" autoplay></audio>
+            @yield('content')
+            <button class="btn btn-light audio-button" onclick="audioFirstPlay()">
+                <img src="img/volume-high-3x.png"/>
+            </button>
         </div>
     </div>
     <div class="body-page-right">
@@ -31,7 +35,6 @@
         </div>
     </div>
 </div>
-
 
 <script>
     var currentPage = '';
@@ -77,6 +80,7 @@
         });
         
         loadChanges();
+        loadQueue();
         
         $(window).on('resize', () => {
             if (!isMobile) {
@@ -140,6 +144,43 @@
             }, 
             error: () => {
                 setTimeout(loadChanges, 5000);
+                console.log('ERROR');
+            },
+        });
+    }
+    
+    let lastQueueID = {{ \App\Http\Models\WebQueueMemModel::lastQueueID() ?? -1 }};
+    
+    function loadQueue() {
+        $.ajax({
+            url: '{{ route("terminal.queue-changes", '') }}/' + lastQueueID,
+            success: (data) => {
+                if (typeof(data) == 'string') {
+                    if ((data.substr(0, 15) == '<!DOCTYPE HTML>')) {
+                        window.location.reload();
+                        return ;
+                    } else
+                    if (data.substr(0, 9) == 'LAST_ID: ') {
+                        lastQueueID = data.substr(9);             
+                    }
+                } else {
+                    data.forEach(function (item) {
+                        lastQueueID = item.id;
+                        
+                        let data = JSON.parse(item.data);
+                        
+                        switch (item.action) {
+                            case 'speech':
+                                $('#speech').attr('src', '{{ route("terminal.queue-speech-source", "") }}/' + data.id);
+                                break;
+                        }
+                    });
+                }
+                
+                setTimeout(loadQueue, 500);
+            },
+            error: () => {
+                setTimeout(loadQueue, 5000);
                 console.log('ERROR');
             },
         });
@@ -262,6 +303,12 @@
         $('.body-page-left').css('padding-top', t);
         $('.body-page-right').css('padding-top', t);
     }
+    
+    function audioFirstPlay() {
+        $('#speech').attr('src', 'audio/notify.wav');
+        $('.audio-button').hide(150);
+    }
+    
 </script>
 
 @endsection

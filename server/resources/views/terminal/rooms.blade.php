@@ -48,7 +48,7 @@
     @endforeach
     </div>
     @include('terminal.video-list')
-    @include('terminal.location')
+    {{-- @include('terminal.location') --}}
 </div>
 
 <script>

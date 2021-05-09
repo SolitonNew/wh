@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UsersRequest;
+use App\Http\Requests\Admin\UsersRequest;
 use \App\Http\Models\UsersModel;
-use Auth;
 
 class UsersController extends Controller
 {

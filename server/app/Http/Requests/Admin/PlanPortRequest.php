@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
-use \App\Library\JsonFormRequest;
+use App\Library\JsonFormRequest;
 
 class PlanPortRequest extends JsonFormRequest
 {
