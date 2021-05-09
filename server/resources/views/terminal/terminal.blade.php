@@ -166,6 +166,8 @@
                         lastQueueID = data.substr(9);             
                     }
                 } else {
+                    let newSpeech = false;
+                    
                     data.forEach(function (item) {
                         lastQueueID = item.id;
                         
@@ -180,12 +182,14 @@
                                 speechQueue.push({
                                     typ: 'speech',
                                     src: '{{ route("terminal.queue-speech-source", "") }}/' + data.id,
-                                })
+                                });
+                                
+                                newSpeech = true;
                                 break;
                         }
                     });
                     
-                    if (speechQueue.length > 0 && $('#speech')[0].paused) {
+                    if (newSpeech && $('#speech')[0].paused) {
                         speechProcessed();
                     }
                 }
@@ -202,16 +206,18 @@
     let lastSpeechTime = false;
     
     function speechProcessed() {
+        let now = (new Date()).getTime();
         if (speechQueue.length > 0) {
             let item = speechQueue.shift();
             if (item.typ == 'notify') {
-                if (lastSpeechTime && (new Date()).getTime() - lastSpeechTime.getTime() < 2000) { // 2s
-                    item = speechQueue.shift();
+                if (lastSpeechTime && now - lastSpeechTime < 3000) { // 3s
+                    speechProcessed();
+                    return ;
                 }
             }
             $('#speech').attr('src', item.src);
         }        
-        lastSpeechTime = new Date();
+        lastSpeechTime = now;
     }
 
     var bodyItemW = 0;
