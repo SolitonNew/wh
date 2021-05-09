@@ -18,7 +18,7 @@
     <div class="body-page-center">
         <div id="dummyNav"></div>
         <div id="mainContainer" class="container-fluid" style="overflow: hidden;">
-            <audio id="speech" autoplay></audio>
+            <audio id="speech" autoplay onended="speechProcessed();"></audio>
             @yield('content')
             <button class="btn btn-light audio-button" onclick="audioFirstPlay()">
                 <img src="img/volume-high-3x.png"/>
@@ -41,6 +41,8 @@
     var isMobile = false;
     var lockScrollLeft = false;
     var lockScrollRight = false;
+    
+    var speechQueue = new Array();
     
     $('document').ready(() => {
         isMobile = (window.orientation !== undefined);
@@ -171,10 +173,21 @@
                         
                         switch (item.action) {
                             case 'speech':
-                                $('#speech').attr('src', '{{ route("terminal.queue-speech-source", "") }}/' + data.id);
+                                speechQueue.push({
+                                    typ: 'notify',
+                                    src: 'audio/notify.wav',
+                                });
+                                speechQueue.push({
+                                    typ: 'speech',
+                                    src: '{{ route("terminal.queue-speech-source", "") }}/' + data.id,
+                                })
                                 break;
                         }
                     });
+                    
+                    if (speechQueue.length > 0 && $('#speech')[0].paused) {
+                        speechProcessed();
+                    }
                 }
                 
                 setTimeout(loadQueue, 500);
@@ -184,6 +197,21 @@
                 console.log('ERROR');
             },
         });
+    }
+    
+    let lastSpeechTime = false;
+    
+    function speechProcessed() {
+        if (speechQueue.length > 0) {
+            let item = speechQueue.shift();
+            if (item.typ == 'notify') {
+                if (lastSpeechTime && (new Date()).getTime() - lastSpeechTime.getTime() < 2000) { // 2s
+                    item = speechQueue.shift();
+                }
+            }
+            $('#speech').attr('src', item.src);
+        }        
+        lastSpeechTime = new Date();
     }
 
     var bodyItemW = 0;

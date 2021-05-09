@@ -10,7 +10,6 @@ namespace App\Library\Script\PhpFunctions;
 
 use App\Http\Models\SpeechesModel;
 use App\Http\Models\WebQueueMemModel;
-use Log;
 
 trait FunctionSpeech 
 {
@@ -32,8 +31,6 @@ trait FunctionSpeech
             if (!file_exists($path)) mkdir($path);
             $file = $path.'/speech_'.$item->id.'.wav';
             exec('echo "'.$phrase.'" | RHVoice-test -p Anna -o '.$file);
-            
-            Log::info($phrase);
         }
         
         // Append an record to the queue
