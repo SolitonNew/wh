@@ -1,23 +1,17 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-namespace App\Library\Demons;
+namespace App\Library\Daemons;
 
 use \Carbon\Carbon;
 use Lang;
 use DB;
 
 /**
- * Description of CommandDemon
+ * Description of CommandDaemon
  *
  * @author soliton
  */
-class ScheduleDemon extends BaseDemon 
+class ScheduleDaemon extends BaseDaemon 
 {
     /**
      * 
@@ -30,7 +24,7 @@ class ScheduleDemon extends BaseDemon
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/demons/schedule-demon.description'));
+        $this->printLine(Lang::get('admin/daemons/schedule-daemon.description'));
         $this->printLine(str_repeat('-', 100));
         foreach(\App\Http\Models\ScheduleModel::orderBy('comm', 'asc')->get() as $row) {
             $row->action_datetime = $row->makeDateTime();
@@ -39,7 +33,7 @@ class ScheduleDemon extends BaseDemon
             if ($row->action_datetime) {
                 $time = Carbon::parse($row->action_datetime)->format('Y-m-d H:i:s');
             }
-            $this->printLine("[$time] $row->comm       ".($row->enable ? '' : Lang::get('admin/demons/schedule-demon.disabled')));
+            $this->printLine("[$time] $row->comm       ".($row->enable ? '' : Lang::get('admin/daemons/schedule-daemon.disabled')));
         }
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
@@ -54,7 +48,7 @@ class ScheduleDemon extends BaseDemon
                     if ($row->enable) {
                         // Выполняем
                         \App\Http\Models\ExecuteModel::command($row->action);
-                        $this->printLine(Lang::get('admin/demons/schedule-demon.line', [
+                        $this->printLine(Lang::get('admin/daemons/schedule-daemon.line', [
                             'datetime' => Carbon::parse($row->action_datetime),
                             'comm' => $row->comm,
                             'action' => str_replace("\n", ' ', $row->action),

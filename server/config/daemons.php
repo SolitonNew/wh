@@ -8,11 +8,11 @@
 
 return [
     /**
-     *  Список процессов работающих в фоновом режиме
+     * List of processes running in the background
      */
     'list' => [
-        'rs485-demon',
-        'schedule-demon',
-        'command-demon',
+        'din-daemon',
+        'schedule-daemon',
+        'command-daemon',
     ],
 ];

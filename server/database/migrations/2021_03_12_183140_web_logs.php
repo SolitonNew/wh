@@ -15,7 +15,7 @@ class WebLogs extends Migration
     {
         Schema::create('web_logs', function (Blueprint $table) {
             $table->integerIncrements('id');
-            $table->string('demon', 32);
+            $table->string('daemon', 32);
             $table->string('data', 255);
         });
     }

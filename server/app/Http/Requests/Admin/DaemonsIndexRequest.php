@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Library\DemonManager;
+use App\Library\DaemonManager;
 
-class DemonsIndexRequest extends FormRequest
+class DaemonsIndexRequest extends FormRequest
 {
     /**
      * 
@@ -33,9 +33,9 @@ class DemonsIndexRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(DemonManager $demonManager)
+    public function rules(DaemonManager $daemonManager)
     {
-        $this->redirect = route('admin.jurnal-demons', $demonManager->demons()[0]);
+        $this->redirect = route('admin.jurnal-daemons', $daemonManager->daemons()[0]);
         
         return [
             'id' => 'required',

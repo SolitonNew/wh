@@ -17,14 +17,14 @@ return [
     'history_VALUE' => 'Значение',
     'history_value_delete_confirm' => 'Удалить текущую запись?',
     
-    'demons' => 'Процессы',
-    'demon_run' => 'Запустить текущий процесс',
-    'demon_stop' => 'Остановить текущий процесс',
-    'demon_reload' => 'Перезапустить тукущий процесс',
-    'demon_btn_top' => 'Вверх',
-    'demon_run_confirm' => 'Запустить текущий процесс?',
-    'demon_stop_confirm' => 'Остановить текущий процесс?',
-    'demon_reload_confirm' => 'Перезапустить тукущий процесс?',
+    'daemons' => 'Процессы',
+    'daemon_run' => 'Запустить текущий процесс',
+    'daemon_stop' => 'Остановить текущий процесс',
+    'daemon_reload' => 'Перезапустить тукущий процесс',
+    'daemon_btn_top' => 'Вверх',
+    'daemon_run_confirm' => 'Запустить текущий процесс?',
+    'daemon_stop_confirm' => 'Остановить текущий процесс?',
+    'daemon_reload_confirm' => 'Перезапустить тукущий процесс?',
     
     'power' => 'Потребление',
 ];

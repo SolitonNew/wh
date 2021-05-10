@@ -17,14 +17,14 @@ return [
     'history_VALUE' => 'Value',
     'history_value_delete_confirm' => 'Delete this recotrd?',
     
-    'demons' => 'Processes',
-    'demon_run' => 'Start the current process',
-    'demon_stop' => 'Stop the current process',
-    'demon_reload' => 'Restart the current process',
-    'demon_btn_top' => 'Top',
-    'demon_run_confirm' => 'Start the current process?',
-    'demon_stop_confirm' => 'Stop the current process?',
-    'demon_reload_confirm' => 'Restart the current process?',
+    'daemons' => 'Processes',
+    'daemon_run' => 'Start the current process',
+    'daemon_stop' => 'Stop the current process',
+    'daemon_reload' => 'Restart the current process',
+    'daemon_btn_top' => 'Top',
+    'daemon_run_confirm' => 'Start the current process?',
+    'daemon_stop_confirm' => 'Stop the current process?',
+    'daemon_reload_confirm' => 'Restart the current process?',
     
     'power' => 'Power',
 ];

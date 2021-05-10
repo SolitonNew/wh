@@ -5,7 +5,7 @@ namespace App\Http\Services\Admin;
 use App\Http\Models\ControllersModel;
 use App\Http\Models\VariablesModel;
 use App\Http\Models\PropertysModel;
-use App\Library\DemonManager;
+use App\Library\DaemonManager;
 use App\Library\Firmware;
 use DB;
 use Log;
@@ -17,11 +17,11 @@ class HubsService
      */
     public function hubsScan()
     {
-        PropertysModel::setRs485Command('OW SEARCH');
+        PropertysModel::setDinCommand('OW SEARCH');
         $i = 0;
         while ($i++ < 50) { // 5 sec
             usleep(100000);
-            $text = PropertysModel::getRs485CommandInfo();
+            $text = PropertysModel::getDinCommandInfo();
             if ($t = strpos($text, 'END_OW_SCAN')) {
                 $text = substr($text, 0, $t);
                 break;
@@ -145,18 +145,18 @@ class HubsService
     }
     
     /**
-     * This is the rs485-demon reboot method.
+     * This is the din-daemon reboot method.
      * 
-     * @param \App\Http\Controllers\Admin\DemonManager $demonManager
+     * @param \App\Http\Controllers\Admin\DaemonManager $daemonManager
      * @return string
      */
-    public function restartRs485Demon() 
+    public function restartDinDaemon() 
     {
-        $demonManager = new DemonManager();
-        $demon = 'rs485-demon';
+        $daemonManager = new DaemonManager();
+        $daemon = 'din-daemon';
         try {
-            PropertysModel::setAsRunningDemon($demon);
-            $demonManager->restart($demon);
+            PropertysModel::setAsRunningDaemon($daemon);
+            $daemonManager->restart($daemon);
             return 'OK';
         } catch (\Exception $ex) {
             abort(response()->json([
@@ -199,8 +199,8 @@ class HubsService
      */
     public function firmwareStart()
     {
-        PropertysModel::setRs485Command('FIRMWARE');
-        PropertysModel::setRs485CommandInfo('', true);
+        PropertysModel::setDinCommand('FIRMWARE');
+        PropertysModel::setDinCommandInfo('', true);
     }
     
     /**
@@ -209,16 +209,16 @@ class HubsService
      */
     public function firmwareStatus()
     {
-        $demonManager = new DemonManager();
+        $daemonManager = new DaemonManager();
         
         try {
-            if (!$demonManager->isStarted('rs485-demon')) {
+            if (!$daemonManager->isStarted('din-daemon')) {
                 return response()->json([                    
                     'firmware' => 'NOTPOSSIBLE',
                 ]);
             }
             
-            $info = PropertysModel::getRs485CommandInfo();
+            $info = PropertysModel::getDinCommandInfo();
             if ($info == 'COMPLETE') {
                 return response()->json([                    
                     'firmware' => 'COMPLETE',
@@ -252,7 +252,7 @@ class HubsService
     public function hubsReset()
     {
         try {
-            PropertysModel::setRs485Command('RESET');           
+            PropertysModel::setDinCommand('RESET');           
         } catch (\Exception $ex) {
             abort(response()->json([
                 'errors' => [$ex->getMessage()],

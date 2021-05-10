@@ -143,11 +143,11 @@ Route::group(['prefix' => 'admin', 'middleware'=>'role:admin'], function () {
     Route::delete('/jurnal/history-delete-all-visible/{id}', 'Admin\Jurnal\HistoryController@deleteAllVisibleValues')->name('admin.jurnal-history-delete-all-visible');
     
     /* Processes management routes */
-    Route::get('/jurnal/demons/{id?}', 'Admin\Jurnal\DemonsController@index')->name('admin.jurnal-demons');
-    Route::get('/jurnal/demon-data/{id}/{lastID?}', 'Admin\Jurnal\DemonsController@data')->name('admin.jurnal-demon-data');
-    Route::get('/jurnal/demon-start/{id}', 'Admin\Jurnal\DemonsController@demonStart')->name('admin.jurnal-demon-start');
-    Route::get('/jurnal/demon-stop/{id}', 'Admin\Jurnal\DemonsController@demonStop')->name('admin.jurnal-demon-stop');
-    Route::get('/jurnal/demon-restart/{id}', 'Admin\Jurnal\DemonsController@demonRestart')->name('admin.jurnal-demon-restart');
+    Route::get('/jurnal/daemons/{id?}', 'Admin\Jurnal\DaemonsController@index')->name('admin.jurnal-daemons');
+    Route::get('/jurnal/daemon-data/{id}/{lastID?}', 'Admin\Jurnal\DaemonsController@data')->name('admin.jurnal-daemon-data');
+    Route::get('/jurnal/daemon-start/{id}', 'Admin\Jurnal\DaemonsController@daemonStart')->name('admin.jurnal-daemon-start');
+    Route::get('/jurnal/daemon-stop/{id}', 'Admin\Jurnal\DaemonsController@daemonStop')->name('admin.jurnal-daemon-stop');
+    Route::get('/jurnal/daemon-restart/{id}', 'Admin\Jurnal\DaemonsController@daemonRestart')->name('admin.jurnal-daemon-restart');
     
     /* Power management routes */    
     Route::get('/jurnal/power', 'Admin\Jurnal\PowerController@index')->name('admin.jurnal-power');

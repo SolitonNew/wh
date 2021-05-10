@@ -570,16 +570,16 @@ div.form-control {
     color: var(--primary);
 }
 
-.demon-log {
+.daemon-log {
     font-family: 'Ubuntu Mono', 'Consolas', 'Courier New';
 }
 
-.demon-log-line {
+.daemon-log-line {
     white-space: pre;
     min-height: 1rem;
 }
 
-.demon-log-header {
+.daemon-log-header {
     text-align: center;
     padding: 1rem;
     border: 1px solid #000000;
@@ -587,7 +587,7 @@ div.form-control {
     margin: 1rem 0rem;
 }
 
-.demon-log-line hr {
+.daemon-log-line hr {
     display: inline-block;
     width: 100%;
     background-color: #000000;
@@ -596,7 +596,7 @@ div.form-control {
     line-height: 0px;
 }
 
-.demon-log-btn-top {
+.daemon-log-btn-top {
     position: absolute;
     right: 2rem;
     bottom: 2rem;

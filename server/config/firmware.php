@@ -10,8 +10,8 @@ return [
     'mmcu' => env('MMCU', 'atmega8a'),
     'spm_pagesize' => env('SPM_PAGESIZE', 128),
     
-    'rs485_port' => env('RS485_PORT', '/dev/ttyUSB0'),
-    'rs485_baud' => env('RS485_BAUD', 9600),
+    'din_port' => env('DIN_PORT', '/dev/ttyUSB0'),
+    'din_baud' => env('DIN_BAUD', 9600),
     
     'channels' => [
         'atmega8a' => [

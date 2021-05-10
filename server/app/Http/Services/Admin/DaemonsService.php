@@ -2,34 +2,34 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Library\DemonManager;
+use App\Library\DaemonManager;
 use App\Http\Models\PropertysModel;
 
-class DemonsService 
+class DaemonsService 
 {
-    private $_demonManager;
+    private $_daemonManager;
     
     public function __construct() 
     {
-        $this->_demonManager = new DemonManager();
+        $this->_daemonManager = new DaemonManager();
     }
     
     /**
      * 
      * @return type
      */
-    public function demonsList()
+    public function daemonsList()
     {
-        $demons = [];
-        foreach($this->_demonManager->demons() as $dem) {
-            $stat = $this->_demonManager->isStarted($dem);
-            $demons[] = (object)[
+        $daemons = [];
+        foreach($this->_daemonManager->daemons() as $dem) {
+            $stat = $this->_daemonManager->isStarted($dem);
+            $daemons[] = (object)[
                 'id' => $dem,
                 'stat' => $stat,
             ];
         }
         
-        return $demons;
+        return $daemons;
     }
     
     /**
@@ -39,7 +39,7 @@ class DemonsService
      */
     public function isStarted($id)
     {
-        return $this->_demonManager->isStarted($id);
+        return $this->_daemonManager->isStarted($id);
     }
     
     /**
@@ -47,20 +47,20 @@ class DemonsService
      * @param type $id
      * @return type
      */
-    public function existsDemon($id)
+    public function existsDaemon($id)
     {
-        return $this->_demonManager->exists($id);
+        return $this->_daemonManager->exists($id);
     }
     
     /**
      * 
      * @param string $id
      */
-    public function demonStart(string $id)
+    public function daemonStart(string $id)
     {        
         try {
-            PropertysModel::setAsRunningDemon($id);
-            $this->_demonManager->start($id);
+            PropertysModel::setAsRunningDaemon($id);
+            $this->_daemonManager->start($id);
             usleep(250000);
         } catch (\Exception $ex) {
             abort(response()->json([
@@ -73,11 +73,11 @@ class DemonsService
      * 
      * @param string $id
      */
-    public function demonStop(string $id)
+    public function daemonStop(string $id)
     {
         try {
-            PropertysModel::setAsStoppedDemon($id);
-            $this->_demonManager->stop($id);
+            PropertysModel::setAsStoppedDaemon($id);
+            $this->_daemonManager->stop($id);
             usleep(250000);
         } catch (\Exception $ex) {
             abort(response()->json([
@@ -90,11 +90,11 @@ class DemonsService
      * 
      * @param string $id
      */
-    public function demonRestart(string $id)
+    public function daemonRestart(string $id)
     {
         try {           
-            PropertysModel::setAsRunningDemon($id);
-            $this->_demonManager->restart($id);
+            PropertysModel::setAsRunningDaemon($id);
+            $this->_daemonManager->restart($id);
             usleep(250000);
         } catch (\Exception $ex) {
             abort(response()->json([

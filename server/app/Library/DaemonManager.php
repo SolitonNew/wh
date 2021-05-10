@@ -2,32 +2,30 @@
 
 namespace App\Library;
 
-use Log;
-
 /**
  * DemonManager Process Manager.
  *
  * @author soliton
  */
-class DemonManager 
+class DaemonManager 
 {
     /**
      *     
      * @var type 
      */
-    protected $_demons = [];
+    protected $_daemons = [];
     
     /**
      * 
      */
     public function __construct() 
     {
-        $this->_demons = config('demons.list');
+        $this->_daemons = config('daemons.list');
     }
     
-    public function demons() 
+    public function daemons() 
     {
-        return $this->_demons;
+        return $this->_daemons;
     }
     
     /**
@@ -38,7 +36,7 @@ class DemonManager
      */
     public function exists(string $id) 
     {
-        return in_array($id, $this->_demons);
+        return in_array($id, $this->_daemons);
     }
     
     /**
@@ -49,7 +47,7 @@ class DemonManager
     public function isStarted(string $id) 
     {
         if ($this->exists($id)) {
-            return count($this->findDemonPID($id)) > 0;
+            return count($this->findDaemonPID($id)) > 0;
         } else {
             throw new \Exception('Non-existent process ID');
         }
@@ -77,7 +75,7 @@ class DemonManager
     public function stop(string $id) 
     {
         if ($this->exists($id)) {
-            foreach($this->findDemonPID($id) as $pid) {
+            foreach($this->findDaemonPID($id) as $pid) {
                 exec('kill -9 '.$pid);
             }
         } else {
@@ -109,7 +107,7 @@ class DemonManager
      * @param string $id
      * @return type
      */
-    public function findDemonPID(string $id) 
+    public function findDaemonPID(string $id) 
     {
         $pids = [];
         exec("ps ax | grep $id | grep -v grep | grep -v 'sh -c '", $outs);

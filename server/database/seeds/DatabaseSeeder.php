@@ -43,12 +43,12 @@ class DatabaseSeeder extends Seeder
         // Filling out of the core_propertys table
         $data = [
             '1|SYNC_STATE|Synchronization state of the server and controllers: Running/Stoped|STOP',
-            '2|RS485_COMMAND|Command addressed to the RS485-demon|',
-            '3|RS485_COMMAND_INFO|Text that is alternately changed by the initializer or executor of the command|',
+            '2|DIN_COMMAND|Command addressed to the din-daemon|',
+            '3|DIN_COMMAND_INFO|Text that is alternately changed by the initializer or executor of the command|',
             '4|FIRMWARE_CHANGES|The number of changes made to the database (which affect the firmware) since the last successful update|',
             '5|WEB_CHECKED|IDs for the web version of the client|',
             '6|WEB_COLOR|Coloring by keywords|',
-            '7|RUNNING_DEMONS|List of daemons marked for automatic start|schedule-demon;command-demon',
+            '7|RUNNING_DAEMONS|List of daemons marked for automatic start|schedule-daemon;command-daemon',
             '8|PLAN_MAX_LEVEL|System structure depth|',
         ];
 

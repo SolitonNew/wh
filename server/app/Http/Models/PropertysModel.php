@@ -41,9 +41,9 @@ class PropertysModel extends Model
      * 
      * @return type
      */
-    static public function runningDemons() 
+    static public function runningDaemons() 
     {
-        $item = self::whereName('RUNNING_DEMONS')->first();
+        $item = self::whereName('RUNNING_DAEMONS')->first();
         if ($item && $item->value) {
             return explode(';', $item->value);
         } else {
@@ -53,17 +53,17 @@ class PropertysModel extends Model
     
     /**
      * 
-     * @param type $demon
+     * @param type $daemon
      */
-    static public function setAsRunningDemon($demon) 
+    static public function setAsRunningDaemon($daemon) 
     {
-        $a = self::runningDemons();
-        if (!in_array($demon, $a)) {
-            $a[] = $demon;
-            $item = self::whereName('RUNNING_DEMONS')->first();
+        $a = self::runningDaemons();
+        if (!in_array($daemon, $a)) {
+            $a[] = $daemon;
+            $item = self::whereName('RUNNING_DAEMONS')->first();
             if (!$item) {
                 $item = new PropertysModel();
-                $item->name = 'RUNNING_DEMONS';
+                $item->name = 'RUNNING_DAEMONS';
                 $item->comm = '';
             }
             $item->value = implode(';', $a);
@@ -73,17 +73,17 @@ class PropertysModel extends Model
     
     /**
      * 
-     * @param type $demon
+     * @param type $daemon
      */
-    static public function setAsStoppedDemon($demon) 
+    static public function setAsStoppedDaemon($daemon) 
     {
-        $a = self::runningDemons();
-        if (in_array($demon, $a)) {
-            array_splice($a, array_search($demon, $a));
-            $item = self::whereName('RUNNING_DEMONS')->first();
+        $a = self::runningDaemons();
+        if (in_array($daemon, $a)) {
+            array_splice($a, array_search($daemon, $a));
+            $item = self::whereName('RUNNING_DAEMONS')->first();
             if (!$item) {
                 $item = new PropertysModel();
-                $item->name = 'RUNNING_DEMONS';
+                $item->name = 'RUNNING_DAEMONS';
                 $item->comm = '';
             }
             $item->value = implode(';', $a);
@@ -127,9 +127,9 @@ class PropertysModel extends Model
      * 
      * @return string
      */
-    static public function getRs485Command($clear = false) 
+    static public function getDinCommand($clear = false) 
     {
-        $item = self::whereName('RS485_COMMAND')->first();
+        $item = self::whereName('DIN_COMMAND')->first();
         if ($item) {
             $value = $item->value;
             if ($clear) {
@@ -145,9 +145,9 @@ class PropertysModel extends Model
      * 
      * @param type $command
      */
-    static public function setRs485Command($command) 
+    static public function setDinCommand($command) 
     {
-        $item = self::whereName('RS485_COMMAND')->first();
+        $item = self::whereName('DIN_COMMAND')->first();
         $item->value = $command;
         $item->save();
     }
@@ -156,9 +156,9 @@ class PropertysModel extends Model
      * 
      * @return string
      */
-    static public function getRs485CommandInfo() 
+    static public function getDinCommandInfo() 
     {
-        $item = self::whereName('RS485_COMMAND_INFO')->first();
+        $item = self::whereName('DIN_COMMAND_INFO')->first();
         if ($item) {
             return $item->value;
         }
@@ -170,12 +170,12 @@ class PropertysModel extends Model
      * @param type $text
      * @param type $new
      */
-    static public function setRs485CommandInfo($text, $first = false) 
+    static public function setDinCommandInfo($text, $first = false) 
     {
-        $item = self::whereName('RS485_COMMAND_INFO')->first();
+        $item = self::whereName('DIN_COMMAND_INFO')->first();
         if (!$item) {
             $item = new PropertysModel();
-            $item->name = 'RS485_COMMAND_INFO';
+            $item->name = 'DIN_COMMAND_INFO';
             $item->comm = '';
         }
         if ($first) {

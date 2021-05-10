@@ -11,16 +11,16 @@ class WebLogsModel extends Model
     
     /**
      * 
-     * @param string $demonID
+     * @param string $daemonID
      * @param int $lastID
      * @return type
      */
-    static public function getDemonDataFromID(string $demonID, int $lastID)
+    static public function getDaemonDataFromID(string $daemonID, int $lastID)
     {
-        $data = \App\Http\Models\WebLogsModel::whereDemon($demonID)
+        $data = \App\Http\Models\WebLogsModel::whereDaemon($daemonID)
                     ->where('id', '>', $lastID)
                     ->orderby('id', 'desc')
-                    ->limit(config("app.admin_demons_log_lines_count"))
+                    ->limit(config("app.admin_daemons_log_lines_count"))
                     ->get();
 
         foreach($data as &$row) {
