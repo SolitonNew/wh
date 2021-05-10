@@ -65,8 +65,8 @@ class HubsController extends Controller
     {
         ControllersModel::storeFromRequest($request, $id);
 
-        // Restart din-daemon
-        $this->_hubsService->restartDinDaemon();
+        // Restart service daemons
+        $this->_hubsService->restartServiceDaemons();
 
         return 'OK';
     }
@@ -81,8 +81,8 @@ class HubsController extends Controller
     {
         ControllersModel::deleteById($id);
         
-        // Restart din-daemon
-        $this->_hubsService->restartDinDaemon();
+        // Restart service daemons
+        $this->_hubsService->restartServiceDaemons();
         
         return 'OK';
     }

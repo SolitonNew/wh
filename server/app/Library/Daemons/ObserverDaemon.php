@@ -8,6 +8,7 @@
 
 namespace App\Library\Daemons;
 
+use DB;
 use Lang;
 
 /**
@@ -22,6 +23,7 @@ class ObserverDaemon extends BaseDaemon
      */
     public function execute() 
     {
+        DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         
         $this->printLine('');
         $this->printLine('');

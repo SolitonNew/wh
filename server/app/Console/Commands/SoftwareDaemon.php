@@ -15,7 +15,7 @@ use \Illuminate\Console\Command;
  *
  * @author soliton
  */
-class SoftwareCommand extends Command
+class SoftwareDaemon extends Command
 {
 /**
      * The name and signature of the console command.

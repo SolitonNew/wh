@@ -145,18 +145,23 @@ class HubsService
     }
     
     /**
-     * This is the din-daemon reboot method.
+     * This is the service daemons reboot method.
      * 
-     * @param \App\Http\Controllers\Admin\DaemonManager $daemonManager
      * @return string
      */
-    public function restartDinDaemon() 
+    public function restartServiceDaemons() 
     {
+        $daemons = [
+            'din-daemon', 
+            'software-daemon',
+        ];
+        
         $daemonManager = new DaemonManager();
-        $daemon = 'din-daemon';
         try {
-            PropertysModel::setAsRunningDaemon($daemon);
-            $daemonManager->restart($daemon);
+            foreach($daemons as $daemon) {
+                PropertysModel::setAsRunningDaemon($daemon);
+                $daemonManager->restart($daemon);
+            }
             return 'OK';
         } catch (\Exception $ex) {
             abort(response()->json([

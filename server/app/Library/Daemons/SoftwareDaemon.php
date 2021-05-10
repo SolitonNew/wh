@@ -8,6 +8,8 @@
 
 namespace App\Library\Daemons;
 
+use App\Http\Models\ControllersModel;
+use DB;
 use Lang;
 
 /**
@@ -17,12 +19,14 @@ use Lang;
  */
 class SoftwareDaemon extends BaseDaemon
 {
+    private $_controllers;
+    
     /**
      * 
      */
     public function execute() 
     {
-        
+        DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         
         $this->printLine('');
         $this->printLine('');
@@ -30,6 +34,16 @@ class SoftwareDaemon extends BaseDaemon
         $this->printLine(Lang::get('admin/daemons/software-daemon.description'));
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
+        
+        $this->_controllers = ControllersModel::where('id', '>', 0)
+                                ->whereTyp('din')
+                                ->orderBy('rom', 'asc')
+                                ->get();
+        
+        if (count($this->_controllers) == 0) {
+            $this->disableAutorun();
+            return;
+        }
         
         while (1) {
             usleep(200000);
