@@ -18,7 +18,7 @@ class ScheduleDemon extends Command
      *
      * @var string
      */
-    protected $description = 'Демон обслуживающий подсистему расписания';
+    protected $description = 'Daemon serving the schedule subsystem';
 
     /**
      * Create a new command instance.

@@ -18,7 +18,7 @@ class CommandDemon extends Command
      *
      * @var string
      */
-    protected $description = 'Выпоняет внутрисистемные комманды';
+    protected $description = 'Eavesdrops on in-system commands';
     
     /**
      * Create a new command instance.

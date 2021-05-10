@@ -18,7 +18,7 @@ class RS485Demon extends Command
      *
      * @var string
      */
-    protected $description = 'Обслуживает взаимодействие сервера и щитовых контроллеров';
+    protected $description = 'Serves the interaction of the server and panel controllers';
 
     /**
      * Create a new command instance.
