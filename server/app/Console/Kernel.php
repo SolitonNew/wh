@@ -4,7 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use \App\Library\DaemonManager;
+use App\Library\DaemonManager;
 use DB;
 
 class Kernel extends ConsoleKernel
@@ -15,9 +15,11 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        Commands\SoftwareDaemon::class,
         Commands\DinDaemon::class,
         Commands\ScheduleDaemon::class,
         Commands\CommandDaemon::class,
+        Commands\ObserverDaemon::class,
     ];
 
     /**

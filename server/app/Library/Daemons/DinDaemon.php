@@ -2,6 +2,11 @@
 
 namespace App\Library\Daemons;
 
+use App\Http\Models\ControllersModel;
+use App\Http\Models\PropertysModel;
+use App\Http\Models\VariableChangesMemModel;
+use App\Http\Models\OwDevsModel;
+use App\Http\Models\VariablesModel;
 use DB;
 use Lang;
 use Log;
@@ -96,12 +101,15 @@ class DinDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
-        $this->_controllers = \App\Http\Models\ControllersModel::where('id', '>', 0)
+        $this->_controllers = ControllersModel::where('id', '>', 0)
                                 ->whereTyp('din')
                                 ->orderBy('rom', 'asc')
                                 ->get();
         
-        if (count($this->_controllers) == 0) return;
+        if (count($this->_controllers) == 0) {
+            $this->disableAutorun();
+            return;
+        }
         
         $this->_lastSyncVariableID = DB::select('select max(id) maxID from core_variable_changes_mem')[0]->maxID ?? -1;
         
@@ -113,24 +121,24 @@ class DinDaemon extends BaseDaemon
             stream_set_blocking($this->_port, false);
             while (!feof($this->_port)) {
                 $loopErrors = false;
-                $command = \App\Http\Models\PropertysModel::getDinCommand(true);
+                $command = PropertysModel::getDinCommand(true);
                 
                 // Выполняем начальную подготовку итерации
                 // Она одинакова для все контроллеров
                 $variables = [];
                 switch ($command) {
                     case 'RESET':
-                        \App\Http\Models\PropertysModel::setDinCommandInfo('', true);
+                        PropertysModel::setDinCommandInfo('', true);
                         break;
                     case 'OW SEARCH':
-                        \App\Http\Models\PropertysModel::setDinCommandInfo('', true);
+                        PropertysModel::setDinCommandInfo('', true);
                         break;
                     case 'FIRMWARE':
-                        \App\Http\Models\PropertysModel::setDinCommandInfo('', true);
+                        PropertysModel::setDinCommandInfo('', true);
                         $this->_firmwareHex = false;
                         break;
                     default:
-                        $variables = \App\Http\Models\VariableChangesMemModel::where('id', '>', $this->_lastSyncVariableID)
+                        $variables = VariableChangesMemModel::where('id', '>', $this->_lastSyncVariableID)
                                         ->orderBy('id', 'asc')
                                         ->get();
                         if (count($variables)) {
@@ -161,15 +169,15 @@ class DinDaemon extends BaseDaemon
                         // not records
                         break;
                     case 'OW SEARCH':
-                        \App\Http\Models\PropertysModel::setDinCommandInfo('END_OW_SCAN');
+                        PropertysModel::setDinCommandInfo('END_OW_SCAN');
                         break;
                     case 'FIRMWARE':
                         if (!$loopErrors) {
-                            \App\Http\Models\PropertysModel::setDinCommandInfo('COMPLETE', true);
+                            PropertysModel::setDinCommandInfo('COMPLETE', true);
                             // Сбрасываем счетчик изменений прошивки
-                            \App\Http\Models\PropertysModel::setFirmwareChanges(0);
+                            PropertysModel::setFirmwareChanges(0);
                         } else {
-                            \App\Http\Models\PropertysModel::setDinCommandInfo('ERROR', true);
+                            PropertysModel::setDinCommandInfo('ERROR', true);
                         }
                         $this->_firmwareHex = false;
                         break;
@@ -220,7 +228,7 @@ class DinDaemon extends BaseDaemon
         $new = 0;
         $lost = 0;
         
-        $owOldList = \App\Http\Models\OwDevsModel::whereControllerId($controller->id)->get();
+        $owOldList = OwDevsModel::whereControllerId($controller->id)->get();
         // Ищем кого потеряли
         foreach ($owOldList as $owOld) {
             $find = false;
@@ -266,7 +274,7 @@ class DinDaemon extends BaseDaemon
             if (!$find) {
                 $new++;
                 // Add to the list immediately.
-                $ow = new \App\Http\Models\OwDevsModel();
+                $ow = new OwDevsModel();
                 $ow->controller_id = $controller->id;
                 $ow->name = '';
                 $ow->comm = '';
@@ -301,7 +309,7 @@ class DinDaemon extends BaseDaemon
         $report[] = str_repeat('-', 35);
         $report[] = '';
 
-        \App\Http\Models\PropertysModel::setDinCommandInfo(implode("\n", $report));
+        PropertysModel::setDinCommandInfo(implode("\n", $report));
     }
     
     /**
@@ -348,7 +356,7 @@ class DinDaemon extends BaseDaemon
                     $controller->name,
                     round((($index * 100) + $p) / $count),
                 ];
-                \App\Http\Models\PropertysModel::setDinCommandInfo(implode(';', $a), true);
+                PropertysModel::setDinCommandInfo(implode(';', $a), true);
                 usleep($PAGE_STORE_PAUSE);
             }
             $p += $dp;
@@ -357,7 +365,7 @@ class DinDaemon extends BaseDaemon
             $controller->name,
             round((($index * 100) + $p) / $count),
         ];
-        \App\Http\Models\PropertysModel::setDinCommandInfo(implode(';', $a), true);
+        PropertysModel::setDinCommandInfo(implode(';', $a), true);
         
         usleep($PAGE_STORE_PAUSE);
         
@@ -396,7 +404,7 @@ class DinDaemon extends BaseDaemon
                 case 5: // Controller request of the initialization data
                     $stat = 'INIT';
                     $vars_out = [];
-                    $variablesInit = \App\Http\Models\VariablesModel::orderBy('ID', 'asc')->get();
+                    $variablesInit = VariablesModel::orderBy('ID', 'asc')->get();
                     $this->_transmitCMD($controller->rom, 6, count($variablesInit));
                     $counter = 0;
                     foreach ($variablesInit as $variable) {

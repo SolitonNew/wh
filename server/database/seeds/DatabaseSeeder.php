@@ -48,7 +48,7 @@ class DatabaseSeeder extends Seeder
             '4|FIRMWARE_CHANGES|The number of changes made to the database (which affect the firmware) since the last successful update|',
             '5|WEB_CHECKED|IDs for the web version of the client|',
             '6|WEB_COLOR|Coloring by keywords|',
-            '7|RUNNING_DAEMONS|List of daemons marked for automatic start|schedule-daemon;command-daemon',
+            '7|RUNNING_DAEMONS|List of daemons marked for automatic start|schedule-daemon;command-daemon;observer-daemon',
             '8|PLAN_MAX_LEVEL|System structure depth|',
         ];
 

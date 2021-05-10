@@ -2,6 +2,9 @@
 
 namespace App\Library\Daemons;
 
+use App\Http\Models\WebLogsModel;
+use App\Http\Models\PropertysModel;
+
 /**
  * This is the base class for all daemons.
  *
@@ -28,7 +31,7 @@ class BaseDaemon {
     public function printLine($text) 
     {
         try {
-            $item = new \App\Http\Models\WebLogsModel();
+            $item = new WebLogsModel();
             $item->daemon = $this->_signature;
             $item->data = $text;
             $item->save();
@@ -37,6 +40,14 @@ class BaseDaemon {
         } catch (\Exception $ex) {
             echo $ex->getMessage()."\n";
         }
+    }
+    
+    /**
+     * Disabling autorun of this daemon
+     */
+    public function disableAutorun()
+    {
+        PropertysModel::setAsStoppedDaemon($this->_signature);
     }
     
     /**
