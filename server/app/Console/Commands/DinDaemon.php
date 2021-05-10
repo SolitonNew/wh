@@ -4,21 +4,21 @@ namespace App\Console\Commands;
 
 use \Illuminate\Console\Command;
 
-class ScheduleDemon extends Command
-{
+class DinDaemon extends Command
+{    
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'schedule-demon';
+    protected $signature = 'din-daemon';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Daemon serving the schedule subsystem';
+    protected $description = 'Serves the interaction of the server and panel controllers';
 
     /**
      * Create a new command instance.
@@ -37,7 +37,7 @@ class ScheduleDemon extends Command
      */
     public function handle()
     {
-        $demon = new \App\Library\Demons\ScheduleDemon($this->signature);
+        $demon = new \App\Library\Daemons\DinDaemon($this->signature);
         $demon->execute();
     }
 }

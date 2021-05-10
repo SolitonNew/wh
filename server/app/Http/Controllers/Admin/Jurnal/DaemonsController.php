@@ -3,25 +3,25 @@
 namespace App\Http\Controllers\Admin\Jurnal;
 
 use App\Http\Controllers\Controller;
-use App\Http\Services\Admin\DemonsService;
-use App\Http\Requests\Admin\DemonsIndexRequest;
+use App\Http\Services\Admin\DaemonsService;
+use App\Http\Requests\Admin\DaemonsIndexRequest;
 use App\Http\Models\WebLogsModel;
 
-class DemonsController extends Controller
+class DaemonsController extends Controller
 {
     /**
      *
      * @var type 
      */
-    private $_demonsService;
+    private $_daemonsService;
     
     /**
      * 
-     * @param DemonsService $demonsService
+     * @param DaemonsService $daemonsService
      */
-    public function __construct(DemonsService $demonsService) 
+    public function __construct(DaemonsService $daemonsService) 
     {
-        $this->_demonsService = $demonsService;
+        $this->_daemonsService = $daemonsService;
     }
     
     /**
@@ -30,12 +30,12 @@ class DemonsController extends Controller
      * @param string $id
      * @return type
      */
-    public function index(DemonsIndexRequest $request, string $id = null) 
+    public function index(DaemonsIndexRequest $request, string $id = null) 
     {        
-        return view('admin.jurnal.demons.demons', [
+        return view('admin.jurnal.daemons.daemons', [
             'id' => $id,
-            'stat' => $this->_demonsService->isStarted($id),
-            'demons' => $this->_demonsService->demonsList(),
+            'stat' => $this->_daemonsService->isStarted($id),
+            'daemons' => $this->_daemonsService->daemonsList(),
         ]);
     }
 
@@ -48,9 +48,9 @@ class DemonsController extends Controller
      */
     public function data(string $id, int $lastID = -1) 
     {
-        $data = WebLogsModel::getDemonDataFromID($id, $lastID);
+        $data = WebLogsModel::getDaemonDataFromID($id, $lastID);
 
-        return view('admin.jurnal.demons.demon-log', [
+        return view('admin.jurnal.daemons.daemon-log', [
             'data' => $data,
         ]);
     }
@@ -61,9 +61,9 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonStart(string $id) 
+    public function daemonStart(string $id)
     {
-        $this->_demonsService->demonStart($id);
+        $this->_daemonsService->daemonStart($id);
         
         return 'OK';
     }
@@ -74,9 +74,9 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonStop(string $id) 
+    public function daemonStop(string $id)
     {
-        $this->_demonsService->demonStop($id);
+        $this->_daemonsService->daemonStop($id);
         
         return 'OK';
     }
@@ -87,9 +87,9 @@ class DemonsController extends Controller
      * @param string $id
      * @return string
      */
-    public function demonRestart(string $id) 
+    public function daemonRestart(string $id)
     {
-        $this->_demonsService->demonRestart($id);
+        $this->_daemonsService->daemonRestart($id);
         
         return 'OK';
     }    

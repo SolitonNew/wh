@@ -4,9 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use \App\Library\DemonManager;
+use \App\Library\DaemonManager;
 use DB;
-use Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -16,9 +15,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\RS485Demon::class,
-        Commands\ScheduleDemon::class,
-        Commands\CommandDemon::class,
+        Commands\DinDaemon::class,
+        Commands\ScheduleDaemon::class,
+        Commands\CommandDaemon::class,
     ];
 
     /**
@@ -30,25 +29,25 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Проверяем работоспособность фоновых процессов. Если кто-то пропал - запускаем
-        $schedule->call(function (DemonManager $demonManager) {
-            foreach(\App\Http\Models\PropertysModel::runningDemons() as $demon) {
-                if (count($demonManager->findDemonPID($demon)) == 0) {
-                    $demonManager->start($demon);
+        $schedule->call(function (DaemonManager $daemonManager) {
+            foreach(\App\Http\Models\PropertysModel::runningDaemons() as $daemon) {
+                if (count($daemonManager->findDaemonPID($daemon)) == 0) {
+                    $daemonManager->start($daemon);
                 }
             }
         })->everyMinute();
         
         // Прочистка "web_logs"
-        $schedule->call(function (DemonManager $demonManager) {
-            foreach($demonManager->demons() as $demon) {
+        $schedule->call(function (DaemonManager $daemonManager) {
+            foreach($daemonManager->daemons() as $daemon) {
                 $rows = DB::select('select id
                                       from web_logs 
-                                     where demon = "'.$demon.'"
+                                     where daemon = "'.$daemon.'"
                                     order by id desc
-                                    limit '.config("app.admin_demons_log_lines_count"));
+                                    limit '.config("app.admin_daemons_log_lines_count"));
                 if (count($rows)) {
                     $id = $rows[count($rows) - 1]->id;
-                    DB::delete('delete from web_logs where demon = "'.$demon.'" and id < '.$id);
+                    DB::delete('delete from web_logs where daemon = "'.$daemon.'" and id < '.$id);
                 }
             }
         })->everyMinute();

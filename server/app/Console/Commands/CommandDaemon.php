@@ -4,22 +4,22 @@ namespace App\Console\Commands;
 
 use \Illuminate\Console\Command;
 
-class RS485Demon extends Command
+class CommandDaemon extends Command
 {    
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'rs485-demon';
+    protected $signature = 'command-daemon';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Serves the interaction of the server and panel controllers';
-
+    protected $description = 'Eavesdrops on in-system commands';
+    
     /**
      * Create a new command instance.
      *
@@ -37,7 +37,7 @@ class RS485Demon extends Command
      */
     public function handle()
     {
-        $demon = new \App\Library\Demons\RS485Demon($this->signature);
+        $demon = new \App\Library\Daemons\CommandDaemon($this->signature);
         $demon->execute();
     }
 }

@@ -1,23 +1,17 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-namespace App\Library\Demons;
+namespace App\Library\Daemons;
 
 use DB;
 use Lang;
 use Log;
 
 /**
- * Description of CommandDemon
+ * Description of CommandDaemon
  *
  * @author soliton
  */
-class RS485Demon extends BaseDemon 
+class DinDaemon extends BaseDaemon 
 {
     /**
      *
@@ -96,9 +90,9 @@ class RS485Demon extends BaseDemon
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/demons/rs485-demon.description'));
-        $this->printLine('--    PORT: '.config('firmware.rs485_port')); 
-        $this->printLine('--    BAUD: '.config('firmware.rs485_baud')); 
+        $this->printLine(Lang::get('admin/daemons/din-daemon.description'));
+        $this->printLine('--    PORT: '.config('firmware.din_port')); 
+        $this->printLine('--    BAUD: '.config('firmware.din_baud')); 
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
@@ -112,27 +106,27 @@ class RS485Demon extends BaseDemon
         $this->_lastSyncVariableID = DB::select('select max(id) maxID from core_variable_changes_mem')[0]->maxID ?? -1;
         
         try {           
-            $port = config('firmware.rs485_port');
-            $baud = config('firmware.rs485_baud');
+            $port = config('firmware.din_port');
+            $baud = config('firmware.din_baud');
             exec("stty -F $port $baud cs8 cstopb -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
             $this->_port = fopen($port, 'r+b');
             stream_set_blocking($this->_port, false);
             while (!feof($this->_port)) {
                 $loopErrors = false;
-                $command = \App\Http\Models\PropertysModel::getRs485Command(true);
+                $command = \App\Http\Models\PropertysModel::getDinCommand(true);
                 
                 // Выполняем начальную подготовку итерации
                 // Она одинакова для все контроллеров
                 $variables = [];
                 switch ($command) {
                     case 'RESET':
-                        \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
+                        \App\Http\Models\PropertysModel::setDinCommandInfo('', true);
                         break;
                     case 'OW SEARCH':
-                        \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
+                        \App\Http\Models\PropertysModel::setDinCommandInfo('', true);
                         break;
                     case 'FIRMWARE':
-                        \App\Http\Models\PropertysModel::setRs485CommandInfo('', true);
+                        \App\Http\Models\PropertysModel::setDinCommandInfo('', true);
                         $this->_firmwareHex = false;
                         break;
                     default:
@@ -167,15 +161,15 @@ class RS485Demon extends BaseDemon
                         // not records
                         break;
                     case 'OW SEARCH':
-                        \App\Http\Models\PropertysModel::setRs485CommandInfo('END_OW_SCAN');
+                        \App\Http\Models\PropertysModel::setDinCommandInfo('END_OW_SCAN');
                         break;
                     case 'FIRMWARE':
                         if (!$loopErrors) {
-                            \App\Http\Models\PropertysModel::setRs485CommandInfo('COMPLETE', true);
+                            \App\Http\Models\PropertysModel::setDinCommandInfo('COMPLETE', true);
                             // Сбрасываем счетчик изменений прошивки
                             \App\Http\Models\PropertysModel::setFirmwareChanges(0);
                         } else {
-                            \App\Http\Models\PropertysModel::setRs485CommandInfo('ERROR', true);
+                            \App\Http\Models\PropertysModel::setDinCommandInfo('ERROR', true);
                         }
                         $this->_firmwareHex = false;
                         break;
@@ -307,7 +301,7 @@ class RS485Demon extends BaseDemon
         $report[] = str_repeat('-', 35);
         $report[] = '';
 
-        \App\Http\Models\PropertysModel::setRs485CommandInfo(implode("\n", $report));
+        \App\Http\Models\PropertysModel::setDinCommandInfo(implode("\n", $report));
     }
     
     /**
@@ -354,7 +348,7 @@ class RS485Demon extends BaseDemon
                     $controller->name,
                     round((($index * 100) + $p) / $count),
                 ];
-                \App\Http\Models\PropertysModel::setRs485CommandInfo(implode(';', $a), true);
+                \App\Http\Models\PropertysModel::setDinCommandInfo(implode(';', $a), true);
                 usleep($PAGE_STORE_PAUSE);
             }
             $p += $dp;
@@ -363,7 +357,7 @@ class RS485Demon extends BaseDemon
             $controller->name,
             round((($index * 100) + $p) / $count),
         ];
-        \App\Http\Models\PropertysModel::setRs485CommandInfo(implode(';', $a), true);
+        \App\Http\Models\PropertysModel::setDinCommandInfo(implode(';', $a), true);
         
         usleep($PAGE_STORE_PAUSE);
         
@@ -574,7 +568,7 @@ class RS485Demon extends BaseDemon
                     $this->_inPackCount--;                    
                 } else {
                     $size = 0;
-                    Log::info('RS485 CRC');
+                    Log::info('DIN CRC');
                 }
                 break;
             case 'ROM':

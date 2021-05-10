@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Library\Demons;
+namespace App\Library\Daemons;
 
 use \Carbon\Carbon;
 use DB;
 use Lang;
 
 /**
- * Description of CommandDemon
+ * Description of CommandDaemon
  *
  * @author soliton
  */
-class CommandDemon extends BaseDemon 
+class CommandDaemon extends BaseDaemon 
 {    
     /**
      * The overridden method.
@@ -29,7 +29,7 @@ class CommandDemon extends BaseDemon
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/demons/command-demon.description'));
+        $this->printLine(Lang::get('admin/daemons/command-daemon.description'));
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
@@ -40,7 +40,7 @@ class CommandDemon extends BaseDemon
                     order by id";
 
             foreach(DB::select($sql) as $row) {
-                $this->printLine(Lang::get('admin/demons/command-demon.line', [
+                $this->printLine(Lang::get('admin/daemons/command-daemon.line', [
                     'datetime' => Carbon::now(),
                     'command' => $row->command,
                 ]));

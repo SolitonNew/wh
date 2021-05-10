@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Library\Demons;
-
-use Log;
+namespace App\Library\Daemons;
 
 /**
  * This is the base class for all daemons.
  *
  * @author soliton
  */
-class BaseDemon {
+class BaseDaemon {
     
     /**
      * Signature (id) of the daemon
@@ -31,7 +29,7 @@ class BaseDemon {
     {
         try {
             $item = new \App\Http\Models\WebLogsModel();
-            $item->demon = $this->_signature;
+            $item->daemon = $this->_signature;
             $item->data = $text;
             $item->save();
             

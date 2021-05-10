@@ -259,7 +259,7 @@ return [
     /*
      * Кол-во строк отображаемых в логах процессов
      */
-    'admin_demons_log_lines_count' => 100,
+    'admin_daemons_log_lines_count' => 100,
     
     
     
