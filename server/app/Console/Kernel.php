@@ -69,11 +69,11 @@ class Kernel extends ConsoleKernel
         
         // Прочистка "web_queue"
         $schedule->call(function () {
-            DB::delete('delete from web_queue
+            DB::delete('delete from web_queue_mem
                          where id < (select a.maxID 
                                        from (select (IFNULL(MAX(id), 0) - 100) maxID 
-                                               from web_queue) a)');
-        })->dailyAt('4:00');
+                                               from web_queue_mem) a)');
+        })->hourly();
         
     }
 
