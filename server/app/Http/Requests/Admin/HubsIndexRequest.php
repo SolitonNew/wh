@@ -40,6 +40,7 @@ class HubsIndexRequest extends FormRequest
     {
         $hubID = $this->route('hubID');
         if ($hubID) {
+            $this->redirect = route('admin.hubs');
             return [
                 'hubID' => 'exists:core_controllers,id',
             ];

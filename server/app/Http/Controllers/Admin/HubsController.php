@@ -65,8 +65,8 @@ class HubsController extends Controller
     {
         ControllersModel::storeFromRequest($request, $id);
 
-        // Restart rs485-demon
-        $this->_hubsService->restartRs485Demon();
+        // Restart din-daemon
+        $this->_hubsService->restartDinDaemon();
 
         return 'OK';
     }
@@ -81,8 +81,8 @@ class HubsController extends Controller
     {
         ControllersModel::deleteById($id);
         
-        // Restart rs485-demon
-        $this->_hubsService->restartRs485Demon();
+        // Restart din-daemon
+        $this->_hubsService->restartDinDaemon();
         
         return 'OK';
     }
@@ -119,7 +119,7 @@ class HubsController extends Controller
     }
     
     /**
-     * This route sends the rs485-demon command to start uploading firmware 
+     * This route sends the din-daemon command to start uploading firmware 
      * to the controllers.
      * 
      * @return string
@@ -142,7 +142,7 @@ class HubsController extends Controller
     }
     
     /**
-     * This route sends the rs485-demon command to reboot all hubs. 
+     * This route sends the din-daemon command to reboot all hubs. 
      * 
      * @return string
      */
