@@ -3,13 +3,22 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use \Illuminate\Support\Facades\DB;
+use DB;
 use Lang;
 
 class VariableChangesMemModel extends Model
 {
     protected $table = 'core_variable_changes_mem';
     public $timestamps = false;
+    
+    /**
+     * 
+     * @return type
+     */
+    public function device()
+    {
+        return $this->belongsTo(VariablesModel::class, 'variable_id');
+    }
 
     /**
      *
