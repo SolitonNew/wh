@@ -11,8 +11,10 @@ return [
      * List of processes running in the background
      */
     'list' => [
+        'software-daemon',
         'din-daemon',
         'schedule-daemon',
         'command-daemon',
+        'observer-daemon',
     ],
 ];
