@@ -89,8 +89,6 @@ class DinDaemon extends BaseDaemon
     public function execute() 
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
-        
-        $lastProcessedID = -1;
 
         $this->printLine('');
         $this->printLine('');
@@ -111,7 +109,7 @@ class DinDaemon extends BaseDaemon
             return;
         }
         
-        $this->_lastSyncVariableID = DB::select('select max(id) maxID from core_variable_changes_mem')[0]->maxID ?? -1;
+        $this->_lastSyncVariableID = VariableChangesMemModel::max('id') ?? -1;
         
         try {           
             $port = config('firmware.din_port');

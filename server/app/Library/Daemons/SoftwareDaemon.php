@@ -36,7 +36,7 @@ class SoftwareDaemon extends BaseDaemon
         $this->printLine('');
         
         $this->_controllers = ControllersModel::where('id', '>', 0)
-                                ->whereTyp('din')
+                                ->whereTyp('software')
                                 ->orderBy('rom', 'asc')
                                 ->get();
         

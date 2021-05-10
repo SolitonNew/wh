@@ -8,8 +8,10 @@
 
 namespace App\Library\Daemons;
 
+use App\Http\Models\VariableChangesMemModel;
 use DB;
 use Lang;
+use Log;
 
 /**
  * Description of ObserverDaemon
@@ -18,6 +20,8 @@ use Lang;
  */
 class ObserverDaemon extends BaseDaemon
 {   
+    private $_lastChangeID = -1;
+    
     /**
      * 
      */
@@ -32,9 +36,31 @@ class ObserverDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');        
         
+        $this->_lastChangeID = VariableChangesMemModel::max('id') ?? -1;
         
-        while (1) {
+        while(1) {
+            $changes = VariableChangesMemModel::with('device')
+                ->where('id', '>', $this->_lastChangeID)
+                ->orderBy('id', 'asc')
+                ->get();
+            foreach($changes as $item) {
+                $this->_processedDevice($item);
+                $this->_lastChangeID = $item->id;
+            }
             usleep(200000);
+        }
+    }
+    
+    /**
+     * 
+     * @param type $changes
+     */
+    private function _processedDevice(&$item)
+    {
+        switch ($item->device->app_control) {
+            case 1: // Light
+                //
+                break;
         }
     }
 }
