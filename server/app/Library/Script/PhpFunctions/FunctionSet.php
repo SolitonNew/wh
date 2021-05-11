@@ -8,7 +8,7 @@
 
 namespace App\Library\Script\PhpFunctions;
 
-use App\Models\VariablesModel;
+use App\Models\Device;
 use App\Models\SchedulerModel;
 use DB;
 
@@ -22,7 +22,7 @@ trait FunctionSet
      */
     public function function_set(string $name, float $value, int $time = 0) 
     {
-        $variable = VariablesModel::whereName($name)->first();
+        $variable = Device::whereName($name)->first();
         if ($variable) {
             if ($this->_fake) {
                 //

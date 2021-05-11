@@ -8,7 +8,7 @@
 
 namespace App\Library\Script\PhpFunctions;
 
-use App\Models\VariablesModel;
+use App\Models\Device;
 use DB;
 
 trait FunctionToggle 
@@ -19,7 +19,7 @@ trait FunctionToggle
      */
     public function function_toggle($name, $time = 0) 
     {
-        $variable = VariablesModel::whereName($name)->first();
+        $variable = Device::whereName($name)->first();
         if ($variable) {
             if ($this->_fake) {
                 //

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use App\Models\VariablesModel;
+use App\Models\Device;
 use DB;
 
 class PlanPartsModel extends Model
@@ -66,7 +66,7 @@ class PlanPartsModel extends Model
         
         // Load list of the devices
         $devices = [];
-        foreach(VariablesModel::get() as $device) {
+        foreach (Device::get() as $device) {
             $part = false;
             foreach($parts as $row) {
                 if ($device->group_id == $row->id) {
@@ -351,7 +351,7 @@ class PlanPartsModel extends Model
     {
         $deviceID = $request->device ?? $deviceID;
 
-        $device = VariablesModel::find($deviceID);
+        $device = Device::find($deviceID);
         if (!$device) abort(404);
         
         try {
@@ -384,7 +384,7 @@ class PlanPartsModel extends Model
         
         foreach($devices as $dev) {
             $dev->label = $dev->name.' '.($dev->comm);
-            $app_control = VariablesModel::decodeAppControl($dev->app_control);
+            $app_control = Device::decodeAppControl($dev->app_control);
             $dev->label .= ' '."'$app_control->label'";
         }
         
@@ -397,7 +397,7 @@ class PlanPartsModel extends Model
      */
     static public function unlinkDevice(int $deviceID)
     {
-        $device = VariablesModel::find($deviceID);
+        $device = Device::find($deviceID);
         if (!$device) abort(404);
         
         try {    

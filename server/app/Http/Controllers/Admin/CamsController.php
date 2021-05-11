@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CamsRequest;
-use \App\Models\PlanVideoModel;
+use \App\Models\Videcam;
 
 class CamsController extends Controller
 {
@@ -15,7 +15,7 @@ class CamsController extends Controller
      */
     public function index() 
     {
-        $data = PlanVideoModel::listAll();
+        $data = Videcam::listAll();
         
         return view('admin.cams.cams', [
             'data' => $data,
@@ -30,7 +30,7 @@ class CamsController extends Controller
      */
     public function editShow(int $id) 
     {
-        $item = PlanVideoModel::findOrCreate($id);
+        $item = Videcam::findOrCreate($id);
         
         return view('admin.cams.cam-edit', [
             'item' => $item,
@@ -46,7 +46,7 @@ class CamsController extends Controller
      */
     public function editPost(CamsRequest $request, int $id)
     {
-        PlanVideoModel::storeFromRequest($request);
+        Videcam::storeFromRequest($request);
         
         return 'OK';
     }
@@ -59,7 +59,7 @@ class CamsController extends Controller
      */
     public function delete(int $id) 
     {
-        PlanVideoModel::deleteById($id);
+        Videcam::deleteById($id);
         
         return 'OK';
     }

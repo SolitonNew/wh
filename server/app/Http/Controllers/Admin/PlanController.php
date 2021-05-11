@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\PlanPartsModel;
-use App\Models\VariablesModel;
+use App\Models\Device;
 use App\Http\Requests\Admin\PlanIndexRequest;
 use App\Http\Requests\Admin\PlanRequest;
 use App\Http\Requests\Admin\PlanMoveChildsRequest;
@@ -239,7 +239,7 @@ class PlanController extends Controller
      */
     public function linkDeviceShow(Request $request, int $planID, int $deviceID = -1) 
     {        
-        $device = VariablesModel::findOrCreate($deviceID);
+        $device = Device::findOrCreate($deviceID);
         
         if ($deviceID == -1) {
             $devices = PlanPartsModel::devicesForLink();
@@ -247,7 +247,7 @@ class PlanController extends Controller
             $devices = [];
             
             $device->label = $device->name.' '.($device->comm);
-            $app_control = VariablesModel::decodeAppControl($device->app_control);
+            $app_control = Device::decodeAppControl($device->app_control);
             $device->label .= ' '."'$app_control->label'";
         }
         

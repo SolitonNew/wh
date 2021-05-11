@@ -17,7 +17,7 @@ class VariableChangesMemModel extends Model
      */
     public function device()
     {
-        return $this->belongsTo(VariablesModel::class, 'variable_id');
+        return $this->belongsTo(Device::class, 'variable_id');
     }
 
     /**

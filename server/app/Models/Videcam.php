@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use DB;
 
-class PlanVideoModel extends Model
+class Videcam extends Model
 {
     protected $table = 'plan_video';
     public $timestamps = false;
@@ -32,9 +32,9 @@ class PlanVideoModel extends Model
      */
     static public function findOrCreate(int $id)
     {
-        $item = PlanVideoModel::find($id);
+        $item = Videcam::find($id);
         if (!$item) {
-            $item = new PlanVideoModel();
+            $item = new Videcam();
             $item->id = $id;
             $item->alert_var_id = -1;
         }
@@ -49,9 +49,9 @@ class PlanVideoModel extends Model
     {
         try {
             $id = $request->route('id');
-            $item = PlanVideoModel::find($id);
+            $item = Videcam::find($id);
             if (!$item) {
-                $item = new PlanVideoModel();
+                $item = new Videcam();
             }
             $item->name = $request->name;
             $item->url = $request->url;
@@ -78,7 +78,7 @@ class PlanVideoModel extends Model
     static public function deleteById($id)
     {
         try {
-            $item = PlanVideoModel::find($id);
+            $item = Videcam::find($id);
             $item->delete();
         } catch (\Exception $ex) {
             abort(response()->json([

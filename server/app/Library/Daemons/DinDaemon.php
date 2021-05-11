@@ -6,7 +6,7 @@ use App\Models\ControllersModel;
 use App\Models\PropertysModel;
 use App\Models\VariableChangesMemModel;
 use App\Models\OwDevsModel;
-use App\Models\VariablesModel;
+use App\Models\Device;
 use DB;
 use Lang;
 use Log;
@@ -402,7 +402,7 @@ class DinDaemon extends BaseDaemon
                 case 5: // Controller request of the initialization data
                     $stat = 'INIT';
                     $vars_out = [];
-                    $variablesInit = VariablesModel::orderBy('ID', 'asc')->get();
+                    $variablesInit = Device::orderBy('id', 'asc')->get();
                     $this->_transmitCMD($controller->rom, 6, count($variablesInit));
                     $counter = 0;
                     foreach ($variablesInit as $variable) {

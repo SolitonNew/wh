@@ -2,7 +2,7 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Models\VariablesModel;
+use App\Models\Device;
 use App\Models\OwDevsModel;
 use DB;
 
@@ -104,7 +104,7 @@ class HostsService
     public function delOneHost(int $id)
     {
         try {
-            VariablesModel::whereTyp('ow')
+            Device::whereTyp('ow')
                     ->whereOwId($id)
                     ->delete();
             $item = OwDevsModel::find($id);

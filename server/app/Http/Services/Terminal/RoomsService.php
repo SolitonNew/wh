@@ -3,7 +3,7 @@
 namespace App\Http\Services\Terminal;
 
 use App\Models\PlanPartsModel;
-use App\Models\VariablesModel;
+use App\Models\Device;
 use App\Models\PropertysModel;
 
 class RoomsService 
@@ -30,7 +30,7 @@ class RoomsService
                             ->orderBy('name', 'asc')
                             ->get();
         
-        $this->_variables = VariablesModel::get();
+        $this->_variables = Device::get();
         
         // Проставим кархдому устройству comm в виде названия комнаты, 
         // если небыло указано ранее

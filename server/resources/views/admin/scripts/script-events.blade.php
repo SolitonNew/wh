@@ -9,7 +9,7 @@
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
     <select class="custom-select" name="variables[]" multiple="true" style="height: 400px;">
-    @foreach(\App\Models\VariablesModel::orderBy('NAME', 'asc')->get() as $row)
+    @foreach(\App\Models\Device::orderBy('NAME', 'asc')->get() as $row)
     <option value="{{ $row->id }}" {{ in_array($row->id, $data) ? 'selected' : '' }}>{{ $row->name }}</option>
     @endforeach
     </select>

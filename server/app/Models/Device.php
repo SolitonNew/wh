@@ -8,7 +8,7 @@ use Lang;
 use Log;
 use DB;
 
-class VariablesModel extends AffectsFirmwareModel
+class Device extends AffectsFirmwareModel
 {    
     protected $table = 'core_variables';
     public $timestamps = false;
@@ -170,13 +170,13 @@ class VariablesModel extends AffectsFirmwareModel
      * 
      * @param int $id
      * @param int $hubId
-     * @return \App\Models\VariablesModel
+     * @return \App\Models\Device
      */
     static public function findOrCreate(int $id, int $hubId = -1)
     {
-        $item = VariablesModel::find($id);
+        $item = Device::find($id);
         if (!$item) {
-            $item = new VariablesModel();
+            $item = new Device();
             $item->id = -1;
             $item->controller_id = $hubId;
             $item->position = '';
@@ -194,9 +194,9 @@ class VariablesModel extends AffectsFirmwareModel
     static public function storeFromRequest(Request $request, int $hubId, int $id)
     {
         try {
-            $item = VariablesModel::find($id);
+            $item = Device::find($id);
             if (!$item) {
-                $item = new VariablesModel();
+                $item = new Device();
             }
             
             $item->controller_id = $request->controller_id;
@@ -208,7 +208,7 @@ class VariablesModel extends AffectsFirmwareModel
             $item->app_control = $request->app_control;
             $item->save();
             if ($request->value !== null) {
-                VariablesModel::setValue($item->id, $request->value);
+                Device::setValue($item->id, $request->value);
             }
         } catch (\Exception $ex) {
             abort(response()->json([
@@ -224,7 +224,7 @@ class VariablesModel extends AffectsFirmwareModel
     static public function deleteById(int $id)
     {
         try {
-            $item = VariablesModel::find($id);
+            $item = Device::find($id);
             if (!$item) abort(404);
             
             $item->delete();

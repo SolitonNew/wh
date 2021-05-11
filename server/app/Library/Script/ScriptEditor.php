@@ -9,7 +9,7 @@
 namespace App\Library\Script;
 
 use App\Library\Script\PhpExecute;
-use App\Models\VariablesModel;
+use App\Models\Device;
 use Lang;
 
 /**
@@ -40,7 +40,7 @@ class ScriptEditor
         }
         
         $strings = [];
-        foreach (VariablesModel::orderBy('name', 'asc')->get() as $row) {
+        foreach (Device::orderBy('name', 'asc')->get() as $row) {
             $strings[$row->name] = $row->comm.' '.Lang::get('admin/hubs.app_control.'.$row->app_control);
         }
         

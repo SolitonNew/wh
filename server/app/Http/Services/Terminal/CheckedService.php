@@ -4,7 +4,7 @@ namespace App\Http\Services\Terminal;
 
 use \Illuminate\Http\Request;
 use App\Models\PropertysModel;
-use App\Models\VariablesModel;
+use App\Models\Device;
 use Lang;
 use DB;
 
@@ -51,7 +51,7 @@ class CheckedService
             for ($i = 0; $i < count($vars); $i++) {
                 $row = $vars[$i];
                 if ($row->id == $key) {
-                    $c = VariablesModel::decodeAppControl($row->app_control);
+                    $c = Device::decodeAppControl($row->app_control);
                     if (!$row->comm) {
                         $row->comm = $row->group_name;
                     }
@@ -153,7 +153,7 @@ class CheckedService
             for ($i = 0; $i < count($vars); $i++) {
                 $row = $vars[$i];
                 if ($row->id == $key) {
-                    $c = VariablesModel::decodeAppControl($row->app_control);
+                    $c = Device::decodeAppControl($row->app_control);
                     $itemLabel = mb_strtoupper($row->comm);
                     $c->title = $itemLabel;
                     $data[] = (object)[
@@ -324,7 +324,7 @@ class CheckedService
         $data = [];
         
         foreach(DB::select($sql) as $row) {
-            $c = VariablesModel::decodeAppControl($row->app_control);
+            $c = Device::decodeAppControl($row->app_control);
             $data[] = (object)[
                 'id' => $row->id,
                 'comm' => $row->comm ?? $row->group_name,

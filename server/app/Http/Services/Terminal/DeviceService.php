@@ -2,7 +2,7 @@
 
 namespace App\Http\Services\Terminal;
 
-use App\Models\VariablesModel;
+use App\Models\Device;
 use App\Models\VariableChangesMemModel;
 use DB;
 
@@ -24,8 +24,8 @@ class DeviceService
         $roomID = $row->group_id;
         $roomTitle = mb_strtoupper($row->group_title);
         $deviceTitle = $row->device_title;
-        $control = VariablesModel::decodeAppControl($row->app_control);
-        $deviceTitle = VariablesModel::groupVariableName($roomTitle, mb_strtoupper($deviceTitle), $control->label);
+        $control = Device::decodeAppControl($row->app_control);
+        $deviceTitle = Device::groupVariableName($roomTitle, mb_strtoupper($deviceTitle), $control->label);
 
         
         switch ($control->typ) {
@@ -65,6 +65,6 @@ class DeviceService
     
     public function setValue(int $deviceID, int $value)
     {
-        VariablesModel::setValue($deviceID, $value);
+        Device::setValue($deviceID, $value);
     }
 }

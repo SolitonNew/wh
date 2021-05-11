@@ -51,7 +51,7 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('hubs')" href="{{ route('admin.hubs', '') }}">
                             <img src="/img/menus/pulse-2x.png">
                             <span class="label">@lang('admin/hubs.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ \App\Models\VariablesModel::count() }}</span>
+                            <span class="badge badge-primary badge-pill">{{ \App\Models\Device::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('scripts')" href="{{ route('admin.scripts') }}">
                             <img src="/img/menus/document-2x.png">
@@ -66,7 +66,7 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('cams')" href="{{ route('admin.cams') }}">
                             <img src="/img/menus/video-2x.png">
                             <span class="label">@lang('admin/cams.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ \App\Models\VideoModel::count() }}</span>
+                            <span class="badge badge-primary badge-pill">{{ \App\Models\Videcam::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('jurnal')" href="{{ route('admin.jurnal') }}">
                             <img src="/img/menus/bar-chart-2x.png">
@@ -75,7 +75,7 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('users')" href="{{ route('admin.users') }}">
                             <img src="/img/menus/people-2x.png">
                             <span class="label">@lang('admin/users.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ \App\Models\UsersModel::count() }}</span>
+                            <span class="badge badge-primary badge-pill">{{ \App\Models\User::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('terminal')" href="{{ route('admin.terminal') }}">
                             <img src="/img/menus/phone-2x.png">

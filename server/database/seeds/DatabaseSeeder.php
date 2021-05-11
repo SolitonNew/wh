@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // Создаем админа по умолчанию
-        $item = new \App\Models\UsersModel();
+        $item = new \App\Models\User();
         $item->login = 'wh';
         $item->password = bcrypt('wh');
         $item->access = 2;

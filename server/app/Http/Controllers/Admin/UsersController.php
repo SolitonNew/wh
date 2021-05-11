@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UsersRequest;
-use \App\Models\UsersModel;
+use \App\Models\User;
 
 class UsersController extends Controller
 {
@@ -15,7 +15,7 @@ class UsersController extends Controller
      */
     public function index() 
     {
-        $data = UsersModel::listAll();
+        $data = User::listAll();
         
         return view('admin.users.users', [
             'data' => $data,
@@ -30,7 +30,7 @@ class UsersController extends Controller
      */
     public function editShow(int $id) 
     {
-        $item = UsersModel::findOrCreate($id);
+        $item = User::findOrCreate($id);
         
         return view('admin.users.user-edit', [
             'item' => $item,
@@ -46,7 +46,7 @@ class UsersController extends Controller
      */
     public function editPost(UsersRequest $request, int $id)
     {
-        UsersModel::storeFromRequest($request, $id);
+        User::storeFromRequest($request, $id);
         
         return 'OK';
     }
@@ -59,7 +59,7 @@ class UsersController extends Controller
      */
     public function delete(int $id) 
     {
-        UsersModel::deleteById($id);
+        User::deleteById($id);
         
         return 'OK';
     }

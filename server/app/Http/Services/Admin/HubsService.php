@@ -3,7 +3,7 @@
 namespace App\Http\Services\Admin;
 
 use App\Models\ControllersModel;
-use App\Models\VariablesModel;
+use App\Models\Device;
 use App\Models\PropertysModel;
 use App\Library\DaemonManager;
 use App\Library\Firmware;
@@ -85,7 +85,7 @@ class HubsService
                     if (!$find) {
                         $app_control = 1; // По умолчанию СВЕТ
                         
-                        $item = new VariablesModel();
+                        $item = new Device();
                         $item->controller_id = $din->id;
                         $item->typ = 'din';
                         $item->name = 'temp for din';
@@ -125,7 +125,7 @@ class HubsService
                     if (!$find) {
                         $appControl = $decodeChannel($chan);
                         
-                        $item = new VariablesModel();
+                        $item = new Device();
                         $item->controller_id = $dev->controller_id;
                         $item->typ = 'ow';
                         $item->name = 'temp for ow';

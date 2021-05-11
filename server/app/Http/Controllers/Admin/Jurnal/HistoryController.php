@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Jurnal;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\HistoryIndexRequest;
 use App\Http\Services\Admin\HistoryService;
-use App\Models\VariablesModel;
+use App\Models\Device;
 use App\Models\VariableChangesModel;
 
 class HistoryController extends Controller
@@ -38,7 +38,7 @@ class HistoryController extends Controller
         
         list($data, $errors) = $this->_historyService->getFilteringData($id);        
         
-        $devices = VariablesModel::devicesListWithRoomName();
+        $devices = Device::devicesListWithRoomName();
         
         return view('admin.jurnal.history.history', [
             'id' => $id,

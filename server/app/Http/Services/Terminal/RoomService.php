@@ -4,7 +4,7 @@ namespace App\Http\Services\Terminal;
 
 use App\Models\PlanPartsModel;
 use App\Models\PropertysModel;
-use App\Models\VariablesModel;
+use App\Models\Device;
 use DB;
 
 class RoomService 
@@ -40,8 +40,8 @@ class RoomService
             
             $row->is_root = (mb_strpos(mb_strtoupper($row->comm), $roomTitle) !== false) ? 1 : 0;
             
-            $c = VariablesModel::decodeAppControl($row->app_control);
-            $c->title =  VariablesModel::groupVariableName($roomTitle, mb_strtoupper($row->comm), mb_strtoupper($c->label));
+            $c = Device::decodeAppControl($row->app_control);
+            $c->title = Device::groupVariableName($roomTitle, mb_strtoupper($row->comm), mb_strtoupper($c->label));
 
             $rows[] = (object)[
                 'data' => $row, 
