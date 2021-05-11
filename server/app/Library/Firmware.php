@@ -11,6 +11,8 @@ namespace App\Library;
 use App\Models\OwType;
 use App\Models\OwDev;
 use App\Models\Script;
+use App\Library\Script\Translate;
+use App\Library\Script\Translators\C as TranslateC;
 use View;
 use DB;
 
@@ -144,9 +146,9 @@ class Firmware
         }
         
         foreach($scriptList as &$row) {
-            $translator = new Script\Translate($row->data);
+            $translator = new Translate($row->data);
             $report = [];
-            $row->data_to_c = $translator->run(new Script\Translators\C($variableNames), $report);
+            $row->data_to_c = $translator->run(new TranslateC($variableNames), $report);
         }
         
         // Проставляем индексы для переменных в связях с эвентами
