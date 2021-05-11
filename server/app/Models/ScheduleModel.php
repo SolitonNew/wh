@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use \Illuminate\Http\Request;
@@ -61,7 +61,7 @@ class ScheduleModel extends Model
     /**
      * 
      * @param int $id
-     * @return \App\Http\Models\ScheduleModel
+     * @return \App\Models\ScheduleModel
      */
     static public function findOrCreate(int $id)
     {
@@ -111,7 +111,7 @@ class ScheduleModel extends Model
     static public function deleteById(int $id)
     {
         try {
-            $item = \App\Http\Models\ScheduleModel::find($id);
+            $item = ScheduleModel::find($id);
             $item->delete();
         } catch (\Exception $ex) {
             abort(response()->json([

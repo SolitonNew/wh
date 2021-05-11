@@ -2,7 +2,7 @@
 
 namespace App\Http\Services\Terminal;
 
-use App\Http\Models\WebQueueMemModel;
+use App\Models\WebQueueMemModel;
 
 class QueueService 
 {

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Models\PlanPartsModel;
-use App\Http\Models\VariablesModel;
+use App\Models\PlanPartsModel;
+use App\Models\VariablesModel;
 use App\Http\Requests\Admin\PlanIndexRequest;
 use App\Http\Requests\Admin\PlanRequest;
 use App\Http\Requests\Admin\PlanMoveChildsRequest;
@@ -247,7 +247,7 @@ class PlanController extends Controller
             $devices = [];
             
             $device->label = $device->name.' '.($device->comm);
-            $app_control = \App\Http\Models\VariablesModel::decodeAppControl($device->app_control);
+            $app_control = VariablesModel::decodeAppControl($device->app_control);
             $device->label .= ' '."'$app_control->label'";
         }
         
@@ -304,7 +304,7 @@ class PlanController extends Controller
      */
     public function portEditShow(Request $request, int $planID, int $portIndex = -1)
     {
-        $part = \App\Http\Models\PlanPartsModel::find($planID);
+        $part = PlanPartsModel::find($planID);
         
         return view('admin.plan.plan-port-edit', [
             'planID' => $planID,

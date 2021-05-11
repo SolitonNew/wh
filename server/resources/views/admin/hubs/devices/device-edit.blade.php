@@ -42,10 +42,10 @@
         </div>
         <div class="col-sm-6">
             <select class="custom-select" name="controller_id">
-            @foreach(\App\Http\Models\ControllersModel::orderBy('name', 'asc')->get() as $row)
+            @foreach(\App\Models\ControllersModel::orderBy('name', 'asc')->get() as $row)
             <option value="{{ $row->id }}" 
                     {{ $row->id == $item->controller_id ? 'selected' : '' }}
-                    data-typs="{{ implode('|', \App\Http\Models\ControllersModel::$typs[$row->typ]) }}">{{ $row->name }}</option>
+                    data-typs="{{ implode('|', \App\Models\ControllersModel::$typs[$row->typ]) }}">{{ $row->name }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>

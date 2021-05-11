@@ -8,6 +8,8 @@
 
 namespace App\Library\Script;
 
+use App\Library\Script\PhpExecute;
+use App\Models\VariablesModel;
 use Lang;
 
 /**
@@ -38,7 +40,7 @@ class ScriptEditor
         }
         
         $strings = [];
-        foreach(\App\Http\Models\VariablesModel::orderBy('name', 'asc')->get() as $row) {
+        foreach (VariablesModel::orderBy('name', 'asc')->get() as $row) {
             $strings[$row->name] = $row->comm.' '.Lang::get('admin/hubs.app_control.'.$row->app_control);
         }
         
@@ -57,7 +59,7 @@ class ScriptEditor
     static public function scriptTest(string $command)
     {
         try {
-            $execute = new \App\Library\Script\PhpExecute($command);
+            $execute = new PhpExecute($command);
             $report = [];
             $res = $execute->run(true, $report);
             
@@ -66,7 +68,7 @@ class ScriptEditor
                 $log[] = 'Testing completed successfully';
                 $log[] = str_repeat('-', 40);
                 $log[] = 'FUNCTIONS ['.count($report['functions']).']';
-                foreach($report['functions'] as $key => $val) {
+                foreach ($report['functions'] as $key => $val) {
                     $log[] = '    '.$key;
                 }
                 $log[] = '';

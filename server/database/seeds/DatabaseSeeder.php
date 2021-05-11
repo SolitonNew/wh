@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // Создаем админа по умолчанию
-        $item = new \App\Http\Models\UsersModel();
+        $item = new \App\Models\UsersModel();
         $item->login = 'wh';
         $item->password = bcrypt('wh');
         $item->access = 2;
@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
         
         foreach($data as $row) {
             $attrs = explode('|', $row);
-            \App\Http\Models\OwTypesModel::create([
+            \App\Models\OwTypesModel::create([
                 'code' => $attrs[0],
                 'comm' => $attrs[1],
                 'channels' => $attrs[2],
@@ -54,7 +54,7 @@ class DatabaseSeeder extends Seeder
 
         foreach($data as $row) {
             $attrs = explode('|', $row);
-            \App\Http\Models\PropertysModel::create([
+            \App\Models\PropertysModel::create([
                 'id' => $attrs[0],
                 'name' => $attrs[1],
                 'comm' => $attrs[2],
@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
         
         // Filling out of the plan_parts table
         $data = file_get_contents(base_path().'/database/seeds/sample.plan.json');
-        App\Http\Models\PlanPartsModel::importFromString($data);
+        App\Models\PlanPartsModel::importFromString($data);
         
     }
 }

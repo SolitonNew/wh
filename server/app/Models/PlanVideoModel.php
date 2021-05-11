@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -51,7 +51,7 @@ class PlanVideoModel extends Model
             $id = $request->route('id');
             $item = PlanVideoModel::find($id);
             if (!$item) {
-                $item = new \App\Http\Models\PlanVideoModel();
+                $item = new PlanVideoModel();
             }
             $item->name = $request->name;
             $item->url = $request->url;
@@ -78,7 +78,7 @@ class PlanVideoModel extends Model
     static public function deleteById($id)
     {
         try {
-            $item = \App\Http\Models\PlanVideoModel::find($id);
+            $item = PlanVideoModel::find($id);
             $item->delete();
         } catch (\Exception $ex) {
             abort(response()->json([

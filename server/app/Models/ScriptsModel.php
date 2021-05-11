@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
-use \App\Library\AffectsFirmwareModel;
-use \Illuminate\Http\Request;
+use App\Library\AffectsFirmwareModel;
+use Illuminate\Http\Request;
+use App\Models\VariableEventsModel;
+use App\Http\Events\FirmwareChangedEvent;
 use DB;
 
 class ScriptsModel extends AffectsFirmwareModel
@@ -34,7 +36,7 @@ class ScriptsModel extends AffectsFirmwareModel
     /**
      * 
      * @param int $id
-     * @return \App\Http\Models\ScriptsModel
+     * @return \App\Models\ScriptsModel
      */
     static public function findOrCreate(int $id)
     {
@@ -59,7 +61,7 @@ class ScriptsModel extends AffectsFirmwareModel
         try {
             $item = ScriptsModel::find($id);
             if (!$item) {
-                $item = new \App\Http\Models\ScriptsModel();
+                $item = new ScriptsModel();
                 $item->data = '/* NEW SCRIPT */';
             }
             $item->comm = $request->comm;
@@ -96,7 +98,7 @@ class ScriptsModel extends AffectsFirmwareModel
      */
     static public function storeDataFromRequest(Request $request, int $id)
     {
-        $item = \App\Http\Models\ScriptsModel::find($id);
+        $item = ScriptsModel::find($id);
         try {
             $item->data = $request->data ?? '/* NEW SCRIPT */';
             $item->save();
@@ -138,7 +140,7 @@ class ScriptsModel extends AffectsFirmwareModel
             $ids_sql = implode(', ', $ids);
 
             // Delete old not checked records
-            $changes = \App\Http\Models\VariableEventsModel::whereScriptId($id)
+            $changes = VariableEventsModel::whereScriptId($id)
                             ->whereNotIn('variable_id', $ids)
                             ->delete();
 
@@ -151,7 +153,7 @@ class ScriptsModel extends AffectsFirmwareModel
                                        where t.script_id = $id
                                          and t.variable_id = v.id)";
             foreach(DB::select($sql) as $row) {
-                $rec = new \App\Http\Models\VariableEventsModel();
+                $rec = new VariableEventsModel();
                 $rec->event_type = 0;
                 $rec->variable_id = $row->id;
                 $rec->script_id = $id;
@@ -160,7 +162,7 @@ class ScriptsModel extends AffectsFirmwareModel
             }
 
             if ($changes) {
-                event(new \App\Http\Events\FirmwareChangedEvent());
+                event(new FirmwareChangedEvent());
             }
         } catch (\Exception $ex) {
             abort(response()->json([

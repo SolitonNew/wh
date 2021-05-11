@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Services\Admin\ScriptsService;
 use App\Http\Requests\Admin\ScriptsIndexRequest;
 use App\Http\Requests\Admin\ScriptsRequest;
-use App\Http\Models\ScriptsModel;
+use App\Models\ScriptsModel;
 
 class ScriptsController extends Controller
 {

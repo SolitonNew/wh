@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UsersRequest;
-use \App\Http\Models\UsersModel;
+use \App\Models\UsersModel;
 
 class UsersController extends Controller
 {
@@ -46,7 +46,7 @@ class UsersController extends Controller
      */
     public function editPost(UsersRequest $request, int $id)
     {
-        \App\Http\Models\UsersModel::storeFromRequest($request, $id);
+        UsersModel::storeFromRequest($request, $id);
         
         return 'OK';
     }
@@ -59,7 +59,7 @@ class UsersController extends Controller
      */
     public function delete(int $id) 
     {
-        \App\Http\Models\UsersModel::deleteById($id);
+        UsersModel::deleteById($id);
         
         return 'OK';
     }

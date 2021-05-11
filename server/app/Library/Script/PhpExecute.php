@@ -8,8 +8,6 @@
 
 namespace App\Library\Script;
 
-use Log;
-
 /**
  * Description of PhpExecute
  *

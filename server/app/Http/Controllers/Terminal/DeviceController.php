@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Terminal;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\Terminal\DeviceService;
-use DB;
 
 class DeviceController extends Controller
 {

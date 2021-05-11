@@ -8,7 +8,7 @@
 
 namespace App\Library\Daemons;
 
-use App\Http\Models\ControllersModel;
+use App\Models\ControllersModel;
 use DB;
 use Lang;
 

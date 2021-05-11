@@ -8,8 +8,8 @@
 
 namespace App\Library;
 
-use App\Http\Models\SpeechesModel;
-use App\Http\Models\WebQueueMemModel;
+use App\Models\SpeechesModel;
+use App\Models\WebQueueMemModel;
 
 /**
  * Description of Speech

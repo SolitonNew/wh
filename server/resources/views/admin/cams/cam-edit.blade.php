@@ -51,7 +51,7 @@
         <label>@lang('admin/cams.table_ALERT_VAR_ID'):</label>
         <select class="custom-select" name="alert_var_id">
         <option value="-1">-//-</option>
-        @foreach(\App\Http\Models\VariablesModel::orderBy('name')->get() as $row)
+        @foreach(\App\Models\VariablesModel::orderBy('name')->get() as $row)
         <option value="{{ $row->id }}" {{ $item->alert_var_id == $row->id ? 'selected' : '' }}>{{ $row->name }}</option>
         @endforeach
         </select>

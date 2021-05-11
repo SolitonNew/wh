@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -26,7 +26,7 @@ class UsersModel extends Authenticatable
     /**
      * 
      * @param int $id
-     * @return \App\Http\Models\UsersModel
+     * @return \App\Models\UsersModel
      */
     static public function findOrCreate(int $id)
     {
@@ -74,7 +74,7 @@ class UsersModel extends Authenticatable
      */
     static public function deleteById(int $id) 
     {
-        $item = \App\Http\Models\UsersModel::find($id);
+        $item = UsersModel::find($id);
         if ($item) {
             try {
                 $item->delete();

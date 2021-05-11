@@ -8,6 +8,7 @@
 
 namespace App\Library\Script\PhpFunctions;
 
+use App\Models\VariablesModel;
 use Lang;
 
 trait FunctionInfo 
@@ -43,7 +44,7 @@ trait FunctionInfo
         $this->function_speech($text);
 
         // Формируем строку текущей температуры на улице  ------------------
-        $temp_item = \App\Http\Models\VariablesModel::find(config('app.command_info_temp_id'));
+        $temp_item = VariablesModel::find(config('app.command_info_temp_id'));
         if ($temp_item) {
             $t_out = $temp_item->value;
             $t_round = round($t_out);

@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\HubsIndexRequest;
 use App\Http\Requests\Admin\DeviceRequest;
 use App\Http\Services\Admin\DevicesService;
-use App\Http\Models\VariablesModel;
-use App\Http\Models\PlanPartsModel;
+use App\Models\VariablesModel;
+use App\Models\PlanPartsModel;
 
 class DevicesController extends Controller
 {

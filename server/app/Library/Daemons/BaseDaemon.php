@@ -2,8 +2,8 @@
 
 namespace App\Library\Daemons;
 
-use App\Http\Models\WebLogsModel;
-use App\Http\Models\PropertysModel;
+use App\Models\WebLogsModel;
+use App\Models\PropertysModel;
 
 /**
  * This is the base class for all daemons.

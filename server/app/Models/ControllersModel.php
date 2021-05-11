@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use \App\Library\AffectsFirmwareModel;
 use \Illuminate\Http\Request;
@@ -17,7 +17,7 @@ class ControllersModel extends AffectsFirmwareModel
     /**
      * 
      * @param int $id
-     * @return \App\Http\Models\ControllersModel
+     * @return \App\Models\ControllersModel
      */
     static public function findOrCreate(int $id)
     {

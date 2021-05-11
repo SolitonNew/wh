@@ -3,8 +3,8 @@
 namespace App\Http\Services\Terminal;
 
 use \Illuminate\Http\Request;
-use App\Http\Models\PropertysModel;
-use App\Http\Models\VariablesModel;
+use App\Models\PropertysModel;
+use App\Models\VariablesModel;
 use Lang;
 use DB;
 

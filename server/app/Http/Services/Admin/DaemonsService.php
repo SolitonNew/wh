@@ -3,7 +3,7 @@
 namespace App\Http\Services\Admin;
 
 use App\Library\DaemonManager;
-use App\Http\Models\PropertysModel;
+use App\Models\PropertysModel;
 
 class DaemonsService 
 {

@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use \Illuminate\Support\Facades\DB;
-use Lang;
 
 class VariableChangesModel extends Model
 {

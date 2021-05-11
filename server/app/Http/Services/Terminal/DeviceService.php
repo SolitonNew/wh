@@ -2,8 +2,8 @@
 
 namespace App\Http\Services\Terminal;
 
-use App\Http\Models\VariablesModel;
-use App\Http\Models\VariableChangesMemModel;
+use App\Models\VariablesModel;
+use App\Models\VariableChangesMemModel;
 use DB;
 
 class DeviceService 

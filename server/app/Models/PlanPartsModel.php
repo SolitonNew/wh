@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use App\Models\VariablesModel;
 use DB;
-use Log;
 
 class PlanPartsModel extends Model
 {
@@ -21,7 +21,7 @@ class PlanPartsModel extends Model
     static public function listAllForIndex(int $id)
     {
         $ports = [];
-        $parts = \App\Http\Models\PlanPartsModel::generateTree($id);
+        $parts = PlanPartsModel::generateTree($id);
         foreach($parts as $row) {
             if ($row->bounds) {
                 $v = json_decode($row->bounds);
@@ -66,7 +66,7 @@ class PlanPartsModel extends Model
         
         // Load list of the devices
         $devices = [];
-        foreach(\App\Http\Models\VariablesModel::get() as $device) {
+        foreach(VariablesModel::get() as $device) {
             $part = false;
             foreach($parts as $row) {
                 if ($device->group_id == $row->id) {
@@ -172,11 +172,11 @@ class PlanPartsModel extends Model
     static public function deleteById(int $id)
     {
         try {
-            $item = \App\Http\Models\PlanPartsModel::find($id);
+            $item = PlanPartsModel::find($id);
             $item->delete();
             
             // Recalc max level
-            \App\Http\Models\PlanPartsModel::calcAndStoreMaxLevel();
+            PlanPartsModel::calcAndStoreMaxLevel();
         } catch (\Exception $ex) {
             abort(response()->json([
                 'errors' => [$ex->getMessage()],
@@ -351,7 +351,7 @@ class PlanPartsModel extends Model
     {
         $deviceID = $request->device ?? $deviceID;
 
-        $device = \App\Http\Models\VariablesModel::find($deviceID);
+        $device = VariablesModel::find($deviceID);
         if (!$device) abort(404);
         
         try {
@@ -384,7 +384,7 @@ class PlanPartsModel extends Model
         
         foreach($devices as $dev) {
             $dev->label = $dev->name.' '.($dev->comm);
-            $app_control = \App\Http\Models\VariablesModel::decodeAppControl($dev->app_control);
+            $app_control = VariablesModel::decodeAppControl($dev->app_control);
             $dev->label .= ' '."'$app_control->label'";
         }
         
@@ -397,7 +397,7 @@ class PlanPartsModel extends Model
      */
     static public function unlinkDevice(int $deviceID)
     {
-        $device = \App\Http\Models\VariablesModel::find($deviceID);
+        $device = VariablesModel::find($deviceID);
         if (!$device) abort(404);
         
         try {    
@@ -742,7 +742,7 @@ class PlanPartsModel extends Model
         $storeLevel = function ($level, $parentID) use (&$storeLevel) {
             $i = 1;
             foreach($level as $item) {
-                $plan = new \App\Http\Models\PlanPartsModel();
+                $plan = new PlanPartsModel();
                 $plan->id = $item->id;
                 $plan->parent_id = $parentID;
                 $plan->name = $item->name;

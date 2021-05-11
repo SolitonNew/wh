@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Jurnal;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Admin\DaemonsService;
 use App\Http\Requests\Admin\DaemonsIndexRequest;
-use App\Http\Models\WebLogsModel;
+use App\Models\WebLogsModel;
 
 class DaemonsController extends Controller
 {

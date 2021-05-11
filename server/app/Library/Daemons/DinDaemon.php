@@ -2,11 +2,11 @@
 
 namespace App\Library\Daemons;
 
-use App\Http\Models\ControllersModel;
-use App\Http\Models\PropertysModel;
-use App\Http\Models\VariableChangesMemModel;
-use App\Http\Models\OwDevsModel;
-use App\Http\Models\VariablesModel;
+use App\Models\ControllersModel;
+use App\Models\PropertysModel;
+use App\Models\VariableChangesMemModel;
+use App\Models\OwDevsModel;
+use App\Models\VariablesModel;
 use DB;
 use Lang;
 use Log;

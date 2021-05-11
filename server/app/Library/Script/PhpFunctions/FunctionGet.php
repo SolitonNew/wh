@@ -8,6 +8,8 @@
 
 namespace App\Library\Script\PhpFunctions;
 
+use App\Models\VariablesModel;
+
 trait FunctionGet 
 {
     /**
@@ -18,7 +20,7 @@ trait FunctionGet
      */
     public function function_get($name) 
     {
-        $variable = \App\Http\Models\VariablesModel::whereName($name)->first();
+        $variable = VariablesModel::whereName($name)->first();
         
         if ($variable) {
             return $variable->value;

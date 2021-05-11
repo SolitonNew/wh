@@ -2,9 +2,9 @@
 
 namespace App\Http\Services\Terminal;
 
-use App\Http\Models\PlanPartsModel;
-use App\Http\Models\PropertysModel;
-use App\Http\Models\VariablesModel;
+use App\Models\PlanPartsModel;
+use App\Models\PropertysModel;
+use App\Models\VariablesModel;
 use DB;
 
 class RoomService 

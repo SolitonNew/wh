@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
@@ -170,7 +170,7 @@ class VariablesModel extends AffectsFirmwareModel
      * 
      * @param int $id
      * @param int $hubId
-     * @return \App\Http\Models\VariablesModel
+     * @return \App\Models\VariablesModel
      */
     static public function findOrCreate(int $id, int $hubId = -1)
     {

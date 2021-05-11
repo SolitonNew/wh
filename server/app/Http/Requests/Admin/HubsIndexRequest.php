@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Models\ControllersModel;
+use App\Models\ControllersModel;
 
 class HubsIndexRequest extends FormRequest
 {

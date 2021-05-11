@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Models\ScriptsModel;
+use App\Models\ScriptsModel;
 
 class ScriptsIndexRequest extends FormRequest
 {

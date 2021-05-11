@@ -2,8 +2,8 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Http\Models\PlanPartsModel;
-use App\Http\Models\PropertysModel;
+use App\Models\PlanPartsModel;
+use App\Models\PropertysModel;
 
 class TerminalService 
 {

@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Models\PlanPartsModel;
+use App\Models\PlanPartsModel;
 
 class PlanIndexRequest extends FormRequest
 {

@@ -114,7 +114,7 @@
         $('.body-page-main > div').css('opacity', 1);
     });
     
-    let lastVariableID = {{ \App\Http\Models\VariableChangesMemModel::lastVariableID() ?? -1 }};
+    let lastVariableID = {{ \App\Models\VariableChangesMemModel::lastVariableID() ?? -1 }};
     
     function loadChanges() {
         $.ajax({
@@ -151,7 +151,7 @@
         });
     }
     
-    let lastQueueID = {{ \App\Http\Models\WebQueueMemModel::lastQueueID() ?? -1 }};
+    let lastQueueID = {{ \App\Models\WebQueueMemModel::lastQueueID() ?? -1 }};
     
     function loadQueue() {
         $.ajax({

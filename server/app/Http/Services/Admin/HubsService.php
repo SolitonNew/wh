@@ -2,9 +2,9 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Http\Models\ControllersModel;
-use App\Http\Models\VariablesModel;
-use App\Http\Models\PropertysModel;
+use App\Models\ControllersModel;
+use App\Models\VariablesModel;
+use App\Models\PropertysModel;
 use App\Library\DaemonManager;
 use App\Library\Firmware;
 use DB;

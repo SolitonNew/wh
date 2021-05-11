@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CamsRequest;
-use \App\Http\Models\PlanVideoModel;
+use \App\Models\PlanVideoModel;
 
 class CamsController extends Controller
 {
@@ -46,7 +46,7 @@ class CamsController extends Controller
      */
     public function editPost(CamsRequest $request, int $id)
     {
-        \App\Http\Models\PlanVideoModel::storeFromRequest($request);
+        PlanVideoModel::storeFromRequest($request);
         
         return 'OK';
     }
@@ -59,7 +59,7 @@ class CamsController extends Controller
      */
     public function delete(int $id) 
     {
-        \App\Http\Models\PlanVideoModel::deleteById($id);
+        PlanVideoModel::deleteById($id);
         
         return 'OK';
     }

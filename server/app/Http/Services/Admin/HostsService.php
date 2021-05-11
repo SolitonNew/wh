@@ -2,8 +2,8 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Http\Models\VariablesModel;
-use App\Http\Models\OwDevsModel;
+use App\Models\VariablesModel;
+use App\Models\OwDevsModel;
 use DB;
 
 class HostsService 

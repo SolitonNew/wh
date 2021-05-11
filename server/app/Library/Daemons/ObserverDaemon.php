@@ -8,10 +8,9 @@
 
 namespace App\Library\Daemons;
 
-use App\Http\Models\VariableChangesMemModel;
+use App\Models\VariableChangesMemModel;
 use DB;
 use Lang;
-use Log;
 
 /**
  * Description of ObserverDaemon
