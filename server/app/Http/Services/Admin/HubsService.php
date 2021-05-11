@@ -2,7 +2,7 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Models\ControllersModel;
+use App\Models\Hub;
 use App\Models\Device;
 use App\Models\PropertysModel;
 use App\Library\DaemonManager;
@@ -72,7 +72,7 @@ class HubsService
         // Generation of devices by channel
         $din_channels = config('firmware.channels.'.config('firmware.mmcu'));
         $vars = DB::select('select controller_id, channel from core_variables where typ = "din"');
-        foreach(ControllersModel::whereTyp('din')->get() as $din) {
+        foreach(Hub::whereTyp('din')->get() as $din) {
             try {
                 foreach($din_channels as $chan) {
                     $find = false;

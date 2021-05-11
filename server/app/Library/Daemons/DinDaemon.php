@@ -2,7 +2,7 @@
 
 namespace App\Library\Daemons;
 
-use App\Models\ControllersModel;
+use App\Models\Hub;
 use App\Models\PropertysModel;
 use App\Models\VariableChangesMemModel;
 use App\Models\OwDevsModel;
@@ -99,7 +99,7 @@ class DinDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
-        $this->_controllers = ControllersModel::where('id', '>', 0)
+        $this->_controllers = Hub::where('id', '>', 0)
                                 ->whereTyp('din')
                                 ->orderBy('rom', 'asc')
                                 ->get();
