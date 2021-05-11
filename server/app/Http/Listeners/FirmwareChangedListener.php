@@ -3,9 +3,6 @@
 namespace App\Http\Listeners;
 
 use App\Http\Events\FirmwareChangedEvent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Log;
 
 class FirmwareChangedListener
 {
