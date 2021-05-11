@@ -174,6 +174,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         
+        /*
+         * 
+         */
         App\Providers\SpeechServiceProvider::class,
     ],
 
@@ -225,6 +228,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         
+        /*
+         * 
+         */
         'Speech' => \App\Facades\Speech::class,
     ],
     
