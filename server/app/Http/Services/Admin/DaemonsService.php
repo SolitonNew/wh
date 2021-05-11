@@ -3,7 +3,7 @@
 namespace App\Http\Services\Admin;
 
 use App\Library\DaemonManager;
-use App\Models\PropertysModel;
+use App\Models\Property;
 
 class DaemonsService 
 {
@@ -59,7 +59,7 @@ class DaemonsService
     public function daemonStart(string $id)
     {        
         try {
-            PropertysModel::setAsRunningDaemon($id);
+            Property::setAsRunningDaemon($id);
             $this->_daemonManager->start($id);
             usleep(250000);
         } catch (\Exception $ex) {
@@ -76,7 +76,7 @@ class DaemonsService
     public function daemonStop(string $id)
     {
         try {
-            PropertysModel::setAsStoppedDaemon($id);
+            Property::setAsStoppedDaemon($id);
             $this->_daemonManager->stop($id);
             usleep(250000);
         } catch (\Exception $ex) {
@@ -93,7 +93,7 @@ class DaemonsService
     public function daemonRestart(string $id)
     {
         try {           
-            PropertysModel::setAsRunningDaemon($id);
+            Property::setAsRunningDaemon($id);
             $this->_daemonManager->restart($id);
             usleep(250000);
         } catch (\Exception $ex) {

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Lang;
 
-class VariableChangesMemModel extends Model
+class DeviceChangeMem extends Model
 {
     protected $table = 'core_variable_changes_mem';
     public $timestamps = false;

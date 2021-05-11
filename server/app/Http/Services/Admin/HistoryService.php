@@ -3,7 +3,7 @@
 namespace App\Http\Services\Admin;
 
 use Illuminate\Http\Request;
-use App\Models\VariableChangesModel;
+use App\Models\DeviceChange;
 use \Carbon\Carbon;
 use Session;
 
@@ -37,7 +37,7 @@ class HistoryService
         $data = [];
         
         if ($date) {
-            $query = VariableChangesModel::whereVariableId($deviceID);
+            $query = DeviceChange::whereVariableId($deviceID);
 
             $d = Carbon::parse($date)->startOfDay();
             $query->whereBetween('change_date', [$d, $d->copy()->addDay()]);
@@ -74,7 +74,7 @@ class HistoryService
             }
             
             $d = Carbon::parse($date)->startOfDay();
-            $query = VariableChangesModel::whereVariableId($deviceID)
+            $query = DeviceChange::whereVariableId($deviceID)
                         ->whereBetween('change_date', [$d, $d->copy()->addDay()]);
             if ($sql) {
                 $query->whereRaw('value '.$sql);

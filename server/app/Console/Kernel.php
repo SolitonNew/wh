@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
     {
         // Проверяем работоспособность фоновых процессов. Если кто-то пропал - запускаем
         $schedule->call(function (DaemonManager $daemonManager) {
-            foreach(\App\Models\PropertysModel::runningDaemons() as $daemon) {
+            foreach(\App\Models\Property::runningDaemons() as $daemon) {
                 if (count($daemonManager->findDaemonPID($daemon)) == 0) {
                     $daemonManager->start($daemon);
                 }

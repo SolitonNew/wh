@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
-class WebQueueMemModel extends Model
+class WebQueueMem extends Model
 {
     protected $table = 'web_queue_mem';
     public $timestamps = false;
@@ -17,7 +17,7 @@ class WebQueueMemModel extends Model
      */
     static public function appendRecord($action, $data) 
     {
-        $item = new WebQueueMemModel();
+        $item = new WebQueueMem();
         $item->action = $action;
         $item->data = $data;
         $item->save();
@@ -43,7 +43,7 @@ class WebQueueMemModel extends Model
     
     static public function getLastQueueList(int $lastID)
     {
-        return WebQueueMemModel::where('id', '>', $lastID)
+        return WebQueueMem::where('id', '>', $lastID)
                     ->orderBy('id', 'asc')
                     ->get();
     }

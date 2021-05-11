@@ -3,7 +3,7 @@
 namespace App\Http\Services\Terminal;
 
 use \Illuminate\Http\Request;
-use App\Models\PropertysModel;
+use App\Models\Property;
 use App\Models\Device;
 use Lang;
 use DB;
@@ -16,7 +16,7 @@ class CheckedService
      */
     public function getDevicesListInChecks()
     {
-        $checks = PropertysModel::getWebChecks();
+        $checks = Property::getWebChecks();
         
         if ($checks) {
             $sql = "select v.*,
@@ -77,7 +77,7 @@ class CheckedService
      */
     public function getChartsFor(&$rows)
     {
-        $web_color = PropertysModel::getWebColors();
+        $web_color = Property::getWebColors();
         
         $charts = [];
         
@@ -146,7 +146,7 @@ class CheckedService
     {
         $vars = $this->getDevicesListInChecks();
         
-        $checks = PropertysModel::getWebChecks();
+        $checks = Property::getWebChecks();
         
         $data = [];
         foreach (explode(',', $checks) as $key) {
@@ -174,7 +174,7 @@ class CheckedService
      */
     public function orderUp(int $id)
     {
-        $p = PropertysModel::getWebChecks();
+        $p = Property::getWebChecks();
         if ($p) {
             $a = explode(',', $p);
         } else {
@@ -202,7 +202,7 @@ class CheckedService
      */
     public function orderDown(int $id)
     {
-        $p = PropertysModel::getWebChecks();
+        $p = Property::getWebChecks();
         if ($p) {
             $a = explode(',', $p);
         } else {
@@ -229,7 +229,7 @@ class CheckedService
      */
     public function getWebColors()
     {
-        return PropertysModel::getWebColors();
+        return Property::getWebColors();
     }
     
     /**
@@ -242,7 +242,7 @@ class CheckedService
         $keyword = $request->post('keyword');
         $color = $request->post('color');
         
-        $colors = PropertysModel::getWebColors();
+        $colors = Property::getWebColors();
             
         switch ($action) {
             case 'add':
@@ -337,7 +337,7 @@ class CheckedService
     
     public function getCheckedIDs()
     {
-        $p = PropertysModel::getWebChecks();
+        $p = Property::getWebChecks();
         if ($p) {
             $a = explode(',', $p);
         } else {

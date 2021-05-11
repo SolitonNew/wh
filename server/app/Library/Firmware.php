@@ -8,9 +8,9 @@
 
 namespace App\Library;
 
-use App\Models\OwTypesModel;
-use App\Models\OwDevsModel;
-use App\Models\ScriptsModel;
+use App\Models\OwType;
+use App\Models\OwDev;
+use App\Models\Script;
 use View;
 use DB;
 
@@ -83,13 +83,13 @@ class Firmware
     public function generateConfig() 
     {
         // Вычитываем все нужные данные
-        $owDevTyps = OwTypesModel::orderBy('code', 'asc')->get();
-        $owList = OwDevsModel::orderBy('id', 'asc')->get();
+        $owDevTyps = OwType::orderBy('code', 'asc')->get();
+        $owList = OwDev::orderBy('id', 'asc')->get();
         $varList = DB::select('select v.*, c.rom controller_rom
                                  from core_variables v, core_controllers c
                                 where v.controller_id = c.id
                                order by v.id');
-        $scriptList = ScriptsModel::orderBy('id', 'asc')->get();
+        $scriptList = Script::orderBy('id', 'asc')->get();
         $eventList = DB::select('select e.variable_id, GROUP_CONCAT(e.script_id) script_ids
                                    from core_variable_events e 
                                  group by e.variable_id 

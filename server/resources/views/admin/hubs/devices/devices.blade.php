@@ -28,7 +28,7 @@
             <select id="deviceFilter" class="custom-select select-tree" style="width: 300px;">
                 <option value="none" class="italic">-- @lang('admin/hubs.device_filter_null') --</option>
                 <option value="empty" class="italic" {{ $groupID == 'empty' ? 'selected' : '' }}>-- @lang('admin/hubs.device_group_empty') --</option>
-                @foreach(\App\Models\PlanPartsModel::generateTree() as $row)
+                @foreach(\App\Models\Room::generateTree() as $row)
                 <option value="{{ $row->id }}" {{ $row->id == $groupID ? 'selected' : '' }}>{!! $row->treePath !!} {{ $row->name }}</option>
                 @endforeach
             </select>

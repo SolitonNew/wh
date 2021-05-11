@@ -3,7 +3,7 @@
 namespace App\Http\Services\Terminal;
 
 use App\Models\Device;
-use App\Models\VariableChangesMemModel;
+use App\Models\DeviceChangeMem;
 use DB;
 
 class DeviceService 
@@ -59,7 +59,7 @@ class DeviceService
                               " order by c.id");
             return response()->json($res);
         } else {
-            return 'LAST_ID: '.VariableChangesMemModel::lastVariableID();
+            return 'LAST_ID: '.DeviceChangeMem::lastVariableID();
         }
     }
     

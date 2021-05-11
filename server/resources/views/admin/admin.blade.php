@@ -29,8 +29,8 @@
                 <div style="display: flex; flex-grow: 1; align-items: center;">
                 @yield('top-menu')
                 </div>
-                @if(\App\Models\Hub::existsFirmwareHubs() && \App\Models\PropertysModel::getFirmwareChanges() > 0)
-                <a class="btn btn-danger" href="#" onclick="firmware(); return false;">@lang('admin/admin.menu_firmware') ({{ \App\Models\PropertysModel::getFirmwareChanges() }})</a>
+                @if(\App\Models\Hub::existsFirmwareHubs() && \App\Models\Property::getFirmwareChanges() > 0)
+                <a class="btn btn-danger" href="#" onclick="firmware(); return false;">@lang('admin/admin.menu_firmware') ({{ \App\Models\Property::getFirmwareChanges() }})</a>
                 @endif
                 <a class="btn btn-primary" href="{{ route('home') }}" target="_blank">@lang('admin/admin.menu_home')</a>
                 <a class="btn btn-primary" href="{{ route('logout') }}" style="margin-right: 0;">@lang('admin/admin.menu_logout')</a>
@@ -46,7 +46,7 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('plan')" href="{{ route('admin.plan') }}">
                             <img src="/img/menus/clipboard-2x.png">
                             <span class="label">@lang('admin/plan.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ \App\Models\PlanPartsModel::count() }}</span>
+                            <span class="badge badge-primary badge-pill">{{ \App\Models\Room::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('hubs')" href="{{ route('admin.hubs', '') }}">
                             <img src="/img/menus/pulse-2x.png">
@@ -56,12 +56,12 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('scripts')" href="{{ route('admin.scripts') }}">
                             <img src="/img/menus/document-2x.png">
                             <span class="label">@lang('admin/scripts.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ \App\Models\ScriptsModel::count() }}</span>
+                            <span class="badge badge-primary badge-pill">{{ \App\Models\Script::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('schedule')" href="{{ route('admin.schedule') }}">
                             <img src="/img/menus/calendar-2x.png">
                             <span class="label">@lang('admin/schedule.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ \App\Models\ScheduleModel::count() }}</span>
+                            <span class="badge badge-primary badge-pill">{{ \App\Models\Schedule::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('cams')" href="{{ route('admin.cams') }}">
                             <img src="/img/menus/video-2x.png">

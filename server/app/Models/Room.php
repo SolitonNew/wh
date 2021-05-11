@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Device;
 use DB;
 
-class PlanPartsModel extends Model
+class Room extends Model
 {
     protected $table = 'plan_parts';
     public $timestamps = false;
@@ -21,7 +21,7 @@ class PlanPartsModel extends Model
     static public function listAllForIndex(int $id)
     {
         $ports = [];
-        $parts = PlanPartsModel::generateTree($id);
+        $parts = Room::generateTree($id);
         foreach($parts as $row) {
             if ($row->bounds) {
                 $v = json_decode($row->bounds);
@@ -92,9 +92,9 @@ class PlanPartsModel extends Model
      */
     static public function findOrCreate(int $id, int $p_id = -1)
     {
-        $item = PlanPartsModel::find($id);
+        $item = Room::find($id);
         if (!$item) {
-            $item = new PlanPartsModel();
+            $item = new Room();
             $item->id = -1;
             $item->parent_id = $p_id;
         }
@@ -111,14 +111,14 @@ class PlanPartsModel extends Model
     static public function storeFromRequest(Request $request, int $id)
     {
         try {
-            $item = PlanPartsModel::find($id);
+            $item = Room::find($id);
             
-            $off = PlanPartsModel::parentOffset($request->parent_id);
+            $off = Room::parentOffset($request->parent_id);
 
             $dx = 0;
             $dy = 0;                
             if (!$item) {
-                $item = new PlanPartsModel();
+                $item = new Room();
             } else {
                 $bounds = json_decode($item->bounds);
                 if ($bounds) {
@@ -155,7 +155,7 @@ class PlanPartsModel extends Model
             }
 
             // Recalc max level
-            PlanPartsModel::calcAndStoreMaxLevel();
+            Room::calcAndStoreMaxLevel();
 
             return 'OK';
         } catch (\Exception $ex) {
@@ -172,11 +172,11 @@ class PlanPartsModel extends Model
     static public function deleteById(int $id)
     {
         try {
-            $item = PlanPartsModel::find($id);
+            $item = Room::find($id);
             $item->delete();
             
             // Recalc max level
-            PlanPartsModel::calcAndStoreMaxLevel();
+            Room::calcAndStoreMaxLevel();
         } catch (\Exception $ex) {
             abort(response()->json([
                 'errors' => [$ex->getMessage()],
@@ -192,11 +192,11 @@ class PlanPartsModel extends Model
     static public function cloneNearby(int $id, string $direction) 
     {
         try {
-            $part = PlanPartsModel::find($id);
+            $part = Room::find($id);
             
             if (!$part) abort(404);
             
-            $new_part = new PlanPartsModel();
+            $new_part = new Room();
 
             $new_part->parent_id = $part->parent_id;
             $new_part->name = $part->name.' copy';
@@ -237,7 +237,7 @@ class PlanPartsModel extends Model
     static public function moveChildsFromRequest(Request $request, int $id)
     {
         try {
-            $item = PlanPartsModel::find($id);
+            $item = Room::find($id);
             $item->moveChilds($request->DX, $request->DY);
         } catch (\Exception $ex) {
             abort(response()->json([
@@ -253,7 +253,7 @@ class PlanPartsModel extends Model
      */
     static public function childList(int $parentId)
     {
-        return PlanPartsModel::whereParentId($parentId)
+        return Room::whereParentId($parentId)
                     ->orderBy('order_num', 'asc')
                     ->get();
     }
@@ -267,7 +267,7 @@ class PlanPartsModel extends Model
         try {
             $ids = explode(',', $request->orderIds);
 
-            foreach (PlanPartsModel::find($ids) as $item) {
+            foreach (Room::find($ids) as $item) {
                 $item->order_num = array_search($item->id, $ids);
                 $item->save();
             }            
@@ -287,7 +287,7 @@ class PlanPartsModel extends Model
     static public function move(int $id, float $newX, float $newY)
     {
         try {
-            $item = PlanPartsModel::find($id);
+            $item = Room::find($id);
             if (!$item) abort(404);
             $bounds = json_decode($item->bounds);
             $bounds->X = $newX;
@@ -310,7 +310,7 @@ class PlanPartsModel extends Model
     static public function size(int $id, float $newW, float $newH)
     {
         try {
-            $item = PlanPartsModel::find($id);
+            $item = Room::find($id);
             if (!$item) abort(404);
             
             $bounds = json_decode($item->bounds);
@@ -333,7 +333,7 @@ class PlanPartsModel extends Model
     {
         try {
             $data = file_get_contents($request->file('file'));
-            PlanPartsModel::importFromString($data);
+            Room::importFromString($data);
         } catch (\Exception $ex) {
             abort(response()->json([
                 'errors' => [$ex->getMessage()],
@@ -420,7 +420,7 @@ class PlanPartsModel extends Model
     static public function storePortFromRequest(Request $request, int $planID, int $portIndex)
     {
         try {
-            $part = PlanPartsModel::find($planID);
+            $part = Room::find($planID);
             if (!$part) abort(404);
             
             $ports = json_decode($part->ports) ?? [];
@@ -454,7 +454,7 @@ class PlanPartsModel extends Model
     static public function deletePortByIndex(int $partID, int $portIndex)
     {
         try {
-            $part = PlanPartsModel::find($partID);
+            $part = Room::find($partID);
             if (!$part) abort(404);
             
             $ports = json_decode($part->ports);
@@ -607,7 +607,7 @@ class PlanPartsModel extends Model
     {
         $ids = explode(',', self::genIDsForGroupAtParent($this->id));
         
-        foreach(PlanPartsModel::whereIn('id', $ids)->cursor() as $row) {
+        foreach(Room::whereIn('id', $ids)->cursor() as $row) {
             if ($row->id == $this->id) continue;
             
             $bounds = json_decode($row->bounds);
@@ -676,8 +676,8 @@ class PlanPartsModel extends Model
         
         $maxLevel++;
         
-        if (PropertysModel::getPlanMaxLevel() > $maxLevel) {
-            PropertysModel::setPlanMaxLevel($maxLevel);
+        if (Property::getPlanMaxLevel() > $maxLevel) {
+            Property::setPlanMaxLevel($maxLevel);
         }
     }
     
@@ -689,7 +689,7 @@ class PlanPartsModel extends Model
      */
     static public function parentOffset($parentId) 
     {
-        $parent = PlanPartsModel::find($parentId);
+        $parent = Room::find($parentId);
         if ($parent) {
             $bounds = json_decode($parent->bounds);
             return (object)[
@@ -742,7 +742,7 @@ class PlanPartsModel extends Model
         $storeLevel = function ($level, $parentID) use (&$storeLevel) {
             $i = 1;
             foreach($level as $item) {
-                $plan = new PlanPartsModel();
+                $plan = new Room();
                 $plan->id = $item->id;
                 $plan->parent_id = $parentID;
                 $plan->name = $item->name;
@@ -760,13 +760,13 @@ class PlanPartsModel extends Model
             $parts = json_decode($data);
 
             // Удаляем все существующиезаписи из БД
-            PlanPartsModel::truncate();
+            Room::truncate();
 
             // Рекурсивно заливаем новые записи
             $storeLevel($parts, null);
 
             // Нужно пересчитать максимальный уровень вложения структуры
-            PlanPartsModel::calcAndStoreMaxLevel();
+            Room::calcAndStoreMaxLevel();
 
             return 'OK';
         } catch (\Exception $ex) {
@@ -831,7 +831,7 @@ class PlanPartsModel extends Model
         $bounds = $this->getBounds();
         
         if ($this->id > 0) {
-            $off = PlanPartsModel::parentOffset($this->parent_id);
+            $off = Room::parentOffset($this->parent_id);
             $bounds->X -= $off->X;
             $bounds->Y -= $off->Y;
         }

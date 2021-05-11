@@ -30,10 +30,10 @@
         <div class="col-sm-9">
             <select class="custom-select select-tree" name="parent_id">
             <option value="">-//-</option>
-            @foreach(\App\Models\PlanPartsModel::generateTree() as $row)
+            @foreach(\App\Models\Room::generateTree() as $row)
             <option value="{{ $row->id }}"
                 {{ $row->id == $item->parent_id ? 'selected' : '' }}
-                {{ App\Models\PlanPartsModel::checkIdAsChildOfParentID($row->id, $item->id) ? '' : 'disabled' }}
+                {{ App\Models\Room::checkIdAsChildOfParentID($row->id, $item->id) ? '' : 'disabled' }}
                 data-bounds="{{ $row->bounds }}"
                 >{!! $row->treePath !!} {{ $row->name }}</option>
             @endforeach

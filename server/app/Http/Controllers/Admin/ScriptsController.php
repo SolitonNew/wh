@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Services\Admin\ScriptsService;
 use App\Http\Requests\Admin\ScriptsIndexRequest;
 use App\Http\Requests\Admin\ScriptsRequest;
-use App\Models\ScriptsModel;
+use App\Models\Script;
 
 class ScriptsController extends Controller
 {
@@ -34,8 +34,8 @@ class ScriptsController extends Controller
      */
     public function index(ScriptsIndexRequest $request, int $id = null)
     {        
-        $list = ScriptsModel::listAll();
-        $item = ScriptsModel::find($id);
+        $list = Script::listAll();
+        $item = Script::find($id);
         
         return view('admin.scripts.scripts', [
             'scriptID' => $id,
@@ -52,7 +52,7 @@ class ScriptsController extends Controller
      */
     public function editShow(int $id)
     {
-        $item = ScriptsModel::findOrCreate($id);
+        $item = Script::findOrCreate($id);
         
         return view('admin.scripts.script-edit', [
             'item' => $item,
@@ -68,7 +68,7 @@ class ScriptsController extends Controller
      */
     public function editPost(ScriptsRequest $request, int $id)
     {
-        ScriptsModel::storeFromRequest($request, $id);
+        Script::storeFromRequest($request, $id);
         
         return 'OK';
     }
@@ -81,7 +81,7 @@ class ScriptsController extends Controller
      */
     public function delete(int $id) 
     {
-        ScriptsModel::deleteById($id);
+        Script::deleteById($id);
         
         return 'OK';
     }
@@ -95,7 +95,7 @@ class ScriptsController extends Controller
      */
     public function saveScript(Request $request, int $id) 
     {
-        ScriptsModel::storeDataFromRequest($request, $id);
+        Script::storeDataFromRequest($request, $id);
         
         return 'OK';
     }
@@ -107,7 +107,7 @@ class ScriptsController extends Controller
      */
     public function attacheEventsShow(int $id)
     {
-        $data = ScriptsModel::attachedDevicesIds($id);
+        $data = Script::attachedDevicesIds($id);
 
         return view('admin.scripts.script-events', [
             'id' => $id,
@@ -123,7 +123,7 @@ class ScriptsController extends Controller
      */
     public function attacheEventsPost(Request $request, int $id)
     {
-        ScriptsModel::attachDevicesFromRequest($request, $id);
+        Script::attachDevicesFromRequest($request, $id);
         
         return 'OK';
     }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Models\PlanPartsModel;
-use App\Models\PropertysModel;
+use App\Models\Room;
+use App\Models\Property;
 
 class TerminalService 
 {
@@ -19,7 +19,7 @@ class TerminalService
             3 => '',
         ];
         
-        $parts = PlanPartsModel::generateTree();
+        $parts = Room::generateTree();
         
         for ($i = 0; $i < 3; $i++) {
             for ($k = count($parts) - 1; $k >= 0; $k--) {
@@ -39,7 +39,7 @@ class TerminalService
      */
     public function getCurrentLevel()
     {
-        return PropertysModel::getPlanMaxLevel();
+        return Property::getPlanMaxLevel();
     }
     
     /**
@@ -49,7 +49,7 @@ class TerminalService
     public function setCurrentLevel($level)
     {
         try {
-            PropertysModel::setPlanMaxLevel($level);
+            Property::setPlanMaxLevel($level);
         } catch (\Exception $ex) {
             abort(response()->json([
                 'errors' => [$ex->getMessage()],

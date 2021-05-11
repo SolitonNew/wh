@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WebStatPanelsModel extends Model
+class SpeecheCache extends Model
 {
-    protected $table = 'web_stat_panels';
+    protected $table = 'media_speeches';
     public $timestamps = false;
     
 }

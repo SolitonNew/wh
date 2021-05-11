@@ -4,7 +4,7 @@ namespace App\Http\Services\Admin;
 
 use App\Models\Hub;
 use App\Models\Device;
-use App\Models\PropertysModel;
+use App\Models\Property;
 use App\Library\DaemonManager;
 use App\Library\Firmware;
 use DB;
@@ -17,11 +17,11 @@ class HubsService
      */
     public function hubsScan()
     {
-        PropertysModel::setDinCommand('OW SEARCH');
+        Property::setDinCommand('OW SEARCH');
         $i = 0;
         while ($i++ < 50) { // 5 sec
             usleep(100000);
-            $text = PropertysModel::getDinCommandInfo();
+            $text = Property::getDinCommandInfo();
             if ($t = strpos($text, 'END_OW_SCAN')) {
                 $text = substr($text, 0, $t);
                 break;
@@ -159,7 +159,7 @@ class HubsService
         $daemonManager = new DaemonManager();
         try {
             foreach($daemons as $daemon) {
-                PropertysModel::setAsRunningDaemon($daemon);
+                Property::setAsRunningDaemon($daemon);
                 $daemonManager->restart($daemon);
             }
             return 'OK';
@@ -204,8 +204,8 @@ class HubsService
      */
     public function firmwareStart()
     {
-        PropertysModel::setDinCommand('FIRMWARE');
-        PropertysModel::setDinCommandInfo('', true);
+        Property::setDinCommand('FIRMWARE');
+        Property::setDinCommandInfo('', true);
     }
     
     /**
@@ -223,7 +223,7 @@ class HubsService
                 ]);
             }
             
-            $info = PropertysModel::getDinCommandInfo();
+            $info = Property::getDinCommandInfo();
             if ($info == 'COMPLETE') {
                 return response()->json([                    
                     'firmware' => 'COMPLETE',
@@ -257,7 +257,7 @@ class HubsService
     public function hubsReset()
     {
         try {
-            PropertysModel::setDinCommand('RESET');           
+            Property::setDinCommand('RESET');           
         } catch (\Exception $ex) {
             abort(response()->json([
                 'errors' => [$ex->getMessage()],

@@ -3,9 +3,9 @@
 namespace App\Library\Daemons;
 
 use App\Models\Hub;
-use App\Models\PropertysModel;
-use App\Models\VariableChangesMemModel;
-use App\Models\OwDevsModel;
+use App\Models\Property;
+use App\Models\DeviceChangeMem;
+use App\Models\OwDev;
 use App\Models\Device;
 use DB;
 use Lang;
@@ -109,7 +109,7 @@ class DinDaemon extends BaseDaemon
             return;
         }
         
-        $this->_lastSyncVariableID = VariableChangesMemModel::max('id') ?? -1;
+        $this->_lastSyncVariableID = DeviceChangeMem::max('id') ?? -1;
         
         try {           
             $port = config('firmware.din_port');
@@ -119,24 +119,24 @@ class DinDaemon extends BaseDaemon
             stream_set_blocking($this->_port, false);
             while (!feof($this->_port)) {
                 $loopErrors = false;
-                $command = PropertysModel::getDinCommand(true);
+                $command = Property::getDinCommand(true);
                 
                 // Выполняем начальную подготовку итерации
                 // Она одинакова для все контроллеров
                 $variables = [];
                 switch ($command) {
                     case 'RESET':
-                        PropertysModel::setDinCommandInfo('', true);
+                        Property::setDinCommandInfo('', true);
                         break;
                     case 'OW SEARCH':
-                        PropertysModel::setDinCommandInfo('', true);
+                        Property::setDinCommandInfo('', true);
                         break;
                     case 'FIRMWARE':
-                        PropertysModel::setDinCommandInfo('', true);
+                        Property::setDinCommandInfo('', true);
                         $this->_firmwareHex = false;
                         break;
                     default:
-                        $variables = VariableChangesMemModel::where('id', '>', $this->_lastSyncVariableID)
+                        $variables = DeviceChangeMem::where('id', '>', $this->_lastSyncVariableID)
                                         ->orderBy('id', 'asc')
                                         ->get();
                         if (count($variables)) {
@@ -167,15 +167,15 @@ class DinDaemon extends BaseDaemon
                         // not records
                         break;
                     case 'OW SEARCH':
-                        PropertysModel::setDinCommandInfo('END_OW_SCAN');
+                        Property::setDinCommandInfo('END_OW_SCAN');
                         break;
                     case 'FIRMWARE':
                         if (!$loopErrors) {
-                            PropertysModel::setDinCommandInfo('COMPLETE', true);
+                            Property::setDinCommandInfo('COMPLETE', true);
                             // Сбрасываем счетчик изменений прошивки
-                            PropertysModel::setFirmwareChanges(0);
+                            Property::setFirmwareChanges(0);
                         } else {
-                            PropertysModel::setDinCommandInfo('ERROR', true);
+                            Property::setDinCommandInfo('ERROR', true);
                         }
                         $this->_firmwareHex = false;
                         break;
@@ -226,7 +226,7 @@ class DinDaemon extends BaseDaemon
         $new = 0;
         $lost = 0;
         
-        $owOldList = OwDevsModel::whereControllerId($controller->id)->get();
+        $owOldList = OwDev::whereControllerId($controller->id)->get();
         // Ищем кого потеряли
         foreach ($owOldList as $owOld) {
             $find = false;
@@ -272,7 +272,7 @@ class DinDaemon extends BaseDaemon
             if (!$find) {
                 $new++;
                 // Add to the list immediately.
-                $ow = new OwDevsModel();
+                $ow = new OwDev();
                 $ow->controller_id = $controller->id;
                 $ow->name = '';
                 $ow->comm = '';
@@ -307,7 +307,7 @@ class DinDaemon extends BaseDaemon
         $report[] = str_repeat('-', 35);
         $report[] = '';
 
-        PropertysModel::setDinCommandInfo(implode("\n", $report));
+        Property::setDinCommandInfo(implode("\n", $report));
     }
     
     /**
@@ -354,7 +354,7 @@ class DinDaemon extends BaseDaemon
                     $controller->name,
                     round((($index * 100) + $p) / $count),
                 ];
-                PropertysModel::setDinCommandInfo(implode(';', $a), true);
+                Property::setDinCommandInfo(implode(';', $a), true);
                 usleep($PAGE_STORE_PAUSE);
             }
             $p += $dp;
@@ -363,7 +363,7 @@ class DinDaemon extends BaseDaemon
             $controller->name,
             round((($index * 100) + $p) / $count),
         ];
-        PropertysModel::setDinCommandInfo(implode(';', $a), true);
+        Property::setDinCommandInfo(implode(';', $a), true);
         
         usleep($PAGE_STORE_PAUSE);
         

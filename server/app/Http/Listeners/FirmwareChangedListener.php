@@ -3,7 +3,7 @@
 namespace App\Http\Listeners;
 
 use App\Http\Events\FirmwareChangedEvent;
-use App\Models\PropertysModel;
+use App\Models\Property;
 
 class FirmwareChangedListener
 {
@@ -25,7 +25,7 @@ class FirmwareChangedListener
      */
     public function handle(FirmwareChangedEvent $event)
     {
-        $n = PropertysModel::getFirmwareChanges();
-        PropertysModel::setFirmwareChanges($n + 1);
+        $n = Property::getFirmwareChanges();
+        Property::setFirmwareChanges($n + 1);
     }
 }

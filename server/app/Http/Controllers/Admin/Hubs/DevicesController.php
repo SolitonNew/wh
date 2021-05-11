@@ -7,7 +7,7 @@ use App\Http\Requests\Admin\HubsIndexRequest;
 use App\Http\Requests\Admin\DeviceRequest;
 use App\Http\Services\Admin\DevicesService;
 use App\Models\Device;
-use App\Models\PlanPartsModel;
+use App\Models\Room;
 
 class DevicesController extends Controller
 {
@@ -59,7 +59,7 @@ class DevicesController extends Controller
     public function editShow(int $hubID, int $id) 
     {
         $item = Device::findOrCreate($id, $hubID);
-        $groupPath = PlanPartsModel::getPath($item->group_id, ' / ');
+        $groupPath = Room::getPath($item->group_id, ' / ');
 
         return view('admin.hubs.devices.device-edit', [
             'item' => $item,

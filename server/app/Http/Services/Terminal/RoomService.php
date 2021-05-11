@@ -2,8 +2,8 @@
 
 namespace App\Http\Services\Terminal;
 
-use App\Models\PlanPartsModel;
-use App\Models\PropertysModel;
+use App\Models\Room;
+use App\Models\Property;
 use App\Models\Device;
 use DB;
 
@@ -16,13 +16,13 @@ class RoomService
      */
     public function roomData(int $roomID)
     {
-        $room = PlanPartsModel::find($roomID);
+        $room = Room::find($roomID);
         
         $roomTitle = mb_strtoupper($room->name);
         
-        $web_color = PropertysModel::getWebColors();
+        $web_color = Property::getWebColors();
         
-        $groupIDs = PlanPartsModel::genIDsForGroupAtParent($roomID);
+        $groupIDs = Room::genIDsForGroupAtParent($roomID);
         
         $sql = "select v.*, 
                        0 is_root,

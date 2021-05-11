@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PropertysModel extends Model
+class Property extends Model
 {
     protected $table = 'core_propertys';
     public $timestamps = false;
@@ -62,7 +62,7 @@ class PropertysModel extends Model
             $a[] = $daemon;
             $item = self::whereName('RUNNING_DAEMONS')->first();
             if (!$item) {
-                $item = new PropertysModel();
+                $item = new Property();
                 $item->name = 'RUNNING_DAEMONS';
                 $item->comm = '';
             }
@@ -82,7 +82,7 @@ class PropertysModel extends Model
             array_splice($a, array_search($daemon, $a));
             $item = self::whereName('RUNNING_DAEMONS')->first();
             if (!$item) {
-                $item = new PropertysModel();
+                $item = new Property();
                 $item->name = 'RUNNING_DAEMONS';
                 $item->comm = '';
             }
@@ -115,7 +115,7 @@ class PropertysModel extends Model
         if ($item) {
             $item->value = $maxLevel;
         } else {
-            $item = new PropertysModel();
+            $item = new Property();
             $item->name = 'PLAN_MAX_LEVEL';
             $item->comm = '';
             $item->value = $maxLevel;
@@ -174,7 +174,7 @@ class PropertysModel extends Model
     {
         $item = self::whereName('DIN_COMMAND_INFO')->first();
         if (!$item) {
-            $item = new PropertysModel();
+            $item = new Property();
             $item->name = 'DIN_COMMAND_INFO';
             $item->comm = '';
         }
@@ -219,7 +219,7 @@ class PropertysModel extends Model
     {
         $item = self::whereName('WIRMWARE_CHANGES')->first();
         if (!$item) {
-            $item = new PropertysModel();
+            $item = new Property();
             $item->name = 'WIRMWARE_CHANGES';
             $item->comm = '';
         }

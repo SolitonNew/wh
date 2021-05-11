@@ -141,7 +141,7 @@ class Device extends AffectsFirmwareModel
                 break;
             default:
                 $groupID = (int)$groupID;
-                $ids = PlanPartsModel::genIDsForGroupAtParent($groupID);
+                $ids = Room::genIDsForGroupAtParent($groupID);
                 if ($ids) {
                     $where = ' and v.group_id in ('.$ids.') ';
                 }

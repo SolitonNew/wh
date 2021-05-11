@@ -4,11 +4,11 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
-use App\Models\VariableEventsModel;
+use App\Models\DeviceEvent;
 use App\Http\Events\FirmwareChangedEvent;
 use DB;
 
-class ScriptsModel extends AffectsFirmwareModel
+class Script extends AffectsFirmwareModel
 {    
     protected $table = 'core_scripts';
     public $timestamps = false;
@@ -36,13 +36,13 @@ class ScriptsModel extends AffectsFirmwareModel
     /**
      * 
      * @param int $id
-     * @return \App\Models\ScriptsModel
+     * @return \App\Models\Script
      */
     static public function findOrCreate(int $id)
     {
-        $item = ScriptsModel::find($id);
+        $item = Script::find($id);
         if (!$item) {
-            $item = new ScriptsModel();
+            $item = new Script();
             $item->id = -1;
             $item->data = '/* NEW SCRIPT */';
         }
@@ -59,9 +59,9 @@ class ScriptsModel extends AffectsFirmwareModel
     static public function storeFromRequest(Request $request, int $id)
     {
         try {
-            $item = ScriptsModel::find($id);
+            $item = Script::find($id);
             if (!$item) {
-                $item = new ScriptsModel();
+                $item = new Script();
                 $item->data = '/* NEW SCRIPT */';
             }
             $item->comm = $request->comm;
@@ -81,8 +81,8 @@ class ScriptsModel extends AffectsFirmwareModel
     static public function deleteById(int $id)
     {
         try {            
-            VariableEventsModel::whereScriptId($id)->delete();
-            $item = ScriptsModel::find($id);
+            DeviceEvent::whereScriptId($id)->delete();
+            $item = Script::find($id);
             $item->delete();
         } catch (\Exception $ex) {
             abort(result()->json([
@@ -98,7 +98,7 @@ class ScriptsModel extends AffectsFirmwareModel
      */
     static public function storeDataFromRequest(Request $request, int $id)
     {
-        $item = ScriptsModel::find($id);
+        $item = Script::find($id);
         try {
             $item->data = $request->data ?? '/* NEW SCRIPT */';
             $item->save();
@@ -140,7 +140,7 @@ class ScriptsModel extends AffectsFirmwareModel
             $ids_sql = implode(', ', $ids);
 
             // Delete old not checked records
-            $changes = VariableEventsModel::whereScriptId($id)
+            $changes = DeviceEvent::whereScriptId($id)
                             ->whereNotIn('variable_id', $ids)
                             ->delete();
 
@@ -153,7 +153,7 @@ class ScriptsModel extends AffectsFirmwareModel
                                        where t.script_id = $id
                                          and t.variable_id = v.id)";
             foreach(DB::select($sql) as $row) {
-                $rec = new VariableEventsModel();
+                $rec = new DeviceEvent();
                 $rec->event_type = 0;
                 $rec->variable_id = $row->id;
                 $rec->script_id = $id;

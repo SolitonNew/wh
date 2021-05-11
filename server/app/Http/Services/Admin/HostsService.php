@@ -3,7 +3,7 @@
 namespace App\Http\Services\Admin;
 
 use App\Models\Device;
-use App\Models\OwDevsModel;
+use App\Models\OwDev;
 use DB;
 
 class HostsService 
@@ -107,7 +107,7 @@ class HostsService
             Device::whereTyp('ow')
                     ->whereOwId($id)
                     ->delete();
-            $item = OwDevsModel::find($id);
+            $item = OwDev::find($id);
             $item->delete();
         } catch (\Exception $ex) {
             abort(response()->json([

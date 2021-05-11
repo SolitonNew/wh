@@ -2,9 +2,9 @@
 
 namespace App\Http\Services\Terminal;
 
-use App\Models\PlanPartsModel;
+use App\Models\Room;
 use App\Models\Device;
-use App\Models\PropertysModel;
+use App\Models\Property;
 
 class RoomsService 
 {
@@ -26,7 +26,7 @@ class RoomsService
      */
     public function roomsData()
     {
-        $this->_groups = PlanPartsModel::orderBy('order_num', 'asc')
+        $this->_groups = Room::orderBy('order_num', 'asc')
                             ->orderBy('name', 'asc')
                             ->get();
         
@@ -48,7 +48,7 @@ class RoomsService
         
         $data = [];
         
-        switch (PropertysModel::getPlanMaxLevel()) {
+        switch (Property::getPlanMaxLevel()) {
             case 1:
                 $data[] = (object)[
                     'title' => '',

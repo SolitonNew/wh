@@ -26,7 +26,7 @@
     <a class="nav-link @activeSegment(4, 'devices')" 
         href="{{ route('admin.hub-devices', $hubID) }}">@lang('admin/hubs.devices') ({{ App\Models\Device::whereControllerId($hubID)->count() }})</a>
     <a class="nav-link @activeSegment(4, 'hosts')" 
-        href="{{ route('admin.hub-hosts', $hubID) }}">@lang('admin/hubs.hosts') ({{ App\Models\OwDevsModel::whereControllerId($hubID)->count() }})</a>
+        href="{{ route('admin.hub-hosts', $hubID) }}">@lang('admin/hubs.hosts') ({{ App\Models\OwDev::whereControllerId($hubID)->count() }})</a>
 </div>
 @endif
 @yield('page-top-menu')

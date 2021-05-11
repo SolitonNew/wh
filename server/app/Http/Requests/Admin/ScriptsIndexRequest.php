@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\ScriptsModel;
+use App\Models\Script;
 
 class ScriptsIndexRequest extends FormRequest
 {
@@ -80,7 +80,7 @@ class ScriptsIndexRequest extends FormRequest
         $id = $this->session()->get(self::LAST_VIEW_ID);
         $this->storeLastViewID(null);
         if (!$id) {
-            $item = ScriptsModel::orderBy('comm', 'asc')->first();
+            $item = Script::orderBy('comm', 'asc')->first();
             if ($item) {
                 $id = $item->id;
             }

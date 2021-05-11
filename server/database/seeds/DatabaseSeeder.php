@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
         
         foreach($data as $row) {
             $attrs = explode('|', $row);
-            \App\Models\OwTypesModel::create([
+            \App\Models\OwType::create([
                 'code' => $attrs[0],
                 'comm' => $attrs[1],
                 'channels' => $attrs[2],
@@ -54,7 +54,7 @@ class DatabaseSeeder extends Seeder
 
         foreach($data as $row) {
             $attrs = explode('|', $row);
-            \App\Models\PropertysModel::create([
+            \App\Models\Property::create([
                 'id' => $attrs[0],
                 'name' => $attrs[1],
                 'comm' => $attrs[2],
@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
         
         // Filling out of the plan_parts table
         $data = file_get_contents(base_path().'/database/seeds/sample.plan.json');
-        App\Models\PlanPartsModel::importFromString($data);
+        App\Models\Room::importFromString($data);
         
     }
 }

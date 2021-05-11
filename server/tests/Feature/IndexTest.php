@@ -26,7 +26,7 @@ class IndexTest extends TestCase
         $response->assertStatus(200);
         
         // Room
-        $room = \App\Http\Models\PlanPartsModel::get()->first();
+        $room = \App\Http\Models\Room::get()->first();
         
         $response = $this->get(Route('terminal.room', $room->id));
         $response->assertStatus(200);

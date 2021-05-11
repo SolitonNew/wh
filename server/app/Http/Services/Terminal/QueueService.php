@@ -2,7 +2,7 @@
 
 namespace App\Http\Services\Terminal;
 
-use App\Models\WebQueueMemModel;
+use App\Models\WebQueueMem;
 
 class QueueService 
 {
@@ -26,7 +26,7 @@ class QueueService
      */
     public function getDataLastID()
     {
-        return 'LAST_ID: '.WebQueueMemModel::lastQueueID();
+        return 'LAST_ID: '.WebQueueMem::lastQueueID();
     }
     
     /**
@@ -35,7 +35,7 @@ class QueueService
      */
     public function getDataList(int $lastID)
     {
-        $data = WebQueueMemModel::getLastQueueList($lastID)->toArray();
+        $data = WebQueueMem::getLastQueueList($lastID)->toArray();
         
         return response()->json($data);
     }
