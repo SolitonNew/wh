@@ -201,7 +201,7 @@ class Device extends AffectsFirmwareModel
             
             $item->hub_id = $request->hub_id;
             $item->typ = $request->typ;
-            $item->ow_id = $request->ow_id;
+            $item->ow_id = $request->typ == 'ow' ? $request->ow_id : null;
             $item->name = $request->name;
             $item->comm = $request->comm;
             $item->channel = $request->channel ?? 0;
