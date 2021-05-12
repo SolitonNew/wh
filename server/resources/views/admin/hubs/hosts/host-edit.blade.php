@@ -21,7 +21,7 @@
             <label class="form-label">@lang('admin/hubs.host_CONTROLLER')</label>
         </div>
         <div class="col-sm-6">
-            <div class="form-control">{{ $item->controller_name }}</div>
+            <div class="form-control">{{ $item->hub->name }}</div>
         </div>
     </div>
     <div class="row">
@@ -29,7 +29,7 @@
             <label class="form-label">@lang('admin/hubs.host_ROM')</label>
         </div>
         <div class="col-sm-9">
-            <div class="form-control">{{ $item->rom }}</div>
+            <div class="form-control">{{ $item->romAsString() }}</div>
         </div>
     </div>
     <div class="row">
@@ -37,7 +37,7 @@
             <label class="form-label">@lang('admin/hubs.host_COMM')</label>
         </div>
         <div class="col-sm-9">
-            <div class="form-control">{{ $item->comm }}</div>
+            <div class="form-control">{{ $item->type()->description }}</div>
         </div>
     </div>
     <div class="row">
@@ -45,7 +45,7 @@
             <label class="form-label">@lang('admin/hubs.host_CHANNELS')</label>
         </div>
         <div class="col-sm-9">
-            <div class="form-control">{{ $item->channels }}</div>
+            <div class="form-control">{{ implode(', ', $item->type()->channels) }}</div>
         </div>
     </div>
     <div class="form-group">

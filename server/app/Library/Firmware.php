@@ -8,13 +8,13 @@
 
 namespace App\Library;
 
-use App\Models\OwType;
 use App\Models\OwDev;
 use App\Models\Script;
 use App\Library\Script\Translate;
 use App\Library\Script\Translators\C as TranslateC;
 use View;
 use DB;
+use Log;
 
 /**
  * Description of Firmware
@@ -85,7 +85,7 @@ class Firmware
     public function generateConfig() 
     {
         // Вычитываем все нужные данные
-        $owDevTyps = OwType::orderBy('code', 'asc')->get();
+        $owDevTyps = config('onewire.types');
         $owList = OwDev::orderBy('id', 'asc')->get();
         $varList = DB::select('select v.*, c.rom controller_rom
                                  from core_devices v, core_hubs c
@@ -120,10 +120,9 @@ class Firmware
 
                     // Проставляем индекс канала
                     if ($owCode > 0) {
-                        foreach($owDevTyps as $devTyp) {
-                            if ($devTyp->code == $owCode) {
-                                $a = explode(',', $devTyp->channels);
-                                $c = array_search($row->channel, $a);
+                        foreach($owDevTyps as $typCode => $devTyp) {
+                            if ($typCode == $owCode) {
+                                $c = array_search($row->channel, $devTyp['channels']);
                                 if ($c !== false) {
                                     $row->channel = $c;
                                 } else {

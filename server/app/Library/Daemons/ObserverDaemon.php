@@ -19,7 +19,7 @@ use Lang;
  */
 class ObserverDaemon extends BaseDaemon
 {   
-    private $_lastChangeID = -1;
+    private $_lastDeviceChangesID = -1;
     
     /**
      * 
@@ -39,12 +39,12 @@ class ObserverDaemon extends BaseDaemon
         
         while(1) {
             $changes = DeviceChangeMem::with('device')
-                ->where('id', '>', $this->_lastChangeID)
+                ->where('id', '>', $this->_lastDeviceChangesID)
                 ->orderBy('id', 'asc')
                 ->get();
             foreach($changes as $item) {
                 $this->_processedDevice($item);
-                $this->_lastChangeID = $item->id;
+                $this->_lastDeviceChangesID = $item->id;
             }
             usleep(200000);
         }

@@ -266,12 +266,9 @@ class Device extends AffectsFirmwareModel
                 break;
             case 'ow':
                 if ($hostID) {
-                    $c = DB::select('select t.channels
-                                       from core_ow_devs d, core_ow_types t
-                                      where d.rom_1 = t.code
-                                        and d.id = '.$hostID);
-                    if (count($c)) {
-                        $data = explode(',', $c[0]->channels);
+                    $owDev = OwDev::find($hostID);
+                    if ($owDev) {
+                        $data = $owDev->channelsOfType();
                     } else {
                         $data = [];
                     }
