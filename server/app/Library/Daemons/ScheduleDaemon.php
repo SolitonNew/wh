@@ -2,6 +2,8 @@
 
 namespace App\Library\Daemons;
 
+use App\Models\Schedule;
+use App\Models\Execute;
 use \Carbon\Carbon;
 use Lang;
 use DB;
@@ -26,7 +28,7 @@ class ScheduleDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/daemons/schedule-daemon.description'));
         $this->printLine(str_repeat('-', 100));
-        foreach(\App\Http\Models\ScheduleModel::orderBy('comm', 'asc')->get() as $row) {
+        foreach(Schedule::orderBy('comm', 'asc')->get() as $row) {
             $row->action_datetime = $row->makeDateTime();
             $row->save();
             $time = '--//--';
@@ -39,7 +41,7 @@ class ScheduleDaemon extends BaseDaemon
         $this->printLine('');
 
         while(1) {
-            foreach(\App\Http\Models\ScheduleModel::orderBy('comm', 'asc')->get() as $row) {
+            foreach(Schedule::orderBy('comm', 'asc')->get() as $row) {
                 $next_time = null;
                 if (!$row->action_datetime) {
                     $next_time = $row->makeDateTime();
@@ -47,7 +49,7 @@ class ScheduleDaemon extends BaseDaemon
                     $next_time = $row->makeDateTime();
                     if ($row->enable) {
                         // Выполняем
-                        \App\Http\Models\ExecuteModel::command($row->action);
+                        Execute::command($row->action);
                         $this->printLine(Lang::get('admin/daemons/schedule-daemon.line', [
                             'datetime' => Carbon::parse($row->action_datetime),
                             'comm' => $row->comm,

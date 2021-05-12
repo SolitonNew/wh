@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use \Illuminate\Support\Facades\DB;
-use Lang;
 
-class VariableChangesModel extends Model
+class DeviceChange extends Model
 {
-    protected $table = 'core_variable_changes';
+    protected $table = 'core_device_changes';
     public $timestamps = false;
 
     /**
@@ -18,7 +16,7 @@ class VariableChangesModel extends Model
     static public function deleteById(int $id)
     {
         try {
-            $item = VariableChangesModel::find($id);
+            $item = DeviceChange::find($id);
             if (!$item) abort(404);
             
             $item->delete();

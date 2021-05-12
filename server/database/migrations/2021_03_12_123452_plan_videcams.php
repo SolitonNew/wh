@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class PlanVideo extends Migration
+class PlanVidecams extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class PlanVideo extends Migration
      */
     public function up()
     {
-        Schema::create('plan_video', function (Blueprint $table) {
+        Schema::create('plan_videcams', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('name')->default('');
             $table->string('url')->default('');
@@ -31,6 +31,6 @@ class PlanVideo extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('plan_video');
+        Schema::dropIfExists('plan_videcams');
     }
 }

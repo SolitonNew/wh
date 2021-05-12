@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
-use \App\Library\AffectsFirmwareModel;
-use \Illuminate\Http\Request;
+use App\Library\AffectsFirmwareModel;
+use Illuminate\Http\Request;
+use App\Models\DeviceEvent;
+use App\Http\Events\FirmwareChangedEvent;
 use DB;
 
-class ScriptsModel extends AffectsFirmwareModel
+class Script extends AffectsFirmwareModel
 {    
     protected $table = 'core_scripts';
     public $timestamps = false;
@@ -23,8 +25,8 @@ class ScriptsModel extends AffectsFirmwareModel
     {
         $sql = "select s.*, 
                        (select count(*) 
-                          from core_variables v, core_variable_events e
-                         where v.id = e.variable_id
+                          from core_devices v, core_device_events e
+                         where v.id = e.device_id
                            and e.script_id = s.id) var_count
                   from core_scripts s
                 order by s.comm asc";
@@ -34,13 +36,13 @@ class ScriptsModel extends AffectsFirmwareModel
     /**
      * 
      * @param int $id
-     * @return \App\Http\Models\ScriptsModel
+     * @return \App\Models\Script
      */
     static public function findOrCreate(int $id)
     {
-        $item = ScriptsModel::find($id);
+        $item = Script::find($id);
         if (!$item) {
-            $item = new ScriptsModel();
+            $item = new Script();
             $item->id = -1;
             $item->data = '/* NEW SCRIPT */';
         }
@@ -57,9 +59,9 @@ class ScriptsModel extends AffectsFirmwareModel
     static public function storeFromRequest(Request $request, int $id)
     {
         try {
-            $item = ScriptsModel::find($id);
+            $item = Script::find($id);
             if (!$item) {
-                $item = new \App\Http\Models\ScriptsModel();
+                $item = new Script();
                 $item->data = '/* NEW SCRIPT */';
             }
             $item->comm = $request->comm;
@@ -79,8 +81,8 @@ class ScriptsModel extends AffectsFirmwareModel
     static public function deleteById(int $id)
     {
         try {            
-            VariableEventsModel::whereScriptId($id)->delete();
-            $item = ScriptsModel::find($id);
+            DeviceEvent::whereScriptId($id)->delete();
+            $item = Script::find($id);
             $item->delete();
         } catch (\Exception $ex) {
             abort(result()->json([
@@ -96,7 +98,7 @@ class ScriptsModel extends AffectsFirmwareModel
      */
     static public function storeDataFromRequest(Request $request, int $id)
     {
-        $item = \App\Http\Models\ScriptsModel::find($id);
+        $item = Script::find($id);
         try {
             $item->data = $request->data ?? '/* NEW SCRIPT */';
             $item->save();
@@ -114,13 +116,13 @@ class ScriptsModel extends AffectsFirmwareModel
      */
     static public function attachedDevicesIds(int $id)
     {
-        $sql = 'select variable_id 
-                  from core_variable_events 
+        $sql = 'select device_id 
+                  from core_device_events 
                  where script_id = '.$id;
         
         $data = [];
         foreach(DB::select($sql) as $row) {
-            $data[] = $row->variable_id;
+            $data[] = $row->device_id;
         }
         return $data;
     }
@@ -138,29 +140,29 @@ class ScriptsModel extends AffectsFirmwareModel
             $ids_sql = implode(', ', $ids);
 
             // Delete old not checked records
-            $changes = \App\Http\Models\VariableEventsModel::whereScriptId($id)
-                            ->whereNotIn('variable_id', $ids)
+            $changes = DeviceEvent::whereScriptId($id)
+                            ->whereNotIn('device_id', $ids)
                             ->delete();
 
             // Add new records
             $sql = "select v.id
-                      from core_variables v
+                      from core_devices v
                      where v.id in ($ids_sql)
                        and not exists(select *
-                                        from core_variable_events t
+                                        from core_device_events t
                                        where t.script_id = $id
-                                         and t.variable_id = v.id)";
+                                         and t.device_id = v.id)";
             foreach(DB::select($sql) as $row) {
-                $rec = new \App\Http\Models\VariableEventsModel();
+                $rec = new DeviceEvent();
                 $rec->event_type = 0;
-                $rec->variable_id = $row->id;
+                $rec->device_id = $row->id;
                 $rec->script_id = $id;
                 $rec->save();
                 $changes++;
             }
 
             if ($changes) {
-                event(new \App\Http\Events\FirmwareChangedEvent());
+                event(new FirmwareChangedEvent());
             }
         } catch (\Exception $ex) {
             abort(response()->json([

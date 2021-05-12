@@ -3,8 +3,8 @@
 namespace App\Http\COntrollers\Admin;
 
 use App\Http\Controllers\Controller;
-use \App\Http\Models\ScheduleModel;
-use \App\Http\Requests\Admin\ScheduleRequest;
+use App\Http\Requests\Admin\ScheduleRequest;
+use App\Models\Schedule;
 
 class ScheduleController extends Controller
 {
@@ -15,7 +15,7 @@ class ScheduleController extends Controller
      */
     public function index() 
     {    
-        $data = ScheduleModel::listAll();
+        $data = Schedule::listAll();
         
         return view('admin.schedule.schedule', [
             'data' => $data,
@@ -30,7 +30,7 @@ class ScheduleController extends Controller
      */
     public function editShow(int $id)
     {
-        $item = ScheduleModel::findOrCreate($id);
+        $item = Schedule::findOrCreate($id);
 
         return view('admin.schedule.schedule-edit', [
             'item' => $item,
@@ -46,7 +46,7 @@ class ScheduleController extends Controller
      */
     public function editPost(ScheduleRequest $request, int $id) 
     {
-        ScheduleModel::storeFromRequest($request, $id);
+        Schedule::storeFromRequest($request, $id);
         
         return 'OK';
     }
@@ -59,7 +59,7 @@ class ScheduleController extends Controller
      */
     public function delete(int $id) 
     {
-        ScheduleModel::deleteById($id);
+        Schedule::deleteById($id);
         
         return 'OK';
     }

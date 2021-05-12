@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CoreControllers extends Migration
+class CoreHubs extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CoreControllers extends Migration
      */
     public function up()
     {
-        Schema::create('core_controllers', function (Blueprint $table) {
+        Schema::create('core_hubs', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('name');
             $table->string('typ', 20)->default('virtual'); // virtual, din, onewire
@@ -31,6 +31,6 @@ class CoreControllers extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('core_controllers');
+        Schema::dropIfExists('core_hubs');
     }
 }

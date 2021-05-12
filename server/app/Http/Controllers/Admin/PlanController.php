@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Models\PlanPartsModel;
-use App\Http\Models\VariablesModel;
+use App\Models\Room;
+use App\Models\Device;
 use App\Http\Requests\Admin\PlanIndexRequest;
 use App\Http\Requests\Admin\PlanRequest;
 use App\Http\Requests\Admin\PlanMoveChildsRequest;
@@ -24,7 +24,7 @@ class PlanController extends Controller
     public function index(PlanIndexRequest $request, int $id = null) 
     {
         // Load plan records with port records and with devices
-        list($parts, $ports, $devices) = PlanPartsModel::listAllForIndex($id);
+        list($parts, $ports, $devices) = Room::listAllForIndex($id);
         
         return view('admin.plan.plan', [
             'partID' => $id,
@@ -43,7 +43,7 @@ class PlanController extends Controller
      */
     public function editShow(int $id, int $p_id = -1)
     {
-        $item = PlanPartsModel::findOrCreate($id, $p_id);
+        $item = Room::findOrCreate($id, $p_id);
         
         return view('admin.plan.plan-edit', [
             'item' => $item,
@@ -62,7 +62,7 @@ class PlanController extends Controller
      */
     public function editPost(PlanRequest $request, int $id, int $p_id = -1)
     {
-        PlanPartsModel::storeFromRequest($request, $id, $p_id);
+        Room::storeFromRequest($request, $id, $p_id);
         
         return 'OK';
     }
@@ -75,7 +75,7 @@ class PlanController extends Controller
      */
     public function delete(int $id) 
     {
-        PlanPartsModel::deleteById($id);
+        Room::deleteById($id);
         
         return 'OK';
     }
@@ -92,7 +92,7 @@ class PlanController extends Controller
      */
     public function planClone(int $id, string $direction) 
     {
-        PlanPartsModel::cloneNearby($id, $direction);
+        Room::cloneNearby($id, $direction);
         
         return 'OK';
     }
@@ -119,7 +119,7 @@ class PlanController extends Controller
      */
     public function moveChildsPost(PlanMoveChildsRequest $request, int $id)
     {
-        PlanPartsModel::moveChildsFromRequest($request, $id);
+        Room::moveChildsFromRequest($request, $id);
         
         return 'OK';
     }
@@ -132,7 +132,7 @@ class PlanController extends Controller
      */
     public function orderShow(int $id)
     {
-        $data = PlanPartsModel::childList($id);
+        $data = Room::childList($id);
         
         return view('admin.plan.plan-order', [
             'partID' => $id,
@@ -149,7 +149,7 @@ class PlanController extends Controller
      */
     public function orderPost(Request $request, int $id)
     {
-        PlanPartsModel::setChildListOrdersFromRequest($request);
+        Room::setChildListOrdersFromRequest($request);
         
         return 'OK';
     }
@@ -164,7 +164,7 @@ class PlanController extends Controller
      */
     public function move(int $id, float $newX, float $newY) 
     {
-        PlanPartsModel::move($id, $newX, $newY);
+        Room::move($id, $newX, $newY);
         
         return 'OK';
     }
@@ -179,7 +179,7 @@ class PlanController extends Controller
      */
     public function size(int $id, float $newW, float $newH)
     {
-        PlanPartsModel::size($id, $newW, $newH);
+        Room::size($id, $newW, $newH);
         
         return 'OK';
     }
@@ -204,7 +204,7 @@ class PlanController extends Controller
      */
     public function planImportPost(PlanImportRequest $request) 
     {
-        PlanPartsModel::importFromRequest($request);
+        Room::importFromRequest($request);
         
         return 'OK';
     }
@@ -219,7 +219,7 @@ class PlanController extends Controller
      */
     public function planExport() 
     {
-        $data = PlanPartsModel::exportToString();
+        $data = Room::exportToString();
         
         return response($data, 200, [
             'Content-Length' => strlen($data),
@@ -239,24 +239,24 @@ class PlanController extends Controller
      */
     public function linkDeviceShow(Request $request, int $planID, int $deviceID = -1) 
     {        
-        $device = VariablesModel::findOrCreate($deviceID);
+        $device = Device::findOrCreate($deviceID);
         
         if ($deviceID == -1) {
-            $devices = PlanPartsModel::devicesForLink();
+            $devices = Room::devicesForLink();
         } else {
             $devices = [];
             
             $device->label = $device->name.' '.($device->comm);
-            $app_control = \App\Http\Models\VariablesModel::decodeAppControl($device->app_control);
+            $app_control = Device::decodeAppControl($device->app_control);
             $device->label .= ' '."'$app_control->label'";
         }
         
-        $part = PlanPartsModel::find($planID);
+        $part = Room::find($planID);
 
         return view('admin.plan.plan-link-device', [
             'planID' => $planID,
             'deviceID' => $deviceID,
-            'planPath' => PlanPartsModel::getPath($planID, ' / '),
+            'planPath' => Room::getPath($planID, ' / '),
             'device' => $device,
             'devices' => $devices,
             'position' => $device->getPosition($request),
@@ -276,7 +276,7 @@ class PlanController extends Controller
      */
     public function linkDevicePost(PlanLinkDeviceRequest $request, int $planID, int $deviceID = -1) 
     {
-        PlanPartsModel::linkDeviceFromRequest($request, $planID, $deviceID);
+        Room::linkDeviceFromRequest($request, $planID, $deviceID);
         
         return 'OK';
     }
@@ -289,7 +289,7 @@ class PlanController extends Controller
      */
     public function unlinkDevice(int $deviceID) 
     {
-        PlanPartsModel::unlinkDevice($deviceID);
+        Room::unlinkDevice($deviceID);
         
         return 'OK';
     }
@@ -304,7 +304,7 @@ class PlanController extends Controller
      */
     public function portEditShow(Request $request, int $planID, int $portIndex = -1)
     {
-        $part = \App\Http\Models\PlanPartsModel::find($planID);
+        $part = Room::find($planID);
         
         return view('admin.plan.plan-port-edit', [
             'planID' => $planID,
@@ -324,13 +324,13 @@ class PlanController extends Controller
      */
     public function portEditPost(PlanPortRequest $request, int $planID, int $portIndex = -1) 
     {
-        PlanPartsModel::storePortFromRequest($request, $planID, $portIndex);
+        Room::storePortFromRequest($request, $planID, $portIndex);
         
         return 'OK';
     }
     
     /**
-     * This route is used to delete the port element of the plan_parts item.
+     * This route is used to delete the port element of the plan_rooms item.
      * 
      * @param int $planID
      * @param int $portIndex
@@ -338,7 +338,7 @@ class PlanController extends Controller
      */
     public function portDelete(int $planID, int $portIndex) 
     {
-        PlanPartsModel::deletePortByIndex($planID, $portIndex);
+        Room::deletePortByIndex($planID, $portIndex);
         
         return 'OK';
     }

@@ -3,9 +3,7 @@
 namespace App\Http\Listeners;
 
 use App\Http\Events\FirmwareChangedEvent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Log;
+use App\Models\Property;
 
 class FirmwareChangedListener
 {
@@ -27,7 +25,7 @@ class FirmwareChangedListener
      */
     public function handle(FirmwareChangedEvent $event)
     {
-        $n = \App\Http\Models\PropertysModel::getFirmwareChanges();
-        \App\Http\Models\PropertysModel::setFirmwareChanges($n + 1);
+        $n = Property::getFirmwareChanges();
+        Property::setFirmwareChanges($n + 1);
     }
 }

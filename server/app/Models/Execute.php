@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ExecuteModel extends Model
+class Execute extends Model
 {
     protected $table = 'core_execute';
     public $timestamps = false;
@@ -15,7 +15,7 @@ class ExecuteModel extends Model
      */
     static public function command(string $command) 
     {
-        $item = new ExecuteModel();
+        $item = new Execute();
         $item->command = $command;
         $item->save();
     }

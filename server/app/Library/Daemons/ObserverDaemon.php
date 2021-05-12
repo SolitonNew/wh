@@ -8,10 +8,9 @@
 
 namespace App\Library\Daemons;
 
-use App\Http\Models\VariableChangesMemModel;
+use App\Models\DeviceChangeMem;
 use DB;
 use Lang;
-use Log;
 
 /**
  * Description of ObserverDaemon
@@ -36,10 +35,10 @@ class ObserverDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');        
         
-        $this->_lastChangeID = VariableChangesMemModel::max('id') ?? -1;
+        $this->_lastChangeID = DeviceChangeMem::max('id') ?? -1;
         
         while(1) {
-            $changes = VariableChangesMemModel::with('device')
+            $changes = DeviceChangeMem::with('device')
                 ->where('id', '>', $this->_lastChangeID)
                 ->orderBy('id', 'asc')
                 ->get();

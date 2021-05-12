@@ -114,7 +114,7 @@
         $('.body-page-main > div').css('opacity', 1);
     });
     
-    let lastVariableID = {{ \App\Http\Models\VariableChangesMemModel::lastVariableID() ?? -1 }};
+    let lastVariableID = {{ \App\Models\DeviceChangeMem::lastVariableID() ?? -1 }};
     
     function loadChanges() {
         $.ajax({
@@ -133,7 +133,7 @@
                 } else {
                     for (let i = 0; i < data.length; i++) {
                         let rec = data[i];
-                        let varID = parseInt(rec.variable_id);
+                        let varID = parseInt(rec.device_id);
                         let varValue = parseFloat(rec.value);
                         let varTime = parseInt(rec.change_date);
                         lastVariableID = rec.id;
@@ -151,7 +151,7 @@
         });
     }
     
-    let lastQueueID = {{ \App\Http\Models\WebQueueMemModel::lastQueueID() ?? -1 }};
+    let lastQueueID = {{ \App\Models\WebQueueMem::lastQueueID() ?? -1 }};
     
     function loadQueue() {
         $.ajax({

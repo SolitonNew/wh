@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Models\ControllersModel;
+use App\Models\Hub;
 
 class HubsIndexRequest extends FormRequest
 {
@@ -42,7 +42,7 @@ class HubsIndexRequest extends FormRequest
         if ($hubID) {
             $this->redirect = route('admin.hubs');
             return [
-                'hubID' => 'exists:core_controllers,id',
+                'hubID' => 'exists:core_hubs,id',
             ];
         } else {
             $newId = $this->getIdForView();
@@ -84,7 +84,7 @@ class HubsIndexRequest extends FormRequest
         $id = $this->session()->get(self::LAST_VIEW_ID);
         $this->session()->put(self::LAST_VIEW_ID, null);
         if (!$id) {
-            $item = ControllersModel::orderBy('name', 'asc')->first();
+            $item = Hub::orderBy('name', 'asc')->first();
             if ($item) {
                 $id = $item->id;
             }

@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin\Jurnal;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\HistoryIndexRequest;
 use App\Http\Services\Admin\HistoryService;
-use App\Http\Models\VariablesModel;
-use App\Http\Models\VariableChangesModel;
+use App\Models\Device;
+use App\Models\DeviceChange;
 
 class HistoryController extends Controller
 {
@@ -38,7 +38,7 @@ class HistoryController extends Controller
         
         list($data, $errors) = $this->_historyService->getFilteringData($id);        
         
-        $devices = VariablesModel::devicesListWithRoomName();
+        $devices = Device::devicesListWithRoomName();
         
         return view('admin.jurnal.history.history', [
             'id' => $id,
@@ -55,7 +55,7 @@ class HistoryController extends Controller
      */
     public function valueView(int $id) 
     {
-        $item = VariableChangesModel::find($id);
+        $item = DeviceChange::find($id);
         
         return view('admin/jurnal/history/history-value', [
             'item' => $item,
@@ -70,7 +70,7 @@ class HistoryController extends Controller
      */
     public function valueDelete(int $id) 
     {
-        VariableChangesModel::deleteById($id);
+        DeviceChange::deleteById($id);
         
         return 'OK';
     }

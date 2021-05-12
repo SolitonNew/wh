@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
     {
         // Проверяем работоспособность фоновых процессов. Если кто-то пропал - запускаем
         $schedule->call(function (DaemonManager $daemonManager) {
-            foreach(\App\Http\Models\PropertysModel::runningDaemons() as $daemon) {
+            foreach(\App\Models\Property::runningDaemons() as $daemon) {
                 if (count($daemonManager->findDaemonPID($daemon)) == 0) {
                     $daemonManager->start($daemon);
                 }
@@ -54,9 +54,9 @@ class Kernel extends ConsoleKernel
             }
         })->everyMinute();
         
-        // Прочистка "core_variable_changes_mem"
+        // Прочистка "core_device_changes_mem"
         $schedule->call(function () {
-            DB::delete('delete from core_variable_changes_mem
+            DB::delete('delete from core_device_changes_mem
                          where change_date < CURRENT_TIMESTAMP - interval 1 day');
         })->hourly();
         

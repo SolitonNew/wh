@@ -8,8 +8,12 @@
 
 namespace App\Library;
 
+use App\Models\OwType;
+use App\Models\OwDev;
+use App\Models\Script;
+use App\Library\Script\Translate;
+use App\Library\Script\Translators\C as TranslateC;
 use View;
-use Log;
 use DB;
 
 /**
@@ -81,17 +85,17 @@ class Firmware
     public function generateConfig() 
     {
         // Вычитываем все нужные данные
-        $owDevTyps = \App\Http\Models\OwTypesModel::orderBy('code', 'asc')->get();
-        $owList = \App\Http\Models\OwDevsModel::orderBy('id', 'asc')->get();
+        $owDevTyps = OwType::orderBy('code', 'asc')->get();
+        $owList = OwDev::orderBy('id', 'asc')->get();
         $varList = DB::select('select v.*, c.rom controller_rom
-                                 from core_variables v, core_controllers c
-                                where v.controller_id = c.id
+                                 from core_devices v, core_hubs c
+                                where v.hub_id = c.id
                                order by v.id');
-        $scriptList = \App\Http\Models\ScriptsModel::orderBy('id', 'asc')->get();
-        $eventList = DB::select('select e.variable_id, GROUP_CONCAT(e.script_id) script_ids
-                                   from core_variable_events e 
-                                 group by e.variable_id 
-                                 order by e.variable_id');
+        $scriptList = Script::orderBy('id', 'asc')->get();
+        $eventList = DB::select('select e.device_id, GROUP_CONCAT(e.script_id) script_ids
+                                   from core_device_events e 
+                                 group by e.device_id 
+                                 order by e.device_id');
         
         foreach($varList as $row) {
             $row->ow_index = -1;
@@ -142,16 +146,16 @@ class Firmware
         }
         
         foreach($scriptList as &$row) {
-            $translator = new Script\Translate($row->data);
+            $translator = new Translate($row->data);
             $report = [];
-            $row->data_to_c = $translator->run(new Script\Translators\C($variableNames), $report);
+            $row->data_to_c = $translator->run(new TranslateC($variableNames), $report);
         }
         
         // Проставляем индексы для переменных в связях с эвентами
         foreach($eventList as &$row) {
             $varIndex = -1;
             for ($i = 0; $i < count($varList); $i++) {
-                if ($varList[$i]->id === $row->variable_id) {
+                if ($varList[$i]->id === $row->device_id) {
                     $varIndex = $i;
                     break;
                 }

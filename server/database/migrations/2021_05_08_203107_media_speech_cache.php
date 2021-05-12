@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class MediaSpeech extends Migration
+class MediaSpeechCache extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class MediaSpeech extends Migration
      */
     public function up()
     {
-        Schema::create('media_speeches', function (Blueprint $table) {
+        Schema::create('media_speech_cache', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('phrase', 250);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -29,6 +29,6 @@ class MediaSpeech extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('media_speeches');
+        Schema::dropIfExists('media_speech_cache');
     }
 }

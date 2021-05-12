@@ -11,7 +11,7 @@ class CamsRequest extends JsonFormRequest
         $id = $this->route('id');
         
         return [
-            'name' => 'required|string|unique:plan_video,name,'.($id > 0 ? $id : ''),
+            'name' => 'required|string|unique:plan_videcams,name,'.($id > 0 ? $id : ''),
             'url' => 'required|string',
             'url_low' => 'required|string',
             'url_high' => 'required|string',

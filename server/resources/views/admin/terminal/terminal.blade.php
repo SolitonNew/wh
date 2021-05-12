@@ -36,7 +36,7 @@
                     </div>
                     @endif
                     @else
-                    <b class="text-muted">&lt; @lang('admin/terminal.plan_parts_empty') &gt;</b>
+                    <b class="text-muted">&lt; @lang('admin/terminal.plan_rooms_empty') &gt;</b>
                     @endif
                 </div>
             </div>

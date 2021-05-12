@@ -9,7 +9,6 @@
 namespace App\Library\Script;
 
 use App\Library\Script\Translators\ITranslator;
-use Log;
 
 /**
  * Description of Translate

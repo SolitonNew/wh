@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use \App\Library\AffectsFirmwareModel;
 use \Illuminate\Http\Request;
 
-class ControllersModel extends AffectsFirmwareModel
+class Hub extends AffectsFirmwareModel
 {
-    protected $table = 'core_controllers';
+    protected $table = 'core_hubs';
     public $timestamps = false;
 
     protected $_affectFirmwareFields = [
@@ -17,13 +17,13 @@ class ControllersModel extends AffectsFirmwareModel
     /**
      * 
      * @param int $id
-     * @return \App\Http\Models\ControllersModel
+     * @return \App\Models\Hub
      */
     static public function findOrCreate(int $id)
     {
-        $item = ControllersModel::find($id);
+        $item = Hub::find($id);
         if (!$item) {
-            $item = new ControllersModel();
+            $item = new Hub();
             $item->id = -1;
         }
         
@@ -38,10 +38,10 @@ class ControllersModel extends AffectsFirmwareModel
     static public function storeFromRequest(Request $request, int $id)
     {
         try {
-            $item = ControllersModel::find($id);
+            $item = Hub::find($id);
             
             if (!$item) {
-                $item = new ControllersModel();
+                $item = new Hub();
             }
             $item->name = $request->name;
             $item->typ = $request->typ;
@@ -66,7 +66,7 @@ class ControllersModel extends AffectsFirmwareModel
     static public function deleteById(int $id)
     {
         try {
-            $item = ControllersModel::find($id);
+            $item = Hub::find($id);
             if (!$item) abort(404);
 
             $item->delete();
@@ -114,7 +114,7 @@ class ControllersModel extends AffectsFirmwareModel
     static public function existsFirmwareHubs()
     {
         if (self::$_existsFirmwareHubs === null) {
-            self::$_existsFirmwareHubs = (ControllersModel::whereTyp('din')->count() > 0);
+            self::$_existsFirmwareHubs = (Hub::whereTyp('din')->count() > 0);
         }
         
         return self::$_existsFirmwareHubs;

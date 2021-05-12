@@ -2,8 +2,8 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Http\Models\VariablesModel;
-use App\Http\Models\OwDevsModel;
+use App\Models\Device;
+use App\Models\OwDev;
 use DB;
 
 class HostsService 
@@ -23,9 +23,9 @@ class HostsService
                        "" variables,
                        d.lost
                   from core_ow_devs d left join core_ow_types t on d.rom_1 = t.code,
-                       core_controllers c
-                 where d.controller_id = c.id
-                   and d.controller_id = "'.$hubID.'" 
+                       core_hubs c
+                 where d.hub_id = c.id
+                   and d.hub_id = "'.$hubID.'" 
                 order by c.name, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7';
         $data = DB::select($sql);
         
@@ -41,7 +41,7 @@ class HostsService
             );
             
             $row->devices = DB::select('select v.id, v.name, v.channel
-                                          from core_variables v 
+                                          from core_devices v 
                                          where v.typ = "ow" 
                                            and v.ow_id = '.$row->id.'
                                         order by v.channel');
@@ -65,8 +65,8 @@ class HostsService
                        t.comm,
                        "" variables
                   from core_ow_devs d left join core_ow_types t on d.rom_1 = t.code, 
-                       core_controllers c
-                 where d.controller_id = c.id
+                       core_hubs c
+                 where d.hub_id = c.id
                    and d.id = '.$id.'
                 order by c.name, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7';
         $data = DB::select($sql);
@@ -87,7 +87,7 @@ class HostsService
         );
         
         $sql = 'select v.id, v.name, v.channel
-                  from core_variables v 
+                  from core_devices v 
                  where v.typ = "ow" 
                    and v.ow_id = '.$item->id.'
                 order by v.channel';
@@ -104,10 +104,10 @@ class HostsService
     public function delOneHost(int $id)
     {
         try {
-            VariablesModel::whereTyp('ow')
+            Device::whereTyp('ow')
                     ->whereOwId($id)
                     ->delete();
-            $item = OwDevsModel::find($id);
+            $item = OwDev::find($id);
             $item->delete();
         } catch (\Exception $ex) {
             abort(response()->json([

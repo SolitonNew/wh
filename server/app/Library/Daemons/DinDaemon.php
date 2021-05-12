@@ -2,11 +2,11 @@
 
 namespace App\Library\Daemons;
 
-use App\Http\Models\ControllersModel;
-use App\Http\Models\PropertysModel;
-use App\Http\Models\VariableChangesMemModel;
-use App\Http\Models\OwDevsModel;
-use App\Http\Models\VariablesModel;
+use App\Models\Hub;
+use App\Models\Property;
+use App\Models\DeviceChangeMem;
+use App\Models\OwDev;
+use App\Models\Device;
 use DB;
 use Lang;
 use Log;
@@ -99,7 +99,7 @@ class DinDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
-        $this->_controllers = ControllersModel::where('id', '>', 0)
+        $this->_controllers = Hub::where('id', '>', 0)
                                 ->whereTyp('din')
                                 ->orderBy('rom', 'asc')
                                 ->get();
@@ -109,7 +109,7 @@ class DinDaemon extends BaseDaemon
             return;
         }
         
-        $this->_lastSyncVariableID = VariableChangesMemModel::max('id') ?? -1;
+        $this->_lastSyncVariableID = DeviceChangeMem::max('id') ?? -1;
         
         try {           
             $port = config('firmware.din_port');
@@ -119,24 +119,24 @@ class DinDaemon extends BaseDaemon
             stream_set_blocking($this->_port, false);
             while (!feof($this->_port)) {
                 $loopErrors = false;
-                $command = PropertysModel::getDinCommand(true);
+                $command = Property::getDinCommand(true);
                 
                 // Выполняем начальную подготовку итерации
                 // Она одинакова для все контроллеров
                 $variables = [];
                 switch ($command) {
                     case 'RESET':
-                        PropertysModel::setDinCommandInfo('', true);
+                        Property::setDinCommandInfo('', true);
                         break;
                     case 'OW SEARCH':
-                        PropertysModel::setDinCommandInfo('', true);
+                        Property::setDinCommandInfo('', true);
                         break;
                     case 'FIRMWARE':
-                        PropertysModel::setDinCommandInfo('', true);
+                        Property::setDinCommandInfo('', true);
                         $this->_firmwareHex = false;
                         break;
                     default:
-                        $variables = VariableChangesMemModel::where('id', '>', $this->_lastSyncVariableID)
+                        $variables = DeviceChangeMem::where('id', '>', $this->_lastSyncVariableID)
                                         ->orderBy('id', 'asc')
                                         ->get();
                         if (count($variables)) {
@@ -167,15 +167,15 @@ class DinDaemon extends BaseDaemon
                         // not records
                         break;
                     case 'OW SEARCH':
-                        PropertysModel::setDinCommandInfo('END_OW_SCAN');
+                        Property::setDinCommandInfo('END_OW_SCAN');
                         break;
                     case 'FIRMWARE':
                         if (!$loopErrors) {
-                            PropertysModel::setDinCommandInfo('COMPLETE', true);
+                            Property::setDinCommandInfo('COMPLETE', true);
                             // Сбрасываем счетчик изменений прошивки
-                            PropertysModel::setFirmwareChanges(0);
+                            Property::setFirmwareChanges(0);
                         } else {
-                            PropertysModel::setDinCommandInfo('ERROR', true);
+                            Property::setDinCommandInfo('ERROR', true);
                         }
                         $this->_firmwareHex = false;
                         break;
@@ -226,7 +226,7 @@ class DinDaemon extends BaseDaemon
         $new = 0;
         $lost = 0;
         
-        $owOldList = OwDevsModel::whereControllerId($controller->id)->get();
+        $owOldList = OwDev::whereHubId($controller->id)->get();
         // Ищем кого потеряли
         foreach ($owOldList as $owOld) {
             $find = false;
@@ -272,8 +272,8 @@ class DinDaemon extends BaseDaemon
             if (!$find) {
                 $new++;
                 // Add to the list immediately.
-                $ow = new OwDevsModel();
-                $ow->controller_id = $controller->id;
+                $ow = new OwDev();
+                $ow->hub_id = $controller->id;
                 $ow->name = '';
                 $ow->comm = '';
                 $ow->rom_1 = $rom[0];
@@ -307,7 +307,7 @@ class DinDaemon extends BaseDaemon
         $report[] = str_repeat('-', 35);
         $report[] = '';
 
-        PropertysModel::setDinCommandInfo(implode("\n", $report));
+        Property::setDinCommandInfo(implode("\n", $report));
     }
     
     /**
@@ -354,7 +354,7 @@ class DinDaemon extends BaseDaemon
                     $controller->name,
                     round((($index * 100) + $p) / $count),
                 ];
-                PropertysModel::setDinCommandInfo(implode(';', $a), true);
+                Property::setDinCommandInfo(implode(';', $a), true);
                 usleep($PAGE_STORE_PAUSE);
             }
             $p += $dp;
@@ -363,7 +363,7 @@ class DinDaemon extends BaseDaemon
             $controller->name,
             round((($index * 100) + $p) / $count),
         ];
-        PropertysModel::setDinCommandInfo(implode(';', $a), true);
+        Property::setDinCommandInfo(implode(';', $a), true);
         
         usleep($PAGE_STORE_PAUSE);
         
@@ -389,8 +389,8 @@ class DinDaemon extends BaseDaemon
 
             // Send devace values
             foreach ($variables as $variable) {
-                $this->_transmitVAR($controller->rom, $variable->variable_id, $variable->value);
-                $vars_out[] = "$variable->variable_id: $variable->value";
+                $this->_transmitVAR($controller->rom, $variable->device_id, $variable->value);
+                $vars_out[] = "$variable->device_id: $variable->value";
             }
 
             // Send command "prepare to give your changes"
@@ -402,7 +402,7 @@ class DinDaemon extends BaseDaemon
                 case 5: // Controller request of the initialization data
                     $stat = 'INIT';
                     $vars_out = [];
-                    $variablesInit = VariablesModel::orderBy('ID', 'asc')->get();
+                    $variablesInit = Device::orderBy('id', 'asc')->get();
                     $this->_transmitCMD($controller->rom, 6, count($variablesInit));
                     $counter = 0;
                     foreach ($variablesInit as $variable) {
@@ -425,7 +425,7 @@ class DinDaemon extends BaseDaemon
                     throw new \Exception('Controller did not respond');
                 default:
                     foreach ($this->_inVariables as $variable) {
-                        DB::select("CALL CORE_SET_VARIABLE($variable->id, $variable->value, -1)");
+                        DB::select("CALL CORE_SET_DEVICE($variable->id, $variable->value, -1)");
                     }
             }            
         } catch (\Exception $ex) {

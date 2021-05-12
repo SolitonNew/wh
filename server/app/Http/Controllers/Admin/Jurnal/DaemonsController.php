@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Jurnal;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Admin\DaemonsService;
 use App\Http\Requests\Admin\DaemonsIndexRequest;
-use App\Http\Models\WebLogsModel;
+use App\Models\WebLog;
 
 class DaemonsController extends Controller
 {
@@ -48,7 +48,7 @@ class DaemonsController extends Controller
      */
     public function data(string $id, int $lastID = -1) 
     {
-        $data = WebLogsModel::getDaemonDataFromID($id, $lastID);
+        $data = WebLog::getDaemonDataFromID($id, $lastID);
 
         return view('admin.jurnal.daemons.daemon-log', [
             'data' => $data,

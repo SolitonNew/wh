@@ -2,9 +2,9 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Http\Models\ControllersModel;
-use App\Http\Models\VariablesModel;
-use App\Http\Models\PropertysModel;
+use App\Models\Hub;
+use App\Models\Device;
+use App\Models\Property;
 use App\Library\DaemonManager;
 use App\Library\Firmware;
 use DB;
@@ -17,11 +17,11 @@ class HubsService
      */
     public function hubsScan()
     {
-        PropertysModel::setDinCommand('OW SEARCH');
+        Property::setDinCommand('OW SEARCH');
         $i = 0;
         while ($i++ < 50) { // 5 sec
             usleep(100000);
-            $text = PropertysModel::getDinCommandInfo();
+            $text = Property::getDinCommandInfo();
             if ($t = strpos($text, 'END_OW_SCAN')) {
                 $text = substr($text, 0, $t);
                 break;
@@ -71,13 +71,13 @@ class HubsService
         
         // Generation of devices by channel
         $din_channels = config('firmware.channels.'.config('firmware.mmcu'));
-        $vars = DB::select('select controller_id, channel from core_variables where typ = "din"');
-        foreach(ControllersModel::whereTyp('din')->get() as $din) {
+        $vars = DB::select('select hub_id, channel from core_devices where typ = "din"');
+        foreach(Hub::whereTyp('din')->get() as $din) {
             try {
                 foreach($din_channels as $chan) {
                     $find = false;
                     foreach($vars as $var) {
-                        if ($var->controller_id == $din->id && $var->channel == $chan) {
+                        if ($var->hub_id == $din->id && $var->channel == $chan) {
                             $find = true;
                             break;
                         }
@@ -85,8 +85,8 @@ class HubsService
                     if (!$find) {
                         $app_control = 1; // По умолчанию СВЕТ
                         
-                        $item = new VariablesModel();
-                        $item->controller_id = $din->id;
+                        $item = new Device();
+                        $item->hub_id = $din->id;
                         $item->typ = 'din';
                         $item->name = 'temp for din';
                         //$item->comm = Lang::get('admin/hubs.app_control.'.$app_control);
@@ -105,11 +105,11 @@ class HubsService
         }
         
         // Generation of devices for network hubs
-        $devs = DB::select('select d.id, d.controller_id, t.channels, t.comm
+        $devs = DB::select('select d.id, d.hub_id, t.channels, t.comm
                               from core_ow_devs d, core_ow_types t
                              where d.rom_1 = t.code');
         
-        $vars = DB::select('select ow_id, channel from core_variables where typ = "ow"');
+        $vars = DB::select('select ow_id, channel from core_devices where typ = "ow"');
         
         try {
             foreach($devs as $dev) {
@@ -125,8 +125,8 @@ class HubsService
                     if (!$find) {
                         $appControl = $decodeChannel($chan);
                         
-                        $item = new VariablesModel();
-                        $item->controller_id = $dev->controller_id;
+                        $item = new Device();
+                        $item->hub_id = $dev->hub_id;
                         $item->typ = 'ow';
                         $item->name = 'temp for ow';
                         $item->ow_id = $dev->id;
@@ -159,7 +159,7 @@ class HubsService
         $daemonManager = new DaemonManager();
         try {
             foreach($daemons as $daemon) {
-                PropertysModel::setAsRunningDaemon($daemon);
+                Property::setAsRunningDaemon($daemon);
                 $daemonManager->restart($daemon);
             }
             return 'OK';
@@ -204,8 +204,8 @@ class HubsService
      */
     public function firmwareStart()
     {
-        PropertysModel::setDinCommand('FIRMWARE');
-        PropertysModel::setDinCommandInfo('', true);
+        Property::setDinCommand('FIRMWARE');
+        Property::setDinCommandInfo('', true);
     }
     
     /**
@@ -223,7 +223,7 @@ class HubsService
                 ]);
             }
             
-            $info = PropertysModel::getDinCommandInfo();
+            $info = Property::getDinCommandInfo();
             if ($info == 'COMPLETE') {
                 return response()->json([                    
                     'firmware' => 'COMPLETE',
@@ -257,7 +257,7 @@ class HubsService
     public function hubsReset()
     {
         try {
-            PropertysModel::setDinCommand('RESET');           
+            Property::setDinCommand('RESET');           
         } catch (\Exception $ex) {
             abort(response()->json([
                 'errors' => [$ex->getMessage()],

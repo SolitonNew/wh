@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use \Illuminate\Http\Request;
 use Auth;
 
-class UsersModel extends Authenticatable
+class User extends Authenticatable
 {
     use Notifiable;
     
@@ -20,19 +20,19 @@ class UsersModel extends Authenticatable
      */
     static public function listAll()
     {
-        return UsersModel::orderBy('login', 'asc')->get();
+        return User::orderBy('login', 'asc')->get();
     }
     
     /**
      * 
      * @param int $id
-     * @return \App\Http\Models\UsersModel
+     * @return \App\Models\User
      */
     static public function findOrCreate(int $id)
     {
-        $item = UsersModel::find($id);
+        $item = User::find($id);
         if (!$item) {
-            $item = new UsersModel();
+            $item = new User();
             $item->id = -1;
             $item->access = 1;
         }
@@ -48,9 +48,9 @@ class UsersModel extends Authenticatable
     static public function storeFromRequest(Request $request, int $id)
     {
         try {
-            $item = UsersModel::find($id);
+            $item = User::find($id);
             if (!$item) {
-                $item = new UsersModel();
+                $item = new User();
             }
             $item->login = $request->login;
             $item->email = $request->email;
@@ -74,7 +74,7 @@ class UsersModel extends Authenticatable
      */
     static public function deleteById(int $id) 
     {
-        $item = \App\Http\Models\UsersModel::find($id);
+        $item = User::find($id);
         if ($item) {
             try {
                 $item->delete();

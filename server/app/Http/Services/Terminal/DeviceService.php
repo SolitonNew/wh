@@ -2,8 +2,8 @@
 
 namespace App\Http\Services\Terminal;
 
-use App\Http\Models\VariablesModel;
-use App\Http\Models\VariableChangesMemModel;
+use App\Models\Device;
+use App\Models\DeviceChangeMem;
 use DB;
 
 class DeviceService 
@@ -15,17 +15,17 @@ class DeviceService
      */
     public function showDeviceView($deviceID)
     {
-        $sql = "select p.name group_title, v.comm device_title, v.app_control, v.group_id, v.value ".
-               "  from core_variables v, plan_parts p ".
+        $sql = "select p.name group_title, v.comm device_title, v.app_control, v.room_id, v.value ".
+               "  from core_devices v, plan_rooms p ".
                " where v.id = $deviceID ".
-               "   and p.id = v.group_id";        
+               "   and p.id = v.room_id";        
         $row = DB::select($sql)[0];
         
-        $roomID = $row->group_id;
+        $roomID = $row->room_id;
         $roomTitle = mb_strtoupper($row->group_title);
         $deviceTitle = $row->device_title;
-        $control = VariablesModel::decodeAppControl($row->app_control);
-        $deviceTitle = VariablesModel::groupVariableName($roomTitle, mb_strtoupper($deviceTitle), $control->label);
+        $control = Device::decodeAppControl($row->app_control);
+        $deviceTitle = Device::groupVariableName($roomTitle, mb_strtoupper($deviceTitle), $control->label);
 
         
         switch ($control->typ) {
@@ -53,18 +53,18 @@ class DeviceService
     public function getChanges($lastID)
     {
         if ($lastID > 0) {
-            $res = DB::select("select c.id, c.variable_id, c.value, UNIX_TIMESTAMP(c.change_date) * 1000 change_date ".
-                              "  from core_variable_changes_mem c ".
+            $res = DB::select("select c.id, c.device_id, c.value, UNIX_TIMESTAMP(c.change_date) * 1000 change_date ".
+                              "  from core_device_changes_mem c ".
                               " where c.id > $lastID ".
                               " order by c.id");
             return response()->json($res);
         } else {
-            return 'LAST_ID: '.VariableChangesMemModel::lastVariableID();
+            return 'LAST_ID: '.DeviceChangeMem::lastVariableID();
         }
     }
     
     public function setValue(int $deviceID, int $value)
     {
-        VariablesModel::setValue($deviceID, $value);
+        Device::setValue($deviceID, $value);
     }
 }

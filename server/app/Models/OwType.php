@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OwTypesModel extends Model
+class OwType extends Model
 {
     protected $table = 'core_ow_types';
     public $timestamps = false;

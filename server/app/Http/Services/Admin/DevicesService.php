@@ -6,7 +6,7 @@ use Session;
 
 class DevicesService 
 {
-    const FILTER_ROOM = 'DEVICES_GROUP_ID';
+    const FILTER_ROOM = 'DEVICES_room_id';
     
     /**
      * 

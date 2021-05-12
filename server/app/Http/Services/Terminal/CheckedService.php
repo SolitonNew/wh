@@ -3,8 +3,8 @@
 namespace App\Http\Services\Terminal;
 
 use \Illuminate\Http\Request;
-use App\Http\Models\PropertysModel;
-use App\Http\Models\VariablesModel;
+use App\Models\Property;
+use App\Models\Device;
 use Lang;
 use DB;
 
@@ -16,17 +16,17 @@ class CheckedService
      */
     public function getDevicesListInChecks()
     {
-        $checks = PropertysModel::getWebChecks();
+        $checks = Property::getWebChecks();
         
         if ($checks) {
             $sql = "select v.*,
-                           (select p.name from plan_parts p where id = v.group_id) group_name
-                      from core_variables v
+                           (select p.name from plan_rooms p where id = v.room_id) group_name
+                      from core_devices v
                      where v.ID in ($checks) ";
         } else {
             $sql = "select v.*,
-                           (select p.name from plan_parts p where id = v.group_id) group_name
-                      from core_variables v
+                           (select p.name from plan_rooms p where id = v.room_id) group_name
+                      from core_devices v
                      where v.ID = 0 ";
         }
         
@@ -51,7 +51,7 @@ class CheckedService
             for ($i = 0; $i < count($vars); $i++) {
                 $row = $vars[$i];
                 if ($row->id == $key) {
-                    $c = VariablesModel::decodeAppControl($row->app_control);
+                    $c = Device::decodeAppControl($row->app_control);
                     if (!$row->comm) {
                         $row->comm = $row->group_name;
                     }
@@ -77,7 +77,7 @@ class CheckedService
      */
     public function getChartsFor(&$rows)
     {
-        $web_color = PropertysModel::getWebColors();
+        $web_color = Property::getWebColors();
         
         $charts = [];
         
@@ -97,11 +97,11 @@ class CheckedService
             
             if ($row->control->typ == 1) {
                 $sql = "select UNIX_TIMESTAMP(v.change_date) * 1000 v_date, v.value
-                          from core_variable_changes_mem v 
-                         where v.variable_id = ".$row->data->id."
+                          from core_device_changes_mem v 
+                         where v.device_id = ".$row->data->id."
                            and v.change_date > (select max(zz.change_date) 
-                                                  from core_variable_changes_mem zz 
-                                                 where zz.variable_id = ".$row->data->id.") - interval 3 hour
+                                                  from core_device_changes_mem zz 
+                                                 where zz.device_id = ".$row->data->id.") - interval 3 hour
                          order by v.ID ";
                 
                 $chartData = [];
@@ -146,14 +146,14 @@ class CheckedService
     {
         $vars = $this->getDevicesListInChecks();
         
-        $checks = PropertysModel::getWebChecks();
+        $checks = Property::getWebChecks();
         
         $data = [];
         foreach (explode(',', $checks) as $key) {
             for ($i = 0; $i < count($vars); $i++) {
                 $row = $vars[$i];
                 if ($row->id == $key) {
-                    $c = VariablesModel::decodeAppControl($row->app_control);
+                    $c = Device::decodeAppControl($row->app_control);
                     $itemLabel = mb_strtoupper($row->comm);
                     $c->title = $itemLabel;
                     $data[] = (object)[
@@ -174,7 +174,7 @@ class CheckedService
      */
     public function orderUp(int $id)
     {
-        $p = PropertysModel::getWebChecks();
+        $p = Property::getWebChecks();
         if ($p) {
             $a = explode(',', $p);
         } else {
@@ -202,7 +202,7 @@ class CheckedService
      */
     public function orderDown(int $id)
     {
-        $p = PropertysModel::getWebChecks();
+        $p = Property::getWebChecks();
         if ($p) {
             $a = explode(',', $p);
         } else {
@@ -229,7 +229,7 @@ class CheckedService
      */
     public function getWebColors()
     {
-        return PropertysModel::getWebColors();
+        return Property::getWebColors();
     }
     
     /**
@@ -242,7 +242,7 @@ class CheckedService
         $keyword = $request->post('keyword');
         $color = $request->post('color');
         
-        $colors = PropertysModel::getWebColors();
+        $colors = Property::getWebColors();
             
         switch ($action) {
             case 'add':
@@ -315,8 +315,8 @@ class CheckedService
         $app_controls_ids = $this->getAppControlsIDs();
 
         $sql = "select v.*,
-                       (select p.name from plan_parts p where id = v.group_id) group_name
-                 from core_variables v
+                       (select p.name from plan_rooms p where id = v.room_id) group_name
+                 from core_devices v
                 where v.app_control in ($app_controls_ids)
                $where
                 order by v.comm";
@@ -324,7 +324,7 @@ class CheckedService
         $data = [];
         
         foreach(DB::select($sql) as $row) {
-            $c = VariablesModel::decodeAppControl($row->app_control);
+            $c = Device::decodeAppControl($row->app_control);
             $data[] = (object)[
                 'id' => $row->id,
                 'comm' => $row->comm ?? $row->group_name,
@@ -337,7 +337,7 @@ class CheckedService
     
     public function getCheckedIDs()
     {
-        $p = PropertysModel::getWebChecks();
+        $p = Property::getWebChecks();
         if ($p) {
             $a = explode(',', $p);
         } else {

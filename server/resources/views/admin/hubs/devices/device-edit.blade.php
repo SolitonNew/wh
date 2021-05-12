@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-<form id="device_edit_form" class="container" method="POST" action="{{ route('admin.hub-device-edit', [$item->controller_id, $item->id]) }}">
+<form id="device_edit_form" class="container" method="POST" action="{{ route('admin.hub-device-edit', [$item->hub_id, $item->id]) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
@@ -41,11 +41,11 @@
             <label class="form-label">@lang('admin/hubs.device_CONTROLLER')</label>
         </div>
         <div class="col-sm-6">
-            <select class="custom-select" name="controller_id">
-            @foreach(\App\Http\Models\ControllersModel::orderBy('name', 'asc')->get() as $row)
+            <select class="custom-select" name="hub_id">
+            @foreach(\App\Models\Hub::orderBy('name', 'asc')->get() as $row)
             <option value="{{ $row->id }}" 
-                    {{ $row->id == $item->controller_id ? 'selected' : '' }}
-                    data-typs="{{ implode('|', \App\Http\Models\ControllersModel::$typs[$row->typ]) }}">{{ $row->name }}</option>
+                    {{ $row->id == $item->hub_id ? 'selected' : '' }}
+                    data-typs="{{ implode('|', \App\Models\Hub::$typs[$row->typ]) }}">{{ $row->name }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>
@@ -129,8 +129,8 @@
 <script>
     $(document).ready(() => {
         @if($item->id == -1)
-        //$('#device_edit_form select[name="group_id"] option').removeAttr('selected');
-        //$('#device_edit_form select[name="group_id"] option[value="' + currentPartID + '"]').attr('selected', 'true');
+        //$('#device_edit_form select[name="room_id"] option').removeAttr('selected');
+        //$('#device_edit_form select[name="room_id"] option[value="' + currentPartID + '"]').attr('selected', 'true');
         @endif
 
         $('#device_edit_form').ajaxForm((data) => {
@@ -143,7 +143,7 @@
             }
         });
 
-        $('#device_edit_form select[name="controller_id"]').on('change', () => {
+        $('#device_edit_form select[name="hub_id"]').on('change', () => {
             reloadTyps();
             reloadOwList();
             reloadChannels();
@@ -170,8 +170,8 @@
     });
     
     function reloadTyps() {
-        let controller = $('#device_edit_form select[name="controller_id"]').val();
-        let typs = $('#device_edit_form select[name="controller_id"] option[value="' + controller + '"]').data('typs').split('|');
+        let controller = $('#device_edit_form select[name="hub_id"]').val();
+        let typs = $('#device_edit_form select[name="hub_id"] option[value="' + controller + '"]').data('typs').split('|');
         
         let typSelect = $('#device_edit_form select[name="typ"]');
         let currTyp = typSelect.data('val') ? typSelect.data('val') : typSelect.val();
@@ -194,7 +194,7 @@
     }
 
     function reloadOwList(afterHandle = null) {
-        let controller = $('#device_edit_form select[name="controller_id"]').val();
+        let controller = $('#device_edit_form select[name="hub_id"]').val();
         controller = controller ? controller : -1;
         $.ajax('{{ route("admin.hub-device-host-list", "") }}/' + controller).done((data) => {
             let rom = $('#device_edit_form select[name="typ"]').val();

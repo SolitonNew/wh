@@ -21,7 +21,7 @@ class CoreSchedule extends Migration
             $table->string('interval_time_of_day');
             $table->string('interval_day_of_type')->nullable();
             $table->integer('interval_type')->nullable();
-            $table->integer('temp_variable_id');
+            $table->integer('temp_device_id');
             $table->integer('enable')->default(1);
         });
     }

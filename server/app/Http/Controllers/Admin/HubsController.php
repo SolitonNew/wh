@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\HubsIndexRequest;
 use App\Http\Requests\Admin\HubRequest;
-use App\Http\Models\ControllersModel;
 use App\Http\Services\Admin\HubsService;
+use App\Models\Hub;
 
 class HubsController extends Controller
 {
@@ -47,7 +47,7 @@ class HubsController extends Controller
      */
     public function editShow(int $id)
     {
-        $item = ControllersModel::findOrCreate($id);
+        $item = Hub::findOrCreate($id);
         
         return view('admin/hubs/hub-edit', [
             'item' => $item,
@@ -63,7 +63,7 @@ class HubsController extends Controller
      */
     public function editPost(HubRequest $request, int $id) 
     {
-        ControllersModel::storeFromRequest($request, $id);
+        Hub::storeFromRequest($request, $id);
 
         // Restart service daemons
         $this->_hubsService->restartServiceDaemons();
@@ -79,7 +79,7 @@ class HubsController extends Controller
      */
     public function delete(int $id) 
     {
-        ControllersModel::deleteById($id);
+        Hub::deleteById($id);
         
         // Restart service daemons
         $this->_hubsService->restartServiceDaemons();

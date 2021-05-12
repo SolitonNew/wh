@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use \Illuminate\Http\Request;
@@ -9,7 +9,7 @@ use DB;
 use Lang;
 use Log;
 
-class ScheduleModel extends Model
+class Schedule extends Model
 {
     protected $table = 'core_schedule';
     public $timestamps = false;
@@ -30,7 +30,7 @@ class ScheduleModel extends Model
                                    "" interval_text,
                                    s.enable
                               from core_schedule s
-                             where s.temp_variable_id = 0
+                             where s.temp_device_id = 0
                             order by s.comm');
         
         $types = Lang::get('admin/schedule.interval');
@@ -61,13 +61,13 @@ class ScheduleModel extends Model
     /**
      * 
      * @param int $id
-     * @return \App\Http\Models\ScheduleModel
+     * @return \App\Models\Schedule
      */
     static public function findOrCreate(int $id)
     {
-        $item = ScheduleModel::find($id);
+        $item = Schedule::find($id);
         if (!$item) {
-            $item = new ScheduleModel();
+            $item = new Schedule();
             $item->id = -1;
             $item->interval_type = 0;
             $item->enable = 0;
@@ -84,10 +84,10 @@ class ScheduleModel extends Model
     static public function storeFromRequest(Request $request, int $id) 
     {
         try {
-            $item = ScheduleModel::find($id);
+            $item = Schedule::find($id);
             if (!$item) {
-                $item = new ScheduleModel();
-                $item->temp_variable_id = 0;
+                $item = new Schedule();
+                $item->temp_device_id = 0;
             }
             $item->comm = $request->comm;
             $item->action = $request->action;
@@ -111,7 +111,7 @@ class ScheduleModel extends Model
     static public function deleteById(int $id)
     {
         try {
-            $item = \App\Http\Models\ScheduleModel::find($id);
+            $item = Schedule::find($id);
             $item->delete();
         } catch (\Exception $ex) {
             abort(response()->json([
@@ -139,7 +139,7 @@ class ScheduleModel extends Model
         $item->interval_time_of_day = '';
         $item->interval_day_of_type = '';
         $item->interval_type = 4;
-        $item->temp_variable_id = $variableID;
+        $item->temp_device_id = $variableID;
         $item->enable = 1;
         $item->save();
     }

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WebLogsModel extends Model
+class WebLog extends Model
 {
     protected $table = 'web_logs';
     public $timestamps = false;
@@ -17,7 +17,7 @@ class WebLogsModel extends Model
      */
     static public function getDaemonDataFromID(string $daemonID, int $lastID)
     {
-        $data = \App\Http\Models\WebLogsModel::whereDaemon($daemonID)
+        $data = WebLog::whereDaemon($daemonID)
                     ->where('id', '>', $lastID)
                     ->orderby('id', 'desc')
                     ->limit(config("app.admin_daemons_log_lines_count"))

@@ -19,20 +19,20 @@ class IndexTest extends TestCase
         $response->assertStatus(200);
         
         // Login Admin user
-        $user = \App\Http\Models\UsersModel::whereAccess(2)->first();
+        $user = \App\Http\Models\User::whereAccess(2)->first();
         Auth::login($user);
         
         $response = $this->get(Route('home'));
         $response->assertStatus(200);
         
         // Room
-        $room = \App\Http\Models\PlanPartsModel::get()->first();
+        $room = \App\Http\Models\Room::get()->first();
         
         $response = $this->get(Route('terminal.room', $room->id));
         $response->assertStatus(200);
         
         // Device
-        $device = \App\Http\Models\VariablesModel::get()->first();
+        $device = \App\Http\Models\Device::get()->first();
         
         $response = $this->get(Route('terminal.device', $room->id));
         $response->assertStatus(200);

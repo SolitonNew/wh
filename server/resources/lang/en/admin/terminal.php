@@ -5,5 +5,5 @@ return [
     'title' => '',
     
     'max_level_title' => 'Displayed structure depth',
-    'plan_parts_empty' => 'Structure of the plan is empty',
+    'plan_rooms_empty' => 'Structure of the plan is empty',
 ];

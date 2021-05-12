@@ -2,9 +2,9 @@
 
 namespace App\Http\Services\Terminal;
 
-use App\Http\Models\PlanPartsModel;
-use App\Http\Models\VariablesModel;
-use App\Http\Models\PropertysModel;
+use App\Models\Room;
+use App\Models\Device;
+use App\Models\Property;
 
 class RoomsService 
 {
@@ -26,18 +26,18 @@ class RoomsService
      */
     public function roomsData()
     {
-        $this->_groups = PlanPartsModel::orderBy('order_num', 'asc')
+        $this->_groups = Room::orderBy('order_num', 'asc')
                             ->orderBy('name', 'asc')
                             ->get();
         
-        $this->_variables = VariablesModel::get();
+        $this->_variables = Device::get();
         
         // Проставим кархдому устройству comm в виде названия комнаты, 
         // если небыло указано ранее
         foreach($this->_variables as $var) {
             if (!$var->comm) {
                 foreach($this->_groups as $g) {
-                    if ($g->id == $var->group_id) {
+                    if ($g->id == $var->room_id) {
                         $var->comm = $g->name;
                         break;
                     }
@@ -48,7 +48,7 @@ class RoomsService
         
         $data = [];
         
-        switch (PropertysModel::getPlanMaxLevel()) {
+        switch (Property::getPlanMaxLevel()) {
             case 1:
                 $data[] = (object)[
                     'title' => '',
@@ -173,7 +173,7 @@ class RoomsService
         $res = [];
         for ($i = 0; $i < count($this->_variables); $i++) {
             $var = $this->_variables[$i];
-            if ($var->group_id == $roomID) {
+            if ($var->room_id == $roomID) {
                 if (mb_strtoupper(mb_substr($var->comm, 0, mb_strlen($roomNameUpper))) == $roomNameUpper) {
                     $res[] = $var;
                 }

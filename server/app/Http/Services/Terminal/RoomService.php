@@ -2,9 +2,9 @@
 
 namespace App\Http\Services\Terminal;
 
-use App\Http\Models\PlanPartsModel;
-use App\Http\Models\PropertysModel;
-use App\Http\Models\VariablesModel;
+use App\Models\Room;
+use App\Models\Property;
+use App\Models\Device;
 use DB;
 
 class RoomService 
@@ -16,19 +16,19 @@ class RoomService
      */
     public function roomData(int $roomID)
     {
-        $room = PlanPartsModel::find($roomID);
+        $room = Room::find($roomID);
         
         $roomTitle = mb_strtoupper($room->name);
         
-        $web_color = PropertysModel::getWebColors();
+        $web_color = Property::getWebColors();
         
-        $groupIDs = PlanPartsModel::genIDsForGroupAtParent($roomID);
+        $groupIDs = Room::genIDsForGroupAtParent($roomID);
         
         $sql = "select v.*, 
                        0 is_root,
-                       (select p.name from plan_parts p where p.id = v.group_id) group_name
-                  from core_variables v 
-                 where v.group_id in ($groupIDs) 
+                       (select p.name from plan_rooms p where p.id = v.room_id) group_name
+                  from core_devices v 
+                 where v.room_id in ($groupIDs) 
                    and app_control in (1, 3, 4, 5, 7, 10, 11, 13, 14) 
                 order by v.id";    
        
@@ -40,8 +40,8 @@ class RoomService
             
             $row->is_root = (mb_strpos(mb_strtoupper($row->comm), $roomTitle) !== false) ? 1 : 0;
             
-            $c = VariablesModel::decodeAppControl($row->app_control);
-            $c->title =  VariablesModel::groupVariableName($roomTitle, mb_strtoupper($row->comm), mb_strtoupper($c->label));
+            $c = Device::decodeAppControl($row->app_control);
+            $c->title = Device::groupVariableName($roomTitle, mb_strtoupper($row->comm), mb_strtoupper($c->label));
 
             $rows[] = (object)[
                 'data' => $row, 
@@ -70,12 +70,12 @@ class RoomService
             
             if ($row->control->typ == 1) {
                 $sql = "select UNIX_TIMESTAMP(v.change_date) * 1000 v_date, v.value ".
-                       "  from core_variable_changes_mem v ".
-                       " where v.variable_id = ".$row->data->id.
+                       "  from core_device_changes_mem v ".
+                       " where v.device_id = ".$row->data->id.
                        "   and v.value <> 85 ".
                        "   and v.change_date > (select max(zz.change_date) ".
-                       "                          from core_variable_changes_mem zz ".
-                       "                         where zz.variable_id = ".$row->data->id.") - interval 3 hour ".
+                       "                          from core_device_changes_mem zz ".
+                       "                         where zz.device_id = ".$row->data->id.") - interval 3 hour ".
                        " order by v.id ";
                 
                 $chartData = [];

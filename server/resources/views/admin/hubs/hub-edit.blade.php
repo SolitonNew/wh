@@ -33,7 +33,7 @@
             <input type="hidden" name="typ" value="{{ $item->typ }}">
             @else
             <select class="custom-select" name="typ">
-            @foreach(\App\Http\Models\ControllersModel::$typs as $key => $val)
+            @foreach(\App\Models\Hub::$typs as $key => $val)
             <option value="{{ $key }}" {{ $item->typ == $key ? 'selected' : '' }}>{{ $key }}</option>
             @endforeach
             </select>

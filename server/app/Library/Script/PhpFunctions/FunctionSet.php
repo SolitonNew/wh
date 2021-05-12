@@ -8,6 +8,8 @@
 
 namespace App\Library\Script\PhpFunctions;
 
+use App\Models\Device;
+use App\Models\SchedulerModel;
 use DB;
 
 trait FunctionSet 
@@ -20,16 +22,16 @@ trait FunctionSet
      */
     public function function_set(string $name, float $value, int $time = 0) 
     {
-        $variable = \App\Http\Models\VariablesModel::whereName($name)->first();
+        $variable = Device::whereName($name)->first();
         if ($variable) {
             if ($this->_fake) {
                 //
             } else {
                 if ($time == 0) {
-                    DB::select('CALL CORE_SET_VARIABLE('.$variable->id.', '.$value.', null)');
+                    DB::select('CALL CORE_SET_DEVICE('.$variable->id.', '.$value.', null)');
                 } else {
                     $datetime = now()->addMinute($time);
-                    \App\Http\Models\SchedulerModel::appendFastRecord("set('$name', $value, $time)", "set('$name', $value);", $datetime, $variable->id);
+                    SchedulerModel::appendFastRecord("set('$name', $value, $time)", "set('$name', $value);", $datetime, $variable->id);
                 }
             }
         } else {

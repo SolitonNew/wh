@@ -8,8 +8,8 @@
 
 namespace App\Library;
 
-use App\Http\Models\SpeechesModel;
-use App\Http\Models\WebQueueMemModel;
+use App\Models\SpeecheCache;
+use App\Models\WebQueueMem;
 
 /**
  * Description of Speech
@@ -20,10 +20,10 @@ class Speech
 {
     public function turn($phrase)
     {
-        $item = SpeechesModel::wherePhrase($phrase)->first();
+        $item = SpeecheCache::wherePhrase($phrase)->first();
         if (!$item) { // If doesn't exist create sample and save to db
             // Save to db
-            $item = new SpeechesModel();
+            $item = new SpeecheCache();
             $item->phrase = $phrase;
             $item->save();
             
@@ -35,7 +35,7 @@ class Speech
         }
         
         // Append an record to the queue
-        WebQueueMemModel::appendRecord('speech', json_encode([
+        WebQueueMem::appendRecord('speech', json_encode([
             'id' => $item->id, 
             'phrase' => $phrase,
         ]));

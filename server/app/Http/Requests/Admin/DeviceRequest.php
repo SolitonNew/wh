@@ -10,8 +10,8 @@ class DeviceRequest extends JsonFormRequest
     {
         $id = $this->route('id');
         return [
-            'controller_id' => 'required|numeric',
-            'name' => 'required|string|unique:core_variables,name,'.($id > 0 ? $id : ''),
+            'hub_id' => 'required|numeric',
+            'name' => 'required|string|unique:core_devices,name,'.($id > 0 ? $id : ''),
             'comm' => 'nullable|string',
             'ow_id' => ($this->typ === 'ow' ? 'required|numeric' : ''),
             'value' => 'nullable|numeric',

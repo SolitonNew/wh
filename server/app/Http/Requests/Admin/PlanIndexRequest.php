@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Models\PlanPartsModel;
+use App\Models\Room;
 
 class PlanIndexRequest extends FormRequest
 {
@@ -43,7 +43,7 @@ class PlanIndexRequest extends FormRequest
         if ($id) {
             $this->redirect = route('admin.plan');
             return [
-                'id' => 'exists:plan_parts,id',
+                'id' => 'exists:plan_rooms,id',
             ];
         } else {
             $newID = $this->getViewID();
@@ -88,7 +88,7 @@ class PlanIndexRequest extends FormRequest
         if ($id) {
             return $id;
         } else {
-            $item = PlanPartsModel::whereParentId(null)
+            $item = Room::whereParentId(null)
                         ->orderBy('order_num', 'asc')
                         ->first();
             if ($item) {
