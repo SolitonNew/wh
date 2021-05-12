@@ -11,6 +11,7 @@ namespace App\Library\Daemons;
 use App\Models\DeviceChangeMem;
 use DB;
 use Lang;
+use Log;
 
 /**
  * Description of ObserverDaemon
@@ -56,7 +57,11 @@ class ObserverDaemon extends BaseDaemon
      */
     private function _processedDevice(&$item)
     {
-        switch ($item->device->app_control) {
+        $device = $item->device;
+        
+        if (!$device) return ;
+        
+        switch ($device->app_control) {
             case 1: // Light
                 //
                 break;
