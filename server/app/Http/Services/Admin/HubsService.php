@@ -4,7 +4,7 @@ namespace App\Http\Services\Admin;
 
 use App\Models\Hub;
 use App\Models\Device;
-use App\Models\OwDev;
+use App\Models\OwHost;
 use App\Models\Property;
 use App\Library\DaemonManager;
 use App\Library\Firmware;
@@ -106,7 +106,7 @@ class HubsService
         }
         
         // Generation of devices for network hubs
-        $devs = OwDev::get();
+        $devs = OwHost::get();
         $vars = Device::whereTyp('ow')->get();
         
         try {

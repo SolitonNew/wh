@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CoreOwDevs extends Migration
+class CoreOwHosts extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CoreOwDevs extends Migration
      */
     public function up()
     {
-        Schema::create('core_ow_devs', function (Blueprint $table) {
+        Schema::create('core_ow_hosts', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('hub_id');
             $table->string('name');
@@ -26,7 +26,6 @@ class CoreOwDevs extends Migration
             $table->integer('rom_6');
             $table->integer('rom_7');
             $table->integer('rom_8');
-            $table->string('position', 1000)->nullable();
             $table->integer('lost')->default(0);
             
             $table->index('hub_id');
@@ -41,6 +40,6 @@ class CoreOwDevs extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('core_ow_devs');
+        Schema::dropIfExists('core_ow_hosts');
     }
 }

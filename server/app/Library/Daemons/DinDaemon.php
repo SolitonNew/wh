@@ -5,7 +5,7 @@ namespace App\Library\Daemons;
 use App\Models\Hub;
 use App\Models\Property;
 use App\Models\DeviceChangeMem;
-use App\Models\OwDev;
+use App\Models\OwHost;
 use App\Models\Device;
 use DB;
 use Lang;
@@ -226,7 +226,7 @@ class DinDaemon extends BaseDaemon
         $new = 0;
         $lost = 0;
         
-        $owOldList = OwDev::whereHubId($controller->id)->get();
+        $owOldList = OwHost::whereHubId($controller->id)->get();
         // Ищем кого потеряли
         foreach ($owOldList as $owOld) {
             $find = false;
@@ -272,7 +272,7 @@ class DinDaemon extends BaseDaemon
             if (!$find) {
                 $new++;
                 // Add to the list immediately.
-                $ow = new OwDev();
+                $ow = new OwHost();
                 $ow->hub_id = $controller->id;
                 $ow->name = '';
                 $ow->comm = '';

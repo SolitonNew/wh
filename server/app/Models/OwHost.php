@@ -4,9 +4,9 @@ namespace App\Models;
 
 use \App\Library\AffectsFirmwareModel;
 
-class OwDev extends AffectsFirmwareModel
+class OwHost extends AffectsFirmwareModel
 {    
-    protected $table = 'core_ow_devs';
+    protected $table = 'core_ow_hosts';
     public $timestamps = false;
     
     protected $_affectFirmwareFields = [

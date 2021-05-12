@@ -3,7 +3,7 @@
 namespace App\Http\Services\Admin;
 
 use App\Models\Device;
-use App\Models\OwDev;
+use App\Models\OwHost;
 
 class HostsService 
 {
@@ -13,7 +13,7 @@ class HostsService
      */
     public function getIndexList(int $hubID)
     {
-        $data = OwDev::whereHubId($hubID)
+        $data = OwHost::whereHubId($hubID)
                     ->orderBy('rom_1', 'asc')
                     ->orderBy('rom_2', 'asc')
                     ->orderBy('rom_3', 'asc')
@@ -33,7 +33,7 @@ class HostsService
      */
     public function getOneHost(int $id)
     {
-        $item = OwDev::findOrFail($id);
+        $item = OwHost::findOrFail($id);
         
         return $item;
     }
@@ -48,7 +48,7 @@ class HostsService
             Device::whereTyp('ow')
                     ->whereOwId($id)
                     ->delete();
-            $item = OwDev::find($id);
+            $item = OwHost::find($id);
             $item->delete();
         } catch (\Exception $ex) {
             abort(response()->json([
