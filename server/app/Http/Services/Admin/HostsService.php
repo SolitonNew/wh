@@ -24,8 +24,8 @@ class HostsService
                        d.lost
                   from core_ow_devs d left join core_ow_types t on d.rom_1 = t.code,
                        core_hubs c
-                 where d.controller_id = c.id
-                   and d.controller_id = "'.$hubID.'" 
+                 where d.hub_id = c.id
+                   and d.hub_id = "'.$hubID.'" 
                 order by c.name, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7';
         $data = DB::select($sql);
         
@@ -66,7 +66,7 @@ class HostsService
                        "" variables
                   from core_ow_devs d left join core_ow_types t on d.rom_1 = t.code, 
                        core_hubs c
-                 where d.controller_id = c.id
+                 where d.hub_id = c.id
                    and d.id = '.$id.'
                 order by c.name, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7';
         $data = DB::select($sql);

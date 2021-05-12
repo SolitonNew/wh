@@ -13,7 +13,7 @@
 
 typedef struct _variable_t {
     int id;
-    unsigned char controller_id;
+    unsigned char hub_id;
     unsigned char typ;
     int ow_index;
     unsigned char channel;

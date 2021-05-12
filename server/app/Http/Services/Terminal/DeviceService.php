@@ -15,13 +15,13 @@ class DeviceService
      */
     public function showDeviceView($deviceID)
     {
-        $sql = "select p.name group_title, v.comm device_title, v.app_control, v.group_id, v.value ".
+        $sql = "select p.name group_title, v.comm device_title, v.app_control, v.room_id, v.value ".
                "  from core_devices v, plan_rooms p ".
                " where v.id = $deviceID ".
-               "   and p.id = v.group_id";        
+               "   and p.id = v.room_id";        
         $row = DB::select($sql)[0];
         
-        $roomID = $row->group_id;
+        $roomID = $row->room_id;
         $roomTitle = mb_strtoupper($row->group_title);
         $deviceTitle = $row->device_title;
         $control = Device::decodeAppControl($row->app_control);
@@ -53,7 +53,7 @@ class DeviceService
     public function getChanges($lastID)
     {
         if ($lastID > 0) {
-            $res = DB::select("select c.id, c.variable_id, c.value, UNIX_TIMESTAMP(c.change_date) * 1000 change_date ".
+            $res = DB::select("select c.id, c.device_id, c.value, UNIX_TIMESTAMP(c.change_date) * 1000 change_date ".
                               "  from core_device_changes_mem c ".
                               " where c.id > $lastID ".
                               " order by c.id");

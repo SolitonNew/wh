@@ -89,13 +89,13 @@ class Firmware
         $owList = OwDev::orderBy('id', 'asc')->get();
         $varList = DB::select('select v.*, c.rom controller_rom
                                  from core_devices v, core_hubs c
-                                where v.controller_id = c.id
+                                where v.hub_id = c.id
                                order by v.id');
         $scriptList = Script::orderBy('id', 'asc')->get();
-        $eventList = DB::select('select e.variable_id, GROUP_CONCAT(e.script_id) script_ids
+        $eventList = DB::select('select e.device_id, GROUP_CONCAT(e.script_id) script_ids
                                    from core_device_events e 
-                                 group by e.variable_id 
-                                 order by e.variable_id');
+                                 group by e.device_id 
+                                 order by e.device_id');
         
         foreach($varList as $row) {
             $row->ow_index = -1;
@@ -155,7 +155,7 @@ class Firmware
         foreach($eventList as &$row) {
             $varIndex = -1;
             for ($i = 0; $i < count($varList); $i++) {
-                if ($varList[$i]->id === $row->variable_id) {
+                if ($varList[$i]->id === $row->device_id) {
                     $varIndex = $i;
                     break;
                 }

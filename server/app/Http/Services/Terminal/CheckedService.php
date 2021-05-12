@@ -20,12 +20,12 @@ class CheckedService
         
         if ($checks) {
             $sql = "select v.*,
-                           (select p.name from plan_rooms p where id = v.group_id) group_name
+                           (select p.name from plan_rooms p where id = v.room_id) group_name
                       from core_devices v
                      where v.ID in ($checks) ";
         } else {
             $sql = "select v.*,
-                           (select p.name from plan_rooms p where id = v.group_id) group_name
+                           (select p.name from plan_rooms p where id = v.room_id) group_name
                       from core_devices v
                      where v.ID = 0 ";
         }
@@ -98,10 +98,10 @@ class CheckedService
             if ($row->control->typ == 1) {
                 $sql = "select UNIX_TIMESTAMP(v.change_date) * 1000 v_date, v.value
                           from core_device_changes_mem v 
-                         where v.variable_id = ".$row->data->id."
+                         where v.device_id = ".$row->data->id."
                            and v.change_date > (select max(zz.change_date) 
                                                   from core_device_changes_mem zz 
-                                                 where zz.variable_id = ".$row->data->id.") - interval 3 hour
+                                                 where zz.device_id = ".$row->data->id.") - interval 3 hour
                          order by v.ID ";
                 
                 $chartData = [];
@@ -315,7 +315,7 @@ class CheckedService
         $app_controls_ids = $this->getAppControlsIDs();
 
         $sql = "select v.*,
-                       (select p.name from plan_rooms p where id = v.group_id) group_name
+                       (select p.name from plan_rooms p where id = v.room_id) group_name
                  from core_devices v
                 where v.app_control in ($app_controls_ids)
                $where

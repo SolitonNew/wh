@@ -71,13 +71,13 @@ class HubsService
         
         // Generation of devices by channel
         $din_channels = config('firmware.channels.'.config('firmware.mmcu'));
-        $vars = DB::select('select controller_id, channel from core_devices where typ = "din"');
+        $vars = DB::select('select hub_id, channel from core_devices where typ = "din"');
         foreach(Hub::whereTyp('din')->get() as $din) {
             try {
                 foreach($din_channels as $chan) {
                     $find = false;
                     foreach($vars as $var) {
-                        if ($var->controller_id == $din->id && $var->channel == $chan) {
+                        if ($var->hub_id == $din->id && $var->channel == $chan) {
                             $find = true;
                             break;
                         }
@@ -86,7 +86,7 @@ class HubsService
                         $app_control = 1; // По умолчанию СВЕТ
                         
                         $item = new Device();
-                        $item->controller_id = $din->id;
+                        $item->hub_id = $din->id;
                         $item->typ = 'din';
                         $item->name = 'temp for din';
                         //$item->comm = Lang::get('admin/hubs.app_control.'.$app_control);
@@ -105,7 +105,7 @@ class HubsService
         }
         
         // Generation of devices for network hubs
-        $devs = DB::select('select d.id, d.controller_id, t.channels, t.comm
+        $devs = DB::select('select d.id, d.hub_id, t.channels, t.comm
                               from core_ow_devs d, core_ow_types t
                              where d.rom_1 = t.code');
         
@@ -126,7 +126,7 @@ class HubsService
                         $appControl = $decodeChannel($chan);
                         
                         $item = new Device();
-                        $item->controller_id = $dev->controller_id;
+                        $item->hub_id = $dev->hub_id;
                         $item->typ = 'ow';
                         $item->name = 'temp for ow';
                         $item->ow_id = $dev->id;

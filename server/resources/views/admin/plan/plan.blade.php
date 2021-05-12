@@ -102,7 +102,7 @@
             @endforeach
             @foreach($devices as $row)
             <div class="plan-device dev-{{ $row->app_control }}" 
-                 data-id="{{ $row->id }}" data-part-id="{{ $row->group_id }}"
+                 data-id="{{ $row->id }}" data-part-id="{{ $row->room_id }}"
                  data-position="{{ $row->position }}"
                  data-part-bounds="{{ $row->partBounds }}"></div>
             @endforeach

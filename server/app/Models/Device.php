@@ -14,7 +14,7 @@ class Device extends AffectsFirmwareModel
     public $timestamps = false;
     
     protected $_affectFirmwareFields = [
-        'controller_id',
+        'hub_id',
         'typ',
         'ow_id',
         'direction',
@@ -137,13 +137,13 @@ class Device extends AffectsFirmwareModel
             case 'none':
                 break;
             case 'empty':
-                $where = ' and not exists(select 1 from plan_rooms pp where v.group_id = pp.id)';
+                $where = ' and not exists(select 1 from plan_rooms pp where v.room_id = pp.id)';
                 break;
             default:
                 $groupID = (int)$groupID;
                 $ids = Room::genIDsForGroupAtParent($groupID);
                 if ($ids) {
-                    $where = ' and v.group_id in ('.$ids.') ';
+                    $where = ' and v.room_id in ('.$ids.') ';
                 }
                 break;
         }
@@ -156,10 +156,10 @@ class Device extends AffectsFirmwareModel
                        v.value,
                        v.channel,
                        v.last_update,
-                       (select p.name from plan_rooms p where p.id = v.group_id) group_name,
-                       exists(select 1 from core_device_events e where e.variable_id = v.id) with_events
+                       (select p.name from plan_rooms p where p.id = v.room_id) group_name,
+                       exists(select 1 from core_device_events e where e.device_id = v.id) with_events
                   from core_devices v
-                 where v.controller_id = '.$hubID.'
+                 where v.hub_id = '.$hubID.'
                 '.$where.'
                 order by v.name';
         
@@ -178,7 +178,7 @@ class Device extends AffectsFirmwareModel
         if (!$item) {
             $item = new Device();
             $item->id = -1;
-            $item->controller_id = $hubId;
+            $item->hub_id = $hubId;
             $item->position = '';
         }
         
@@ -199,7 +199,7 @@ class Device extends AffectsFirmwareModel
                 $item = new Device();
             }
             
-            $item->controller_id = $request->controller_id;
+            $item->hub_id = $request->hub_id;
             $item->typ = $request->typ;
             $item->ow_id = $request->ow_id;
             $item->name = $request->name;
@@ -247,7 +247,7 @@ class Device extends AffectsFirmwareModel
                           from core_devices v 
                          where v.ow_id = d.id) num
                   from core_ow_devs d
-                 where d.controller_id = $hubID
+                 where d.hub_id = $hubID
                 order by d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7, d.rom_8";
         return DB::select($sql);
     }
@@ -293,7 +293,7 @@ class Device extends AffectsFirmwareModel
     static public function devicesListWithRoomName()
     {
         $sql = "select v.*,
-                       (select p.name from plan_rooms p where p.id = v.group_id) group_name
+                       (select p.name from plan_rooms p where p.id = v.room_id) group_name
                   from core_devices v
                 order by v.name";
         

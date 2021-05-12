@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CoreVariables extends Migration
+class CoreDevices extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class CoreVariables extends Migration
     {
         Schema::create('core_devices', function (Blueprint $table) {
             $table->integerIncrements('id');
-            $table->integer('controller_id');
+            $table->integer('hub_id');
             $table->string('typ', 20);
             $table->string('name');
             $table->string('comm')->nullable();
@@ -24,12 +24,12 @@ class CoreVariables extends Migration
             $table->integer('ow_id')->nullable();
             $table->string('channel', 20)->default('');
             $table->integer('app_control')->default(0);
-            $table->integer('group_id')->nullable();
+            $table->integer('room_id')->nullable();
             $table->string('position', 255)->nullable();
             
-            $table->index('controller_id');
+            $table->index('hub_id');
             $table->index('ow_id');
-            $table->index('group_id');
+            $table->index('room_id');
         });
     }
 

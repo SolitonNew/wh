@@ -17,7 +17,7 @@ class DeviceChangeMem extends Model
      */
     public function device()
     {
-        return $this->belongsTo(Device::class, 'variable_id');
+        return $this->belongsTo(Device::class, 'device_id');
     }
 
     /**
@@ -59,17 +59,17 @@ class DeviceChangeMem extends Model
     static public function getLastVariables() 
     {
         if (self::$_lastVariableID > 0) {
-            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.variable_id,
-                           (select p.name from plan_rooms p where p.id = v.group_id) group_name
+            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.device_id,
+                           (select p.name from plan_rooms p where p.id = v.room_id) group_name
                       from core_device_changes_mem m, core_devices v
-                     where m.variable_id = v.id
+                     where m.device_id = v.id
                        and m.id > '.self::$_lastVariableID.'
                     order by m.id desc';
         } else {
-            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.variable_id,
-                           (select p.name from plan_rooms p where p.id = v.group_id) group_name
+            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.device_id,
+                           (select p.name from plan_rooms p where p.id = v.room_id) group_name
                       from core_device_changes_mem m, core_devices v
-                     where m.variable_id = v.id
+                     where m.device_id = v.id
                     order by m.id desc
                     limit '.config('app.admin_log_lines_count');
         }

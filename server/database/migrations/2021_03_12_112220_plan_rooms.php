@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class PlanParts extends Migration
+class PlanRooms extends Migration
 {
     /**
      * Run the migrations.

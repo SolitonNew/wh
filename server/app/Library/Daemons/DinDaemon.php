@@ -273,7 +273,7 @@ class DinDaemon extends BaseDaemon
                 $new++;
                 // Add to the list immediately.
                 $ow = new OwDev();
-                $ow->controller_id = $controller->id;
+                $ow->hub_id = $controller->id;
                 $ow->name = '';
                 $ow->comm = '';
                 $ow->rom_1 = $rom[0];
@@ -389,8 +389,8 @@ class DinDaemon extends BaseDaemon
 
             // Send devace values
             foreach ($variables as $variable) {
-                $this->_transmitVAR($controller->rom, $variable->variable_id, $variable->value);
-                $vars_out[] = "$variable->variable_id: $variable->value";
+                $this->_transmitVAR($controller->rom, $variable->device_id, $variable->value);
+                $vars_out[] = "$variable->device_id: $variable->value";
             }
 
             // Send command "prepare to give your changes"

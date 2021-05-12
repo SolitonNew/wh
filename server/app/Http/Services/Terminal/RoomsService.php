@@ -37,7 +37,7 @@ class RoomsService
         foreach($this->_variables as $var) {
             if (!$var->comm) {
                 foreach($this->_groups as $g) {
-                    if ($g->id == $var->group_id) {
+                    if ($g->id == $var->room_id) {
                         $var->comm = $g->name;
                         break;
                     }
@@ -173,7 +173,7 @@ class RoomsService
         $res = [];
         for ($i = 0; $i < count($this->_variables); $i++) {
             $var = $this->_variables[$i];
-            if ($var->group_id == $roomID) {
+            if ($var->room_id == $roomID) {
                 if (mb_strtoupper(mb_substr($var->comm, 0, mb_strlen($roomNameUpper))) == $roomNameUpper) {
                     $res[] = $var;
                 }

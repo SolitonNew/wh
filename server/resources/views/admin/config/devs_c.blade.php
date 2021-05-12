@@ -49,7 +49,7 @@ int devs_get_variable_ow_index(int index) {
 
 uint8_t devs_get_variable_controller(int index) {
     variable_t v;
-    uint8_t off = (uint8_t*)(&v.controller_id) - (uint8_t*)(&v);
+    uint8_t off = (uint8_t*)(&v.hub_id) - (uint8_t*)(&v);
     return pgm_read_word((uint8_t*)&variables[index] + off);
 }
 

@@ -133,7 +133,7 @@
                 } else {
                     for (let i = 0; i < data.length; i++) {
                         let rec = data[i];
-                        let varID = parseInt(rec.variable_id);
+                        let varID = parseInt(rec.device_id);
                         let varValue = parseFloat(rec.value);
                         let varTime = parseInt(rec.change_date);
                         lastVariableID = rec.id;

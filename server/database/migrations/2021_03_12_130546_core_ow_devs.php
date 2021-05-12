@@ -15,7 +15,7 @@ class CoreOwDevs extends Migration
     {
         Schema::create('core_ow_devs', function (Blueprint $table) {
             $table->integerIncrements('id');
-            $table->integer('controller_id');
+            $table->integer('hub_id');
             $table->string('name');
             $table->string('comm', 1000)->nullable();
             $table->integer('rom_1');
@@ -29,7 +29,7 @@ class CoreOwDevs extends Migration
             $table->string('position', 1000)->nullable();
             $table->integer('lost')->default(0);
             
-            $table->index('controller_id');
+            $table->index('hub_id');
             $table->index('rom_1');
         });
     }

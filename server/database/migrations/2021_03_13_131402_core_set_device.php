@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CoreSetVariable extends Migration
+class CoreSetDevice extends Migration
 {
     /**
      * Run the migrations.
@@ -21,12 +21,12 @@ CREATE PROCEDURE `CORE_SET_DEVICE` (
 )
 BEGIN
     insert into core_device_changes
-      (VARIABLE_ID, VALUE, FROM_ID)
+      (device_id, VALUE, FROM_ID)
     values
       (VAR_ID, VAR_VALUE, DEV_ID);
 
     insert into core_device_changes_mem
-      (ID, VARIABLE_ID, VALUE, FROM_ID)
+      (ID, device_id, VALUE, FROM_ID)
     values
       (LAST_INSERT_ID(), VAR_ID, VAR_VALUE, DEV_ID);
 

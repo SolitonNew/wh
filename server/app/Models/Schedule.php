@@ -30,7 +30,7 @@ class Schedule extends Model
                                    "" interval_text,
                                    s.enable
                               from core_schedule s
-                             where s.temp_variable_id = 0
+                             where s.temp_device_id = 0
                             order by s.comm');
         
         $types = Lang::get('admin/schedule.interval');
@@ -87,7 +87,7 @@ class Schedule extends Model
             $item = Schedule::find($id);
             if (!$item) {
                 $item = new Schedule();
-                $item->temp_variable_id = 0;
+                $item->temp_device_id = 0;
             }
             $item->comm = $request->comm;
             $item->action = $request->action;
@@ -139,7 +139,7 @@ class Schedule extends Model
         $item->interval_time_of_day = '';
         $item->interval_day_of_type = '';
         $item->interval_type = 4;
-        $item->temp_variable_id = $variableID;
+        $item->temp_device_id = $variableID;
         $item->enable = 1;
         $item->save();
     }

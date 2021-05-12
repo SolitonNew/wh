@@ -26,7 +26,7 @@ class Script extends AffectsFirmwareModel
         $sql = "select s.*, 
                        (select count(*) 
                           from core_devices v, core_device_events e
-                         where v.id = e.variable_id
+                         where v.id = e.device_id
                            and e.script_id = s.id) var_count
                   from core_scripts s
                 order by s.comm asc";
@@ -116,13 +116,13 @@ class Script extends AffectsFirmwareModel
      */
     static public function attachedDevicesIds(int $id)
     {
-        $sql = 'select variable_id 
+        $sql = 'select device_id 
                   from core_device_events 
                  where script_id = '.$id;
         
         $data = [];
         foreach(DB::select($sql) as $row) {
-            $data[] = $row->variable_id;
+            $data[] = $row->device_id;
         }
         return $data;
     }
@@ -141,7 +141,7 @@ class Script extends AffectsFirmwareModel
 
             // Delete old not checked records
             $changes = DeviceEvent::whereScriptId($id)
-                            ->whereNotIn('variable_id', $ids)
+                            ->whereNotIn('device_id', $ids)
                             ->delete();
 
             // Add new records
@@ -151,11 +151,11 @@ class Script extends AffectsFirmwareModel
                        and not exists(select *
                                         from core_device_events t
                                        where t.script_id = $id
-                                         and t.variable_id = v.id)";
+                                         and t.device_id = v.id)";
             foreach(DB::select($sql) as $row) {
                 $rec = new DeviceEvent();
                 $rec->event_type = 0;
-                $rec->variable_id = $row->id;
+                $rec->device_id = $row->id;
                 $rec->script_id = $id;
                 $rec->save();
                 $changes++;

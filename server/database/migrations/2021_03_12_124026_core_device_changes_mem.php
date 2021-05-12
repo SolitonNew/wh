@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CoreVariableChangesMem extends Migration
+class CoreDeviceChangesMem extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class CoreVariableChangesMem extends Migration
     {
         Schema::create('core_device_changes_mem', function (Blueprint $table) {
             $table->integerIncrements('id');
-            $table->integer('variable_id');
+            $table->integer('device_id');
             $table->timestamp('change_date')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->float('value');
             $table->integer('from_id')->nullable();

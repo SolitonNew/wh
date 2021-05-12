@@ -69,7 +69,7 @@ class Room extends Model
         foreach (Device::get() as $device) {
             $part = false;
             foreach($parts as $row) {
-                if ($device->group_id == $row->id) {
+                if ($device->room_id == $row->id) {
                     $part = $row;
                     break;
                 }
@@ -360,7 +360,7 @@ class Room extends Model
                 'offset' => $request->offset,
                 'cross' => $request->cross,
             ];
-            $device->group_id = $planID;
+            $device->room_id = $planID;
             $device->position = json_encode($position);
             $device->save();            
         } catch (\Exception $ex) {
@@ -378,7 +378,7 @@ class Room extends Model
     {
         $sql = "select v.*
                   from core_devices v
-                 where not exists(select 1 from plan_rooms p where p.id = v.group_id)
+                 where not exists(select 1 from plan_rooms p where p.id = v.room_id)
                 order by v.name";
         $devices = DB::select($sql);
         
@@ -401,7 +401,7 @@ class Room extends Model
         if (!$device) abort(404);
         
         try {    
-            $device->group_id = -1;
+            $device->room_id = -1;
             $device->position = null;
             $device->save();
         } catch (\Exception $ex) {
