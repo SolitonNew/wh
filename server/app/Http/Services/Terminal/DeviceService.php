@@ -16,7 +16,7 @@ class DeviceService
     public function showDeviceView($deviceID)
     {
         $sql = "select p.name group_title, v.comm device_title, v.app_control, v.group_id, v.value ".
-               "  from core_variables v, plan_parts p ".
+               "  from core_devices v, plan_rooms p ".
                " where v.id = $deviceID ".
                "   and p.id = v.group_id";        
         $row = DB::select($sql)[0];
@@ -54,7 +54,7 @@ class DeviceService
     {
         if ($lastID > 0) {
             $res = DB::select("select c.id, c.variable_id, c.value, UNIX_TIMESTAMP(c.change_date) * 1000 change_date ".
-                              "  from core_variable_changes_mem c ".
+                              "  from core_device_changes_mem c ".
                               " where c.id > $lastID ".
                               " order by c.id");
             return response()->json($res);

@@ -20,13 +20,13 @@ class CheckedService
         
         if ($checks) {
             $sql = "select v.*,
-                           (select p.name from plan_parts p where id = v.group_id) group_name
-                      from core_variables v
+                           (select p.name from plan_rooms p where id = v.group_id) group_name
+                      from core_devices v
                      where v.ID in ($checks) ";
         } else {
             $sql = "select v.*,
-                           (select p.name from plan_parts p where id = v.group_id) group_name
-                      from core_variables v
+                           (select p.name from plan_rooms p where id = v.group_id) group_name
+                      from core_devices v
                      where v.ID = 0 ";
         }
         
@@ -97,10 +97,10 @@ class CheckedService
             
             if ($row->control->typ == 1) {
                 $sql = "select UNIX_TIMESTAMP(v.change_date) * 1000 v_date, v.value
-                          from core_variable_changes_mem v 
+                          from core_device_changes_mem v 
                          where v.variable_id = ".$row->data->id."
                            and v.change_date > (select max(zz.change_date) 
-                                                  from core_variable_changes_mem zz 
+                                                  from core_device_changes_mem zz 
                                                  where zz.variable_id = ".$row->data->id.") - interval 3 hour
                          order by v.ID ";
                 
@@ -315,8 +315,8 @@ class CheckedService
         $app_controls_ids = $this->getAppControlsIDs();
 
         $sql = "select v.*,
-                       (select p.name from plan_parts p where id = v.group_id) group_name
-                 from core_variables v
+                       (select p.name from plan_rooms p where id = v.group_id) group_name
+                 from core_devices v
                 where v.app_control in ($app_controls_ids)
                $where
                 order by v.comm";

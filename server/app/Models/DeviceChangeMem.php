@@ -8,7 +8,7 @@ use Lang;
 
 class DeviceChangeMem extends Model
 {
-    protected $table = 'core_variable_changes_mem';
+    protected $table = 'core_device_changes_mem';
     public $timestamps = false;
     
     /**
@@ -33,7 +33,7 @@ class DeviceChangeMem extends Model
     static public function lastVariableID() 
     {
         if (self::$_lastVariableID == -1) {
-            $res = DB::select('select max(id) max_id from core_variable_changes_mem');
+            $res = DB::select('select max(id) max_id from core_device_changes_mem');
             if (count($res) && ($res[0]->max_id > 0)) {
                 self::$_lastVariableID = $res[0]->max_id;
             }
@@ -60,15 +60,15 @@ class DeviceChangeMem extends Model
     {
         if (self::$_lastVariableID > 0) {
             $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.variable_id,
-                           (select p.name from plan_parts p where p.id = v.group_id) group_name
-                      from core_variable_changes_mem m, core_variables v
+                           (select p.name from plan_rooms p where p.id = v.group_id) group_name
+                      from core_device_changes_mem m, core_devices v
                      where m.variable_id = v.id
                        and m.id > '.self::$_lastVariableID.'
                     order by m.id desc';
         } else {
             $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.variable_id,
-                           (select p.name from plan_parts p where p.id = v.group_id) group_name
-                      from core_variable_changes_mem m, core_variables v
+                           (select p.name from plan_rooms p where p.id = v.group_id) group_name
+                      from core_device_changes_mem m, core_devices v
                      where m.variable_id = v.id
                     order by m.id desc
                     limit '.config('app.admin_log_lines_count');

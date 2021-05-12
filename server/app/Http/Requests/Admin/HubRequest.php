@@ -13,7 +13,7 @@ class HubRequest extends JsonFormRequest
             return [
                 'name' => 'string|required',
                 'typ' => 'string|required',
-                'rom' => 'numeric|required|min:1|max:15|unique:core_controllers,rom,'.($id > 0 ? $id : ''),
+                'rom' => 'numeric|required|min:1|max:15|unique:core_hubs,rom,'.($id > 0 ? $id : ''),
                 'comm' => 'string|nullable',
             ];
         } else {

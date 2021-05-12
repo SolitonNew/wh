@@ -13,7 +13,7 @@ class PlanParts extends Migration
      */
     public function up()
     {
-        Schema::create('plan_parts', function (Blueprint $table) {
+        Schema::create('plan_rooms', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('name')->default('');
             $table->integer('parent_id')->nullable();
@@ -31,6 +31,6 @@ class PlanParts extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('plan_parts');
+        Schema::dropIfExists('plan_rooms');
     }
 }

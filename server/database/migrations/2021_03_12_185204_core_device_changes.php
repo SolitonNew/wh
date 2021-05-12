@@ -13,7 +13,7 @@ class CoreVariableChanges extends Migration
      */
     public function up()
     {
-        Schema::create('core_variable_changes', function (Blueprint $table) {
+        Schema::create('core_device_changes', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('variable_id');
             $table->timestamp('change_date')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -33,6 +33,6 @@ class CoreVariableChanges extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('core_variable_changes');
+        Schema::dropIfExists('core_device_changes');
     }
 }

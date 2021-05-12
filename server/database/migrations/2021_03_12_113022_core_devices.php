@@ -13,7 +13,7 @@ class CoreVariables extends Migration
      */
     public function up()
     {
-        Schema::create('core_variables', function (Blueprint $table) {
+        Schema::create('core_devices', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('controller_id');
             $table->string('typ', 20);
@@ -40,6 +40,6 @@ class CoreVariables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('core_variables');
+        Schema::dropIfExists('core_devices');
     }
 }

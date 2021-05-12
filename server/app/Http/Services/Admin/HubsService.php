@@ -71,7 +71,7 @@ class HubsService
         
         // Generation of devices by channel
         $din_channels = config('firmware.channels.'.config('firmware.mmcu'));
-        $vars = DB::select('select controller_id, channel from core_variables where typ = "din"');
+        $vars = DB::select('select controller_id, channel from core_devices where typ = "din"');
         foreach(Hub::whereTyp('din')->get() as $din) {
             try {
                 foreach($din_channels as $chan) {
@@ -109,7 +109,7 @@ class HubsService
                               from core_ow_devs d, core_ow_types t
                              where d.rom_1 = t.code');
         
-        $vars = DB::select('select ow_id, channel from core_variables where typ = "ow"');
+        $vars = DB::select('select ow_id, channel from core_devices where typ = "ow"');
         
         try {
             foreach($devs as $dev) {

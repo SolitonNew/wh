@@ -43,7 +43,7 @@ class PlanIndexRequest extends FormRequest
         if ($id) {
             $this->redirect = route('admin.plan');
             return [
-                'id' => 'exists:plan_parts,id',
+                'id' => 'exists:plan_rooms,id',
             ];
         } else {
             $newID = $this->getViewID();

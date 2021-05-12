@@ -8,7 +8,7 @@ use DB;
 
 class Videcam extends Model
 {
-    protected $table = 'plan_video';
+    protected $table = 'plan_videcams';
     public $timestamps = false;
     
     /**
@@ -19,8 +19,8 @@ class Videcam extends Model
     {
         $sql = 'select c.*,
                        v.name var_name
-                  from plan_video c
-                left join core_variables v on c.alert_var_id = v.id
+                  from plan_videcams c
+                left join core_devices v on c.alert_var_id = v.id
                 order by c.name';
         
         return DB::select($sql);

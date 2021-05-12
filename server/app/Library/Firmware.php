@@ -88,12 +88,12 @@ class Firmware
         $owDevTyps = OwType::orderBy('code', 'asc')->get();
         $owList = OwDev::orderBy('id', 'asc')->get();
         $varList = DB::select('select v.*, c.rom controller_rom
-                                 from core_variables v, core_controllers c
+                                 from core_devices v, core_hubs c
                                 where v.controller_id = c.id
                                order by v.id');
         $scriptList = Script::orderBy('id', 'asc')->get();
         $eventList = DB::select('select e.variable_id, GROUP_CONCAT(e.script_id) script_ids
-                                   from core_variable_events e 
+                                   from core_device_events e 
                                  group by e.variable_id 
                                  order by e.variable_id');
         

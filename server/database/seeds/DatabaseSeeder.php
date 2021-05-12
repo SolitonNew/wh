@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
             ])->save();
         }
         
-        // Filling out of the plan_parts table
+        // Filling out of the plan_rooms table
         $data = file_get_contents(base_path().'/database/seeds/sample.plan.json');
         App\Models\Room::importFromString($data);
         

@@ -40,7 +40,7 @@ class TerminalController extends Controller
     
     /**
      * This route is used to set the maximum value of the visible level of the 
-     * plan_parts structure for the terminal module.
+     * plan_rooms structure for the terminal module.
      * 
      * @param type $value
      * @return string

@@ -330,7 +330,7 @@ class PlanController extends Controller
     }
     
     /**
-     * This route is used to delete the port element of the plan_parts item.
+     * This route is used to delete the port element of the plan_rooms item.
      * 
      * @param int $planID
      * @param int $portIndex

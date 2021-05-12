@@ -7,7 +7,7 @@ use \Illuminate\Http\Request;
 
 class Hub extends AffectsFirmwareModel
 {
-    protected $table = 'core_controllers';
+    protected $table = 'core_hubs';
     public $timestamps = false;
 
     protected $_affectFirmwareFields = [

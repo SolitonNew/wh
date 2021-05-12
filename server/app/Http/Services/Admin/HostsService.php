@@ -23,7 +23,7 @@ class HostsService
                        "" variables,
                        d.lost
                   from core_ow_devs d left join core_ow_types t on d.rom_1 = t.code,
-                       core_controllers c
+                       core_hubs c
                  where d.controller_id = c.id
                    and d.controller_id = "'.$hubID.'" 
                 order by c.name, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7';
@@ -41,7 +41,7 @@ class HostsService
             );
             
             $row->devices = DB::select('select v.id, v.name, v.channel
-                                          from core_variables v 
+                                          from core_devices v 
                                          where v.typ = "ow" 
                                            and v.ow_id = '.$row->id.'
                                         order by v.channel');
@@ -65,7 +65,7 @@ class HostsService
                        t.comm,
                        "" variables
                   from core_ow_devs d left join core_ow_types t on d.rom_1 = t.code, 
-                       core_controllers c
+                       core_hubs c
                  where d.controller_id = c.id
                    and d.id = '.$id.'
                 order by c.name, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7';
@@ -87,7 +87,7 @@ class HostsService
         );
         
         $sql = 'select v.id, v.name, v.channel
-                  from core_variables v 
+                  from core_devices v 
                  where v.typ = "ow" 
                    and v.ow_id = '.$item->id.'
                 order by v.channel';

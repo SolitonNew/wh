@@ -26,8 +26,8 @@ class RoomService
         
         $sql = "select v.*, 
                        0 is_root,
-                       (select p.name from plan_parts p where p.id = v.group_id) group_name
-                  from core_variables v 
+                       (select p.name from plan_rooms p where p.id = v.group_id) group_name
+                  from core_devices v 
                  where v.group_id in ($groupIDs) 
                    and app_control in (1, 3, 4, 5, 7, 10, 11, 13, 14) 
                 order by v.id";    
@@ -70,11 +70,11 @@ class RoomService
             
             if ($row->control->typ == 1) {
                 $sql = "select UNIX_TIMESTAMP(v.change_date) * 1000 v_date, v.value ".
-                       "  from core_variable_changes_mem v ".
+                       "  from core_device_changes_mem v ".
                        " where v.variable_id = ".$row->data->id.
                        "   and v.value <> 85 ".
                        "   and v.change_date > (select max(zz.change_date) ".
-                       "                          from core_variable_changes_mem zz ".
+                       "                          from core_device_changes_mem zz ".
                        "                         where zz.variable_id = ".$row->data->id.") - interval 3 hour ".
                        " order by v.id ";
                 

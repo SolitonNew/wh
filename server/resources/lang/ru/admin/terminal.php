@@ -11,5 +11,5 @@ return [
     'title' => '',
     
     'max_level_title' => 'Отображаемая глубина структуры',
-    'plan_parts_empty' => 'Структура пуста',
+    'plan_rooms_empty' => 'Структура пуста',
 ];

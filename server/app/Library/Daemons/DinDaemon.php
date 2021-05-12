@@ -425,7 +425,7 @@ class DinDaemon extends BaseDaemon
                     throw new \Exception('Controller did not respond');
                 default:
                     foreach ($this->_inVariables as $variable) {
-                        DB::select("CALL CORE_SET_VARIABLE($variable->id, $variable->value, -1)");
+                        DB::select("CALL CORE_SET_DEVICE($variable->id, $variable->value, -1)");
                     }
             }            
         } catch (\Exception $ex) {

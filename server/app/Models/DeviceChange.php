@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DeviceChange extends Model
 {
-    protected $table = 'core_variable_changes';
+    protected $table = 'core_device_changes';
     public $timestamps = false;
 
     /**

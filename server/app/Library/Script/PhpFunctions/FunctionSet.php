@@ -28,7 +28,7 @@ trait FunctionSet
                 //
             } else {
                 if ($time == 0) {
-                    DB::select('CALL CORE_SET_VARIABLE('.$variable->id.', '.$value.', null)');
+                    DB::select('CALL CORE_SET_DEVICE('.$variable->id.', '.$value.', null)');
                 } else {
                     $datetime = now()->addMinute($time);
                     SchedulerModel::appendFastRecord("set('$name', $value, $time)", "set('$name', $value);", $datetime, $variable->id);

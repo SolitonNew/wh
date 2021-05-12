@@ -25,9 +25,9 @@ trait FunctionToggle
                 //
             } else {
                 if ($variable->value) {
-                    DB::select('CALL CORE_SET_VARIABLE('.$variable->id.', 0, null)');
+                    DB::select('CALL CORE_SET_DEVICE('.$variable->id.', 0, null)');
                 } else {
-                    DB::select('CALL CORE_SET_VARIABLE('.$variable->id.', 1, null)');
+                    DB::select('CALL CORE_SET_DEVICE('.$variable->id.', 1, null)');
                 }
             }
         } else {

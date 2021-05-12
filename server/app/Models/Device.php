@@ -10,7 +10,7 @@ use DB;
 
 class Device extends AffectsFirmwareModel
 {    
-    protected $table = 'core_variables';
+    protected $table = 'core_devices';
     public $timestamps = false;
     
     protected $_affectFirmwareFields = [
@@ -124,7 +124,7 @@ class Device extends AffectsFirmwareModel
     static public function setValue(int $deviceID, float $value)
     {
         try {
-            DB::select("CALL CORE_SET_VARIABLE($deviceID, $value, -1)");
+            DB::select("CALL CORE_SET_DEVICE($deviceID, $value, -1)");
         } catch (\Exception $e) {
             Log::error($e);
         }
@@ -137,7 +137,7 @@ class Device extends AffectsFirmwareModel
             case 'none':
                 break;
             case 'empty':
-                $where = ' and not exists(select 1 from plan_parts pp where v.group_id = pp.id)';
+                $where = ' and not exists(select 1 from plan_rooms pp where v.group_id = pp.id)';
                 break;
             default:
                 $groupID = (int)$groupID;
@@ -156,9 +156,9 @@ class Device extends AffectsFirmwareModel
                        v.value,
                        v.channel,
                        v.last_update,
-                       (select p.name from plan_parts p where p.id = v.group_id) group_name,
-                       exists(select 1 from core_variable_events e where e.variable_id = v.id) with_events
-                  from core_variables v
+                       (select p.name from plan_rooms p where p.id = v.group_id) group_name,
+                       exists(select 1 from core_device_events e where e.variable_id = v.id) with_events
+                  from core_devices v
                  where v.controller_id = '.$hubID.'
                 '.$where.'
                 order by v.name';
@@ -244,7 +244,7 @@ class Device extends AffectsFirmwareModel
     {
         $sql = "select d.id, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7, d.rom_8,
                        (select count(1)
-                          from core_variables v 
+                          from core_devices v 
                          where v.ow_id = d.id) num
                   from core_ow_devs d
                  where d.controller_id = $hubID
@@ -293,8 +293,8 @@ class Device extends AffectsFirmwareModel
     static public function devicesListWithRoomName()
     {
         $sql = "select v.*,
-                       (select p.name from plan_parts p where p.id = v.group_id) group_name
-                  from core_variables v
+                       (select p.name from plan_rooms p where p.id = v.group_id) group_name
+                  from core_devices v
                 order by v.name";
         
         return DB::select($sql);

@@ -13,7 +13,7 @@ class CoreVariableChangesMem extends Migration
      */
     public function up()
     {
-        Schema::create('core_variable_changes_mem', function (Blueprint $table) {
+        Schema::create('core_device_changes_mem', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('variable_id');
             $table->timestamp('change_date')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -21,7 +21,7 @@ class CoreVariableChangesMem extends Migration
             $table->integer('from_id')->nullable();
         });
         
-        DB::statement('ALTER TABLE core_variable_changes_mem ENGINE = MEMORY');
+        DB::statement('ALTER TABLE core_device_changes_mem ENGINE = MEMORY');
     }
 
     /**
@@ -31,6 +31,6 @@ class CoreVariableChangesMem extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('core_variable_changes_mem');
+        Schema::dropIfExists('core_device_changes_mem');
     }
 }

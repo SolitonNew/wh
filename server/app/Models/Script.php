@@ -25,7 +25,7 @@ class Script extends AffectsFirmwareModel
     {
         $sql = "select s.*, 
                        (select count(*) 
-                          from core_variables v, core_variable_events e
+                          from core_devices v, core_device_events e
                          where v.id = e.variable_id
                            and e.script_id = s.id) var_count
                   from core_scripts s
@@ -117,7 +117,7 @@ class Script extends AffectsFirmwareModel
     static public function attachedDevicesIds(int $id)
     {
         $sql = 'select variable_id 
-                  from core_variable_events 
+                  from core_device_events 
                  where script_id = '.$id;
         
         $data = [];
@@ -146,10 +146,10 @@ class Script extends AffectsFirmwareModel
 
             // Add new records
             $sql = "select v.id
-                      from core_variables v
+                      from core_devices v
                      where v.id in ($ids_sql)
                        and not exists(select *
-                                        from core_variable_events t
+                                        from core_device_events t
                                        where t.script_id = $id
                                          and t.variable_id = v.id)";
             foreach(DB::select($sql) as $row) {

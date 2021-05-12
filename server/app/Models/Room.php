@@ -9,7 +9,7 @@ use DB;
 
 class Room extends Model
 {
-    protected $table = 'plan_parts';
+    protected $table = 'plan_rooms';
     public $timestamps = false;
     
     /**
@@ -377,8 +377,8 @@ class Room extends Model
     static public function devicesForLink()
     {
         $sql = "select v.*
-                  from core_variables v
-                 where not exists(select 1 from plan_parts p where p.id = v.group_id)
+                  from core_devices v
+                 where not exists(select 1 from plan_rooms p where p.id = v.group_id)
                 order by v.name";
         $devices = DB::select($sql);
         

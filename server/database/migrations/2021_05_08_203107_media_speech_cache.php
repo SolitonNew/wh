@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CoreVariableEvents extends Migration
+class MediaSpeech extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CoreVariableEvents extends Migration
      */
     public function up()
     {
-        Schema::create('core_variable_events', function (Blueprint $table) {
+        Schema::create('media_speech_cache', function (Blueprint $table) {
             $table->integerIncrements('id');
-            $table->integer('event_type');
-            $table->integer('variable_id');
-            $table->integer('script_id');
+            $table->string('phrase', 250);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             
-            $table->index('variable_id');
-            $table->index('script_id');
+            $table->unique('phrase');
         });
     }
 
@@ -31,6 +29,6 @@ class CoreVariableEvents extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('core_variable_events');
+        Schema::dropIfExists('media_speech_cache');
     }
 }
