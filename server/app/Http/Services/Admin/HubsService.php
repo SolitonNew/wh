@@ -4,6 +4,7 @@ namespace App\Http\Services\Admin;
 
 use App\Models\Hub;
 use App\Models\Device;
+use App\Models\OwDev;
 use App\Models\Property;
 use App\Library\DaemonManager;
 use App\Library\Firmware;
@@ -105,15 +106,12 @@ class HubsService
         }
         
         // Generation of devices for network hubs
-        $devs = DB::select('select d.id, d.hub_id, t.channels, t.comm
-                              from core_ow_devs d, core_ow_types t
-                             where d.rom_1 = t.code');
-        
-        $vars = DB::select('select ow_id, channel from core_devices where typ = "ow"');
+        $devs = OwDev::get();
+        $vars = Device::whereTyp('ow')->get();
         
         try {
             foreach($devs as $dev) {
-                foreach (explode(',', $dev->channels) as $chan) {
+                foreach ($dev->channelsOfType() as $chan) {
                     $find = false;
                     foreach($vars as $var) {
                         if ($var->ow_id == $dev->id && $var->channel && $var->channel == $chan) {

@@ -18,28 +18,6 @@ class DatabaseSeeder extends Seeder
         $item->access = 2;
         $item->save();
         
-        // Filling out of the core_ow_types table
-        $data = [
-            '40|DS18B20|TEMP|1',
-            '240|Two buttons switch|LEFT,RIGHT|100',
-            '241|Venting|F1,F2,F3,F4|100',
-            '242|Pin converter|P1,P2,P3,P4|100',
-            '243|Humidity sensor|H,T|100',
-            '244|Gas sensor|CO|0',
-            '245|Currency sensor|AMP|0',
-            '246|Relay|R1,R2,R3,R4|100',
-        ];
-        
-        foreach($data as $row) {
-            $attrs = explode('|', $row);
-            \App\Models\OwType::create([
-                'code' => $attrs[0],
-                'comm' => $attrs[1],
-                'channels' => $attrs[2],
-                'consuming' => $attrs[3],
-            ])->save();
-        }
-        
         // Filling out of the core_propertys table
         $data = [
             '1|SYNC_STATE|Synchronization state of the server and controllers: Running/Stoped|STOP',

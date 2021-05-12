@@ -20,9 +20,9 @@
             @forelse($data as $row)
             <tr data-id="{{ $row->id }}" class="{{ $row->lost ? 'row-with-ow-lost' : '' }}">
                 <td>{{ $row->id }}</td>
-                <td>{{ $row->comm }}</td>
-                <td class="nowrap">{{ $row->rom }}</td>
-                <td>{{ $row->channels }}</td>
+                <td>{{ $row->type()->description }}</td>
+                <td class="nowrap">{{ $row->romAsString() }}</td>
+                <td>{{ implode(', ', $row->type()->channels) }}</td>
                 <td>
                     @foreach($row->devices as $v)
                     <div><a class="nowrap" href="#" onclick="deviceEdit({{ $v->id }}); return false;">[{{ $v->channel }}] {{ $v->name }}</a></div>

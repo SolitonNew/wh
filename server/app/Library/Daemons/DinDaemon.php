@@ -64,7 +64,7 @@ class DinDaemon extends BaseDaemon
      *
      * @var type 
      */
-    private $_lastSyncVariableID = -1;
+    private $_lastSyncDeviceChangesID = -1;
     
     /**
      *
@@ -109,7 +109,7 @@ class DinDaemon extends BaseDaemon
             return;
         }
         
-        $this->_lastSyncVariableID = DeviceChangeMem::max('id') ?? -1;
+        $this->_lastSyncDeviceChangesID = DeviceChangeMem::max('id') ?? -1;
         
         try {           
             $port = config('firmware.din_port');
@@ -136,11 +136,11 @@ class DinDaemon extends BaseDaemon
                         $this->_firmwareHex = false;
                         break;
                     default:
-                        $variables = DeviceChangeMem::where('id', '>', $this->_lastSyncVariableID)
+                        $variables = DeviceChangeMem::where('id', '>', $this->_lastSyncDeviceChangesID)
                                         ->orderBy('id', 'asc')
                                         ->get();
                         if (count($variables)) {
-                            $this->_lastSyncVariableID = $variables[count($variables) - 1]->id;
+                            $this->_lastSyncDeviceChangesID = $variables[count($variables) - 1]->id;
                         }
                 }
                                 
@@ -425,7 +425,7 @@ class DinDaemon extends BaseDaemon
                     throw new \Exception('Controller did not respond');
                 default:
                     foreach ($this->_inVariables as $variable) {
-                        DB::select("CALL CORE_SET_DEVICE($variable->id, $variable->value, -1)");
+                        Device::setValue($variable->id, $variable->value);
                     }
             }            
         } catch (\Exception $ex) {
