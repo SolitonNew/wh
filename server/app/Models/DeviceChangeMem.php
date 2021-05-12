@@ -33,10 +33,7 @@ class DeviceChangeMem extends Model
     static public function lastDeviceChangeID() 
     {
         if (self::$_lastDeviceChangeID == -1) {
-            $res = DB::select('select max(id) max_id from core_device_changes_mem');
-            if (count($res) && ($res[0]->max_id > 0)) {
-                self::$_lastDeviceChangeID = $res[0]->max_id;
-            }
+            self::$_lastDeviceChangeID = DeviceChangeMem::max('id') ?? -1;
         }
         return self::$_lastDeviceChangeID;
     }

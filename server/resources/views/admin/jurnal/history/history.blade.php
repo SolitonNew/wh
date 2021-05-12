@@ -32,7 +32,7 @@
                     style="display: block; justify-content: space-between; white-space: normal;">
                     {{ $row->name }}
                     <div class="text-muted" style="display: flex;justify-content: space-between;flex-wrap: wrap;margin-right: 0.5rem;">
-                        <small class="nowrap">{{ $row->comm ?? $row->group_name }}</small>
+                        <small class="nowrap">{{ $row->comm ?? ($row->room ? $row->room->name : '') }}</small>
                         @if($row->app_control > 0)
                         <small class="nowrap">@lang('admin/hubs.app_control.'.$row->app_control)</small>
                         @endif

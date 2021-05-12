@@ -23,6 +23,20 @@ class Device extends AffectsFirmwareModel
     ];
     
     /**
+     * 
+     * @return type
+     */
+    public function room()
+    {
+        return $this->belongsTo(Room::class, 'room_id');
+    }
+    
+    public function events()
+    {
+        return $this->belongsToMany(Script::class, DeviceEvent::class, 'device_id', 'script_id');
+    }
+    
+    /**
      * Makes all the necessary attributes to create a device label.
      * 
      * @param type $app_control
@@ -130,40 +144,25 @@ class Device extends AffectsFirmwareModel
         }
     }
     
-    static public function devicesList(int $hubID, $groupID)
+    static public function devicesList(int $hubID, $roomID)
     {
-        $where = '';
-        switch ($groupID) {
+        switch ($roomID) {
             case 'none':
-                break;
+                return Device::whereHubId($hubID)
+                            ->orderBy('name', 'asc')
+                            ->get();
             case 'empty':
-                $where = ' and not exists(select 1 from plan_rooms pp where v.room_id = pp.id)';
-                break;
+                return Device::whereHubId($hubID)
+                            ->doesntHave('room')
+                            ->orderBy('name', 'asc')
+                            ->get();
             default:
-                $groupID = (int)$groupID;
-                $ids = Room::genIDsForRoomAtParent($groupID);
-                if ($ids) {
-                    $where = ' and v.room_id in ('.$ids.') ';
-                }
-                break;
+                $ids = explode(',', Room::genIDsForRoomAtParent($roomID)) ?? [];
+                return Device::whereHubId($hubID)
+                            ->whereIn('room_id', $ids)
+                            ->orderBy('name', 'asc')
+                            ->get();
         }
-        
-        $sql = 'select v.id,
-                       v.typ,
-                       v.name,
-                       v.comm,
-                       v.app_control,
-                       v.value,
-                       v.channel,
-                       v.last_update,
-                       (select p.name from plan_rooms p where p.id = v.room_id) group_name,
-                       exists(select 1 from core_device_events e where e.device_id = v.id) with_events
-                  from core_devices v
-                 where v.hub_id = '.$hubID.'
-                '.$where.'
-                order by v.name';
-        
-        return DB::select($sql);
     }
     
     /**
@@ -242,14 +241,26 @@ class Device extends AffectsFirmwareModel
      */
     static public function hostList(int $hubID)
     {
-        $sql = "select d.id, d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7, d.rom_8,
-                       (select count(1)
-                          from core_devices v 
-                         where v.ow_id = d.id) num
-                  from core_ow_devs d
-                 where d.hub_id = $hubID
-                order by d.rom_1, d.rom_2, d.rom_3, d.rom_4, d.rom_5, d.rom_6, d.rom_7, d.rom_8";
-        return DB::select($sql);
+        $owDevs = OwDev::whereHubId($hubID)
+                ->with('devices')
+                ->orderBy('rom_1', 'asc')
+                ->orderBy('rom_2', 'asc')
+                ->orderBy('rom_3', 'asc')
+                ->orderBy('rom_4', 'asc')
+                ->orderBy('rom_5', 'asc')
+                ->orderBy('rom_6', 'asc')
+                ->orderBy('rom_7', 'asc')
+                ->orderBy('rom_8', 'asc')
+                ->get();
+        $data = [];
+        foreach ($owDevs as $dev) {
+            $data[] = (object)[
+                'id' => $dev->id,
+                'rom' => $dev->romAsString(),
+                'count' => $dev->devices->count(),
+            ];
+        }
+        return $data;
     }
     
     /**
@@ -281,20 +292,6 @@ class Device extends AffectsFirmwareModel
         }
         
         return $data;
-    }
-    
-    /**
-     * 
-     * @return type
-     */
-    static public function devicesListWithRoomName()
-    {
-        $sql = "select v.*,
-                       (select p.name from plan_rooms p where p.id = v.room_id) group_name
-                  from core_devices v
-                order by v.name";
-        
-        return DB::select($sql);
     }
     
     /**

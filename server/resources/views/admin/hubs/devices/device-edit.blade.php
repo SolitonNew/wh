@@ -205,20 +205,11 @@
                 owList.append('<option value="">-//-</option>');
                 for (let i = 0; i < data.length; i++) {
                     let sel = '';
-                    let s = '[' + data[i]['num'] + '] ';
-                    for (k = 1; k <= 7; k++) {
-                        let h = data[i]['rom_' + k].toString(16).toUpperCase();
-                        if (h.length < 2) {
-                            h = '0' + h;
-                        }
-                        s += 'x' + h + ' ';
-                    }
-
-                    if (data[i]['id'] == selValue) {
+                    let s = '[' + data[i].count + '] ' + data[i].rom;
+                    if (data[i].id == selValue) {
                         sel = 'selected';
                     }
-
-                    owList.append('<option value="' + data[i]['id'] + '" ' + sel + '>' + s + '</option>');
+                    owList.append('<option value="' + data[i].id + '" ' + sel + '>' + s + '</option>');
                 }
                 $('#ow_id').show(250);
             } else {
