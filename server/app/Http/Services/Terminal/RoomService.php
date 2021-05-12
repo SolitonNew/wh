@@ -22,7 +22,7 @@ class RoomService
         
         $web_color = Property::getWebColors();
         
-        $groupIDs = Room::genIDsForGroupAtParent($roomID);
+        $groupIDs = Room::genIDsForRoomAtParent($roomID);
         
         $sql = "select v.*, 
                        0 is_root,
@@ -41,7 +41,7 @@ class RoomService
             $row->is_root = (mb_strpos(mb_strtoupper($row->comm), $roomTitle) !== false) ? 1 : 0;
             
             $c = Device::decodeAppControl($row->app_control);
-            $c->title = Device::groupVariableName($roomTitle, mb_strtoupper($row->comm), mb_strtoupper($c->label));
+            $c->title = Device::roomDeviceName($roomTitle, mb_strtoupper($row->comm), mb_strtoupper($c->label));
 
             $rows[] = (object)[
                 'data' => $row, 

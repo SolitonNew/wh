@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use \Illuminate\Http\Request;
 use \Carbon\Carbon;
-use DB;
 use Lang;
 use Log;
 
@@ -20,18 +19,9 @@ class Schedule extends Model
      */
     static public function listAll()
     {
-        $data = DB::select('select s.id,
-                                   s.comm,
-                                   s.action_datetime,
-                                   s.action,
-                                   s.interval_time_of_day,
-                                   s.interval_day_of_type,
-                                   s.interval_type,
-                                   "" interval_text,
-                                   s.enable
-                              from core_schedule s
-                             where s.temp_device_id = 0
-                            order by s.comm');
+        $data = Schedule::whereTempDeviceId(0)
+                    ->orderBy('comm', 'asc')
+                    ->get();
         
         $types = Lang::get('admin/schedule.interval');
         $interval_time = Lang::get('admin/schedule.interval_time');
@@ -42,12 +32,12 @@ class Schedule extends Model
             $s .= ' '.$interval_time.': <b>'.$row->interval_time_of_day.'</b>';
             
             switch($row->interval_type) {
-                case 0: // Каждый день
+                case 0: // Every day
                     //
                     break;
-                case 1: // Каждую неделю
-                case 2: // Каждый месяц
-                case 3: // Каждый год
+                case 1: // Every week
+                case 2: // Every month
+                case 3: // Every year
                     $s .= ' '.$interval_day.': <b>'.$row->interval_day_of_type.'</b>';
                     break;
             }
@@ -151,8 +141,8 @@ class Schedule extends Model
      * @var string
      */
     private $_KEYS = [
-        'SUNRISE',  // Восход солнца
-        'SUNSET'    // Закат солнца
+        'SUNRISE',
+        'SUNSET',
     ];
     
     /**
@@ -168,7 +158,7 @@ class Schedule extends Model
         // Processing time intervals
         $dates = [];
         switch ($this->interval_type) {
-            case 0: // Каждый день
+            case 0: // Every day
                 $dates[] = $now;
                 $dates[] = $now->copy()->addDay();
                 break;

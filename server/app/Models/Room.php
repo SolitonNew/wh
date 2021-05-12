@@ -528,7 +528,7 @@ class Room extends Model
         $levels = [];
         $prev_level = -1;
         for ($i = count($data) - 1; $i > -1; $i--) {
-            // Чистим существующие записи уровней до текущего вложения
+            // Clean up existing level records to the current level
             for ($n = $prev_level + 1; $n <= $data[$i]->level; $n++) {
                 $levels[$n] = false;
             }
@@ -578,7 +578,7 @@ class Room extends Model
      * @param type $id
      * @return type
      */
-    static public function genIDsForGroupAtParent($id) 
+    static public function genIDsForRoomAtParent($id) 
     {       
         $data = [$id];
         
@@ -605,7 +605,7 @@ class Room extends Model
      */
     public function moveChilds(float $dx, float $dy) 
     {
-        $ids = explode(',', self::genIDsForGroupAtParent($this->id));
+        $ids = explode(',', self::genIDsForRoomAtParent($this->id));
         
         foreach(Room::whereIn('id', $ids)->cursor() as $row) {
             if ($row->id == $this->id) continue;
@@ -662,7 +662,7 @@ class Room extends Model
      */
     static public function calcAndStoreMaxLevel() 
     {
-        // Пройдемся по структуре и посчитаем уровни
+        // Calculating levels
         
         $maxLevel = 0;
         self::$_all_parts_cache = null;
@@ -756,16 +756,16 @@ class Room extends Model
         };
             
         try {
-            // Декодируем
+            // Decoding
             $parts = json_decode($data);
 
-            // Удаляем все существующиезаписи из БД
+            // Clear table
             Room::truncate();
 
-            // Рекурсивно заливаем новые записи
+            // Recursively inserting records
             $storeLevel($parts, null);
 
-            // Нужно пересчитать максимальный уровень вложения структуры
+            // Recalulation levels
             Room::calcAndStoreMaxLevel();
 
             return 'OK';

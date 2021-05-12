@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // Создаем админа по умолчанию
+        // Create default admin record
         $item = new \App\Models\User();
         $item->login = 'wh';
         $item->password = bcrypt('wh');

@@ -24,30 +24,30 @@ class DeviceChangeMem extends Model
      *
      * @var type
      */
-    static private $_lastVariableID = -1;
+    static private $_lastDeviceChangeID = -1;
 
     /**
      *
      * @return type
      */
-    static public function lastVariableID() 
+    static public function lastDeviceChangeID() 
     {
-        if (self::$_lastVariableID == -1) {
+        if (self::$_lastDeviceChangeID == -1) {
             $res = DB::select('select max(id) max_id from core_device_changes_mem');
             if (count($res) && ($res[0]->max_id > 0)) {
-                self::$_lastVariableID = $res[0]->max_id;
+                self::$_lastDeviceChangeID = $res[0]->max_id;
             }
         }
-        return self::$_lastVariableID;
+        return self::$_lastDeviceChangeID;
     }
 
     /**
      *
      * @param type $id
      */
-    static public function setLastVariableID($id) 
+    static public function setLastDeviceChangeID($id) 
     {
-        self::$_lastVariableID = $id;
+        self::$_lastDeviceChangeID = $id;
     }
 
     /**
@@ -56,14 +56,14 @@ class DeviceChangeMem extends Model
      * @param type $count
      * @return type
      */
-    static public function getLastVariables() 
+    static public function getLastDeviceChanges() 
     {
-        if (self::$_lastVariableID > 0) {
+        if (self::$_lastDeviceChangeID > 0) {
             $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.device_id,
                            (select p.name from plan_rooms p where p.id = v.room_id) group_name
                       from core_device_changes_mem m, core_devices v
                      where m.device_id = v.id
-                       and m.id > '.self::$_lastVariableID.'
+                       and m.id > '.self::$_lastDeviceChangeID.'
                     order by m.id desc';
         } else {
             $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.device_id,

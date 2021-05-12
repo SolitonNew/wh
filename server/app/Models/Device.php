@@ -106,7 +106,7 @@ class Device extends AffectsFirmwareModel
      * @param type $appControlLabel
      * @return string
      */
-    static public function groupVariableName($groupName, $variableName, $appControlLabel) 
+    static public function roomDeviceName($groupName, $variableName, $appControlLabel) 
     {
         $resLabel = '';
         if ($appControlLabel != '') {
@@ -141,7 +141,7 @@ class Device extends AffectsFirmwareModel
                 break;
             default:
                 $groupID = (int)$groupID;
-                $ids = Room::genIDsForGroupAtParent($groupID);
+                $ids = Room::genIDsForRoomAtParent($groupID);
                 if ($ids) {
                     $where = ' and v.room_id in ('.$ids.') ';
                 }
