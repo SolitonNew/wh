@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
 
 class WebQueueMem extends Model
 {
@@ -28,9 +27,9 @@ class WebQueueMem extends Model
     static public function lastQueueID() 
     {
         if (self::$_lastQueueID == -1) {
-            $res = DB::select('select max(id) max_id from web_queue_mem');
-            if (count($res) && ($res[0]->max_id > 0)) {
-                self::$_lastQueueID = $res[0]->max_id;
+            $maxID = WebQueueMem::max('id');
+            if ($maxID > 0) {
+                self::$_lastQueueID = $maxID;
             }
         }
         return self::$_lastQueueID;

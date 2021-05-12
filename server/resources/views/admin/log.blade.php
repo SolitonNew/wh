@@ -1,4 +1,4 @@
-@foreach(\App\Models\DeviceChangeMem::getLastVariables() as $row)
+@foreach(\App\Models\DeviceChangeMem::getLastDeviceChanges() as $row)
 <div class="log-row" 
      data-id="{{ $row->id }}" data-varID="{{ $row->device_id }}" 
      data-value="{{ $row->value }}" data-time="{{ \Carbon\Carbon::parse($row->change_date)->timestamp }}">

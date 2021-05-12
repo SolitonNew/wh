@@ -271,17 +271,17 @@
         $('#globalWaiter').hide();
     }
 
-    let lastVariableID = -1;
+    let lastDeviceChangeID = -1;
     
     function calcLastVariableID() {
         let ls = $('.log-row');
         if (ls.length > 0) {
-            lastVariableID = $(ls[0]).attr('data-id');
+            lastDeviceChangeID = $(ls[0]).attr('data-id');
         }
     }
 
     function loadVariableChanges() {
-        $.ajax('{{ route("admin.variable-changes", "") }}/' + lastVariableID).done((data) => {
+        $.ajax('{{ route("admin.variable-changes", "") }}/' + lastDeviceChangeID).done((data) => {
             if (data && (data.substr(0, 15) == '<!DOCTYPE HTML>')) {
                 window.location.reload();
                 return ;

@@ -114,11 +114,11 @@
         $('.body-page-main > div').css('opacity', 1);
     });
     
-    let lastVariableID = {{ \App\Models\DeviceChangeMem::lastVariableID() ?? -1 }};
+    let lastDeviceChangeID = {{ \App\Models\DeviceChangeMem::lastDeviceChangeID() ?? -1 }};
     
     function loadChanges() {
         $.ajax({
-            url: '{{ route("terminal.device-changes", '') }}/' + lastVariableID, 
+            url: '{{ route("terminal.device-changes", '') }}/' + lastDeviceChangeID, 
             success: (data) => {
                 setTimeout(loadChanges, 500);
 
@@ -128,7 +128,7 @@
                         return ;
                     } else
                     if (data.substr(0, 9) == 'LAST_ID: ') {
-                        lastVariableID = data.substr(9);             
+                        lastDeviceChangeID = data.substr(9);             
                     }
                 } else {
                     for (let i = 0; i < data.length; i++) {
@@ -136,7 +136,7 @@
                         let varID = parseInt(rec.device_id);
                         let varValue = parseFloat(rec.value);
                         let varTime = parseInt(rec.change_date);
-                        lastVariableID = rec.id;
+                        lastDeviceChangeID = rec.id;
 
                         /* Call Event */
                         variableOnChanged(varID, varValue, varTime);

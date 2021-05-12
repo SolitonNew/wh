@@ -24,7 +24,7 @@
                 <td>{{ $row->id }}</td>
                 <td>{{ $row->name }}</td>
                 <td>{{ $row->url }}</td>
-                <td><a class="var-link" href="#" data-id="{{ $row->alert_var_id }}">{{ $row->var_name }}</a></td>
+                <td><a class="var-link" href="#" data-id="{{ $row->device ? $row->device->id : '' }}">{{ $row->device ? $row->device->name : '' }}</a></td>
             </tr>
             @empty
             <tr class="table-empty">

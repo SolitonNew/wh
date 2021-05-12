@@ -25,7 +25,7 @@ class DeviceService
         $roomTitle = mb_strtoupper($row->group_title);
         $deviceTitle = $row->device_title;
         $control = Device::decodeAppControl($row->app_control);
-        $deviceTitle = Device::groupVariableName($roomTitle, mb_strtoupper($deviceTitle), $control->label);
+        $deviceTitle = Device::roomDeviceName($roomTitle, mb_strtoupper($deviceTitle), $control->label);
 
         
         switch ($control->typ) {
@@ -59,7 +59,7 @@ class DeviceService
                               " order by c.id");
             return response()->json($res);
         } else {
-            return 'LAST_ID: '.DeviceChangeMem::lastVariableID();
+            return 'LAST_ID: '.DeviceChangeMem::lastDeviceChangeID();
         }
     }
     

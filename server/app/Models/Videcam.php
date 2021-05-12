@@ -4,12 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use DB;
 
 class Videcam extends Model
 {
     protected $table = 'plan_videcams';
     public $timestamps = false;
+    
+    public function device()
+    {
+        return $this->belongsTo(Device::class, 'alert_var_id');
+    }
     
     /**
      * 
@@ -17,13 +21,10 @@ class Videcam extends Model
      */
     static public function listAll()
     {
-        $sql = 'select c.*,
-                       v.name var_name
-                  from plan_videcams c
-                left join core_devices v on c.alert_var_id = v.id
-                order by c.name';
-        
-        return DB::select($sql);
+        $data = Videcam::with('device')
+                    ->orderBy('name', 'asc')
+                    ->get();
+        return $data;
     }
     
     /**

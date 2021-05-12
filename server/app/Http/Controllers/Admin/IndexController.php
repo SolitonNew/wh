@@ -27,7 +27,7 @@ class IndexController extends Controller
      */
     public function variableChanges(int $lastID) 
     {
-        DeviceChangeMem::setLastVariableID($lastID);
+        DeviceChangeMem::setLastDeviceChangeID($lastID);
         return view('admin.log');
     }
 }
