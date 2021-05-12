@@ -37,7 +37,7 @@ class HistoryService
         $data = [];
         
         if ($date) {
-            $query = DeviceChange::whereVariableId($deviceID);
+            $query = DeviceChange::whereDeviceId($deviceID);
 
             $d = Carbon::parse($date)->startOfDay();
             $query->whereBetween('change_date', [$d, $d->copy()->addDay()]);
@@ -74,7 +74,7 @@ class HistoryService
             }
             
             $d = Carbon::parse($date)->startOfDay();
-            $query = DeviceChange::whereVariableId($deviceID)
+            $query = DeviceChange::whereDeviceId($deviceID)
                         ->whereBetween('change_date', [$d, $d->copy()->addDay()]);
             if ($sql) {
                 $query->whereRaw('value '.$sql);

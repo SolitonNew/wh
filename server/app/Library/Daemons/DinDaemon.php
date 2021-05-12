@@ -226,7 +226,7 @@ class DinDaemon extends BaseDaemon
         $new = 0;
         $lost = 0;
         
-        $owOldList = OwDev::whereControllerId($controller->id)->get();
+        $owOldList = OwDev::whereHubId($controller->id)->get();
         // Ищем кого потеряли
         foreach ($owOldList as $owOld) {
             $find = false;

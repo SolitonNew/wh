@@ -30,7 +30,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <label class="form-label">@lang('admin/plan.device')</label>
+            <label class="form-label strong">@lang('admin/plan.device')</label>
         </div>
         <div class="col-sm-9">
             @if($deviceID == -1)
@@ -40,6 +40,7 @@
                     data-app-control="{{ $row->app_control }}">{{ $row->label }}</option>
             @endforeach
             </select>
+            <div class="invalid-feedback"></div>
             @else
             <div class="form-control">{{ $device->label }}</div>
             @endif
