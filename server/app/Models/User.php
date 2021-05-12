@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use \Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Auth;
 
 class User extends Authenticatable
