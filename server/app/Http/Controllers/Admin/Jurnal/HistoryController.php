@@ -38,7 +38,7 @@ class HistoryController extends Controller
         
         list($data, $errors) = $this->_historyService->getFilteringData($id);        
         
-        $devices = Device::devicesListWithRoomName();
+        $devices = Device::orderBy('name', 'asc')->get();
         
         return view('admin.jurnal.history.history', [
             'id' => $id,
