@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use \App\Library\AffectsFirmwareModel;
+use App\Library\AffectsFirmwareModel;
+use Illuminate\Http\Request;
 
 class OwHost extends AffectsFirmwareModel
 {    
@@ -95,5 +96,53 @@ class OwHost extends AffectsFirmwareModel
             $this->rom_6, 
             $this->rom_7
         );
+    }
+    
+    /**
+     * 
+     * @param int $hubID
+     * @param int $id
+     * @return \App\Models\OwHost
+     */
+    static public function findOrCreate(int $hubID, int $id)
+    {
+        $item = OwHost::whereHubId($hubID)->whereId($id)->first();
+        if (!$item) {
+            $item = new OwHost();
+            $item->id = $id;
+            $item->hubId = $hubID;
+        }
+        
+        return $item;
+    }
+    
+    /**
+     * 
+     * @param Request $request
+     * @param int $hubID
+     * @param int $id
+     */
+    static public function storeFromRequest(Request $request, int $hubID, int $id)
+    {
+        
+    }
+    
+    /**
+     * 
+     * @param int $id
+     */
+    static public function deleteById(int $id)
+    {
+        try {
+            Device::whereTyp('ow')
+                    ->whereOwId($id)
+                    ->delete();
+            $item = OwHost::find($id);
+            $item->delete();
+        } catch (\Exception $ex) {
+            abort(response()->json([
+                'errors' => [$ex->getMessage()],
+            ]), 422);
+        }
     }
 }

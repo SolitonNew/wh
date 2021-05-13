@@ -8,6 +8,8 @@ use App\Http\Services\Admin\HostsService;
 
 class HostsController extends Controller
 {
+    use SoftHostsTrait, DinHostsTrait;
+    
     /**
      *
      * @var type 
@@ -27,18 +29,20 @@ class HostsController extends Controller
      * This is an index route for displaying a list of host.
      * If the hub id does not exists, redirect to the owner route.
      * 
+     * @param HubsIndexRequest $request
      * @param int $hubID
      * @return type
      */
     public function index(HubsIndexRequest $request, int $hubID = null) 
     {        
-        $data = $this->_hostsService->getIndexList($hubID);
+        switch ($this->_hostsService->getHostType($hubID)) {
+            case 'software':
+                return $this->softIndex($hubID);
+            case 'din':
+                return $this->dinIndex($hubID);
+        }
         
-        return view('admin.hubs.hosts.hosts', [
-            'hubID' => $hubID,
-            'page' => 'hosts',
-            'data' => $data,
-        ]);
+        abort(404);
     }
     
     /**
@@ -48,14 +52,37 @@ class HostsController extends Controller
      * @param int $id
      * @return type
      */
-    public function editShow(int $nubId, int $id)
+    public function editShow(int $hubID, int $id)
     {
-        $item = $this->_hostsService->getOneHost($id);
+        switch ($this->_hostsService->getHostType($hubID)) {
+            case 'software':
+                return $this->softEditShow($hubID, $id);
+            case 'din':
+                return $this->dinEditShow($hubID, $id);
+        }
         
-        return view('admin.hubs.hosts.host-edit', [
-            'item' => $item,
-        ]);
+        abort(404);
     }
+    
+    /**
+     * Route to create or update host propertys.
+     * 
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editPost(int $hubID, int $id)
+    {
+        switch ($this->_hostsService->getHostType($hubID)) {
+            case 'software':
+                return $this->softEditShow($hubID, $id);
+            case 'din':
+                return $this->dinEditShow($hubID, $id);
+        }
+        
+        abort(404);
+    }
+    
     
     /**
      * Route to delete host by id.
@@ -63,10 +90,15 @@ class HostsController extends Controller
      * @param int $id
      * @return string
      */
-    public function delete(int $id) 
+    public function delete(int $hubID, int $id) 
     {
-        $this->_hostsService->delOneHost($id);
+        switch ($this->_hostsService->getHostType($hubID)) {
+            case 'software':
+                return $this->softDelete($id);
+            case 'din':
+                return $this->dinDelete($id);
+        }
         
-        return 'OK';
+        abort(404);
     }
 }

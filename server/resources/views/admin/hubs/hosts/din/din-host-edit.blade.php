@@ -77,7 +77,7 @@
         confirmYesNo("@lang('admin/hubs.host_delete_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.hub-host-delete", $item->id) }}',
+                url: '{{ route("admin.hub-host-delete", [$item->hub_id, $item->id]) }}',
                 data: {_token: '{{ csrf_token() }}'},
                 success: function (data) {
                     if (data == 'OK') {
