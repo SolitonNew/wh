@@ -69,19 +69,15 @@
         </div>
     </div>
     <div class="row" id="day_of_type">
-        <div class="col-sm-3">
-            <label class="form-label strong nowrap">@lang('admin/schedule.table_INTERVAL_DAY_OF_TYPE')</label>
-        </div>
-        <div class="col-sm-9">
+        <div class="col-sm-12">
+            <label class="strong">@lang('admin/schedule.table_INTERVAL_DAY_OF_TYPE')</label>
             <textarea class="form-control" name="interval_day_of_type">{{ $item->interval_day_of_type }}</textarea>
             <div class="invalid-feedback"></div>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
-            <label class="form-label strong nowrap">@lang('admin/schedule.table_INTERVAL_TIME_OF_DAY')</label>
-        </div>
-        <div class="col-sm-9">
+        <div class="col-sm-12">
+            <label class="strong">@lang('admin/schedule.table_INTERVAL_TIME_OF_DAY')</label>
             <textarea class="form-control" name="interval_time_of_day">{{ $item->interval_time_of_day }}</textarea>
             <div class="invalid-feedback"></div>
         </div>
@@ -141,7 +137,7 @@
 
         $('#schedule_edit_form select[name="interval_type"]').on('change', function () {
             let row = $('#day_of_type');
-            let label = $('.form-label', row);
+            let label = $('label', row);
             switch ($(this).val()) {
                 case '0':
                     row.hide(250);
