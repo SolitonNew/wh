@@ -23,10 +23,10 @@
 @section('top-menu')
 @if($hubID)
 <div class="nav nav-tabs navbar-top-menu-tab">
-    <a class="nav-link @activeSegment(4, 'devices')" 
-        href="{{ route('admin.hub-devices', $hubID) }}">@lang('admin/hubs.devices') ({{ App\Models\Device::whereHubId($hubID)->count() }})</a>
     <a class="nav-link @activeSegment(4, 'hosts')" 
         href="{{ route('admin.hub-hosts', $hubID) }}">@lang('admin/hubs.hosts') ({{ App\Models\OwHost::whereHubId($hubID)->count() }})</a>
+    <a class="nav-link @activeSegment(4, 'devices')" 
+        href="{{ route('admin.hub-devices', $hubID) }}">@lang('admin/hubs.devices') ({{ App\Models\Device::whereHubId($hubID)->count() }})</a>
 </div>
 @endif
 @yield('page-top-menu')
