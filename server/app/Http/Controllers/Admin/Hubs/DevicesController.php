@@ -50,7 +50,7 @@ class DevicesController extends Controller
     }
     
     /**
-     * Route to create or update device propertys.
+     * Route to create or update device properties.
      * 
      * @param int $hubID
      * @param int $id
@@ -68,7 +68,7 @@ class DevicesController extends Controller
     }
     
     /**
-     * Route to create or update device propertys.
+     * Route to create or update device properties.
      * 
      * @param DeviceRequest $request
      * @param int $hubID

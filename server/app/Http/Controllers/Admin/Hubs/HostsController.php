@@ -46,7 +46,7 @@ class HostsController extends Controller
     }
     
     /**
-     * Route to show host propertys.
+     * Route to show host properties.
      * 
      * @param int $nubId
      * @param int $id
@@ -65,7 +65,7 @@ class HostsController extends Controller
     }
     
     /**
-     * Route to create or update host propertys.
+     * Route to create or update host properties.
      * 
      * @param int $hubID
      * @param int $id

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Property extends Model
 {
-    protected $table = 'core_propertys';
+    protected $table = 'core_properties';
     public $timestamps = false;
     
     /**

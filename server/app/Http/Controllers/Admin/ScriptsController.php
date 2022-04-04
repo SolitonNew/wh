@@ -45,7 +45,7 @@ class ScriptsController extends Controller
     }
     
     /**
-     * The route to create or update script record propertys.
+     * The route to create or update script record properties.
      * 
      * @param int $id
      * @return view
@@ -60,7 +60,7 @@ class ScriptsController extends Controller
     }
     
     /**
-     * The route to create or update script record propertys.
+     * The route to create or update script record properties.
      * 
      * @param ScriptsRequest $request
      * @param int $id

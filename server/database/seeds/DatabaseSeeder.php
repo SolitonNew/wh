@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         $item->access = 2;
         $item->save();
         
-        // Filling out of the core_propertys table
+        // Filling out of the core_properties table
         $data = [
             '1|SYNC_STATE|Synchronization state of the server and controllers: Running/Stoped|STOP',
             '2|DIN_COMMAND|Command addressed to the din-daemon|',

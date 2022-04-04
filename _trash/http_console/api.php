@@ -45,7 +45,7 @@ switch ($page) {
         break;
     case 'checked_add':
         $id = $_GET['id'];
-        $q = $pdo->query("select VALUE from core_propertys where NAME = 'WEB_CHECKED'")->fetchAll();
+        $q = $pdo->query("select VALUE from core_properties where NAME = 'WEB_CHECKED'")->fetchAll();
         if (count($q)) {
             if ($q[0]['VALUE']) {
                 $a = explode(',', $q[0]['VALUE']);
@@ -55,14 +55,14 @@ switch ($page) {
             if (!in_array($id, $a)) {
                 $a[] = $id;
                 $s = join(',', $a);
-                $pdo->query("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
+                $pdo->query("update core_properties set VALUE = '$s' where NAME = 'WEB_CHECKED'");
                 print('OK');
             }
         }
         break;
     case 'checked_del':
         $id = $_GET['id'];
-        $q = $pdo->query("select VALUE from core_propertys where NAME = 'WEB_CHECKED'")->fetchAll();
+        $q = $pdo->query("select VALUE from core_properties where NAME = 'WEB_CHECKED'")->fetchAll();
         if (count($q)) {
             if ($q[0]['VALUE']) {
                 $a = explode(',', $q[0]['VALUE']);
@@ -73,14 +73,14 @@ switch ($page) {
             if ($i > -1) {
                 array_splice($a, $i, 1);
                 $s = join(',', $a);
-                $pdo->query("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
+                $pdo->query("update core_properties set VALUE = '$s' where NAME = 'WEB_CHECKED'");
                 print('OK');
             }
         }
         break;
     case 'checked_up':
         $id = $_GET['id'];
-        $q = $pdo->query("select VALUE from core_propertys where NAME = 'WEB_CHECKED'")->fetchAll();
+        $q = $pdo->query("select VALUE from core_properties where NAME = 'WEB_CHECKED'")->fetchAll();
         if (count($q)) {
             $a = explode(',', $q[0]['VALUE']);
             for ($i = 1; $i < count($a); $i++) {
@@ -89,7 +89,7 @@ switch ($page) {
                     $a[$i - 1] = $a[$i];
                     $a[$i] = $t;
                     $s = join(',', $a);
-                    $pdo->query("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
+                    $pdo->query("update core_properties set VALUE = '$s' where NAME = 'WEB_CHECKED'");
                     print('OK');
                     break;
                 }
@@ -98,7 +98,7 @@ switch ($page) {
         break;
     case 'checked_down':
         $id = $_GET['id'];
-        $q = $pdo->query("select VALUE from core_propertys where NAME = 'WEB_CHECKED'")->fetchAll();
+        $q = $pdo->query("select VALUE from core_properties where NAME = 'WEB_CHECKED'")->fetchAll();
         if (count($q)) {
             $a = explode(',', $q[0]['VALUE']);
             for ($i = 0; $i < count($a) - 1; $i++) {
@@ -107,7 +107,7 @@ switch ($page) {
                     $a[$i + 1] = $a[$i];
                     $a[$i] = $t;
                     $s = join(',', $a);
-                    $pdo->query("update core_propertys set VALUE = '$s' where NAME = 'WEB_CHECKED'");
+                    $pdo->query("update core_properties set VALUE = '$s' where NAME = 'WEB_CHECKED'");
                     print('OK');
                     break;
                 }
@@ -123,7 +123,7 @@ switch ($page) {
         if (isset($_POST['color'])) {
             $color = $_POST['color'];
         }
-        $q = $pdo->query("select VALUE from core_propertys where NAME = 'WEB_COLOR'")->fetchAll();        
+        $q = $pdo->query("select VALUE from core_properties where NAME = 'WEB_COLOR'")->fetchAll();        
         
         if (count($q)) {
             if ($q[0]['VALUE']) {
@@ -168,7 +168,7 @@ switch ($page) {
                     break;
             }
             
-            $pdo->prepare("update core_propertys set VALUE = ? where NAME = 'WEB_COLOR'")->execute([json_encode($a)]);
+            $pdo->prepare("update core_properties set VALUE = ? where NAME = 'WEB_COLOR'")->execute([json_encode($a)]);
             return 'OK';
         }
         break;

@@ -187,7 +187,7 @@ class CheckedService
                 $a[$i - 1] = $a[$i];
                 $a[$i] = $t;
                 $s = implode(',', $a);
-                DB::update("update core_propertys set value = '$s' where name = 'WEB_CHECKED'");
+                DB::update("update core_properties set value = '$s' where name = 'WEB_CHECKED'");
                 return ;
             }
         }
@@ -215,7 +215,7 @@ class CheckedService
                 $a[$i + 1] = $a[$i];
                 $a[$i] = $t;
                 $s = implode(',', $a);
-                DB::update("update core_propertys set value = '$s' where name = 'WEB_CHECKED'");
+                DB::update("update core_properties set value = '$s' where name = 'WEB_CHECKED'");
                 return ;
             }
         }
@@ -277,7 +277,7 @@ class CheckedService
                 break;
         }
         
-        DB::update("update core_propertys set value = ? where name = 'WEB_COLOR'", [json_encode($colors)]);
+        DB::update("update core_properties set value = ? where name = 'WEB_COLOR'", [json_encode($colors)]);
     }
     
     public function getAppControls()
@@ -354,7 +354,7 @@ class CheckedService
         if (!in_array($id, $a)) {
             $a[] = $id;
             $s = implode(',', $a);
-            DB::update("update core_propertys set value = '$s' where name = 'WEB_CHECKED'");
+            DB::update("update core_properties set value = '$s' where name = 'WEB_CHECKED'");
             return ;
         }
         
@@ -369,7 +369,7 @@ class CheckedService
         if ($i > -1) {
             array_splice($a, $i, 1);
             $s = implode(',', $a);
-            DB::update("update core_propertys set value = '$s' where name = 'WEB_CHECKED'");
+            DB::update("update core_properties set value = '$s' where name = 'WEB_CHECKED'");
             return '';
         }
         

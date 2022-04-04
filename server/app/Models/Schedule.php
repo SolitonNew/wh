@@ -146,7 +146,7 @@ class Schedule extends Model
     ];
     
     /**
-     * This method creates a time label using the propertys of the entry.
+     * This method creates a time label using the properties of the entry.
      * 
      * @return type
      */

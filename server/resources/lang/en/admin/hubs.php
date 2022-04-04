@@ -7,14 +7,14 @@ return [
     'main_prompt' => 'To get started, you first need to add a hub',
     
     'hub_add' => 'Add hub...',
-    'hub_edit' => 'Hub propertys...',
+    'hub_edit' => 'Hub properties...',
     'hubs_scan' => 'Scanning hubs networks...',
     'hubs_scan_title' => 'Result hubs networks scanning',
     'firmware' => 'Update hubs...',
     'hubs_reset' => 'Reboot hubs',
     
     'hub_add_title' => 'Add new hub',
-    'hub_edit_title' => 'Hub propertys',
+    'hub_edit_title' => 'Hub properties',
     'hub_delete_confirm' => 'Delete this hub?',
     'hub_ID' => 'ID',
     'hub_NAME' => 'Name',
@@ -47,7 +47,7 @@ return [
     
     'device_add' => 'Add new device...',
     'device_add_title' => 'New device',
-    'device_edit_title' => 'Device propertys',
+    'device_edit_title' => 'Device properties',
     'device_delete_confirm' => 'Delete this device?',
     
     
@@ -61,7 +61,7 @@ return [
     
     'host_add' => 'Add new host...',
     'host_add_title' => 'New host',
-    'host_edit_title' => 'Host propertys',
+    'host_edit_title' => 'Host properties',
     'host_delete_confirm' => 'Delete this host?',
     
     

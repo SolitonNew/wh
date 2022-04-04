@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CorePropertys extends Migration
+class CoreProperties extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CorePropertys extends Migration
      */
     public function up()
     {
-        Schema::create('core_propertys', function (Blueprint $table) {
+        Schema::create('core_properties', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('name');
             $table->string('comm', 2000);
@@ -28,6 +28,6 @@ class CorePropertys extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('core_propertys');
+        Schema::dropIfExists('core_properties');
     }
 }

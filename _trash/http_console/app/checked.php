@@ -10,10 +10,10 @@
 
 <?php
 
-$q = $pdo->query("select VALUE from core_propertys where NAME = 'WEB_CHECKED'")->fetchAll();
+$q = $pdo->query("select VALUE from core_properties where NAME = 'WEB_CHECKED'")->fetchAll();
 $checks = $q[0]['VALUE'];
 
-$q = $pdo->query("select VALUE from core_propertys where NAME = 'WEB_COLOR'")->fetchAll();
+$q = $pdo->query("select VALUE from core_properties where NAME = 'WEB_COLOR'")->fetchAll();
 $web_color = $q[0]['VALUE'];
 if ($web_color) {
     $web_color = json_decode($web_color, true);

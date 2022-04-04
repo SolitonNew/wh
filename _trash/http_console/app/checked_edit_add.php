@@ -27,7 +27,7 @@ $app_controls = [];
 
 $app_controls = join(',', $app_controls);
 
-$q = $pdo->query("select VALUE from core_propertys where NAME = 'WEB_CHECKED'")->fetchAll();
+$q = $pdo->query("select VALUE from core_properties where NAME = 'WEB_CHECKED'")->fetchAll();
 $checks = explode(',', $q[0]['VALUE']);
 
 $where = '';

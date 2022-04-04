@@ -5,7 +5,7 @@ return [
     'title' => '',
     
     'script_add' => 'Add new script...',
-    'script_edit' => 'Script propertys...',
+    'script_edit' => 'Script properties...',
     'script_show_editor' => 'Script edit...',
     'script_attach_event' => 'Assign as a device event...',
     'script_test' => 'Script test',
@@ -14,7 +14,7 @@ return [
     'table_COMM' => 'Name',
     
     'script_add_title' => 'New script',
-    'script_edit_title' => 'Script propertys',
+    'script_edit_title' => 'Script properties',
     'script_events_title' => 'Event for device',
     'script_delete_confirm' => 'Delete this script?',
     
