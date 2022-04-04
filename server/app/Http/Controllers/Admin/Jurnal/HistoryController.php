@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Jurnal;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\HistoryIndexRequest;
-use App\Http\Services\Admin\HistoryService;
+use App\Services\Admin\HistoryService;
 use App\Models\Device;
 use App\Models\DeviceChange;
 

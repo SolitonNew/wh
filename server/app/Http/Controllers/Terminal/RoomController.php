@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Terminal;
 
 use App\Http\Controllers\Controller;
-use App\Http\Services\Terminal\RoomService;
+use App\Services\Terminal\RoomService;
 
 class RoomController extends Controller
 {

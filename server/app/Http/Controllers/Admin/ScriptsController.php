@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Services\Admin\ScriptsService;
+use App\Services\Admin\ScriptsService;
 use App\Http\Requests\Admin\ScriptsIndexRequest;
 use App\Http\Requests\Admin\ScriptsRequest;
 use App\Models\Script;

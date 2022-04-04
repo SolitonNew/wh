@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\HubsIndexRequest;
 use App\Http\Requests\Admin\HubRequest;
-use App\Http\Services\Admin\HubsService;
+use App\Services\Admin\HubsService;
 use App\Models\Hub;
 
 class HubsController extends Controller

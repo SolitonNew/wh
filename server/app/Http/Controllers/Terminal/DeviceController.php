@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Terminal;
 
 use App\Http\Controllers\Controller;
-use App\Http\Services\Terminal\DeviceService;
+use App\Services\Terminal\DeviceService;
 
 class DeviceController extends Controller
 {

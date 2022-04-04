@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services\Terminal;
+namespace App\Services\Terminal;
 
 use App\Models\Room;
 use App\Models\Device;

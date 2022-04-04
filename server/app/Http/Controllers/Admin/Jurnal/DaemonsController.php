@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Jurnal;
 
 use App\Http\Controllers\Controller;
-use App\Http\Services\Admin\DaemonsService;
+use App\Services\Admin\DaemonsService;
 use App\Http\Requests\Admin\DaemonsIndexRequest;
 use App\Models\WebLog;
 

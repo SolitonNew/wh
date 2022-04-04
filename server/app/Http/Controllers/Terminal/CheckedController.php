@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Terminal;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Services\Terminal\CheckedService;
+use App\Services\Terminal\CheckedService;
 
 class CheckedController extends Controller
 {

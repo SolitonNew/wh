@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Hubs;
 
 use App\Http\Requests\Admin\HubsIndexRequest;
 use App\Http\Controllers\Controller;
-use App\Http\Services\Admin\HostsService;
+use App\Services\Admin\HostsService;
 
 class HostsController extends Controller
 {
