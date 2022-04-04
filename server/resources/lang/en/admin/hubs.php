@@ -4,6 +4,8 @@ return [
     'menu' => 'Configuration',
     'title' => '',
     
+    'main_prompt' => 'To get started, you first need to add a hub',
+    
     'hub_add' => 'Add hub...',
     'hub_edit' => 'Hub propertys...',
     'hubs_scan' => 'Scanning hubs networks...',
