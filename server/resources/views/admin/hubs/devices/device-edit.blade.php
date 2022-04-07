@@ -60,7 +60,7 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
-    <div class="row" id="ow_id">
+    <div class="row" id="ow_id" style="display:none;">
         <div class="col-sm-4">
             <label class="form-label strong">@lang('admin/hubs.device_OW')</label>
         </div>
@@ -87,7 +87,7 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
-    <div class="row" id="channel">
+    <div class="row" id="channel" style="display:none;">
         <div class="col-sm-4">
             <label class="form-label">@lang('admin/hubs.device_CHANNEL')</label>
         </div>
