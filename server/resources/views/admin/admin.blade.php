@@ -33,7 +33,7 @@
                 <a class="btn btn-danger" href="#" onclick="firmware(); return false;">@lang('admin/admin.menu_firmware') ({{ \App\Models\Property::getFirmwareChanges() }})</a>
                 @endif
                 <a class="btn btn-primary" href="{{ route('home') }}" target="_blank">@lang('admin/admin.menu_home')</a>
-                <a class="btn btn-primary" href="{{ route('logout') }}">@lang('admin/admin.menu_logout')</a>
+                <a class="btn btn-secondary" href="{{ route('logout') }}">@lang('admin/admin.menu_logout')</a>
                 <a id="showLog" class="btn btn-primary" href="#" style="margin-right: 0;">@lang('admin/admin.menu_show_log')</a>
                 <a id="hideLog" class="btn btn-primary" href="#" style="margin-right: 0;">@lang('admin/admin.menu_hide_log')</a>
             </nav>

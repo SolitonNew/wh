@@ -107,12 +107,17 @@
 }
 
 .body-content-log {
-    width: 370px;
-    min-width: 370px;
+    display: none;
     border-left: 1px solid rgba(0,0,0,.125);
     overflow: hidden;
     padding: 0.5rem 1rem;
-    
+    width: 0px;
+}
+
+.body-container.show-log .body-content-log {
+    display: inline-block;
+    width: 370px;
+    min-width: 370px;
 }
 
 .main-content {
@@ -225,6 +230,22 @@ tr.table-empty:hover td {
 
 .log-text {
     
+}
+
+#showLog {
+    display: inline-block;
+}
+
+#hideLog {
+    display: none;
+}
+
+.body-container.show-log #showLog {
+    display: none;
+}
+
+.body-container.show-log #hideLog {
+    display: inline-block;
 }
 
 .tree {
