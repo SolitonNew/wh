@@ -93,11 +93,16 @@
     border-right: 1px solid rgba(0,0,0,.125);
     overflow-x: hidden; 
     overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
 }
 
 
 .main-left-panel-container > .list-group {
     margin-right: -1px;
+    width: 230px;
+    margin-bottom: 20px;
 }
 
 .main-left-panel-container .label {

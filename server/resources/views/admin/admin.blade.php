@@ -41,9 +41,6 @@
         <div class="main-container">
             <div class="main-left-panel">
                 <div class="main-left-panel-container">
-                    <div style="height: 130px;padding: 0.5rem;text-align: center;background-color: #ffffff;">
-                        <img src="/img/logo.png" height="100%">
-                    </div>
                     <div class="list-group">
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('plan')" href="{{ route('admin.plan') }}">
                             <img src="/img/menus/clipboard-2x.png">
