@@ -8,7 +8,7 @@
 @endsection
 
 @section('body')
-<div class="body-container" style="opacity: 0;">
+<div class="body-container {{ isset($_COOKIE['SHOW_LOG']) && $_COOKIE['SHOW_LOG'] == 'true' ? 'show-log' : '' }}" style="opacity: 0;">
     <div class="body-content">
         <div class="main-menu">
             <nav class="navbar">
@@ -33,7 +33,9 @@
                 <a class="btn btn-danger" href="#" onclick="firmware(); return false;">@lang('admin/admin.menu_firmware') ({{ \App\Models\Property::getFirmwareChanges() }})</a>
                 @endif
                 <a class="btn btn-primary" href="{{ route('home') }}" target="_blank">@lang('admin/admin.menu_home')</a>
-                <a class="btn btn-primary" href="{{ route('logout') }}" style="margin-right: 0;">@lang('admin/admin.menu_logout')</a>
+                <a class="btn btn-primary" href="{{ route('logout') }}">@lang('admin/admin.menu_logout')</a>
+                <a id="showLog" class="btn btn-primary" href="#" style="margin-right: 0;">@lang('admin/admin.menu_show_log')</a>
+                <a id="hideLog" class="btn btn-primary" href="#" style="margin-right: 0;">@lang('admin/admin.menu_hide_log')</a>
             </nav>
         </div>
         <div class="main-container">
@@ -183,6 +185,25 @@
                 let o = $(this);
                 document.cookie = name + '=' + o.scrollTop() + '|' + o.scrollLeft() + '; path=/admin; max-age=3600';
             }).trigger('scroll');
+        });
+        
+        $('#showLog').on('click', function () {
+            $('.body-container').addClass('show-log');
+            $('.body-content-log')
+                .css({width: '0px', 'min-width': '0px'})
+                .animate({width: '370px', 'min-width': '370px'}, 250);
+            setCookie('SHOW_LOG', 'true');
+            return false;
+        });
+        
+        $('#hideLog').on('click', function () {
+            $('.body-content-log')
+                .css({width: '370px', 'min-width': '370px'})
+                .animate({width: '0px', 'min-width': '0px'}, 250, function () {
+                    $('.body-container').removeClass('show-log');
+                });
+            setCookie('SHOW_LOG', 'false');
+            return false;
         });
     });
 
