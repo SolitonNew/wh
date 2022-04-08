@@ -184,6 +184,8 @@
             }).trigger('scroll');
         });
         
+        // Log controls ---------
+        
         $('#showLog').on('click', function () {
             $('.body-container').addClass('show-log');
             $('.body-content-log')
@@ -202,6 +204,15 @@
             setCookie('SHOW_LOG', 'false');
             return false;
         });
+                
+        // Global Waiter
+        
+        /*$('a').on('click', function () {
+            startGlobalWaiter();
+            $('body').css('opacity', 0.5);
+        });*/
+        
+        // ----------------------
     });
 
     function dialog(url, beforeHandler, afterHandler) {
