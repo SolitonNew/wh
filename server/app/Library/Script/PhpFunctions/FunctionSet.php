@@ -3,7 +3,7 @@
 namespace App\Library\Script\PhpFunctions;
 
 use App\Models\Device;
-use App\Models\SchedulerModel;
+use App\Models\Schedule;
 
 trait FunctionSet 
 {
@@ -24,7 +24,7 @@ trait FunctionSet
                     Device::setValue($device->id, $value);
                 } else {
                     $datetime = now()->addMinute($time);
-                    SchedulerModel::appendFastRecord("set('$name', $value, $time)", "set('$name', $value);", $datetime, $device->id);
+                    Schedule::appendFastRecord("set('$name', $value, $time)", "set('$name', $value);", $datetime, $device->id);
                 }
             }
         } else {

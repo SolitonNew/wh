@@ -122,7 +122,7 @@ class Schedule extends Model
      */
     static public function appendFastRecord($comm, $action, $datetime, $variableID) 
     {
-        $item = new SchedulerModel();
+        $item = new Schedule();
         $item->comm = $comm;
         $item->action = $action;
         $item->action_datetime = $datetime;
