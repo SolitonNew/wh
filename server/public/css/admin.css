@@ -20,6 +20,8 @@
     text-align: center;
     margin-left: -1rem;
     line-height: 3rem;
+    overflow: hidden;
+    transition-duration: 0.25s;
 }
 
 .navbar-down-menu {
@@ -86,6 +88,7 @@
     min-width: 230px;
     #box-shadow: 0 0 10px rgba(0,0,0,0.35);
     background-color: rgba(0,0,0,0.05);
+    transition-duration: 0.25s;
 }
 
 .main-left-panel-container {
@@ -103,6 +106,7 @@
     margin-right: -1px;
     width: 230px;
     margin-bottom: 20px;
+    transition-duration: 0.25s;
 }
 
 .main-left-panel-container .label {
@@ -110,6 +114,58 @@
     text-aligh: left;
     margin-left: 1rem;
 }
+
+.body-container.main-menu-collapse .logo {
+    width: 60px;
+    color: rgba(0,0,0,0);
+    transition-duration: 0.25s;
+}
+
+.body-container.main-menu-collapse .navbar .navbar-down-menu {
+    margin-left: 4px;
+}
+
+.body-container.main-menu-collapse .main-left-panel {
+    width: 50px;
+    min-width: 50px;
+    transition-duration: 0.25s;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item {
+    padding: 1rem;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .label {
+    display: none;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .badge {
+    display: none;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container > .list-group {
+    width: 50px;
+    transition-duration: 0.25s;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item:hover .label {
+    display: inline-block;
+    position: fixed;
+    left: 33px;
+    background-color: #ffffff;
+    padding: 12px 1.5rem;
+    padding-left: 0px;
+    border: 1px solid rgba(0,0,0,.125);
+    border-left: none;
+    background-color: #f8f9fa;
+    width: 160px;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item.active:hover .label {
+    background-color: #007bff;
+}
+
+
 
 .body-content-log {
     display: none;

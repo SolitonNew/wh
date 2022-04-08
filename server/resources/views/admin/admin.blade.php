@@ -8,17 +8,23 @@
 @endsection
 
 @section('body')
-<div class="body-container {{ isset($_COOKIE['SHOW_LOG']) && $_COOKIE['SHOW_LOG'] == 'true' ? 'show-log' : '' }}" style="opacity: 0;">
+<div class="body-container 
+            {{ isset($_COOKIE['SHOW_LOG']) && $_COOKIE['SHOW_LOG'] == 'true' ? 'show-log' : '' }}
+            {{ isset($_COOKIE['SIZE_MAIN_MENU']) && $_COOKIE['SIZE_MAIN_MENU'] == 'small' ? 'main-menu-collapse' : '' }}" style="opacity: 0;">
     <div class="body-content">
         <div class="main-menu">
             <nav class="navbar">
                 <div class="logo">WISE HOUSE</div>
                 <div class="navbar-down-menu">
                     <div class="btn-group">
+                        <button type="button" id="sizeMainMenu" class="btn btn-secondary">
+                            <img src="/img/menus/menu-3x.png" style="margin: -5px -4px 0px;">
+                        </button>
+                    </div>
+                    <div class="btn-group">
                         <button type="button" class="btn btn-primary dropdown-toggle"
-                                data-toggle="dropdown" aria-haspopup="true" style="margin: 0px;"
+                                data-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">
-                            <img src="/img/menus/menu-3x.png" style="margin-left:-3px;margin-top: -5px;margin-right: 0.5rem;">
                             @lang('admin/admin.menu_actions')
                         </button>
                         <div class="dropdown-menu">
@@ -211,6 +217,13 @@
             startGlobalWaiter();
             $('body').css('opacity', 0.5);
         });*/
+        
+        // Main menu
+        
+        $('#sizeMainMenu').on('click', function () {
+            $('.body-container').toggleClass('main-menu-collapse');
+            setCookie('SIZE_MAIN_MENU', $('.body-container').hasClass('main-menu-collapse') ? 'small' : 'large');
+        });
         
         // ----------------------
     });
