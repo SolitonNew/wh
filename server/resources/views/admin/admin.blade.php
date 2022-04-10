@@ -77,6 +77,7 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('jurnal')" href="{{ route('admin.jurnal') }}">
                             <img src="/img/menus/bar-chart-2x.png">
                             <span class="label">@lang('admin/jurnal.menu')</span>
+                            <span class="badge badge-primary badge-pill">{{ App\Models\Property::getRunedDaemons() }} / {{ App\Models\Property::getTotalDaemons() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('users')" href="{{ route('admin.users') }}">
                             <img src="/img/menus/people-2x.png">

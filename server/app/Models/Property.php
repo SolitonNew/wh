@@ -229,4 +229,32 @@ class Property extends Model
         self::$_firmwareChanges = $count;
     }
     
+    /**
+     * 
+     * @return type
+     */
+    static public function getTotalDaemons()
+    {
+        $manager = new \App\Library\DaemonManager();
+        return count($manager->daemons());
+    }
+    
+    /**
+     * 
+     * @return int
+     */
+    static public function getRunedDaemons()
+    {
+        $service = new \App\Services\Admin\DaemonsService();
+        
+        $count = 0;
+        foreach ($service->daemonsList() as $daemon) {
+            if ($daemon->stat) {
+                $count++;
+            }
+        }
+        
+        return $count;
+    }
+    
 }
