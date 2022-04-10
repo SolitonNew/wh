@@ -805,13 +805,13 @@ select.select-tree option {
         flex-grow: 1;
     }
     
-    .navbar {
+    .main-menu .navbar {
         align-items: flex-start;
         height: 58px;
         position: relative;
     }
     
-    .navbar-with-tabs {
+    .main-menu .navbar-with-tabs {
         height: 99px;
     }
     
@@ -819,5 +819,57 @@ select.select-tree option {
         position: absolute;
         left: 56px;
         top: 57px;
+    }
+    
+    /* Plan */
+    #planParts {
+        display: none;
+    }
+    
+    #planPartsCompact {
+        display: inline-block!important;
+        width: 100%;
+    }
+    
+    /* Hubs */
+    #hubsList {
+        display: none;
+    }
+    
+    /* Scripts */
+    #scriptList {
+        width: 100%!important;
+    }
+    
+    #scriptViewerPanel {
+        display: none;
+    }
+    
+    /* History */
+    #historyFilter {
+        display: none;
+    }
+    
+    #jurnalHistoryFiltrPanel {
+        width: 100%!important;
+        margin: 0px!important;
+        padding: 0px!important;
+    }
+    
+    #historyList {
+        width: 100%!important;
+    }
+    
+    #historyBody {
+        display: none;
+    }
+    
+    /* Daemons */
+    #daemonsList {
+        width: 100%!important;
+    }
+    
+    #daemonViewer {
+        display: none!important;
     }
 }

@@ -7,10 +7,10 @@
 @section('page-content')
 <div style="display: flex; flex-direction: column; height: 100%;">
     <div class="navbar navbar-page">
-        <div style="width: 320px; margin-left: -1rem; padding: 0px 1rem;">
+        <div id="jurnalHistoryFiltrPanel" style="width: 320px; margin-left: -1rem; padding: 0px 1rem;">
             <input id="jurnalHistoryFiltr" type="text" class="form-control" placeholder="@lang('admin/jurnal.history_var_filtr')" >
         </div>
-        <form class="navbar-page-group" method="POST" action="{{ route('admin.jurnal-history', $id) }}">
+        <form id="historyFilter" class="navbar-page-group" method="POST" action="{{ route('admin.jurnal-history', $id) }}">
             {{ csrf_field() }}
             <span class="strong">@lang('admin/jurnal.history_date_filtr'):</span>
             <input type="date" class="form-control" style="width: auto;" name="date" value="{{ Session::get('STATISTICS-TABLE-DATE') }}" required="true">
@@ -24,7 +24,7 @@
     </div>
     <div style="flex-grow: 1; overflow: hidden;">
         <div style="position:relative; display: flex; flex-direction: row; height: 100%;">
-            <div class="tree" style="width: 320px; min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" 
+            <div id="historyList" class="tree" style="width: 320px; min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" 
                  scroll-store="jurnalHistoryVarList">
                 @foreach($devices as $row)
                 <a href="{{ route('admin.jurnal-history', $row->id) }}"
@@ -40,7 +40,7 @@
                 </a>
                 @endforeach
             </div>
-            <div class="content-body" scroll-store="statisticsTabVarValues">
+            <div id="historyBody" class="content-body" scroll-store="statisticsTabVarValues">
                 <table id="jurnal_history_List" class="table table-sm table-hover table-bordered table-fixed-header">
                     <thead>
                         <tr>

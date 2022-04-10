@@ -9,7 +9,7 @@
 
 @section('page-content')
 <div style="position:relative; display: flex; flex-direction: row; height: 100%;">
-    <div class="tree" 
+    <div id="daemonsList" class="tree" 
          style="width: 250px; min-width:250px; border-right: 1px solid rgba(0,0,0,0.125); justify-content: space-between;" 
          scroll-store="jurnalDaemonsList">
         @foreach($daemons as $row)
@@ -28,7 +28,7 @@
         </a>
         @endforeach
     </div>
-    <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;position: relative;">
+    <div id="daemonViewer" style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;position: relative;">
         <div class="content-body" style="padding: 1rem;" scroll-store="daemonsContentScroll">
             <div class="daemon-log" style="position: relative;">
                 <div class="daemon-log-offset" style="position: absolute;"></div>

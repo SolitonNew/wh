@@ -249,7 +249,7 @@
         // ----------------------
         
         if ($('.navbar-top-menu .nav-link').length) {
-            $('.navbar').addClass('navbar-with-tabs');
+            $('.main-menu .navbar').addClass('navbar-with-tabs');
         }
         
         $(window).on('resize', function () {
@@ -429,7 +429,7 @@
     }
 
     function setCookie(name, value) {
-        document.cookie = name + '=' + value + '; path=/admin; max-age=3600';
+        document.cookie = name + '=' + value + '; path=/admin; max-age=360000';
     }
 
     function resetScrollStore(obj) {

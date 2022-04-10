@@ -18,7 +18,7 @@
 @section('content')
 @if($scriptID)
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
-    <div class="tree" style="width: 320px;min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="scriptsList">
+    <div id="scriptList" class="tree" style="width: 320px;min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="scriptsList">
         @foreach($list as $row)
         <a href="{{ route('admin.scripts', $row->id) }}"
            class="tree-item {{ $row->id == $scriptID ? 'active' : '' }}" style="white-space: normal; justify-content: space-between;">
@@ -29,7 +29,7 @@
         </a>
         @endforeach
     </div>
-    <div class="content-body">
+    <div id="scriptViewerPanel" class="content-body">
         <div id="scriptViewer" style="height: 100%;"></div>
     </div>
 </div>
