@@ -15,6 +15,7 @@
         <div class="main-menu">
             <nav class="navbar">
                 <div class="logo">WISE HOUSE</div>
+                <div class="logo-mini">WH</div>
                 <div class="navbar-down-menu">
                     <div class="btn-group">
                         <button type="button" id="sizeMainMenu" class="btn btn-secondary">

@@ -24,6 +24,10 @@
     transition-duration: 0.25s;
 }
 
+.navbar .logo-mini {
+    display: none;
+}
+
 .navbar-down-menu {
     margin-left: 1rem;
     margin-right: 1.5rem;
@@ -103,6 +107,7 @@
 
 
 .main-left-panel-container > .list-group {
+    position: relative;
     margin-right: -1px;
     width: 230px;
     margin-bottom: 20px;
@@ -119,6 +124,14 @@
     width: 60px;
     color: rgba(0,0,0,0);
     transition-duration: 0.25s;
+}
+
+.body-container.main-menu-collapse .logo-mini {
+    display: inline-block;
+    margin-left: -54px;
+    margin-right: 17px;
+    font-size: 22px;
+    font-weight: bold;
 }
 
 .body-container.main-menu-collapse .navbar .navbar-down-menu {
@@ -165,6 +178,11 @@
     background-color: #007bff;
 }
 
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item:hover .badge {
+    display: inline-block;
+    position: fixed;
+    right: calc(100% - 190px);
+}
 
 
 .body-content-log {
