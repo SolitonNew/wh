@@ -26,23 +26,39 @@
                         <button type="button" class="btn btn-primary dropdown-toggle"
                                 data-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">
-                            @lang('admin/admin.menu_actions')
+                            <img src="/img/menus/list-rich-2x.png">
+                            <span class="btn-label">@lang('admin/admin.menu_actions')</span>
                         </button>
                         <div class="dropdown-menu">
                             @yield('down-menu')
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; flex-grow: 1; align-items: center;">
+                <div class="navbar-top-menu">
                 @yield('top-menu')
                 </div>
                 @if(\App\Models\Hub::existsFirmwareHubs() && \App\Models\Property::getFirmwareChanges() > 0)
-                <a class="btn btn-danger" href="#" onclick="firmware(); return false;">@lang('admin/admin.menu_firmware') ({{ \App\Models\Property::getFirmwareChanges() }})</a>
+                <a class="btn btn-danger" href="#" onclick="firmware(); return false;">
+                    <img src="/img/menus/bolt-2x.png">
+                    <span class="btn-label">@lang('admin/admin.menu_firmware') ({{ \App\Models\Property::getFirmwareChanges() }})</span>
+                </a>
                 @endif
-                <a class="btn btn-primary" href="{{ route('home') }}" target="_blank">@lang('admin/admin.menu_home')</a>
-                <a class="btn btn-secondary" href="{{ route('logout') }}">@lang('admin/admin.menu_logout')</a>
-                <a id="showLog" class="btn btn-primary" href="#" style="margin-right: 0;">@lang('admin/admin.menu_show_log')</a>
-                <a id="hideLog" class="btn btn-primary" href="#" style="margin-right: 0;">@lang('admin/admin.menu_hide_log')</a>
+                <a class="btn btn-primary" href="{{ route('home') }}" target="_blank">
+                    <img src="/img/menus/phone-2x.png">
+                    <span class="btn-label">@lang('admin/admin.menu_home')</span>
+                </a>
+                <a class="btn btn-secondary" href="{{ route('logout') }}">
+                    <img src="/img/menus/account-logout-2x.png">
+                    <span class="btn-label">@lang('admin/admin.menu_logout')</span>
+                </a>
+                <a id="showLog" class="btn btn-primary" href="#" style="margin-right: 0;">
+                    <img src="/img/menus/list-2x.png">
+                    <span class="btn-label">@lang('admin/admin.menu_show_log')</span>
+                </a>
+                <a id="hideLog" class="btn btn-primary" href="#" style="margin-right: 0;">
+                    <img src="/img/menus/list-2x.png">
+                    <span class="btn-label">@lang('admin/admin.menu_hide_log')</span>
+                </a>
             </nav>
         </div>
         <div class="main-container">
@@ -225,9 +241,24 @@
         $('#sizeMainMenu').on('click', function () {
             $('.body-container').toggleClass('main-menu-collapse');
             setCookie('SIZE_MAIN_MENU', $('.body-container').hasClass('main-menu-collapse') ? 'small' : 'large');
+            setTimeout(function () {
+                $(window).trigger('resize');
+            }, 300);
         });
         
         // ----------------------
+        
+        if ($('.navbar-top-menu .nav-link').length) {
+            $('.navbar').addClass('navbar-with-tabs');
+        }
+        
+        $(window).on('resize', function () {
+            if ($(this).width() < 758) {
+                if (!$('.body-container').hasClass('main-menu-collapse')) {
+                    $('#sizeMainMenu').trigger('click');
+                }
+            }
+        }).trigger('resize');
     });
 
     function dialog(url, beforeHandler, afterHandler) {

@@ -1,3 +1,8 @@
+.btn img {
+    margin-top: -4px;
+    filter: invert(100%);
+}
+
 .navbar {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
     justify-content: flex-start;
@@ -31,6 +36,12 @@
 .navbar-down-menu {
     margin-left: 1rem;
     margin-right: 1.5rem;
+}
+
+.navbar-top-menu {
+    display: flex; 
+    flex-grow: 1; 
+    align-items: center;
 }
 
 .navbar-top-menu-tab {
@@ -112,6 +123,10 @@
     width: 230px;
     margin-bottom: 20px;
     transition-duration: 0.25s;
+}
+
+.main-left-panel-container .list-group-item.active img {
+    filter: invert(100%);
 }
 
 .main-left-panel-container .label {
@@ -773,4 +788,36 @@ select.select-tree option {
 
 .blueprint {
     background-color: #001484;
+}
+
+
+@media(max-width: 768px) {
+    #sizeMainMenu {
+        display: none;
+    }
+    
+    .btn .btn-label {
+        display: none;
+    }
+    
+    .navbar-down-menu {
+        min-width: auto!important;
+        flex-grow: 1;
+    }
+    
+    .navbar {
+        align-items: flex-start;
+        height: 58px;
+        position: relative;
+    }
+    
+    .navbar-with-tabs {
+        height: 99px;
+    }
+    
+    .navbar-top-menu {
+        position: absolute;
+        left: 56px;
+        top: 57px;
+    }
 }
