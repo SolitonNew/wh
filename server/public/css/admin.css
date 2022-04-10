@@ -161,6 +161,10 @@
     transition-duration: 0.25s;
 }
 
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item:hover {
+    z-index: 2;
+}
+
 .body-container.main-menu-collapse .main-left-panel-container .list-group-item:hover .label {
     display: inline-block;
     position: fixed;
@@ -172,6 +176,10 @@
     border-left: none;
     background-color: #f8f9fa;
     width: 160px;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item:active .label {
+    background-color: #e9ecef;
 }
 
 .body-container.main-menu-collapse .main-left-panel-container .list-group-item.active:hover .label {
