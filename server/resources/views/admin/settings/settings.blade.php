@@ -17,7 +17,7 @@
         <div class="col-sm-6">
             <div class="card">
                 <div id="terminalMaxLevel" class="card-body">
-                    <h5 class="card-title">@lang('admin/terminal.max_level_title')</h5>
+                    <h5 class="card-title">@lang('admin/settings.max_level_title')</h5>
                     @if($levels[1])
                     <div class="custom-control custom-radio">
                         <input type="radio" name="radioDisabled" id="planMaxLevel1" data-value="1" class="custom-control-input" {{ $maxLevel == 1 ? 'checked' : '' }}>
@@ -36,7 +36,7 @@
                     </div>
                     @endif
                     @else
-                    <b class="text-muted">&lt; @lang('admin/terminal.plan_rooms_empty') &gt;</b>
+                    <b class="text-muted">&lt; @lang('admin/settings.plan_rooms_empty') &gt;</b>
                     @endif
                 </div>
             </div>
@@ -49,7 +49,7 @@
         $('#terminalMaxLevel input').on('input', function () {
             $.ajax({
                 method: 'post',
-                url: '{{ route("admin.terminal-set-max-level", "") }}/' + $(this).data('value'),
+                url: '{{ route("admin.settings-set-max-level", "") }}/' + $(this).data('value'),
                 data: {_token: '{{ @csrf_token() }}'},
                 success: function (data) {
                     if (data == 'OK') {

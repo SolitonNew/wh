@@ -108,6 +108,6 @@ Route::get('/jurnal/daemon-restart/{id}', 'Jurnal\DaemonsController@daemonRestar
 Route::get('/jurnal/power', 'Jurnal\PowerController@index')->name('admin.jurnal-power');
 
 
-/* Terminal settings  --------------------------------------------------- */
-Route::get('/terminal', 'TerminalController@index')->name('admin.terminal');
-Route::post('/terminal-set-max-level/{value}', 'TerminalController@setMaxLevel')->name('admin.terminal-set-max-level');
+/* Settings  --------------------------------------------------- */
+Route::get('/settings', 'SettingsController@index')->name('admin.settings');
+Route::post('/settings-set-max-level/{value}', 'SettingsController@setMaxLevel')->name('admin.settings-set-max-level');

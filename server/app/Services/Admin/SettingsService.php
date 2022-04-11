@@ -5,7 +5,7 @@ namespace App\Services\Admin;
 use App\Models\Room;
 use App\Models\Property;
 
-class TerminalService 
+class SettingsService 
 {
     /**
      * 

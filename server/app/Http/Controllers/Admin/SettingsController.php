@@ -3,23 +3,23 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Services\Admin\TerminalService;
+use App\Services\Admin\SettingsService;
 
-class TerminalController extends Controller
+class SettingsController extends Controller
 {
     /**
      *
      * @var type 
      */
-    private $_terminalService;
+    private $_service;
     
     /**
      * 
-     * @param TerminalService $terminalService
+     * @param SettingsService $service
      */
-    public function __construct(TerminalService $terminalService) 
+    public function __construct(SettingsService $service) 
     {
-        $this->_terminalService = $terminalService;
+        $this->_service = $service;
     }
     
     /**
@@ -29,10 +29,10 @@ class TerminalController extends Controller
      */
     public function index()
     {
-        $levels = $this->_terminalService->levels();
-        $currentLevel = $this->_terminalService->getCurrentLevel();
+        $levels = $this->_service->levels();
+        $currentLevel = $this->_service->getCurrentLevel();
         
-        return view('admin.terminal.terminal', [
+        return view('admin.settings.settings', [
             'levels' => $levels,
             'maxLevel' => $currentLevel,
         ]);
@@ -46,7 +46,7 @@ class TerminalController extends Controller
      * @return string
      */
     public function setMaxLevel($value) {
-        $this->_terminalService->setCurrentLevel($value);
+        $this->_service->setCurrentLevel($value);
         
         return 'OK';
     }

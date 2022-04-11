@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'menu' => 'Terminal',
+    'menu' => 'Settings',
     'title' => '',
     
     'max_level_title' => 'Displayed structure depth',
