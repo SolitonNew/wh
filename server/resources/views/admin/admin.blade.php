@@ -214,7 +214,9 @@
             $('.body-container').addClass('show-log');
             $('.body-content-log')
                 .css({width: '0px', 'min-width': '0px'})
-                .animate({width: '370px', 'min-width': '370px'}, 250);
+                .animate({width: '370px', 'min-width': '370px'}, 250, function () {
+                    $(window).trigger('resize');
+                });
             setCookie('SHOW_LOG', 'true');
             return false;
         });
@@ -224,6 +226,7 @@
                 .css({width: '370px', 'min-width': '370px'})
                 .animate({width: '0px', 'min-width': '0px'}, 250, function () {
                     $('.body-container').removeClass('show-log');
+                    $(window).trigger('resize');
                 });
             setCookie('SHOW_LOG', 'false');
             return false;
