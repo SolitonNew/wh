@@ -85,7 +85,9 @@
                             window.location.reload();
                         });
                     } else {
-
+                        if (data.errors) {
+                            alert(data.errors.join(', '));
+                        }
                     }
                 },
             });

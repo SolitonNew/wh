@@ -29,7 +29,7 @@ class OwHost extends AffectsFirmwareModel
      */
     public function devices()
     {
-        return $this->hasMany(Device::class, 'ow_id')
+        return $this->hasMany(Device::class, 'host_id')
                     ->whereTyp('ow')
                     ->orderBy('name', 'asc');
     }
@@ -153,7 +153,7 @@ class OwHost extends AffectsFirmwareModel
     {
         try {
             Device::whereTyp('ow')
-                    ->whereOwId($id)
+                    ->whereHostId($id)
                     ->delete();
             $item = OwHost::find($id);
             $item->delete();

@@ -91,7 +91,7 @@ class HubsService
                         $item->typ = 'din';
                         $item->name = 'temp for din';
                         //$item->comm = Lang::get('admin/hubs.app_control.'.$app_control);
-                        $item->ow_id = null;
+                        $item->host_id = null;
                         $item->channel = $chan;
                         $item->app_control = $app_control;
                         $item->save(['withoutevents']);
@@ -114,7 +114,7 @@ class HubsService
                 foreach ($dev->channelsOfType() as $chan) {
                     $find = false;
                     foreach($vars as $var) {
-                        if ($var->ow_id == $dev->id && $var->channel && $var->channel == $chan) {
+                        if ($var->host_id == $dev->id && $var->channel && $var->channel == $chan) {
                             $find = true;
                             break;
                         }
@@ -127,7 +127,7 @@ class HubsService
                         $item->hub_id = $dev->hub_id;
                         $item->typ = 'ow';
                         $item->name = 'temp for ow';
-                        $item->ow_id = $dev->id;
+                        $item->host_id = $dev->id;
                         $item->channel = $chan;
                         $item->app_control = $appControl;
                         $item->save(['withoutevents']);

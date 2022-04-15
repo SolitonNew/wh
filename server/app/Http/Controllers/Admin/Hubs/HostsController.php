@@ -94,12 +94,9 @@ class HostsController extends Controller
      */
     public function deleteSoft(int $hubID, int $id)
     {
-        try {
-            SoftHost::deleteById($id);
-            return 'OK';
-        } catch (\Exception $ex) {
-            return 'ERROR: '.$ex->getMessage();
-        }
+        SoftHost::deleteById($id);
+        
+        return 'OK';
     }
     
     /**
@@ -140,11 +137,8 @@ class HostsController extends Controller
      */
     public function deleteDin(int $hubID, int $id)
     {
-        try {
-            OwHost::deleteById($id);
-            return 'OK';
-        } catch (\Exception $ex) {
-            return 'ERROR: '.$ex->getMessage();
-        }
+        OwHost::deleteById($id);
+        
+        return 'OK';
     }
 }

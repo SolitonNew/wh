@@ -26,7 +26,7 @@ class SoftHost extends AffectsFirmwareModel
      */
     public function devices()
     {
-        return $this->hasMany(Device::class, 'ow_id')
+        return $this->hasMany(Device::class, 'host_id')
                     ->whereTyp('ow')
                     ->orderBy('name', 'asc');
     }
@@ -105,7 +105,7 @@ class SoftHost extends AffectsFirmwareModel
     {
         try {
             Device::whereTyp('software')
-                    ->whereSoftId($id)
+                    ->whereHostId($id)
                     ->delete();
             $item = SoftHost::find($id);
             $item->delete();

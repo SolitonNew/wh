@@ -16,7 +16,7 @@ class Device extends AffectsFirmwareModel
     protected $_affectFirmwareFields = [
         'hub_id',
         'typ',
-        'ow_id',
+        'host_id',
         'direction',
         'name',
         'channel',
@@ -200,7 +200,7 @@ class Device extends AffectsFirmwareModel
             
             $item->hub_id = $request->hub_id;
             $item->typ = $request->typ;
-            $item->ow_id = $request->typ == 'ow' ? $request->ow_id : null;
+            $item->host_id = $request->typ == 'ow' ? $request->host_id : null;
             $item->name = $request->name;
             $item->comm = $request->comm;
             $item->channel = $request->channel ?? 0;

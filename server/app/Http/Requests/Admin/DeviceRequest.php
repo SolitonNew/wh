@@ -13,7 +13,7 @@ class DeviceRequest extends JsonFormRequest
             'hub_id' => 'required|numeric',
             'name' => 'required|string|unique:core_devices,name,'.($id > 0 ? $id : ''),
             'comm' => 'nullable|string',
-            'ow_id' => ($this->typ === 'ow' ? 'required|numeric' : ''),
+            'host_id' => ($this->typ === 'ow' ? 'required|numeric' : ''),
             'value' => 'nullable|numeric',
         ];
     }

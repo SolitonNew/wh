@@ -107,11 +107,11 @@ class Firmware
                     $row->channel = 0;
                 }
             } elseif ($row->typ == 'ow') {
-                if ($row->ow_id) {
+                if ($row->host_id) {
                     // Проставляем индекс OW
                     $owCode = -1;
                     for ($i = 0; $i < count($owList); $i++) {
-                        if ($row->ow_id == $owList[$i]->id) {
+                        if ($row->host_id == $owList[$i]->id) {
                             $row->ow_index = $i;
                             $owCode = $owList[$i]->rom_1;
                             break;

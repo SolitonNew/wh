@@ -60,12 +60,12 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
-    <div class="row" id="ow_id" style="display:none;">
+    <div class="row" id="host_id" style="display:none;">
         <div class="col-sm-4">
             <label class="form-label strong">@lang('admin/hubs.device_OW')</label>
         </div>
         <div class="col-sm-8">
-            <select class="custom-select" name="ow_id" data-value="{{ $item->ow_id }}"></select>
+            <select class="custom-select" name="host_id" data-value="{{ $item->host_id }}"></select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -154,7 +154,7 @@
             reloadChannels();
         });
 
-        $('#device_edit_form select[name="ow_id"]').on('change', (e) => {
+        $('#device_edit_form select[name="host_id"]').on('change', (e) => {
             let l = $(e.currentTarget);
             l.attr('data-value', l.val());
             reloadChannels();
@@ -199,7 +199,7 @@
         $.ajax('{{ route("admin.hub-device-host-list", "") }}/' + controller).done((data) => {
             let rom = $('#device_edit_form select[name="typ"]').val();
             if (rom == 'ow') {
-                let owList = $('#device_edit_form select[name="ow_id"]');
+                let owList = $('#device_edit_form select[name="host_id"]');
                 let selValue = owList.attr('data-value');
                 owList.html('');
                 owList.append('<option value="">-//-</option>');
@@ -211,9 +211,9 @@
                     }
                     owList.append('<option value="' + data[i].id + '" ' + sel + '>' + s + '</option>');
                 }
-                $('#ow_id').show(250);
+                $('#host_id').show(250);
             } else {
-                $('#ow_id').hide(250);
+                $('#host_id').hide(250);
             }
 
             if (afterHandle) {
@@ -224,12 +224,12 @@
 
     function reloadChannels(afterHandle = null) {
         let typ = $('#device_edit_form select[name="typ"]').val();
-        let ow_id = $('#device_edit_form select[name="ow_id"]').val();
-        if (ow_id == null) ow_id = '';
+        let host_id = $('#device_edit_form select[name="host_id"]').val();
+        if (host_id == null) host_id = '';
 
-        $.ajax('{{ route("admin.hub-device-host-channel-list", ["", ""]) }}/' + typ + '/' + ow_id).done((data) => {
+        $.ajax('{{ route("admin.hub-device-host-channel-list", ["", ""]) }}/' + typ + '/' + host_id).done((data) => {
             let rom = $('#device_edit_form select[name="typ"]').val();
-            if (((rom == 'ow') && (ow_id > 0)) || (rom == 'din')) {
+            if (((rom == 'ow') && (host_id > 0)) || (rom == 'din')) {
                 let chanList = $('#device_edit_form select[name="channel"]');
                 let selValue = chanList.attr('data-value');
                 chanList.html('');
