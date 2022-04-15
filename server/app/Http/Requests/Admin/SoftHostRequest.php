@@ -20,7 +20,7 @@ class SoftHostRequest extends JsonFormRequest
     public function rules()
     {
         return [
-            
+            'typ' => 'required',
         ];
     }
 }

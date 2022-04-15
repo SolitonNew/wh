@@ -101,6 +101,24 @@ class OwHost extends AffectsFirmwareModel
     /**
      * 
      * @param int $hubID
+     * @return type
+     */
+    static public function listForIndex(int $hubID)
+    {
+        return OwHost::whereHubId($hubID)
+            ->orderBy('rom_1', 'asc')
+            ->orderBy('rom_2', 'asc')
+            ->orderBy('rom_3', 'asc')
+            ->orderBy('rom_4', 'asc')
+            ->orderBy('rom_5', 'asc')
+            ->orderBy('rom_6', 'asc')
+            ->orderBy('rom_7', 'asc')
+            ->get();
+    }
+    
+    /**
+     * 
+     * @param int $hubID
      * @param int $id
      * @return \App\Models\OwHost
      */

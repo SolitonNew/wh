@@ -18,6 +18,7 @@ return [
     'hubs_scan_title' => 'Результат сканирования сети хабов',
     'firmware' => 'Обновить хабы...',
     'hubs_reset' => 'Перезагрузить хабы',
+    'soft_host_add' => 'Добавить програмный хост...',
     
     'hub_add_title' => 'Добавить новый хаб',
     'hub_edit_title' => 'Свойства хаба',
@@ -61,7 +62,7 @@ return [
     'host_ID' => 'ID',
     'host_CONTROLLER' => 'Контроллер',
     'host_ROM' => 'Номер',
-    'host_COMM' => 'Тип',
+    'host_TYP' => 'Тип',
     'host_CHANNELS' => 'Каналы',
     'host_DEVICES' => 'Устройства',
     

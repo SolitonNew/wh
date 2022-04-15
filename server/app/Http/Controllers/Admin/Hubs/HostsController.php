@@ -5,24 +5,26 @@ namespace App\Http\Controllers\Admin\Hubs;
 use App\Http\Requests\Admin\HubsIndexRequest;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\HostsService;
+use App\Http\Requests\Admin\SoftHostRequest;
+use App\Http\Requests\Admin\OwHostRequest;
+use App\Models\SoftHost;
+use App\Models\OwHost;
 
 class HostsController extends Controller
-{
-    use SoftHostsTrait, DinHostsTrait;
-    
+{    
     /**
      *
      * @var type 
      */
-    private $_hostsService;
+    private $_service;
     
     /**
      * 
-     * @param HostsService $hostService
+     * @param HostsService $service
      */
-    public function __construct(HostsService $hostService) 
+    public function __construct(HostsService $service)
     {
-        $this->_hostsService = $hostService;
+        $this->_service = $service;
     }
     
     /**
@@ -35,70 +37,114 @@ class HostsController extends Controller
      */
     public function index(HubsIndexRequest $request, int $hubID = null) 
     {        
-        switch ($this->_hostsService->getHostType($hubID)) {
+        switch ($this->_service->getHostType($hubID)) {
             case 'software':
-                return $this->softIndex($hubID);
+                return view('admin.hubs.hosts.soft.soft-hosts', [
+                    'hubID' => $hubID,
+                    'page' => 'hosts',
+                    'data' => SoftHost::listForIndex($hubID),
+                ]);
             case 'din':
-                return $this->dinIndex($hubID);
+                return view('admin.hubs.hosts.din.din-hosts', [
+                    'hubID' => $hubID,
+                    'page' => 'hosts',
+                    'data' => OwHost::listForIndex($hubID),
+                ]);
         }
         
         abort(404);
     }
     
     /**
-     * Route to show host properties.
-     * 
-     * @param int $nubId
-     * @param int $id
-     * @return type
-     */
-    public function editShow(int $hubID, int $id)
-    {
-        switch ($this->_hostsService->getHostType($hubID)) {
-            case 'software':
-                return $this->softEditShow($hubID, $id);
-            case 'din':
-                return $this->dinEditShow($hubID, $id);
-        }
-        
-        abort(404);
-    }
-    
-    /**
-     * Route to create or update host properties.
+     * Route to show software host properties.
      * 
      * @param int $hubID
      * @param int $id
      * @return type
      */
-    public function editPost(int $hubID, int $id)
+    public function editSoftShow(int $hubID, int $id)
     {
-        switch ($this->_hostsService->getHostType($hubID)) {
-            case 'software':
-                return $this->softEditShow($hubID, $id);
-            case 'din':
-                return $this->dinEditShow($hubID, $id);
-        }
+        $item = SoftHost::findOrCreate($hubID, $id);
         
-        abort(404);
+        return view('admin.hubs.hosts.soft.soft-host-edit', [
+            'item' => $item,
+        ]);
     }
     
     
     /**
-     * Route to delete host by id.
+     * Route to create or update software host properties.
      * 
+     * @param SoftHostRequest $request
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editSoftPost(SoftHostRequest $request, int $hubID, int $id)
+    {
+        return SoftHost::storeFromRequest($request, $hubID, $id);
+    }
+    
+    /**
+     * Route to delete software host by id.
+     * 
+     * @param int $hubID
      * @param int $id
      * @return string
      */
-    public function delete(int $hubID, int $id) 
+    public function deleteSoft(int $hubID, int $id)
     {
-        switch ($this->_hostsService->getHostType($hubID)) {
-            case 'software':
-                return $this->softDelete($id);
-            case 'din':
-                return $this->dinDelete($id);
+        try {
+            SoftHost::deleteById($id);
+            return 'OK';
+        } catch (\Exception $ex) {
+            return 'ERROR: '.$ex->getMessage();
         }
+    }
+    
+    /**
+     * Route to show din host properties.
+     * 
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editDinShow(int $hubID, int $id)
+    {
+        $item = OwHost::findOrCreate($hubID, $id);
         
-        abort(404);
+        return view('admin.hubs.hosts.din.din-host-edit', [
+            'item' => $item,
+        ]);
+    }
+    
+    /**
+     * Route to create or update din host properties.
+     * 
+     * @param OwHostRequest $request
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editDinPost(OwHostRequest $request, int $hubID, int $id)
+    {
+        return OwHost::storeFromRequest($request, $hubID, $id);
+    }
+    
+    /**
+     * Route to delete Din host by id.
+     * 
+     * @param int $hubID
+     * @param int $id
+     * @return string
+     */
+    public function deleteDin(int $hubID, int $id)
+    {
+        try {
+            OwHost::deleteById($id);
+            return 'OK';
+        } catch (\Exception $ex) {
+            return 'ERROR: '.$ex->getMessage();
+        }
     }
 }

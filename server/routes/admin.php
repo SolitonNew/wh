@@ -40,6 +40,17 @@ Route::get('/hubs-firmware-start', 'HubsController@firmwareStart')->name('admin.
 Route::get('/hubs-firmware-status', 'HubsController@firmwareStatus')->name('admin.firmware-status');
 Route::get('/hubs-reset', 'HubsController@hubsReset')->name('admin.hubs-reset');
 
+/* Hosts management routes */
+Route::get('/hubs/{hubID}/hosts', 'Hubs\HostsController@index')->name('admin.hub-hosts');
+// Software hosts
+Route::get('/hub-softhost-edit/{hubID}/{id}', 'Hubs\HostsController@editSoftShow')->name('admin.hub-softhost-edit');
+Route::post('/hub-softhost-edit/{hubID}/{id}', 'Hubs\HostsController@editSoftPost')->name('admin.hub-softhost-edit');
+Route::delete('/hub-softhost-delete/{hubID}/{id}', 'Hubs\HostsController@deleteSoft')->name('admin.hub-softhost-delete');
+// Din hosts
+Route::get('/hub-dinhost-edit/{hubID}/{id}', 'Hubs\HostsController@editDinShow')->name('admin.hub-dinhost-edit');
+Route::post('/hub-dinhost-edit/{hubID}/{id}', 'Hubs\HostsController@editDinPost')->name('admin.hub-dinhost-edit');
+Route::delete('/hub-dinhost-delete/{hubID}/{id}', 'Hubs\HostsController@deleteDin')->name('admin.hub-dinhost-delete');
+
 /* Devices management routes */
 Route::get('/hubs/{hubID}/devices/{groupID?}', 'Hubs\DevicesController@index')->name('admin.hub-devices');
 Route::get('/hub-device-edit/{hubID}/{id}', 'Hubs\DevicesController@editShow')->name('admin.hub-device-edit');
@@ -47,12 +58,6 @@ Route::post('/hub-device-edit/{hubID}/{id}', 'Hubs\DevicesController@editPost')-
 Route::delete('/hub-device-delete/{id}', 'Hubs\DevicesController@delete')->name('admin.hub-device-delete');
 Route::get('/hub-device-host-list/{hubID}', 'Hubs\DevicesController@hostList')->name('admin.hub-device-host-list');
 Route::get('/hub-device-host-channel-list/{typ}/{hostID?}', 'Hubs\DevicesController@hostChannelList')->name('admin.hub-device-host-channel-list');
-
-/* Hosts management routes */
-Route::get('/hubs/{hubID}/hosts', 'Hubs\HostsController@index')->name('admin.hub-hosts');
-Route::get('/hub-host-edit/{hubID}/{id}', 'Hubs\HostsController@editShow')->name('admin.hub-host-edit');
-Route::post('/hub-host-edit/{hubID}/{id}', 'Hubs\HostsController@editPost')->name('admin.hub-host-edit');
-Route::delete('/hub-host-delete/{hubID}/{id}', 'Hubs\HostsController@delete')->name('admin.hub-host-delete');
 
 
 /* Scripts management routes  ------------------------------------------- */

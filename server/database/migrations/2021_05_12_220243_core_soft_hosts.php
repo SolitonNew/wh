@@ -19,8 +19,7 @@ class CoreSoftHosts extends Migration
             $table->string('typ', 20);
             $table->string('name');
             $table->string('comm', 1000)->nullable();
-            $table->string('token', 1000);
-            $table->integer('lost')->default(0);
+            $table->text('data')->nullable();
             
             $table->index('hub_id');
         });

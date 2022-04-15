@@ -12,6 +12,7 @@ return [
     'hubs_scan_title' => 'Result hubs networks scanning',
     'firmware' => 'Update hubs...',
     'hubs_reset' => 'Reboot hubs',
+    'soft_host_add' => 'Add software host...',
     
     'hub_add_title' => 'Add new hub',
     'hub_edit_title' => 'Hub properties',
@@ -55,7 +56,7 @@ return [
     'host_ID' => 'ID',
     'host_CONTROLLER' => 'Hub',
     'host_ROM' => 'ROM',
-    'host_COMM' => 'Type',
+    'host_TYP' => 'Type',
     'host_CHANNELS' => 'Channels',
     'host_DEVICES' => 'Devices',
     

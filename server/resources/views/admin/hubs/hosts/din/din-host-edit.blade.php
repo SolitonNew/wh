@@ -34,7 +34,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <label class="form-label">@lang('admin/hubs.host_COMM')</label>
+            <label class="form-label">@lang('admin/hubs.host_TYP')</label>
         </div>
         <div class="col-sm-9">
             <div class="form-control">{{ $item->type()->description }}</div>
@@ -77,7 +77,7 @@
         confirmYesNo("@lang('admin/hubs.host_delete_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.hub-host-delete", [$item->hub_id, $item->id]) }}',
+                url: '{{ route("admin.hub-dinhost-delete", [$item->hub_id, $item->id]) }}',
                 data: {_token: '{{ csrf_token() }}'},
                 success: function (data) {
                     if (data == 'OK') {

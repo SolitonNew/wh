@@ -1,7 +1,8 @@
 @extends('admin.hubs.hubs')
 
 @section('page-down-menu')
-
+<div class="dropdown-divider"></div>
+<a href="#" class="dropdown-item" onclick="hostAdd(); return false;">@lang('admin/hubs.soft_host_add')</a>
 @endsection
 
 @section('page-content')
@@ -10,8 +11,7 @@
         <thead>
             <tr>
                 <th scope="col" style="width: 60px;"><span>@lang('admin/hubs.host_ID')</span></th>
-                <th scope="col" style="width: 150px;"><span>@lang('admin/hubs.host_COMM')</span></th>
-                <th scope="col" style="width: 250px;"><span>@lang('admin/hubs.host_ROM')</span></th>
+                <th scope="col" style="width: 150px;"><span>@lang('admin/hubs.host_TYP')</span></th>
                 <th scope="col" style="width: 110px;"><span>@lang('admin/hubs.host_CHANNELS')</span></th>
                 <th scope="col" style="width: 250px;"><span>@lang('admin/hubs.host_DEVICES')</span></th>
             </tr>
@@ -20,9 +20,8 @@
             @forelse($data as $row)
             <tr data-id="{{ $row->id }}" class="{{ $row->lost ? 'row-with-ow-lost' : '' }}">
                 <td>{{ $row->id }}</td>
-                <td>{{ $row->type()->description }}</td>
-                <td class="nowrap">{{ $row->romAsString() }}</td>
-                <td>{{ implode(', ', $row->type()->channels) }}</td>
+                <td>{{ $row->typ }}</td>
+                <td></td>
                 <td>
                     @foreach($row->devices as $v)
                     <div><a class="nowrap" href="#" onclick="deviceEdit({{ $v->id }}); return false;">[{{ $v->channel }}] {{ $v->name }}</a></div>
@@ -42,12 +41,16 @@
         $('#hosts_table tbody tr').on('click', function (e) {
             if ($(this).hasClass('table-empty')) return ;
             if ($(e.target).is('a')) return ;
-            dialog('{{ route("admin.hub-host-edit", [$hubID, ""]) }}/' + $(this).data('id'));
+            hostEdit($(this).data('id'));
         });
     });
     
     function hostAdd() {
-        dialog('{{ route("admin.hub-host-edit", [$hubID, -1]) }}');
+        dialog('{{ route("admin.hub-softhost-edit", [$hubID, -1]) }}');
+    }
+    
+    function hostEdit(id) {
+        dialog('{{ route("admin.hub-softhost-edit", [$hubID, ""]) }}/' + id);
     }
     
     function deviceEdit(id) {

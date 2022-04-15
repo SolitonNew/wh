@@ -4,11 +4,53 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
+use Log;
 
 class SoftHost extends AffectsFirmwareModel
 {
     protected $table = 'core_soft_hosts';
     public $timestamps = false;
+    
+    /**
+     * 
+     * @return type
+     */
+    public function hub()
+    {
+        return $this->belongsTo(Hub::class, 'hub_id');
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function devices()
+    {
+        return $this->hasMany(Device::class, 'ow_id')
+                    ->whereTyp('ow')
+                    ->orderBy('name', 'asc');
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function typeName()
+    {
+        return '';
+    }
+    
+    /**
+     * 
+     * @param int $hubID
+     * @return type
+     */
+    static public function listForIndex(int $hubID)
+    {
+        return SoftHost::whereHubId($hubID)
+            ->orderBy('name', 'asc')
+            ->get();
+    }
     
     /**
      * 
@@ -22,7 +64,7 @@ class SoftHost extends AffectsFirmwareModel
         if (!$item) {
             $item = new SoftHost();
             $item->id = $id;
-            $item->hubId = $hubID;
+            $item->hub_id = $hubID;
         }
         
         return $item;
@@ -36,7 +78,23 @@ class SoftHost extends AffectsFirmwareModel
      */
     static public function storeFromRequest(Request $request, int $hubID, int $id)
     {
-        
+        try {
+            $item = self::find($id);
+            if (!$item) {
+                $item = new SoftHost();
+                $item->hub_id = $hubID;
+                $item->name = 'Software Host';
+            }
+
+            $item->typ = $request->typ;
+            $item->save();
+            
+            return 'OK';
+        } catch (\Exception $ex) {
+            abort(response()->json([
+                'errors' => [$ex->getMessage()],
+            ]), 422);
+        }
     }
     
     /**
