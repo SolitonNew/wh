@@ -6,4 +6,5 @@ class SoftHostBase
 {
     public $name = '';
     public $description = '';
+    public $channels = [];
 }

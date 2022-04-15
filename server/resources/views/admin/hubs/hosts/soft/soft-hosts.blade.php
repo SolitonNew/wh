@@ -21,7 +21,7 @@
             <tr data-id="{{ $row->id }}" class="{{ $row->lost ? 'row-with-ow-lost' : '' }}">
                 <td>{{ $row->id }}</td>
                 <td>{{ $row->typ }}</td>
-                <td></td>
+                <td>{{ implode(', ', $row->type()->channels) }}</td>
                 <td>
                     @foreach($row->devices as $v)
                     <div><a class="nowrap" href="#" onclick="deviceEdit({{ $v->id }}); return false;">[{{ $v->channel }}] {{ $v->name }}</a></div>

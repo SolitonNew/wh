@@ -30,7 +30,7 @@ class OwHost extends AffectsFirmwareModel
     public function devices()
     {
         return $this->hasMany(Device::class, 'host_id')
-                    ->whereTyp('ow')
+                    //->whereTyp('ow')
                     ->orderBy('name', 'asc');
     }
     

@@ -27,17 +27,68 @@ class SoftHost extends AffectsFirmwareModel
     public function devices()
     {
         return $this->hasMany(Device::class, 'host_id')
-                    ->whereTyp('ow')
+                    //->whereTyp('software')
                     ->orderBy('name', 'asc');
     }
     
     /**
-     * 
-     * @return string
+     *
+     * @var type 
      */
-    public function typeName()
+    public $type = null;
+    
+    /**
+     * 
+     * @return type
+     */
+    public function type()
     {
-        return '';
+        if ($this->type === null) {
+            $manager = new \App\Library\SoftHosts\SoftHostsManager();
+            
+            $provider = $manager->providerByName($this->typ);
+            
+            if ($provider) {
+                $type = [
+                    'description' => $provider->description,
+                    'channels' => $provider->channels,
+                    'consuming' => 0,
+                ];
+            } else {
+                $type = [
+                    'description' => '',
+                    'channels' => [],
+                    'consuming' => 0,
+                ];
+            }
+            
+            $this->type = (object)$type;
+        }
+        
+        return $this->type;
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function channelsOfType()
+    {
+        if ($this->type()) {
+            return $this->type()->channels;
+        }
+        
+        return [];
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function typeList()
+    {
+        $manager = new \App\Library\SoftHosts\SoftHostsManager();
+        return $manager->providers();
     }
     
     /**

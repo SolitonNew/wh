@@ -8,6 +8,9 @@ use App\Http\Requests\Admin\DeviceRequest;
 use App\Services\Admin\DevicesService;
 use App\Models\Device;
 use App\Models\Room;
+use App\Models\Hub;
+use App\Models\OwHost;
+use App\Models\SoftHost;
 
 class DevicesController extends Controller
 {
@@ -103,7 +106,29 @@ class DevicesController extends Controller
      */
     public function hostList(int $hubID) 
     {
-        $data = Device::hostList($hubID);
+        $hub = Hub::find($hubID);
+        $data = [];
+        switch ($hub->typ) {
+            case 'software':
+                foreach ($hub->softHosts as $host) {
+                    $data[] = (object)[
+                        'id' => $host->id,
+                        'rom' => $host->typ,
+                        'count' => $host->devices->count(),
+                    ];
+                }
+                break;
+            
+            case 'din':
+                foreach ($hub->owHosts as $host) {
+                    $data[] = (object)[
+                        'id' => $host->id,
+                        'rom' => $host->romAsString(),
+                        'count' => $host->devices->count(),
+                    ];
+                }
+                break;
+        }
         
         return response()->json($data);
     }
@@ -111,13 +136,30 @@ class DevicesController extends Controller
     /**
      * Route for requesting a list of host channels by id.
      * 
-     * @param string $typ [din, ow, variable]
+     * @param string $typ [din, ow, software, variable]
      * @param int $hostID
      * @return type
      */
     public function hostChannelList(string $typ, int $hostID = null) 
     {
-        $data = Device::hostChannelList($typ, $hostID);
+        $data = [];
+        switch ($typ) {
+            case 'din':
+                $data = config('firmware.channels.'.config('firmware.mmcu'));
+                break;
+            case 'ow':
+                $host = OwHost::find($hostID);
+                if ($host) {
+                    $data = $host->channelsOfType();
+                }
+                break;
+            case 'software':
+                $host = SoftHost::find($hostID);
+                if ($host) {
+                    $data = $host->channelsOfType();
+                }
+                break;
+        }
         
         return response()->json($data);
     }

@@ -6,4 +6,9 @@ class Demo extends SoftHostBase
 {
     public $name = 'Demo';
     public $description = 'Description';
+    public $channels = [
+        'C1',
+        'C2',
+        'C3',
+    ];
 }

@@ -200,7 +200,7 @@ class Device extends AffectsFirmwareModel
             
             $item->hub_id = $request->hub_id;
             $item->typ = $request->typ;
-            $item->host_id = $request->typ == 'ow' ? $request->host_id : null;
+            $item->host_id = in_array($request->typ, ['ow', 'software']) ? $request->host_id : null;
             $item->name = $request->name;
             $item->comm = $request->comm;
             $item->channel = $request->channel ?? 0;
@@ -239,7 +239,7 @@ class Device extends AffectsFirmwareModel
      * @param int $hubID
      * @return type
      */
-    static public function hostList(int $hubID)
+    /*static public function hostList(int $hubID)
     {
         $OwHosts = OwHost::whereHubId($hubID)
                 ->with('devices')
@@ -261,7 +261,7 @@ class Device extends AffectsFirmwareModel
             ];
         }
         return $data;
-    }
+    }*/
     
     /**
      * 
@@ -269,7 +269,7 @@ class Device extends AffectsFirmwareModel
      * @param int $hostID
      * @return array
      */
-    static public function hostChannelList(string $typ, int $hostID = null)
+    /*static public function hostChannelList(string $typ, int $hostID = null)
     {
         switch ($typ) {
             case 'din':
@@ -292,7 +292,7 @@ class Device extends AffectsFirmwareModel
         }
         
         return $data;
-    }
+    } */
     
     /**
      * 

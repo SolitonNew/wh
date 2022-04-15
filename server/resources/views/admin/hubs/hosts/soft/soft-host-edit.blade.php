@@ -33,15 +33,15 @@
         <div class="col-sm-9">
             @if($item->id == -1)
             <select id="hostTyp" name="typ" class="custom-select">
-                @foreach(Lang::get('admin/softhosts') as $name => $description)
-                <option value="{{ $name }}" data-description="{{ $description }}">{{ $name }}</option>
+                @foreach($item->typeList() as $type)
+                <option value="{{ $type->name }}" data-description="{{ $type->description }}">{{ $type->name }}</option>
                 @endforeach
             </select>
             <div class="invalid-feedback"></div>
             <small id="hostTypDescription" class="text-muted"></small>
             @else
             <div class="form-control">{{ $item->typ }}</div>
-            <small class="text-muted">@lang('admin/softhosts.'.$item->typ)</small>
+            <small class="text-muted">{{ $item->type()->description }}</small>
             @endif
         </div>
     </div>
