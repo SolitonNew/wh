@@ -143,8 +143,10 @@ class SoftHost extends AffectsFirmwareModel
             // Store properties data
             $propertiesData = [];
             $properties = $item->type()->properties;
+            $i = 0;
             foreach ($properties as $key => $val) {
-                $propertiesData[$key] = $request->get($key);
+                $num = 'property_'.$i++;
+                $propertiesData[$num] = $request->get($num);
             }
             $item->data = json_encode($propertiesData);
             // ---------------------

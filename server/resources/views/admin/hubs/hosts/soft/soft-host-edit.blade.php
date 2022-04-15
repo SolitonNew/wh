@@ -71,13 +71,8 @@
     <button type="button" class="btn btn-danger" onclick="hostDelete()">@lang('dialogs.btn_delete')</button>
     @endif
     <div style="flex-grow: 1"></div>
-    @if($item->id == -1)
     <button type="button" class="btn btn-primary" onclick="hostEditOK();">@lang('dialogs.btn_save')</button>
     <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('dialogs.btn_cancel')</button>
-    @else
-    <button type="button" class="btn btn-primary" onclick="hostEditOK();">@lang('dialogs.btn_save')</button>
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('dialogs.btn_close')</button>
-    @endif
 @endsection
 
 @section('script')
@@ -98,7 +93,7 @@
         let properties = '{{ json_encode($item->type()->properties) }}';
         buildProperties(JSON.parse(properties.replace(/&quot;/g,'"')));
         @foreach(json_decode($item->data) as $key => $val)
-        $('#host_edit_form [name="{{ $key }}"]').val('{{ $val }}');
+        $('#host_edit_form [name="{{ $key }}"]').val('{{ str_replace("\n", '\n', $val) }}');
         @endforeach
         @else
         $('#hostTyp').on('change', function () {
@@ -114,14 +109,15 @@
             
             $('#host_edit_form .property').remove();
             let lastFormRow = $('#lastFormRow');
+            let i = 0;
             for (key in properties) {
                 let input = '';
                 switch (properties[key]) {
                     case 'small':
-                        input = '<input class="form-control" name="' + key + '" value="">';
+                        input = '<input class="form-control" name="property_' + i + '" value="">';
                         break;
                     case 'large':
-                        input = '<textarea class="form-control" name="' + key + '" rows="3"></textarea>';
+                        input = '<textarea class="form-control" name="property_' + i + '" rows="3"></textarea>';
                         break;
                 }
                 
@@ -135,6 +131,8 @@
                            '</div>';
                    
                 lastFormRow = $(html).insertAfter(lastFormRow);
+                
+                i++;
             }
         }
     });
