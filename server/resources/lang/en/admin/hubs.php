@@ -14,7 +14,7 @@ return [
     'hubs_reset' => 'Reboot hubs',
     'soft_host_add' => 'Add software host...',
     
-    'hub_add_title' => 'Add new hub',
+    'hub_add_title' => 'New hub',
     'hub_edit_title' => 'Hub properties',
     'hub_delete_confirm' => 'Delete this hub?',
     'hub_ID' => 'ID',

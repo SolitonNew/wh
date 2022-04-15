@@ -19,8 +19,10 @@ class SoftHostRequest extends JsonFormRequest
 {
     public function rules()
     {
+        $id = $this->route('id');
+        
         return [
-            'typ' => 'required',
+            'typ' => ($id == -1) ? 'required' : 'nullable',
         ];
     }
 }

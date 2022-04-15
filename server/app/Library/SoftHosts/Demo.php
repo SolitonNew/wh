@@ -11,4 +11,9 @@ class Demo extends SoftHostBase
         'C2',
         'C3',
     ];
+    public $properties = [
+        'Api Key' => 'large',
+        'Ext Params' => 'large',
+        'Input' => 'small',
+    ];
 }

@@ -1,7 +1,11 @@
 @extends('dialog')
 
 @section('title')
+@if($item->id > -1)
 @lang('admin/hubs.host_edit_title')
+@else
+@lang('admin/hubs.host_add_title')
+@endif
 @endsection
 
 @section('content')
@@ -26,7 +30,7 @@
             <div class="form-control">{{ $item->hub->name }}</div>
         </div>
     </div>
-    <div class="row">
+    <div id="lastFormRow" class="row">
         <div class="col-sm-3">
             <label class="form-label">@lang('admin/hubs.host_TYP')</label>
         </div>
@@ -34,7 +38,9 @@
             @if($item->id == -1)
             <select id="hostTyp" name="typ" class="custom-select">
                 @foreach($item->typeList() as $type)
-                <option value="{{ $type->name }}" data-description="{{ $type->description }}">{{ $type->name }}</option>
+                <option value="{{ $type->name }}" 
+                        data-description="{{ $type->description }}"
+                        data-properties="{{ json_encode($type->properties) }}">{{ $type->name }}</option>
                 @endforeach
             </select>
             <div class="invalid-feedback"></div>
@@ -69,6 +75,7 @@
     <button type="button" class="btn btn-primary" onclick="hostEditOK();">@lang('dialogs.btn_save')</button>
     <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('dialogs.btn_cancel')</button>
     @else
+    <button type="button" class="btn btn-primary" onclick="hostEditOK();">@lang('dialogs.btn_save')</button>
     <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('dialogs.btn_close')</button>
     @endif
 @endsection
@@ -87,10 +94,49 @@
             }
         });
         
+        @if($item->id > -1)
+        let properties = '{{ json_encode($item->type()->properties) }}';
+        buildProperties(JSON.parse(properties.replace(/&quot;/g,'"')));
+        @foreach(json_decode($item->data) as $key => $val)
+        $('#host_edit_form [name="{{ $key }}"]').val('{{ $val }}');
+        @endforeach
+        @else
         $('#hostTyp').on('change', function () {
             let description = $('#hostTyp option[value="' + $(this).val() + '"]').data('description');
             $('#hostTypDescription').text(description);
+            
+            buildProperties($('#hostTyp option[value="' + $(this).val() + '"]').data('properties'));
         }).trigger('change');
+        @endif
+        
+        function buildProperties(properties) {
+            console.log(properties);
+            
+            $('#host_edit_form .property').remove();
+            let lastFormRow = $('#lastFormRow');
+            for (key in properties) {
+                let input = '';
+                switch (properties[key]) {
+                    case 'small':
+                        input = '<input class="form-control" name="' + key + '" value="">';
+                        break;
+                    case 'large':
+                        input = '<textarea class="form-control" name="' + key + '" rows="3"></textarea>';
+                        break;
+                }
+                
+                let html = '<div class="row property">' +
+                           '    <div class="col-sm-3">' +
+                           '        <label class="form-label">' + key + '</label>' +
+                           '    </div>' +
+                           '    <div class="col-sm-9">' + 
+                           input +
+                           '    </div>' + 
+                           '</div>';
+                   
+                lastFormRow = $(html).insertAfter(lastFormRow);
+            }
+        }
     });
     
     function hostEditOK() {

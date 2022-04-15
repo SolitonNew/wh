@@ -20,7 +20,7 @@ return [
     'hubs_reset' => 'Перезагрузить хабы',
     'soft_host_add' => 'Добавить програмный хост...',
     
-    'hub_add_title' => 'Добавить новый хаб',
+    'hub_add_title' => 'Новый хаб',
     'hub_edit_title' => 'Свойства хаба',
     'hub_delete_confirm' => 'Удалить текущий хаб?',
     'hub_ID' => 'ID',

@@ -53,12 +53,14 @@ class SoftHost extends AffectsFirmwareModel
                     'description' => $provider->description,
                     'channels' => $provider->channels,
                     'consuming' => 0,
+                    'properties' => $provider->properties,
                 ];
             } else {
                 $type = [
                     'description' => '',
                     'channels' => [],
                     'consuming' => 0,
+                    'properties' => [],
                 ];
             }
             
@@ -135,9 +137,18 @@ class SoftHost extends AffectsFirmwareModel
                 $item = new SoftHost();
                 $item->hub_id = $hubID;
                 $item->name = 'Software Host';
+                $item->typ = $request->typ;
             }
-
-            $item->typ = $request->typ;
+            
+            // Store properties data
+            $propertiesData = [];
+            $properties = $item->type()->properties;
+            foreach ($properties as $key => $val) {
+                $propertiesData[$key] = $request->get($key);
+            }
+            $item->data = json_encode($propertiesData);
+            // ---------------------
+            
             $item->save();
             
             return 'OK';
