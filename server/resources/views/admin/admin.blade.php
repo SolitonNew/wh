@@ -22,7 +22,7 @@
                             <img src="/img/menus/menu-3x.png" style="margin: -5px -4px 0px;">
                         </button>
                     </div>
-                    <div class="btn-group">
+                    <div id="menuActionGroup" class="btn-group">
                         <button type="button" class="btn btn-primary dropdown-toggle"
                                 data-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">
@@ -248,6 +248,12 @@
                 $(window).trigger('resize');
             }, 300);
         });
+        
+        // Main menu actions
+        
+        if ($('#menuActionGroup .dropdown-menu > .dropdown-item').length == 0) {
+            $('#menuActionGroup > button').addClass('disabled');
+        }
         
         // ----------------------
         

@@ -34,7 +34,7 @@ class SoftHostBase
      *
      * @var type 
      */
-    protected $cron = '';
+    protected $cron = '* * * * *';
     
     /**
      *
