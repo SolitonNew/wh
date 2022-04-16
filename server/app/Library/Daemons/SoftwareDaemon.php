@@ -185,10 +185,12 @@ class SoftwareDaemon extends BaseDaemon
     {
         foreach ($this->_providers as $id => $provider) {
             try {
-                $result = $provider->execute();
-                if ($result) {
-                    $s = "[".now()."] PROVIDER '".$provider->title."' HAS BEEN EXECUTED \n";
-                    $this->printLine($s); 
+                if ($provider->canExecute()) {
+                    $result = $provider->execute();
+                    if ($result) {
+                        $s = "[".now()."] PROVIDER '".$provider->title."' HAS BEEN EXECUTED \n";
+                        $this->printLine($s); 
+                    }
                 }
             } catch (\Exception $ex) {
                 $s = "[".now()."] ERROR\n";

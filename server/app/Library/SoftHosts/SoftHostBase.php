@@ -6,10 +6,41 @@ use Lang;
 
 class SoftHostBase 
 {
+    /**
+     *
+     * @var type 
+     */
     public $name = '';
+    
+    /**
+     *
+     * @var type 
+     */
     public $channels = [];
+    
+    /**
+     *
+     * @var type 
+     */
     public $properties = [];   // Key => small|large
+    
+    /**
+     *
+     * @var type 
+     */
     protected $data;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $cron = '';
+    
+    /**
+     *
+     * @var type 
+     */
+    private $_lastExecuteTime = false;
     
     public function __get($name) {
         switch ($name) {
@@ -47,6 +78,16 @@ class SoftHostBase
     
     /**
      * 
+     * @return boolean
+     */
+    public function canExecute()
+    {
+        return false;
+    }
+    
+    /**
+     * 
+     * @return string
      */
     public function execute() {
         return '';
