@@ -30,7 +30,7 @@
             <div class="form-control">{{ $item->hub->name }}</div>
         </div>
     </div>
-    <div id="lastFormRow" class="row">
+    <div class="row">
         <div class="col-sm-3">
             <label class="form-label">@lang('admin/hubs.host_TYP')</label>
         </div>
@@ -44,13 +44,21 @@
                 @endforeach
             </select>
             <div class="invalid-feedback"></div>
-            <small id="hostTypDescription" class="text-muted"></small>
             @else
-            <div class="form-control">{{ $item->typ }}</div>
-            <small class="text-muted">{{ $item->type()->description }}</small>
+            <div class="form-control">{{ $item->type()->title }}</div>
             @endif
         </div>
     </div>
+    <div id="lastFormRow" class="row">
+        <div class="offset-sm-3 col-sm-9">
+            @if($item->id == -1)
+            <div id="hostTypDescription" class="alert alert-warning" style="font-size: 90%"></div>
+            @else
+            <div class="alert alert-warning" style="font-size: 90%">{{ $item->type()->description }}</div>
+            @endif
+        </div>
+    </div>
+    
     @if($item->id > -1)
     <div class="form-group">
         <label class="">@lang('admin/hubs.host_DEVICES') ({{ count($item->devices) }}):</label>

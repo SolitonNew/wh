@@ -2,9 +2,9 @@
 
 namespace App\Library\SoftHosts;
 
-class Demo extends SoftHostBase
+class Stormglass extends SoftHostBase
 {
-    public $name = 'demo';
+    public $name = 'stormglass';
     public $channels = [
         'C1',
         'C2',
@@ -12,7 +12,5 @@ class Demo extends SoftHostBase
     ];
     public $properties = [
         'api_key' => 'large',
-        'ext_params' => 'large',
-        'input' => 'small',
     ];
 }

@@ -113,7 +113,7 @@ class DevicesController extends Controller
                 foreach ($hub->softHosts as $host) {
                     $data[] = (object)[
                         'id' => $host->id,
-                        'rom' => $host->typ,
+                        'rom' => $host->type()->title,
                         'count' => $host->devices->count(),
                     ];
                 }

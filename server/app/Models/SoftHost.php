@@ -50,6 +50,7 @@ class SoftHost extends AffectsFirmwareModel
             
             if ($provider) {
                 $type = [
+                    'title' => $provider->title,
                     'description' => $provider->description,
                     'channels' => $provider->channels,
                     'consuming' => 0,
@@ -57,6 +58,7 @@ class SoftHost extends AffectsFirmwareModel
                 ];
             } else {
                 $type = [
+                    'title' => '',
                     'description' => '',
                     'channels' => [],
                     'consuming' => 0,

@@ -127,7 +127,7 @@
 
 @section('script')
 <script>
-    let deviceEditFormAnimateDuration = 0;
+    window.deviceEditFormAnimateDuration = 0;
     
     $(document).ready(() => {
         @if($item->id == -1)
@@ -171,7 +171,7 @@
         });
         
         setTimeout(function () {
-            deviceEditFormAnimateDuration = 250;
+            window.deviceEditFormAnimateDuration = 250;
         }, 500)
     });
     

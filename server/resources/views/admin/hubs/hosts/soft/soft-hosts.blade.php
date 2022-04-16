@@ -20,7 +20,7 @@
             @forelse($data as $row)
             <tr data-id="{{ $row->id }}" class="{{ $row->lost ? 'row-with-ow-lost' : '' }}">
                 <td>{{ $row->id }}</td>
-                <td>{{ $row->typ }}</td>
+                <td>{{ $row->type()->title }}</td>
                 <td>{{ implode(', ', $row->type()->channels) }}</td>
                 <td>
                     @foreach($row->devices as $v)

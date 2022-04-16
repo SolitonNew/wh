@@ -2,7 +2,7 @@
 
 return [
     'providers' => [
-        \App\Library\SoftHosts\Demo::class,
+        \App\Library\SoftHosts\Stormglass::class,
         \App\Library\SoftHosts\DemoTwo::class,
     ],
 ];
