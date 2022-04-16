@@ -62,10 +62,19 @@
     </div>
     <div class="row" id="host_id" style="display:none;">
         <div class="col-sm-4">
-            <label class="form-label strong">@lang('admin/hubs.device_OW')</label>
+            <label class="form-label">@lang('admin/hubs.device_OW')</label>
         </div>
         <div class="col-sm-8">
             <select class="custom-select" name="host_id" data-value="{{ $item->host_id }}"></select>
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+    <div class="row" id="channel" style="display:none;">
+        <div class="col-sm-4">
+            <label class="form-label">@lang('admin/hubs.device_CHANNEL')</label>
+        </div>
+        <div class="col-sm-4">
+            <select class="custom-select" name="channel" data-value="{{ $item->channel }}"></select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -84,15 +93,6 @@
         </div>
         <div class="col-sm-8">
             <input class="form-control" type="text" name="comm" value="{{ $item->comm }}">
-            <div class="invalid-feedback"></div>
-        </div>
-    </div>
-    <div class="row" id="channel" style="display:none;">
-        <div class="col-sm-4">
-            <label class="form-label">@lang('admin/hubs.device_CHANNEL')</label>
-        </div>
-        <div class="col-sm-4">
-            <select class="custom-select" name="channel" data-value="{{ $item->channel }}"></select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -127,6 +127,8 @@
 
 @section('script')
 <script>
+    let deviceEditFormAnimateDuration = 0;
+    
     $(document).ready(() => {
         @if($item->id == -1)
         //$('#device_edit_form select[name="room_id"] option').removeAttr('selected');
@@ -167,6 +169,10 @@
                 //
             });
         });
+        
+        setTimeout(function () {
+            deviceEditFormAnimateDuration = 250;
+        }, 500)
     });
     
     function reloadTyps() {
@@ -211,9 +217,9 @@
                     }
                     hostList.append('<option value="' + data[i].id + '" ' + sel + '>' + s + '</option>');
                 }
-                $('#host_id').show(250);
+                $('#host_id').show(deviceEditFormAnimateDuration);
             } else {
-                $('#host_id').hide(250);
+                $('#host_id').hide(deviceEditFormAnimateDuration);
             }
 
             if (afterHandle) {
@@ -241,9 +247,9 @@
                     }
                     chanList.append('<option value="' + s + '" ' + sel + '>' + s + '</option>');
                 }
-                $('#channel').show(250);
+                $('#channel').show(deviceEditFormAnimateDuration);
             } else {
-                $('#channel').hide(250);
+                $('#channel').hide(deviceEditFormAnimateDuration);
             }
 
             if (afterHandle) {
