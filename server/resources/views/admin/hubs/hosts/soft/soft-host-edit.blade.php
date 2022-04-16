@@ -40,7 +40,7 @@
                 @foreach($item->typeList() as $type)
                 <option value="{{ $type->name }}" 
                         data-description="{{ $type->description }}"
-                        data-properties="{{ json_encode($type->properties) }}">{{ $type->name }}</option>
+                        data-properties="{{ json_encode($type->propertiesWithTitles()) }}">{{ $type->title }}</option>
                 @endforeach
             </select>
             <div class="invalid-feedback"></div>
@@ -112,18 +112,18 @@
             let i = 0;
             for (key in properties) {
                 let input = '';
-                switch (properties[key]) {
+                switch (properties[key].size) {
                     case 'small':
-                        input = '<input class="form-control" name="property_' + i + '" value="">';
+                        input = '<input class="form-control" name="' + key + '" value="">';
                         break;
                     case 'large':
-                        input = '<textarea class="form-control" name="property_' + i + '" rows="3"></textarea>';
+                        input = '<textarea class="form-control" name="' + key + '" rows="3"></textarea>';
                         break;
                 }
                 
                 let html = '<div class="row property">' +
                            '    <div class="col-sm-3">' +
-                           '        <label class="form-label">' + key + '</label>' +
+                           '        <label class="form-label">' + properties[key].title + '</label>' +
                            '    </div>' +
                            '    <div class="col-sm-9">' + 
                            input +

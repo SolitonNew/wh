@@ -53,7 +53,7 @@ class SoftHost extends AffectsFirmwareModel
                     'description' => $provider->description,
                     'channels' => $provider->channels,
                     'consuming' => 0,
-                    'properties' => $provider->properties,
+                    'properties' => $provider->propertiesWithTitles(),
                 ];
             } else {
                 $type = [
@@ -145,8 +145,7 @@ class SoftHost extends AffectsFirmwareModel
             $properties = $item->type()->properties;
             $i = 0;
             foreach ($properties as $key => $val) {
-                $num = 'property_'.$i++;
-                $propertiesData[$num] = $request->get($num);
+                $propertiesData[$key] = $request->get($key);
             }
             $item->data = json_encode($propertiesData);
             // ---------------------

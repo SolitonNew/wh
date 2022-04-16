@@ -13,6 +13,8 @@ use App\Models\Property;
 use App\Models\DeviceChangeMem;
 use App\Models\Device;
 use App\Library\Script\PhpExecute;
+use App\Library\SoftHosts\SoftHostsManager;
+use App\Models\SoftHost;
 use DB;
 use Lang;
 
@@ -28,6 +30,7 @@ class SoftwareDaemon extends BaseDaemon
      * @var type 
      */
     private $_controllers;
+    private $_providers = [];
     
     /**
      *
@@ -60,6 +63,8 @@ class SoftwareDaemon extends BaseDaemon
                                 ->orderBy('rom', 'asc')
                                 ->get();
         
+        $this->_initHostProviders();
+        
         if (count($this->_controllers) == 0) {
             $this->disableAutorun();
             return;
@@ -74,6 +79,9 @@ class SoftwareDaemon extends BaseDaemon
         
         try {
             while (1) {
+                // Software Host Providers Execute
+                $this->_executeHostProviders();
+                
                 // Get changes of the variables
                 $changes = DeviceChangeMem::where('id', '>', $this->_lastSyncDeviceChangesID)
                                         ->orderBy('id', 'asc')
@@ -81,9 +89,8 @@ class SoftwareDaemon extends BaseDaemon
                 if (count($changes)) {
                     $this->_lastSyncDeviceChangesID = $changes[count($changes) - 1]->id;
                 }
-                
                 $this->_syncVariables($changes);
-                
+                // -----------------------------
                 usleep(100000);
             }
         } catch (\Exception $ex) {
@@ -140,6 +147,49 @@ class SoftwareDaemon extends BaseDaemon
                 $execute->run();
                 $s = "[".now()."] RUN SCRIPT '".$script->comm."' \n";
                 $this->printLine($s); 
+            } catch (\Exception $ex) {
+                $s = "[".now()."] ERROR\n";
+                $s .= $ex->getMessage();
+                $this->printLine($s); 
+            }
+        }
+    }
+    
+    /**
+     * 
+     */
+    private function _initHostProviders()
+    {
+        $manager = new SoftHostsManager();
+        
+        $ids = $this->_controllers
+            ->pluck('id')
+            ->toArray();
+        
+        $hosts = SoftHost::whereIn('hub_id', $ids)
+            ->get();
+        
+        foreach ($hosts as $host) {
+             $provider = $manager->providerByName($host->typ);
+             if ($provider) {
+                $provider->assignData($host->data);
+                $this->_providers[$host->id] = $provider;
+             }
+        }
+    }
+    
+    /**
+     * 
+     */
+    private function _executeHostProviders()
+    {
+        foreach ($this->_providers as $id => $provider) {
+            try {
+                $result = $provider->execute();
+                if ($result) {
+                    $s = "[".now()."] PROVIDER '".$provider->title."' HAS BEEN EXECUTED \n";
+                    $this->printLine($s); 
+                }
             } catch (\Exception $ex) {
                 $s = "[".now()."] ERROR\n";
                 $s .= $ex->getMessage();
