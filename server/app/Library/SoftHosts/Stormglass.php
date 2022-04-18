@@ -13,4 +13,11 @@ class Stormglass extends SoftHostBase
     public $properties = [
         'api_key' => 'large',
     ];
+    
+    protected $frequencyCronExpression = '0 */2 * * *';
+    
+    public function execute()
+    {
+        return 'RUN';
+    }
 }

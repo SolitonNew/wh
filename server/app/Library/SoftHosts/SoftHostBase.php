@@ -2,6 +2,7 @@
 
 namespace App\Library\SoftHosts;
 
+use \Cron\CronExpression;
 use Lang;
 
 class SoftHostBase 
@@ -34,13 +35,7 @@ class SoftHostBase
      *
      * @var type 
      */
-    protected $cron = '* * * * *';
-    
-    /**
-     *
-     * @var type 
-     */
-    private $_lastExecuteTime = false;
+    protected $frequencyCronExpression = '* * * * *';
     
     public function __get($name) {
         switch ($name) {
@@ -82,7 +77,7 @@ class SoftHostBase
      */
     public function canExecute()
     {
-        return false;
+        return CronExpression::factory($this->frequencyCronExpression)->isDue();
     }
     
     /**

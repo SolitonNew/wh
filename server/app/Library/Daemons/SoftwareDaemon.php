@@ -9,7 +9,6 @@
 namespace App\Library\Daemons;
 
 use App\Models\Hub;
-use App\Models\Property;
 use App\Models\DeviceChangeMem;
 use App\Models\Device;
 use App\Library\Script\PhpExecute;
@@ -31,6 +30,7 @@ class SoftwareDaemon extends BaseDaemon
      */
     private $_controllers;
     private $_providers = [];
+    private $_prevExecuteHostProviderTime = false;
     
     /**
      *
@@ -180,9 +180,26 @@ class SoftwareDaemon extends BaseDaemon
     
     /**
      * 
+     * @return type
      */
     private function _executeHostProviders()
     {
+        $now = floor(\Carbon\Carbon::now()->timestamp / 60);
+        
+        // Checking for execute after daemon restart.
+        if ($this->_prevExecuteHostProviderTime === false) {
+            $this->_prevExecuteHostProviderTime = $now;
+            return ;
+        }
+        
+        // Checking for execute at ever minutes.
+        if ($now == $this->_prevExecuteHostProviderTime) {
+            return ;
+        }
+        
+        // Storing the previous time value
+        $this->_prevExecuteHostProviderTime = $now;
+        
         foreach ($this->_providers as $id => $provider) {
             try {
                 if ($provider->canExecute()) {
