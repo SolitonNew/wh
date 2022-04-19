@@ -73,6 +73,16 @@ class SoftHostBase
     
     /**
      * 
+     * @param type $key
+     * @return type
+     */
+    protected function getDataValue($key)
+    {
+        return isset($this->data[$key]) ? $this->data[$key] : '';
+    }
+    
+    /**
+     * 
      * @return boolean
      */
     public function canExecute()

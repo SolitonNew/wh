@@ -116,6 +116,10 @@ class Hub extends AffectsFirmwareModel
             'variable',
             'software',
         ],
+        'orangepi' => [
+            'variable',
+            'i2c',
+        ],
         'din' => [
             'variable',
             'din',
@@ -125,7 +129,7 @@ class Hub extends AffectsFirmwareModel
             'variable',
             'ow',
         ],
-        'zigbee' => [
+        'zigbeeone' => [
             'variable',
         ],*/
     ];

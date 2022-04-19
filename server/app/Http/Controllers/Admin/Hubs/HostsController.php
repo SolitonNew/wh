@@ -45,6 +45,12 @@ class HostsController extends Controller
                     'page' => 'hosts',
                     'data' => SoftHost::listForIndex($hubID),
                 ]);
+            case 'orangepi':
+                return view('admin.hubs.hosts.orange.orange-hosts', [
+                    'hubID' => $hubID,
+                    'page' => 'hosts',
+                    'data' => SoftHost::listForIndex($hubID),
+                ]);
             case 'din':
                 return view('admin.hubs.hosts.din.din-hosts', [
                     'hubID' => $hubID,
@@ -98,6 +104,44 @@ class HostsController extends Controller
         SoftHost::deleteById($id);
         
         return 'OK';
+    }
+    
+    /**
+     * Route to show orange pi host properties.
+     * 
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editOrangeShow(int $hubID, int $id)
+    {
+        return 'DEMO';
+    }
+    
+    
+    /**
+     * Route to create or update orange pi host properties.
+     * 
+     * @param SoftHostRequest $request
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editOrangePost(SoftHostRequest $request, int $hubID, int $id)
+    {
+        return 'DEMO'; 
+    }
+    
+    /**
+     * Route to delete orange pi host by id.
+     * 
+     * @param int $hubID
+     * @param int $id
+     * @return string
+     */
+    public function deleteOrange(int $hubID, int $id)
+    {
+        return 'DEMO';
     }
     
     /**

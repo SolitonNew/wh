@@ -46,6 +46,10 @@ Route::get('/hubs/{hubID}/hosts', 'Hubs\HostsController@index')->name('admin.hub
 Route::get('/hub-softhost-edit/{hubID}/{id}', 'Hubs\HostsController@editSoftShow')->name('admin.hub-softhost-edit');
 Route::post('/hub-softhost-edit/{hubID}/{id}', 'Hubs\HostsController@editSoftPost')->name('admin.hub-softhost-edit');
 Route::delete('/hub-softhost-delete/{hubID}/{id}', 'Hubs\HostsController@deleteSoft')->name('admin.hub-softhost-delete');
+// Orange Pi hosts
+Route::get('/hub-orangehost-edit/{hubID}/{id}', 'Hubs\HostsController@editOrangeShow')->name('admin.hub-orangehost-edit');
+Route::post('/hub-orangehost-edit/{hubID}/{id}', 'Hubs\HostsController@editOrangePost')->name('admin.hub-orangehost-edit');
+Route::delete('/hub-orangehost-delete/{hubID}/{id}', 'Hubs\HostsController@deleteOrange')->name('admin.hub-orangehost-delete');
 // Din hosts
 Route::get('/hub-dinhost-edit/{hubID}/{id}', 'Hubs\HostsController@editDinShow')->name('admin.hub-dinhost-edit');
 Route::post('/hub-dinhost-edit/{hubID}/{id}', 'Hubs\HostsController@editDinPost')->name('admin.hub-dinhost-edit');

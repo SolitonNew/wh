@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-<form id="host_edit_form" class="container" method="POST" action="{{ route('admin.hub-softhost-edit', [$item->hub_id, $item->id]) }}">
+<form id="host_edit_form" class="container" method="POST" action="{{ route('admin.hub-orangehost-edit', [$item->hub_id, $item->id]) }}">
     {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
@@ -152,7 +152,7 @@
         confirmYesNo("@lang('admin/hubs.host_delete_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.hub-softhost-delete", [$item->hub_id, $item->id]) }}',
+                url: '{{ route("admin.hub-orangehost-delete", [$item->hub_id, $item->id]) }}',
                 data: {_token: '{{ csrf_token() }}'},
                 success: function (data) {
                     if (data == 'OK') {

@@ -22,7 +22,13 @@ return [
     'hub_TYP' => 'Type',
     'hub_ROM' => 'ROM',
     'hub_COMM' => 'Description',
-    
+    'hub_types' => [
+        'software' => 'Software hub',
+        'orangepi' => 'Orange Pi hub',
+        'din' => 'Din hub',
+        'onewire' => 'OneWire hub',
+        'zigbeeone' => 'Zeegbe switch',
+    ],
     'firmware_title' => 'Apply hubs configuration',
     'firmware_make_title' => 'Report of the make',
     'firmware_start' => 'Start update',
