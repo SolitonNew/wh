@@ -3,7 +3,7 @@
     <div class="list-group">
 
 <?php
-$q = $pdo->query("select VALUE from core_propertys where NAME = 'WEB_CHECKED'")->fetchAll();
+$q = $pdo->query("select VALUE from core_properties where NAME = 'WEB_CHECKED'")->fetchAll();
 $checks = $q[0]['VALUE'];
 
 if ($checks) {

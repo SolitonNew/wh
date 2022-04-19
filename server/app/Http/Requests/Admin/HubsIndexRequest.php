@@ -47,7 +47,7 @@ class HubsIndexRequest extends FormRequest
         } else {
             $newId = $this->getIdForView();
             if ($newId) {
-                $this->redirect = route('admin.hub-devices', [$newId]);
+                $this->redirect = route('admin.hub-hosts', [$newId]);
                 return [
                     'hubID' => 'required',
                 ];

@@ -16,7 +16,7 @@ class Device extends AffectsFirmwareModel
     protected $_affectFirmwareFields = [
         'hub_id',
         'typ',
-        'ow_id',
+        'host_id',
         'direction',
         'name',
         'channel',
@@ -200,7 +200,7 @@ class Device extends AffectsFirmwareModel
             
             $item->hub_id = $request->hub_id;
             $item->typ = $request->typ;
-            $item->ow_id = $request->typ == 'ow' ? $request->ow_id : null;
+            $item->host_id = in_array($request->typ, ['ow', 'software']) ? $request->host_id : null;
             $item->name = $request->name;
             $item->comm = $request->comm;
             $item->channel = $request->channel ?? 0;
@@ -239,9 +239,9 @@ class Device extends AffectsFirmwareModel
      * @param int $hubID
      * @return type
      */
-    static public function hostList(int $hubID)
+    /*static public function hostList(int $hubID)
     {
-        $owDevs = OwDev::whereHubId($hubID)
+        $OwHosts = OwHost::whereHubId($hubID)
                 ->with('devices')
                 ->orderBy('rom_1', 'asc')
                 ->orderBy('rom_2', 'asc')
@@ -253,7 +253,7 @@ class Device extends AffectsFirmwareModel
                 ->orderBy('rom_8', 'asc')
                 ->get();
         $data = [];
-        foreach ($owDevs as $dev) {
+        foreach ($OwHosts as $dev) {
             $data[] = (object)[
                 'id' => $dev->id,
                 'rom' => $dev->romAsString(),
@@ -261,7 +261,7 @@ class Device extends AffectsFirmwareModel
             ];
         }
         return $data;
-    }
+    }*/
     
     /**
      * 
@@ -269,7 +269,7 @@ class Device extends AffectsFirmwareModel
      * @param int $hostID
      * @return array
      */
-    static public function hostChannelList(string $typ, int $hostID = null)
+    /*static public function hostChannelList(string $typ, int $hostID = null)
     {
         switch ($typ) {
             case 'din':
@@ -277,9 +277,9 @@ class Device extends AffectsFirmwareModel
                 break;
             case 'ow':
                 if ($hostID) {
-                    $owDev = OwDev::find($hostID);
-                    if ($owDev) {
-                        $data = $owDev->channelsOfType();
+                    $OwHost = OwHost::find($hostID);
+                    if ($OwHost) {
+                        $data = $OwHost->channelsOfType();
                     } else {
                         $data = [];
                     }
@@ -292,7 +292,7 @@ class Device extends AffectsFirmwareModel
         }
         
         return $data;
-    }
+    } */
     
     /**
      * 

@@ -13,6 +13,6 @@ class JurnalController extends Controller
      */
     public function index()
     {
-        return redirect(route('admin.jurnal-history'));
+        return redirect(route('admin.jurnal-daemons'));
     }
 }

@@ -4,22 +4,30 @@ return [
     'menu' => 'Configuration',
     'title' => '',
     
+    'main_prompt' => 'To get started, you first need to add a hub',
+    
     'hub_add' => 'Add hub...',
-    'hub_edit' => 'Hub propertys...',
+    'hub_edit' => 'Hub properties...',
     'hubs_scan' => 'Scanning hubs networks...',
     'hubs_scan_title' => 'Result hubs networks scanning',
     'firmware' => 'Update hubs...',
     'hubs_reset' => 'Reboot hubs',
     
-    'hub_add_title' => 'Add new hub',
-    'hub_edit_title' => 'Hub propertys',
+    'hub_add_title' => 'New hub',
+    'hub_edit_title' => 'Hub properties',
     'hub_delete_confirm' => 'Delete this hub?',
     'hub_ID' => 'ID',
     'hub_NAME' => 'Name',
     'hub_TYP' => 'Type',
     'hub_ROM' => 'ROM',
     'hub_COMM' => 'Description',
-    
+    'hub_types' => [
+        'software' => 'Software hub',
+        'orangepi' => 'Orange Pi hub',
+        'din' => 'Din hub',
+        'onewire' => 'OneWire hub',
+        'zigbeeone' => 'Zeegbe switch',
+    ],
     'firmware_title' => 'Apply hubs configuration',
     'firmware_make_title' => 'Report of the make',
     'firmware_start' => 'Start update',
@@ -45,7 +53,7 @@ return [
     
     'device_add' => 'Add new device...',
     'device_add_title' => 'New device',
-    'device_edit_title' => 'Device propertys',
+    'device_edit_title' => 'Device properties',
     'device_delete_confirm' => 'Delete this device?',
     
     
@@ -53,13 +61,16 @@ return [
     'host_ID' => 'ID',
     'host_CONTROLLER' => 'Hub',
     'host_ROM' => 'ROM',
-    'host_COMM' => 'Type',
+    'host_TYP' => 'Type',
     'host_CHANNELS' => 'Channels',
     'host_DEVICES' => 'Devices',
     
     'host_add' => 'Add new host...',
+    'soft_host_add' => 'Add software host...',
+    'orange_host_add' => 'Add Orange Pi host...',
+    'zigbee_host_add' => 'Add Zigbee One host...',
     'host_add_title' => 'New host',
-    'host_edit_title' => 'Host propertys',
+    'host_edit_title' => 'Host properties',
     'host_delete_confirm' => 'Delete this host?',
     
     

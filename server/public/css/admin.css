@@ -1,3 +1,8 @@
+.btn img {
+    margin-top: -4px;
+    filter: invert(100%);
+}
+
 .navbar {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
     justify-content: flex-start;
@@ -20,11 +25,23 @@
     text-align: center;
     margin-left: -1rem;
     line-height: 3rem;
+    overflow: hidden;
+    transition-duration: 0.25s;
+}
+
+.navbar .logo-mini {
+    display: none;
 }
 
 .navbar-down-menu {
     margin-left: 1rem;
     margin-right: 1.5rem;
+}
+
+.navbar-top-menu {
+    display: flex; 
+    flex-grow: 1; 
+    align-items: center;
 }
 
 .navbar-top-menu-tab {
@@ -86,6 +103,7 @@
     min-width: 230px;
     #box-shadow: 0 0 10px rgba(0,0,0,0.35);
     background-color: rgba(0,0,0,0.05);
+    transition-duration: 0.25s;
 }
 
 .main-left-panel-container {
@@ -93,11 +111,22 @@
     border-right: 1px solid rgba(0,0,0,.125);
     overflow-x: hidden; 
     overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
 }
 
 
 .main-left-panel-container > .list-group {
+    position: relative;
     margin-right: -1px;
+    width: 230px;
+    margin-bottom: 20px;
+    transition-duration: 0.25s;
+}
+
+.main-left-panel-container .list-group-item.active img {
+    filter: invert(100%);
 }
 
 .main-left-panel-container .label {
@@ -106,13 +135,91 @@
     margin-left: 1rem;
 }
 
+.body-container.main-menu-collapse .logo {
+    width: 60px;
+    color: rgba(0,0,0,0);
+    transition-duration: 0.25s;
+}
+
+.body-container.main-menu-collapse .logo-mini {
+    display: inline-block;
+    margin-left: -54px;
+    margin-right: 17px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.body-container.main-menu-collapse .navbar .navbar-down-menu {
+    margin-left: 4px;
+}
+
+.body-container.main-menu-collapse .main-left-panel {
+    width: 50px;
+    min-width: 50px;
+    transition-duration: 0.25s;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item {
+    padding: 1rem;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .label {
+    display: none;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .badge {
+    display: none;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container > .list-group {
+    width: 50px;
+    transition-duration: 0.25s;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item:hover {
+    z-index: 2;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item:hover .label {
+    display: inline-block;
+    position: fixed;
+    left: 33px;
+    background-color: #ffffff;
+    padding: 12px 1.5rem;
+    padding-left: 0px;
+    border: 1px solid rgba(0,0,0,.125);
+    border-left: none;
+    background-color: #f8f9fa;
+    width: 160px;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item:active .label {
+    background-color: #e9ecef;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item.active:hover .label {
+    background-color: #007bff;
+}
+
+.body-container.main-menu-collapse .main-left-panel-container .list-group-item:hover .badge {
+    display: inline-block;
+    position: fixed;
+    right: calc(100% - 190px);
+}
+
+
 .body-content-log {
-    width: 370px;
-    min-width: 370px;
+    display: none;
     border-left: 1px solid rgba(0,0,0,.125);
     overflow: hidden;
     padding: 0.5rem 1rem;
-    
+    width: 0px;
+}
+
+.body-container.show-log .body-content-log {
+    display: inline-block;
+    width: 370px;
+    min-width: 370px;
 }
 
 .main-content {
@@ -225,6 +332,22 @@ tr.table-empty:hover td {
 
 .log-text {
     
+}
+
+#showLog {
+    display: inline-block;
+}
+
+#hideLog {
+    display: none;
+}
+
+.body-container.show-log #showLog {
+    display: none;
+}
+
+.body-container.show-log #hideLog {
+    display: inline-block;
 }
 
 .tree {
@@ -665,4 +788,88 @@ select.select-tree option {
 
 .blueprint {
     background-color: #001484;
+}
+
+
+@media(max-width: 768px) {
+    #sizeMainMenu {
+        display: none;
+    }
+    
+    .btn .btn-label {
+        display: none;
+    }
+    
+    .navbar-down-menu {
+        min-width: auto!important;
+        flex-grow: 1;
+    }
+    
+    .main-menu .navbar {
+        align-items: flex-start;
+        height: 58px;
+        position: relative;
+    }
+    
+    .main-menu .navbar-with-tabs {
+        height: 99px;
+    }
+    
+    .navbar-top-menu {
+        position: absolute;
+        left: 56px;
+        top: 57px;
+    }
+    
+    /* Plan */
+    #planParts {
+        display: none;
+    }
+    
+    #planPartsCompact {
+        display: inline-block!important;
+        width: 100%;
+    }
+    
+    /* Hubs */
+    #hubsList {
+        display: none;
+    }
+    
+    /* Scripts */
+    #scriptList {
+        width: 100%!important;
+    }
+    
+    #scriptViewerPanel {
+        display: none;
+    }
+    
+    /* History */
+    #historyFilter {
+        display: none;
+    }
+    
+    #jurnalHistoryFiltrPanel {
+        width: 100%!important;
+        margin: 0px!important;
+        padding: 0px!important;
+    }
+    
+    #historyList {
+        width: 100%!important;
+    }
+    
+    #historyBody {
+        display: none;
+    }
+    
+    /* Daemons */
+    #daemonsList {
+        width: 100%!important;
+    }
+    
+    #daemonViewer {
+        display: none!important;
+    }
 }

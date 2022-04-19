@@ -10,7 +10,7 @@
 
     <div class="list-group checked-edit-color-list">
 <?php
-        $q = $pdo->query("select VALUE from core_propertys where NAME = 'WEB_COLOR'")->fetchAll();
+        $q = $pdo->query("select VALUE from core_properties where NAME = 'WEB_COLOR'")->fetchAll();
         if (count($q)) {
             $a = json_decode($q[0]['VALUE'], true);
             if (count($a)) {

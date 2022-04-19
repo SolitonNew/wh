@@ -5,7 +5,7 @@ return [
     'title' => '',
     
     'plan_add' => 'Add plan item...',
-    'plan_edit' => 'Plan item propertys...',
+    'plan_edit' => 'Plan item properties...',
     'plan_move_childs' => 'Move children...',
     'plan_order' => 'Display order...',
     
@@ -34,12 +34,12 @@ return [
     'table_NAME_POSITION_DY' => 'DY',
     
     'plan_add_title' => 'New plan item',
-    'plan_edit_title' => 'Plan item propertys',
+    'plan_edit_title' => 'Plan item properties',
     'plan_move_childs_title' => 'Move children',
     'plan_order_title' => 'Display order',
     'plan-delete-confirm' => 'Delete current plan item?',
     
-    'menu_plan_edit' => 'Plan item propertys...',
+    'menu_plan_edit' => 'Plan item properties...',
     'menu_sel_in_tree' => 'Select in tree',
     'menu_toolbar_move' => 'Position...',
     'menu_toolbar_size' => 'Size...',
@@ -51,15 +51,15 @@ return [
     'menu_add_part' => 'Create a plan sub-item...',
     'menu_add_device' => 'Put a new device...',
     'menu_device_link' => 'Device position...',
-    'menu_device_edit' => 'Device propertys...',
+    'menu_device_edit' => 'Device properties...',
     'menu_add_port' => 'Put a new port...',
-    'menu_port_edit' => 'Port propertys...',
+    'menu_port_edit' => 'Port properties...',
     
     'plan_add_device_title' => 'Put a new device',
     'plan_edit_device_title' => 'Device position',
     
     'plan_add_port_title' => 'Put a new port',
-    'plan_edit_port_title' => 'Port propertys',
+    'plan_edit_port_title' => 'Port properties',
     
     'toolbar_move' => 'position',
     'toolbar_move_x' => 'X',

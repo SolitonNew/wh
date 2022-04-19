@@ -11,7 +11,7 @@ return [
     'history_date_filtr' => 'Date',
     'history_sql_filtr' => 'SQL expression',
     'history_show' => 'Apply',
-    'history_view_title' => 'Record propertys',
+    'history_view_title' => 'Record properties',
     'history_ID' => 'ID',
     'history_CHANGE_DATE' => 'Date/Time',
     'history_VALUE' => 'Value',

@@ -34,10 +34,20 @@
             @else
             <select class="custom-select" name="typ">
             @foreach(\App\Models\Hub::$typs as $key => $val)
-            <option value="{{ $key }}" {{ $item->typ == $key ? 'selected' : '' }}>{{ $key }}</option>
+            <option value="{{ $key }}" data-description="@lang('admin/hubs.hub_types.'.$key)"  {{ $item->typ == $key ? 'selected' : '' }}>{{ $key }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>
+            @endif
+        </div>
+    </div>
+    <div class="row">
+        <div class="offset-sm-3"></div>
+        <div class="col-sm-9">
+            @if($item->id == -1)
+            <div id="hubTypDescription" class="alert alert-warning" style="font-size: 90%"></div>
+            @else
+            <div class="alert alert-warning" style="font-size: 90%">@lang('admin/hubs.hub_types.'.$item->typ)</div>
             @endif
         </div>
     </div>
@@ -70,8 +80,6 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
-    
-    
 </form>
 @endsection
 
@@ -103,6 +111,9 @@
             } else {
                 $('#rowROM').hide(150);
             }
+            
+            let description = $('#hub_edit_form option[value="' + $(this).val() + '"]').data('description');
+            $('#hubTypDescription').text(description);
         }).trigger('change');
     });
 

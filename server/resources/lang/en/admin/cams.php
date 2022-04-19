@@ -13,6 +13,6 @@ return [
     
     'cam_add' => 'Add new videcam item...',
     'cam_add_title' => 'New videcam',
-    'cam_edit_title' => 'Videcam propertys',
+    'cam_edit_title' => 'Videcam properties',
     'cam_delete_confirm' => 'Delete this videcam item?',
 ];

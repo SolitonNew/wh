@@ -13,6 +13,8 @@ class CoreSetDevice extends Migration
      */
     public function up()
     {
+        DB::unprepared('DROP PROCEDURE IF EXISTS `CORE_SET_DEVICE`');
+        
         DB::unprepared("
 CREATE PROCEDURE `CORE_SET_DEVICE` (
     IN VAR_ID int,

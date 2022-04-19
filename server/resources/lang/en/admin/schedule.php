@@ -6,7 +6,7 @@ return [
     
     'schedule_add' => 'Add new schedule record...',
     'schedule_add_title' => 'New schedule record',
-    'schedule_edit_title' => 'Schedule record propertys',
+    'schedule_edit_title' => 'Schedule record properties',
     
     'table_ID' => 'ID',
     'table_COMM' => 'Description',
@@ -40,6 +40,7 @@ return [
         1 => 'Every week',
         2 => 'Every month',
         3 => 'Every year',
+        4 => '',
     ],
     
     'interval_time' => 'on',

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Services\Admin\ScriptsService;
+use App\Services\Admin\ScriptsService;
 use App\Http\Requests\Admin\ScriptsIndexRequest;
 use App\Http\Requests\Admin\ScriptsRequest;
 use App\Models\Script;
@@ -45,7 +45,7 @@ class ScriptsController extends Controller
     }
     
     /**
-     * The route to create or update script record propertys.
+     * The route to create or update script record properties.
      * 
      * @param int $id
      * @return view
@@ -60,7 +60,7 @@ class ScriptsController extends Controller
     }
     
     /**
-     * The route to create or update script record propertys.
+     * The route to create or update script record properties.
      * 
      * @param ScriptsRequest $request
      * @param int $id

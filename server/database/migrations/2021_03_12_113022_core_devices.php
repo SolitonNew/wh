@@ -21,14 +21,14 @@ class CoreDevices extends Migration
             $table->string('comm')->nullable();
             $table->float('value')->default(0);
             $table->timestamp('last_update')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            $table->integer('ow_id')->nullable();
+            $table->integer('host_id')->nullable();
             $table->string('channel', 20)->default('');
             $table->integer('app_control')->default(0);
             $table->integer('room_id')->nullable();
             $table->string('position', 255)->nullable();
             
             $table->index('hub_id');
-            $table->index('ow_id');
+            $table->index('host_id');
             $table->index('room_id');
         });
     }

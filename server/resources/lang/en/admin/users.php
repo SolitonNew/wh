@@ -19,7 +19,7 @@ return [
     
     'password_info' => 'To change the user`s password, enter a new password in this field.',
     'user_add_title' => 'New user record',
-    'user_edit_title' => 'User propertys',
+    'user_edit_title' => 'User properties',
     
     'user_add' => 'Add new user...',
     'user-delete-confirm' => 'Delete this user record?',

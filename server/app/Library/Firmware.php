@@ -8,7 +8,7 @@
 
 namespace App\Library;
 
-use App\Models\OwDev;
+use App\Models\OwHost;
 use App\Models\Script;
 use App\Library\Script\Translate;
 use App\Library\Script\Translators\C as TranslateC;
@@ -85,8 +85,8 @@ class Firmware
     public function generateConfig() 
     {
         // Вычитываем все нужные данные
-        $owDevTyps = config('onewire.types');
-        $owList = OwDev::orderBy('id', 'asc')->get();
+        $OwHostTyps = config('onewire.types');
+        $owList = OwHost::orderBy('id', 'asc')->get();
         $varList = DB::select('select v.*, c.rom controller_rom
                                  from core_devices v, core_hubs c
                                 where v.hub_id = c.id
@@ -107,11 +107,11 @@ class Firmware
                     $row->channel = 0;
                 }
             } elseif ($row->typ == 'ow') {
-                if ($row->ow_id) {
+                if ($row->host_id) {
                     // Проставляем индекс OW
                     $owCode = -1;
                     for ($i = 0; $i < count($owList); $i++) {
-                        if ($row->ow_id == $owList[$i]->id) {
+                        if ($row->host_id == $owList[$i]->id) {
                             $row->ow_index = $i;
                             $owCode = $owList[$i]->rom_1;
                             break;
@@ -120,7 +120,7 @@ class Firmware
 
                     // Проставляем индекс канала
                     if ($owCode > 0) {
-                        foreach($owDevTyps as $typCode => $devTyp) {
+                        foreach($OwHostTyps as $typCode => $devTyp) {
                             if ($typCode == $owCode) {
                                 $c = array_search($row->channel, $devTyp['channels']);
                                 if ($c !== false) {

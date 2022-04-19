@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Terminal;
 
 use App\Http\Controllers\Controller;
-use App\Http\Services\Terminal\QueueService;
+use App\Services\Terminal\QueueService;
 
 class QueueController extends Controller
 {

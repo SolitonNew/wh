@@ -8,40 +8,62 @@
 @endsection
 
 @section('body')
-<div class="body-container" style="opacity: 0;">
+<div class="body-container 
+            {{ isset($_COOKIE['SHOW_LOG']) && $_COOKIE['SHOW_LOG'] == 'true' ? 'show-log' : '' }}
+            {{ isset($_COOKIE['SIZE_MAIN_MENU']) && $_COOKIE['SIZE_MAIN_MENU'] == 'small' ? 'main-menu-collapse' : '' }}" style="opacity: 0;">
     <div class="body-content">
         <div class="main-menu">
             <nav class="navbar">
                 <div class="logo">WISE HOUSE</div>
+                <div class="logo-mini">WH</div>
                 <div class="navbar-down-menu">
                     <div class="btn-group">
+                        <button type="button" id="sizeMainMenu" class="btn btn-secondary">
+                            <img src="/img/menus/menu-3x.png" style="margin: -5px -4px 0px;">
+                        </button>
+                    </div>
+                    <div id="menuActionGroup" class="btn-group">
                         <button type="button" class="btn btn-primary dropdown-toggle"
-                                data-toggle="dropdown" aria-haspopup="true" style="margin: 0px;"
+                                data-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">
-                            <img src="/img/menus/menu-3x.png" style="margin-left:-3px;margin-top: -5px;margin-right: 0.5rem;">
-                            @lang('admin/admin.menu_actions')
+                            <img src="/img/menus/list-rich-2x.png">
+                            <span class="btn-label">@lang('admin/admin.menu_actions')</span>
                         </button>
                         <div class="dropdown-menu">
                             @yield('down-menu')
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; flex-grow: 1; align-items: center;">
+                <div class="navbar-top-menu">
                 @yield('top-menu')
                 </div>
                 @if(\App\Models\Hub::existsFirmwareHubs() && \App\Models\Property::getFirmwareChanges() > 0)
-                <a class="btn btn-danger" href="#" onclick="firmware(); return false;">@lang('admin/admin.menu_firmware') ({{ \App\Models\Property::getFirmwareChanges() }})</a>
+                <a class="btn btn-danger" href="#" onclick="firmware(); return false;">
+                    <img src="/img/menus/bolt-2x.png">
+                    <span class="btn-label">@lang('admin/admin.menu_firmware') ({{ \App\Models\Property::getFirmwareChanges() }})</span>
+                </a>
                 @endif
-                <a class="btn btn-primary" href="{{ route('home') }}" target="_blank">@lang('admin/admin.menu_home')</a>
-                <a class="btn btn-primary" href="{{ route('logout') }}" style="margin-right: 0;">@lang('admin/admin.menu_logout')</a>
+                <a class="btn btn-primary" href="{{ route('home') }}" target="_blank">
+                    <img src="/img/menus/phone-2x.png">
+                    <span class="btn-label">@lang('admin/admin.menu_home')</span>
+                </a>
+                <a class="btn btn-secondary" href="{{ route('logout') }}">
+                    <img src="/img/menus/account-logout-2x.png">
+                    <span class="btn-label">@lang('admin/admin.menu_logout')</span>
+                </a>
+                <a id="showLog" class="btn btn-primary" href="#" style="margin-right: 0;">
+                    <img src="/img/menus/list-2x.png">
+                    <span class="btn-label">@lang('admin/admin.menu_show_log')</span>
+                </a>
+                <a id="hideLog" class="btn btn-primary" href="#" style="margin-right: 0;">
+                    <img src="/img/menus/list-2x.png">
+                    <span class="btn-label">@lang('admin/admin.menu_hide_log')</span>
+                </a>
             </nav>
         </div>
         <div class="main-container">
             <div class="main-left-panel">
                 <div class="main-left-panel-container">
-                    <div style="height: 130px;padding: 0.5rem;text-align: center;background-color: #ffffff;">
-                        <img src="/img/logo.png" height="100%">
-                    </div>
                     <div class="list-group">
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('plan')" href="{{ route('admin.plan') }}">
                             <img src="/img/menus/clipboard-2x.png">
@@ -71,15 +93,16 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('jurnal')" href="{{ route('admin.jurnal') }}">
                             <img src="/img/menus/bar-chart-2x.png">
                             <span class="label">@lang('admin/jurnal.menu')</span>
+                            <span class="badge badge-primary badge-pill">{{ App\Models\Property::getRunedDaemons() }} / {{ App\Models\Property::getTotalDaemons() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('users')" href="{{ route('admin.users') }}">
                             <img src="/img/menus/people-2x.png">
                             <span class="label">@lang('admin/users.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Models\User::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('terminal')" href="{{ route('admin.terminal') }}">
-                            <img src="/img/menus/phone-2x.png">
-                            <span class="label">@lang('admin/terminal.menu')</span>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('settings')" href="{{ route('admin.settings') }}">
+                            <img src="/img/menus/cog-2x.png">
+                            <span class="label">@lang('admin/settings.menu')</span>
                         </a>
                     </div>
                 </div>
@@ -184,6 +207,67 @@
                 document.cookie = name + '=' + o.scrollTop() + '|' + o.scrollLeft() + '; path=/admin; max-age=3600';
             }).trigger('scroll');
         });
+        
+        // Log controls ---------
+        
+        $('#showLog').on('click', function () {
+            $('.body-container').addClass('show-log');
+            $('.body-content-log')
+                .css({width: '0px', 'min-width': '0px'})
+                .animate({width: '370px', 'min-width': '370px'}, 250, function () {
+                    $(window).trigger('resize');
+                });
+            setCookie('SHOW_LOG', 'true');
+            return false;
+        });
+        
+        $('#hideLog').on('click', function () {
+            $('.body-content-log')
+                .css({width: '370px', 'min-width': '370px'})
+                .animate({width: '0px', 'min-width': '0px'}, 250, function () {
+                    $('.body-container').removeClass('show-log');
+                    $(window).trigger('resize');
+                });
+            setCookie('SHOW_LOG', 'false');
+            return false;
+        });
+                
+        // Global Waiter
+        
+        /*$('a').on('click', function () {
+            startGlobalWaiter();
+            $('body').css('opacity', 0.5);
+        });*/
+        
+        // Main menu
+        
+        $('#sizeMainMenu').on('click', function () {
+            $('.body-container').toggleClass('main-menu-collapse');
+            setCookie('SIZE_MAIN_MENU', $('.body-container').hasClass('main-menu-collapse') ? 'small' : 'large');
+            setTimeout(function () {
+                $(window).trigger('resize');
+            }, 300);
+        });
+        
+        // Main menu actions
+        
+        if ($('#menuActionGroup .dropdown-menu > .dropdown-item').length == 0) {
+            $('#menuActionGroup > button').addClass('disabled');
+        }
+        
+        // ----------------------
+        
+        if ($('.navbar-top-menu .nav-link').length) {
+            $('.main-menu .navbar').addClass('navbar-with-tabs');
+        }
+        
+        $(window).on('resize', function () {
+            if ($(this).width() < 758) {
+                if (!$('.body-container').hasClass('main-menu-collapse')) {
+                    $('#sizeMainMenu').trigger('click');
+                }
+            }
+        }).trigger('resize');
     });
 
     function dialog(url, beforeHandler, afterHandler) {
@@ -354,7 +438,7 @@
     }
 
     function setCookie(name, value) {
-        document.cookie = name + '=' + value + '; path=/admin; max-age=3600';
+        document.cookie = name + '=' + value + '; path=/admin; max-age=360000';
     }
 
     function resetScrollStore(obj) {

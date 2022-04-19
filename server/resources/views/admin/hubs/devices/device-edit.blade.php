@@ -60,12 +60,21 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
-    <div class="row" id="ow_id">
+    <div class="row" id="host_id" style="display:none;">
         <div class="col-sm-4">
-            <label class="form-label strong">@lang('admin/hubs.device_OW')</label>
+            <label class="form-label">@lang('admin/hubs.device_OW')</label>
         </div>
         <div class="col-sm-8">
-            <select class="custom-select" name="ow_id" data-value="{{ $item->ow_id }}"></select>
+            <select class="custom-select" name="host_id" data-value="{{ $item->host_id }}"></select>
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+    <div class="row" id="channel" style="display:none;">
+        <div class="col-sm-4">
+            <label class="form-label">@lang('admin/hubs.device_CHANNEL')</label>
+        </div>
+        <div class="col-sm-4">
+            <select class="custom-select" name="channel" data-value="{{ $item->channel }}"></select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -84,15 +93,6 @@
         </div>
         <div class="col-sm-8">
             <input class="form-control" type="text" name="comm" value="{{ $item->comm }}">
-            <div class="invalid-feedback"></div>
-        </div>
-    </div>
-    <div class="row" id="channel">
-        <div class="col-sm-4">
-            <label class="form-label">@lang('admin/hubs.device_CHANNEL')</label>
-        </div>
-        <div class="col-sm-4">
-            <select class="custom-select" name="channel" data-value="{{ $item->channel }}"></select>
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -127,6 +127,8 @@
 
 @section('script')
 <script>
+    window.deviceEditFormAnimateDuration = 0;
+    
     $(document).ready(() => {
         @if($item->id == -1)
         //$('#device_edit_form select[name="room_id"] option').removeAttr('selected');
@@ -145,16 +147,16 @@
 
         $('#device_edit_form select[name="hub_id"]').on('change', () => {
             reloadTyps();
-            reloadOwList();
+            reloadHostList();
             reloadChannels();
         });
 
         $('#device_edit_form select[name="typ"]').on('change', () => {
-            reloadOwList();
+            reloadHostList();
             reloadChannels();
         });
 
-        $('#device_edit_form select[name="ow_id"]').on('change', (e) => {
+        $('#device_edit_form select[name="host_id"]').on('change', (e) => {
             let l = $(e.currentTarget);
             l.attr('data-value', l.val());
             reloadChannels();
@@ -162,11 +164,15 @@
         
         reloadTyps();
 
-        reloadOwList(() => {
+        reloadHostList(() => {
             reloadChannels(() => {
                 //
             });
         });
+        
+        setTimeout(function () {
+            window.deviceEditFormAnimateDuration = 250;
+        }, 500)
     });
     
     function reloadTyps() {
@@ -193,27 +199,27 @@
         typSelect.trigger('change');
     }
 
-    function reloadOwList(afterHandle = null) {
+    function reloadHostList(afterHandle = null) {
         let controller = $('#device_edit_form select[name="hub_id"]').val();
         controller = controller ? controller : -1;
         $.ajax('{{ route("admin.hub-device-host-list", "") }}/' + controller).done((data) => {
             let rom = $('#device_edit_form select[name="typ"]').val();
-            if (rom == 'ow') {
-                let owList = $('#device_edit_form select[name="ow_id"]');
-                let selValue = owList.attr('data-value');
-                owList.html('');
-                owList.append('<option value="">-//-</option>');
+            if (rom == 'ow' || rom == 'software') {
+                let hostList = $('#device_edit_form select[name="host_id"]');
+                let selValue = hostList.attr('data-value');
+                hostList.html('');
+                hostList.append('<option value="">-//-</option>');
                 for (let i = 0; i < data.length; i++) {
                     let sel = '';
                     let s = '[' + data[i].count + '] ' + data[i].rom;
                     if (data[i].id == selValue) {
                         sel = 'selected';
                     }
-                    owList.append('<option value="' + data[i].id + '" ' + sel + '>' + s + '</option>');
+                    hostList.append('<option value="' + data[i].id + '" ' + sel + '>' + s + '</option>');
                 }
-                $('#ow_id').show(250);
+                $('#host_id').show(deviceEditFormAnimateDuration);
             } else {
-                $('#ow_id').hide(250);
+                $('#host_id').hide(deviceEditFormAnimateDuration);
             }
 
             if (afterHandle) {
@@ -224,12 +230,12 @@
 
     function reloadChannels(afterHandle = null) {
         let typ = $('#device_edit_form select[name="typ"]').val();
-        let ow_id = $('#device_edit_form select[name="ow_id"]').val();
-        if (ow_id == null) ow_id = '';
+        let host_id = $('#device_edit_form select[name="host_id"]').val();
+        if (host_id == null) host_id = '';
 
-        $.ajax('{{ route("admin.hub-device-host-channel-list", ["", ""]) }}/' + typ + '/' + ow_id).done((data) => {
+        $.ajax('{{ route("admin.hub-device-host-channel-list", ["", ""]) }}/' + typ + '/' + host_id).done((data) => {
             let rom = $('#device_edit_form select[name="typ"]').val();
-            if (((rom == 'ow') && (ow_id > 0)) || (rom == 'din')) {
+            if (((rom == 'ow' || rom == 'software') && (host_id > 0)) || (rom == 'din')) {
                 let chanList = $('#device_edit_form select[name="channel"]');
                 let selValue = chanList.attr('data-value');
                 chanList.html('');
@@ -241,9 +247,9 @@
                     }
                     chanList.append('<option value="' + s + '" ' + sel + '>' + s + '</option>');
                 }
-                $('#channel').show(250);
+                $('#channel').show(deviceEditFormAnimateDuration);
             } else {
-                $('#channel').hide(250);
+                $('#channel').hide(deviceEditFormAnimateDuration);
             }
 
             if (afterHandle) {

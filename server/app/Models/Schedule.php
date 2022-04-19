@@ -122,7 +122,7 @@ class Schedule extends Model
      */
     static public function appendFastRecord($comm, $action, $datetime, $variableID) 
     {
-        $item = new SchedulerModel();
+        $item = new Schedule();
         $item->comm = $comm;
         $item->action = $action;
         $item->action_datetime = $datetime;
@@ -146,7 +146,7 @@ class Schedule extends Model
     ];
     
     /**
-     * This method creates a time label using the propertys of the entry.
+     * This method creates a time label using the properties of the entry.
      * 
      * @return type
      */

@@ -11,7 +11,7 @@ if (count($rows) > 0) {
     $groupTitle = mb_strtoupper($rows[0]['NAME']);
 }
 
-$q = $pdo->query("select VALUE from core_propertys where NAME = 'WEB_COLOR'")->fetchAll();
+$q = $pdo->query("select VALUE from core_properties where NAME = 'WEB_COLOR'")->fetchAll();
 $web_color = $q[0]['VALUE'];
 if ($web_color) {
     $web_color = json_decode($web_color, true);

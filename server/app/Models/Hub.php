@@ -14,6 +14,36 @@ class Hub extends AffectsFirmwareModel
         'rom',
     ];
     
+    public function softHosts()
+    {
+        return $this->hasMany(SoftHost::class);
+    }
+    
+    public function owHosts()
+    {
+        return $this->hasMany(OwHost::class);
+    }
+    
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
+    
+    /**
+     * 
+     * @return int
+     */
+    public function hostsCount()
+    {
+        switch ($this->typ) {
+            case 'software':
+                return $this->softHosts->count();
+            case 'din':
+                return $this->owHosts->count();
+        }
+        return 0;
+    }
+    
     /**
      * 
      * @param int $id
@@ -86,17 +116,21 @@ class Hub extends AffectsFirmwareModel
             'variable',
             'software',
         ],
+        'orangepi' => [
+            'variable',
+            'i2c',
+        ],
         'din' => [
             'variable',
             'din',
             'ow',
         ],
+        'zigbeeone' => [
+            'variable',
+        ],
         /*'onewire' => [
             'variable',
             'ow',
-        ],
-        'zigbee' => [
-            'variable',
         ],*/
     ];
     

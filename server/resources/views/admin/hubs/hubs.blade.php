@@ -23,10 +23,10 @@
 @section('top-menu')
 @if($hubID)
 <div class="nav nav-tabs navbar-top-menu-tab">
-    <a class="nav-link @activeSegment(4, 'devices')" 
-        href="{{ route('admin.hub-devices', $hubID) }}">@lang('admin/hubs.devices') ({{ App\Models\Device::whereHubId($hubID)->count() }})</a>
     <a class="nav-link @activeSegment(4, 'hosts')" 
-        href="{{ route('admin.hub-hosts', $hubID) }}">@lang('admin/hubs.hosts') ({{ App\Models\OwDev::whereHubId($hubID)->count() }})</a>
+        href="{{ route('admin.hub-hosts', $hubID) }}">@lang('admin/hubs.hosts') ({{ \App\Models\Hub::find($hubID)->hostsCount() }})</a>
+    <a class="nav-link @activeSegment(4, 'devices')" 
+        href="{{ route('admin.hub-devices', $hubID) }}">@lang('admin/hubs.devices') ({{ \App\Models\Hub::find($hubID)->devices->count() }})</a>
 </div>
 @endif
 @yield('page-top-menu')
@@ -35,7 +35,7 @@
 @section('content')
 @if($hubID)
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
-    <div class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="hubsList">
+    <div id="hubsList" class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="hubsList">
         @foreach(\App\Models\Hub::orderBy('rom', 'asc')->get() as $row)
         <a href="{{ route('admin.hubs', $row->id).'/'.$page }}"
            class="tree-item {{ $row->id == $hubID ? 'active' : '' }}" style="white-space: normal;">
@@ -51,6 +51,15 @@
     </div>
     <div class="content-body">
         @yield('page-content')
+    </div>
+</div>
+@else
+<div style="display: flex; flex-direction: column; flex-grow: 1;height: 100%; align-items: center;">
+    <div style="min-width: 50%;margin-top: 2rem;">
+        <div class="jumbotron">
+            <h5 class="mb-4">@lang('admin/hubs.main_prompt')</h5>
+            <a href="javascript:hubAdd()" class="btn btn-primary">@lang('admin/hubs.hub_add')</a>
+        </div>
     </div>
 </div>
 @endif

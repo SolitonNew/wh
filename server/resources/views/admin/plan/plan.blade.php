@@ -67,6 +67,13 @@
 </style>
 
 @if($partID)
+<div id="planPartsCompact" class="navbar navbar-page" style="display: none;">
+    <select id="planPartsCombobox" class="nav-link custom-select select-tree" style="width: 100%;">
+        @foreach(\App\Models\Room::generateTree() as $row)
+        <option value="{{ $row->id }}" {{ $row->id == $partID ? 'selected' : '' }}>{!! $row->treePath !!} {{ $row->name }}</option>
+        @endforeach
+    </select>
+</div>
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div id="planParts" class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
         @foreach(\App\Models\Room::generateTree(null, false) as $row)
@@ -267,6 +274,12 @@
             $('#planContent .plan-part[data-id="' + $(this).data('id') + '"]').addClass('hover');
         }).on('mouseleave', function () {
             $('#planContent .plan-part[data-id="' + $(this).data('id') + '"]').removeClass('hover');
+        });
+        
+        
+        // Compact Navigate
+        $('#planPartsCombobox').on('change', function () {
+            window.location.href = '{{ route("admin.plan", "") }}/' + $(this).val();
         });
     });
     
