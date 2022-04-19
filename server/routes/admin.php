@@ -54,6 +54,10 @@ Route::delete('/hub-orangehost-delete/{hubID}/{id}', 'Hubs\HostsController@delet
 Route::get('/hub-dinhost-edit/{hubID}/{id}', 'Hubs\HostsController@editDinShow')->name('admin.hub-dinhost-edit');
 Route::post('/hub-dinhost-edit/{hubID}/{id}', 'Hubs\HostsController@editDinPost')->name('admin.hub-dinhost-edit');
 Route::delete('/hub-dinhost-delete/{hubID}/{id}', 'Hubs\HostsController@deleteDin')->name('admin.hub-dinhost-delete');
+// Zigbee One hosts
+Route::get('/hub-zigbeehost-edit/{hubID}/{id}', 'Hubs\HostsController@editZigbeeShow')->name('admin.hub-zigbeehost-edit');
+Route::post('/hub-zigbeehost-edit/{hubID}/{id}', 'Hubs\HostsController@editZigbeePost')->name('admin.hub-zigbeehost-edit');
+Route::delete('/hub-zigbeehost-delete/{hubID}/{id}', 'Hubs\HostsController@deleteZigbee')->name('admin.hub-zigbeehost-delete');
 
 /* Devices management routes */
 Route::get('/hubs/{hubID}/devices/{groupID?}', 'Hubs\DevicesController@index')->name('admin.hub-devices');

@@ -49,13 +49,19 @@ class HostsController extends Controller
                 return view('admin.hubs.hosts.orange.orange-hosts', [
                     'hubID' => $hubID,
                     'page' => 'hosts',
-                    'data' => SoftHost::listForIndex($hubID),
+                    'data' => [],
                 ]);
             case 'din':
                 return view('admin.hubs.hosts.din.din-hosts', [
                     'hubID' => $hubID,
                     'page' => 'hosts',
                     'data' => OwHost::listForIndex($hubID),
+                ]);
+            case 'zigbeeone':
+                return view('admin.hubs.hosts.zigbee.zigbee-hosts', [
+                    'hubID' => $hubID,
+                    'page' => 'hosts',
+                    'data' => [],
                 ]);
         }
         
@@ -185,5 +191,42 @@ class HostsController extends Controller
         OwHost::deleteById($id);
         
         return 'OK';
+    }
+    
+    /**
+     * Route to show Zigbee One host properties.
+     * 
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editZigbeeShow(int $hubID, int $id)
+    {
+        return 'DEMO';
+    }
+    
+    /**
+     * Route to create or update Zigbee One host properties.
+     * 
+     * @param OwHostRequest $request
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editZigbeePost(OwHostRequest $request, int $hubID, int $id)
+    {
+        return 'DEMO';
+    }
+    
+    /**
+     * Route to delete Zigbee One host by id.
+     * 
+     * @param int $hubID
+     * @param int $id
+     * @return string
+     */
+    public function deleteZigbee(int $hubID, int $id)
+    {        
+        return 'DEMO';
     }
 }

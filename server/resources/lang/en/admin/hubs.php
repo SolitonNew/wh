@@ -12,7 +12,6 @@ return [
     'hubs_scan_title' => 'Result hubs networks scanning',
     'firmware' => 'Update hubs...',
     'hubs_reset' => 'Reboot hubs',
-    'soft_host_add' => 'Add software host...',
     
     'hub_add_title' => 'New hub',
     'hub_edit_title' => 'Hub properties',
@@ -67,6 +66,9 @@ return [
     'host_DEVICES' => 'Devices',
     
     'host_add' => 'Add new host...',
+    'soft_host_add' => 'Add software host...',
+    'orange_host_add' => 'Add Orange Pi host...',
+    'zigbee_host_add' => 'Add Zigbee One host...',
     'host_add_title' => 'New host',
     'host_edit_title' => 'Host properties',
     'host_delete_confirm' => 'Delete this host?',

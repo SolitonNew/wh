@@ -125,12 +125,12 @@ class Hub extends AffectsFirmwareModel
             'din',
             'ow',
         ],
+        'zigbeeone' => [
+            'variable',
+        ],
         /*'onewire' => [
             'variable',
             'ow',
-        ],
-        'zigbeeone' => [
-            'variable',
         ],*/
     ];
     
