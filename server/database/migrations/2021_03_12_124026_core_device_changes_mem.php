@@ -18,7 +18,7 @@ class CoreDeviceChangesMem extends Migration
             $table->bigInteger('device_id')->unsigned();
             $table->timestamp('change_date')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->float('value');
-            $table->bigInteger('from_id')->unsigned()->nullable();
+            $table->bigInteger('from_id')->nullable();
         });
         
         DB::statement('ALTER TABLE core_device_changes_mem ENGINE = MEMORY');

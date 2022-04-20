@@ -100,6 +100,16 @@ class Device extends AffectsFirmwareModel
                 $typ = 1;
                 $resolution = 'A';
                 break;
+            case 15: // Speed
+                $control = Lang::get('admin/hubs.log_app_control.15');
+                $typ = 1;
+                $resolution = 'm/s';
+                break;
+            case 16: // Direction
+                $control = Lang::get('admin/hubs.log_app_control.16');
+                $typ = 1;
+                $resolution = '°';
+                break;
         }
 
         return (object)[
@@ -137,6 +147,8 @@ class Device extends AffectsFirmwareModel
      */
     static public function setValue(int $deviceID, float $value)
     {
+        Log::info('"'.$value.'"');
+        
         try {
             DB::select("CALL CORE_SET_DEVICE($deviceID, $value, -1)");
         } catch (\Exception $e) {

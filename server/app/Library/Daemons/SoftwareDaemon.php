@@ -16,6 +16,7 @@ use App\Library\SoftHosts\SoftHostsManager;
 use App\Models\SoftHost;
 use DB;
 use Lang;
+use Log;
 
 /**
  * Description of SoftwareDaemon
@@ -172,6 +173,7 @@ class SoftwareDaemon extends BaseDaemon
         foreach ($hosts as $host) {
              $provider = $manager->providerByName($host->typ);
              if ($provider) {
+                $provider->assignKey($host->id);
                 $provider->assignData($host->data);
                 $this->_providers[$host->id] = $provider;
              }
@@ -202,15 +204,27 @@ class SoftwareDaemon extends BaseDaemon
         
         foreach ($this->_providers as $id => $provider) {
             try {
-                if ($provider->canExecute()) {
-                    $result = $provider->execute();
+                // Request
+                if ($provider->canRequest()) {
+                    $result = $provider->request();
+                    $s = "[".now()."] PROVIDER '".$provider->title."' HAS BEEN REQUESTED \n";
+                    $this->printLine($s); 
                     if ($result) {
-                        $s = "[".now()."] PROVIDER '".$provider->title."' HAS BEEN EXECUTED \n";
-                        $this->printLine($s); 
+                        $this->printLine($result);
+                    }
+                }
+                
+                // Update
+                if ($provider->canUpdate()) {
+                    $result = $provider->update();
+                    if ($result) {
+                        $s = "[".now()."] PROVIDER '".$provider->title."' HAS BEEN UPDATED \n";
+                        $this->printLine($s);
+                        $this->printLine($result);
                     }
                 }
             } catch (\Exception $ex) {
-                $s = "[".now()."] ERROR\n";
+                $s = "[".now()."] ERROR FOR '".$provider->title."'\n";
                 $s .= $ex->getMessage();
                 $this->printLine($s); 
             }

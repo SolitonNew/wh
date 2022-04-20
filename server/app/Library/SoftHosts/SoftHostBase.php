@@ -2,6 +2,8 @@
 
 namespace App\Library\SoftHosts;
 
+use App\Models\SoftHostStorage;
+use App\Models\Device;
 use \Cron\CronExpression;
 use Lang;
 
@@ -35,7 +37,19 @@ class SoftHostBase
      *
      * @var type 
      */
-    protected $frequencyCronExpression = '* * * * *';
+    protected $key;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $requestCronExpression = '* * * * *';
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $updateCronExpression = '* * * * *';
     
     public function __get($name) {
         switch ($name) {
@@ -43,6 +57,15 @@ class SoftHostBase
             case 'description':
                 return Lang::get('admin/softhosts/'.$this->name.'.'.$name);
         }
+    }
+    
+    /**
+     * 
+     * @param type $key
+     */
+    public function assignKey($key)
+    {
+        $this->key = $key;
     }
     
     /**
@@ -78,23 +101,76 @@ class SoftHostBase
      */
     protected function getDataValue($key)
     {
-        return isset($this->data[$key]) ? $this->data[$key] : '';
+        return isset($this->data->$key) ? $this->data->$key : '';
+    }
+    
+    /**
+     * 
+     * @param type $data
+     */
+    protected function putStorageData($data)
+    {
+        SoftHostStorage::create([
+            'soft_host_id' => $this->key, 
+            'data' => $data,
+        ]);
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    protected function getLastStorageData()
+    {
+        $row = SoftHostStorage::where('soft_host_id', $this->key)
+            ->orderBy('created_at', 'desc')
+            ->first();
+        
+        return $row ? $row->data : null;
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getAssociatedDevices()
+    {
+        return Device::whereHostId($this->key)
+            ->get();
     }
     
     /**
      * 
      * @return boolean
      */
-    public function canExecute()
+    public function canRequest()
     {
-        return CronExpression::factory($this->frequencyCronExpression)->isDue();
+        return CronExpression::factory($this->requestCronExpression)->isDue();
     }
     
     /**
      * 
      * @return string
      */
-    public function execute() {
+    public function request() {
+        return '';
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function canUpdate()
+    {
+        return CronExpression::factory($this->updateCronExpression)->isDue();
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function update()
+    {
         return '';
     }
 }
