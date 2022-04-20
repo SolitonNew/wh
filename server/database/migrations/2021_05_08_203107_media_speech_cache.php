@@ -14,7 +14,7 @@ class MediaSpeechCache extends Migration
     public function up()
     {
         Schema::create('media_speech_cache', function (Blueprint $table) {
-            $table->integerIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->string('phrase', 250);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             

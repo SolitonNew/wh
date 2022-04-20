@@ -14,14 +14,14 @@ class CoreSchedule extends Migration
     public function up()
     {
         Schema::create('core_schedule', function (Blueprint $table) {
-            $table->integerIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->string('comm');
             $table->string('action', 2000);
             $table->timestamp('action_datetime')->nullable();
             $table->string('interval_time_of_day');
             $table->string('interval_day_of_type')->nullable();
             $table->integer('interval_type')->nullable();
-            $table->integer('temp_device_id');
+            $table->bigInteger('temp_device_id')->unsigned()->nullable();
             $table->integer('enable')->default(1);
         });
     }

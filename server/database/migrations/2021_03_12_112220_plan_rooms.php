@@ -14,7 +14,7 @@ class PlanRooms extends Migration
     public function up()
     {
         Schema::create('plan_rooms', function (Blueprint $table) {
-            $table->integerIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->string('name')->default('');
             $table->integer('parent_id')->nullable();
             $table->integer('order_num')->default(0);

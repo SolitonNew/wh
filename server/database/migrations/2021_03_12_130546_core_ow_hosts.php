@@ -14,8 +14,8 @@ class CoreOwHosts extends Migration
     public function up()
     {
         Schema::create('core_ow_hosts', function (Blueprint $table) {
-            $table->integerIncrements('id');
-            $table->integer('hub_id');
+            $table->bigIncrements('id')->unsigned();
+            $table->bigInteger('hub_id')->unsigned()->nullable();
             $table->string('name');
             $table->string('comm', 1000)->nullable();
             $table->integer('rom_1');
@@ -28,7 +28,7 @@ class CoreOwHosts extends Migration
             $table->integer('rom_8');
             $table->integer('lost')->default(0);
             
-            $table->index('hub_id');
+            $table->foreign('hub_id')->references('id')->on('core_hubs')->cascadeOnDelete();
             $table->index('rom_1');
         });
     }

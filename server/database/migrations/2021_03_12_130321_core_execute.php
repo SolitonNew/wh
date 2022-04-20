@@ -14,7 +14,7 @@ class CoreExecute extends Migration
     public function up()
     {
         Schema::create('core_execute', function (Blueprint $table) {
-            $table->integerIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->string('command', 4000);
         });
         

@@ -14,14 +14,14 @@ class CoreSoftHosts extends Migration
     public function up()
     {
         Schema::create('core_soft_hosts', function (Blueprint $table) {
-            $table->integerIncrements('id');
-            $table->integer('hub_id');
+            $table->bigIncrements('id')->unsigned();
+            $table->bigInteger('hub_id')->unsigned();
             $table->string('typ', 20);
             $table->string('name');
             $table->string('comm', 1000)->nullable();
             $table->text('data')->nullable();
             
-            $table->index('hub_id');
+            $table->foreign('hub_id')->references('id')->on('core_hubs')->cascadeOnDelete();
         });
     }
 

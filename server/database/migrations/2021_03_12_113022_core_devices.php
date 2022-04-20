@@ -14,17 +14,17 @@ class CoreDevices extends Migration
     public function up()
     {
         Schema::create('core_devices', function (Blueprint $table) {
-            $table->integerIncrements('id');
-            $table->integer('hub_id');
+            $table->bigIncrements('id')->unsigned();
+            $table->bigInteger('hub_id')->unsigned()->nullable();
             $table->string('typ', 20);
             $table->string('name');
             $table->string('comm')->nullable();
             $table->float('value')->default(0);
             $table->timestamp('last_update')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            $table->integer('host_id')->nullable();
+            $table->bigInteger('host_id')->unsigned()->nullable();
             $table->string('channel', 20)->default('');
             $table->integer('app_control')->default(0);
-            $table->integer('room_id')->nullable();
+            $table->bigInteger('room_id')->unsigned()->nullable();
             $table->string('position', 255)->nullable();
             
             $table->index('hub_id');

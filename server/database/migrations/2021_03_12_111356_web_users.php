@@ -14,7 +14,7 @@ class WebUsers extends Migration
     public function up()
     {
         Schema::create('web_users', function (Blueprint $table) {
-            $table->integerIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->string('login')->unique();
             $table->string('email')->nullable()->default('');
             $table->string('password');
