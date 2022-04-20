@@ -11,6 +11,8 @@
 @if($hubID)
 <a href="#" class="dropdown-item" onclick="hubEdit(); return false;">@lang('admin/hubs.hub_edit')</a>
 @yield('page-down-menu')
+<div class="dropdown-divider"></div>
+<a href="#" class="dropdown-item" onclick="devicesAddAll(); return false;">@lang('admin/hubs.devices_add_all')</a>
 @if(\App\Models\Hub::existsFirmwareHubs())
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="hubsScan(); return false;">@lang('admin/hubs.hubs_scan')</a>
@@ -74,6 +76,15 @@
     }
     
     @if($hubID)
+    function devicesAddAll() {
+        $.ajax({
+            url: '{{ route("admin.hubs-add-devices-for-all-hosts", $hubID) }}',
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+    }
+        
     function hubEdit() {
         dialog("{{ route('admin.hub-edit', $hubID) }}");
     }

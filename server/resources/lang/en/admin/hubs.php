@@ -55,7 +55,7 @@ return [
     'device_add_title' => 'New device',
     'device_edit_title' => 'Device properties',
     'device_delete_confirm' => 'Delete this device?',
-    
+    'devices_add_all' => 'Add all devices for current Hub',
     
     'hosts' => 'Hosts',
     'host_ID' => 'ID',
