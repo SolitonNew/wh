@@ -19,7 +19,7 @@ class CoreSoftHostStorages extends Migration
             $table->longText('data')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             
-            $table->foreign('soft_host_id')->references('id')->on('core_soft_hosts')->cascadeOnDelete();
+            $table->foreign('soft_host_id')->references('id')->on('core_soft_hosts')->onDelete('cascade');
         });
     }
 

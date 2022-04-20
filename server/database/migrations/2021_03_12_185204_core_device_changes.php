@@ -20,7 +20,7 @@ class CoreDeviceChanges extends Migration
             $table->float('value');
             $table->integer('from_id')->nullable();
             
-            $table->foreign('device_id', 'core_device_changes_fk_devices')->references('id')->on('core_devices')->cascadeOnDelete();
+            $table->foreign('device_id', 'core_device_changes_fk_devices')->references('id')->on('core_devices')->onDelete('cascade');
             $table->index('change_date');
             $table->index('from_id');
         });

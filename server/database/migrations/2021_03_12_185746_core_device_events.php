@@ -19,8 +19,8 @@ class CoreDeviceEvents extends Migration
             $table->bigInteger('device_id')->unsigned()->nullable();
             $table->bigInteger('script_id')->unsigned()->nullable();
             
-            $table->foreign('device_id')->references('id')->on('core_devices')->cascadeOnDelete();
-            $table->foreign('script_id')->references('id')->on('core_scripts')->cascadeOnDelete();
+            $table->foreign('device_id')->references('id')->on('core_devices')->onDelete('cascade');
+            $table->foreign('script_id')->references('id')->on('core_scripts')->onDelete('cascade');
         });
     }
 

@@ -28,7 +28,7 @@ class CoreOwHosts extends Migration
             $table->integer('rom_8');
             $table->integer('lost')->default(0);
             
-            $table->foreign('hub_id')->references('id')->on('core_hubs')->cascadeOnDelete();
+            $table->foreign('hub_id')->references('id')->on('core_hubs')->onDelete('cascade');
             $table->index('rom_1');
         });
     }

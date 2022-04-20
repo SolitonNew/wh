@@ -21,7 +21,7 @@ class CoreSoftHosts extends Migration
             $table->string('comm', 1000)->nullable();
             $table->text('data')->nullable();
             
-            $table->foreign('hub_id')->references('id')->on('core_hubs')->cascadeOnDelete();
+            $table->foreign('hub_id')->references('id')->on('core_hubs')->onDelete('cascade');
         });
     }
 
