@@ -237,7 +237,6 @@ class Device extends AffectsFirmwareModel
         try {
             $item = Device::find($id);
             if (!$item) abort(404);
-            
             $item->delete();
         } catch (\Exception $ex) {
             abort(response()->json([

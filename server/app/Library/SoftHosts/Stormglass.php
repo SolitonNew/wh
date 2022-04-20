@@ -120,6 +120,8 @@ class Stormglass extends SoftHostBase
             }
         }
         
+        $resultLog = [];
+        
         $devices = $this->getAssociatedDevices();
         foreach ($devices as $device) {
             if (isset($values[$device->channel])) {
@@ -133,10 +135,15 @@ class Stormglass extends SoftHostBase
                 
                 if ($device->value != $value) {
                     Device::setValue($device->id, $value);
+                    $resultLog[] = $value; 
                 }
             }
         }
         
-        return '';
+        if (count($resultLog)) {
+            return '   <<   ['.implode(', ', $resultLog).']';
+        } else {
+            return '';
+        }
     }
 }
