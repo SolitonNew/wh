@@ -39,6 +39,7 @@ Route::get('/hubs-firmware', 'HubsController@firmware')->name('admin.firmware');
 Route::get('/hubs-firmware-start', 'HubsController@firmwareStart')->name('admin.firmware-start');
 Route::get('/hubs-firmware-status', 'HubsController@firmwareStatus')->name('admin.firmware-status');
 Route::get('/hubs-reset', 'HubsController@hubsReset')->name('admin.hubs-reset');
+Route::get('/hubs-add-devices-for-all-hosts/{hubID}', 'HubsController@addDevicesForAllHosts')->name('admin.hubs-add-devices-for-all-hosts');
 
 /* Hosts management routes */
 Route::get('/hubs/{hubID}/hosts', 'Hubs\HostsController@index')->name('admin.hub-hosts');

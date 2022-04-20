@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Models\Hub;
 use App\Models\Device;
 use App\Models\OwHost;
+use App\Models\SoftHost;
 use App\Models\Property;
 use App\Library\DaemonManager;
 use App\Library\Firmware;
@@ -37,13 +38,11 @@ class HubsService
         return $text;
     }
     
-    /**
-     * This method creted devices entries on each channel if the channel 
-     * does not exists.
-     * 
-     */
-    public function _generateDevs() 
+    
+    public function _generateDevsByHub(int $hubID)
     {
+        $hub = Hub::find($hubID);
+        
         $channelControl = [
             1 => ['R1', 'R2', 'R3', 'R4'],    // Light
             2 => ['LEFT', 'RIGHT'],           // Switch
@@ -70,24 +69,25 @@ class HubsService
             return -1;
         };
         
-        // Generation of devices by channel
-        $din_channels = config('firmware.channels.'.config('firmware.mmcu'));
-        $vars = DB::select('select hub_id, channel from core_devices where typ = "din"');
-        foreach(Hub::whereTyp('din')->get() as $din) {
+        if ($hub->typ == 'din') {
+            // Generation of devices by channel
+            $din_channels = config('firmware.channels.'.config('firmware.mmcu'));
+            $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "din"');
+            
             try {
                 foreach($din_channels as $chan) {
                     $find = false;
-                    foreach($vars as $var) {
-                        if ($var->hub_id == $din->id && $var->channel == $chan) {
+                    foreach($devs as $dev) {
+                        if ($dev->hub_id == $hub->id && $dev->channel == $chan) {
                             $find = true;
                             break;
                         }
                     }
                     if (!$find) {
                         $app_control = 1; // По умолчанию СВЕТ
-                        
+
                         $item = new Device();
-                        $item->hub_id = $din->id;
+                        $item->hub_id = $hub->id;
                         $item->typ = 'din';
                         $item->name = 'temp for din';
                         //$item->comm = Lang::get('admin/hubs.app_control.'.$app_control);
@@ -106,15 +106,15 @@ class HubsService
         }
         
         // Generation of devices for network hubs
-        $devs = OwHost::get();
-        $vars = Device::whereTyp('ow')->get();
+        $hosts = OwHost::whereHubId($hubID)->get();
+        $devs = Device::whereTyp('ow')->get();
         
         try {
-            foreach($devs as $dev) {
-                foreach ($dev->channelsOfType() as $chan) {
+            foreach($hosts as $host) {
+                foreach ($host->channelsOfType() as $chan) {
                     $find = false;
-                    foreach($vars as $var) {
-                        if ($var->host_id == $dev->id && $var->channel && $var->channel == $chan) {
+                    foreach($devs as $dev) {
+                        if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
                             $find = true;
                             break;
                         }
@@ -124,10 +124,10 @@ class HubsService
                         $appControl = $decodeChannel($chan);
                         
                         $item = new Device();
-                        $item->hub_id = $dev->hub_id;
+                        $item->hub_id = $host->hub_id;
                         $item->typ = 'ow';
                         $item->name = 'temp for ow';
-                        $item->host_id = $dev->id;
+                        $item->host_id = $host->id;
                         $item->channel = $chan;
                         $item->app_control = $appControl;
                         $item->save(['withoutevents']);
@@ -139,6 +139,56 @@ class HubsService
         } catch (\Exception $ex) {
             Log::info($ex);
             return ;
+        }
+        
+        // Generation of devices for software hosts
+        $hosts = SoftHost::whereHubId($hubID)->get();
+        $devs = Device::whereTyp('ow')->get();
+        
+        try {
+            foreach($hosts as $host) {
+                foreach ($host->channelsOfType() as $chan) {
+                    $find = false;
+                    foreach($devs as $dev) {
+                        if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
+                            $find = true;
+                            break;
+                        }
+                    }
+
+                    if (!$find) {
+                        $appControl = $decodeChannel($chan);
+                        
+                        $item = new Device();
+                        $item->hub_id = $host->hub_id;
+                        $item->typ = 'software';
+                        $item->name = 'temp for software';
+                        $item->host_id = $host->id;
+                        $item->channel = $chan;
+                        $item->app_control = 0; //$appControl;
+                        $item->save(['withoutevents']);
+                        $item->name = 'soft_'.$item->id.'_'.$chan;
+                        $item->save();
+                    }
+                }
+            }
+        } catch (\Exception $ex) {
+            Log::info($ex);
+            return ;
+        }
+        
+    }
+    
+    
+    /**
+     * This method creted devices entries on each channel if the channel 
+     * does not exists.
+     * 
+     */
+    public function _generateDevs() 
+    {
+        foreach (Hub::get() as $hub) {
+            $this->_generateDevsByHub($hub->id);
         }
     }
     

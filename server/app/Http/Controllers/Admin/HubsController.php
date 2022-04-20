@@ -14,15 +14,15 @@ class HubsController extends Controller
      *
      * @var type 
      */
-    private $_hubsService;
+    private $_service;
     
     /**
      * 
      * @param HubsService $hubsService
      */
-    public function __construct(HubsService $hubsService) 
+    public function __construct(HubsService $service) 
     {
-        $this->_hubsService = $hubsService;
+        $this->_service = $service;
     }
     
     /**
@@ -66,7 +66,7 @@ class HubsController extends Controller
         Hub::storeFromRequest($request, $id);
 
         // Restart service daemons
-        $this->_hubsService->restartServiceDaemons();
+        $this->_service->restartServiceDaemons();
 
         return 'OK';
     }
@@ -82,7 +82,7 @@ class HubsController extends Controller
         Hub::deleteById($id);
         
         // Restart service daemons
-        $this->_hubsService->restartServiceDaemons();
+        $this->_service->restartServiceDaemons();
         
         return 'OK';
     }
@@ -95,7 +95,7 @@ class HubsController extends Controller
      */
     public function hubsScan() 
     {
-        $text = $this->_hubsService->hubsScan();
+        $text = $this->_service->hubsScan();
         
         return view('admin.hubs.hubs-scan', [
             'data' => $text,
@@ -110,7 +110,7 @@ class HubsController extends Controller
      */
     public function firmware()
     {
-        list($text, $makeError) = $this->_hubsService->firmware();
+        list($text, $makeError) = $this->_service->firmware();
         
         return view('admin.hubs.firmware', [
             'data' => $text,
@@ -126,7 +126,7 @@ class HubsController extends Controller
      */
     public function firmwareStart() 
     {
-        $this->_hubsService->firmwareStart();
+        $this->_service->firmwareStart();
         
         return 'OK';
     }
@@ -138,7 +138,7 @@ class HubsController extends Controller
      */
     public function firmwareStatus() 
     {
-        return $this->_hubsService->firmwareStatus();
+        return $this->_service->firmwareStatus();
     }
     
     /**
@@ -148,8 +148,21 @@ class HubsController extends Controller
      */
     public function hubsReset() 
     {
-        $this->_hubsService->hubsReset();
+        $this->_service->hubsReset();
         
         return 'OK'; 
+    }
+    
+    /**
+     * This route creates devices for all hosts, if that devices are not exists.
+     * 
+     * @param int $hubID
+     * @return string
+     */
+    public function addDevicesForAllHosts(int $hubID)
+    {
+        $this->_service->_generateDevsByHub($hubID);
+        
+        return 'OK';
     }
 }
