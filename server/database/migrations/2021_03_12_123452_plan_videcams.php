@@ -14,13 +14,13 @@ class PlanVidecams extends Migration
     public function up()
     {
         Schema::create('plan_videcams', function (Blueprint $table) {
-            $table->integerIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->string('name')->default('');
             $table->string('url')->default('');
             $table->string('url_low')->default('');
             $table->string('url_high')->default('');
             $table->integer('order_num')->default(0);
-            $table->integer('alert_var_id');
+            $table->bigInteger('alert_var_id')->unsigned()->nullable();
         });
     }
 

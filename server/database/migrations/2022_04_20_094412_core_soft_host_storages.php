@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class WebQueueMem extends Migration
+class CoreSoftHostStorages extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class WebQueueMem extends Migration
      */
     public function up()
     {
-        Schema::create('web_queue_mem', function (Blueprint $table) {
+        Schema::create('core_soft_host_storages', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->string('action', 20);
-            $table->string('data', 1000);
+            $table->bigInteger('soft_host_id')->unsigned();
+            $table->longText('data')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            
+            $table->foreign('soft_host_id')->references('id')->on('core_soft_hosts')->onDelete('cascade');
         });
-        
-        DB::statement('ALTER TABLE web_queue_mem ENGINE = MEMORY');
     }
 
     /**
@@ -30,6 +30,6 @@ class WebQueueMem extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('web_queue_mem');
+        Schema::dropIfExists('core_soft_host_storages');
     }
 }

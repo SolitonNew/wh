@@ -14,7 +14,7 @@ class CoreProperties extends Migration
     public function up()
     {
         Schema::create('core_properties', function (Blueprint $table) {
-            $table->integerIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->string('name');
             $table->string('comm', 2000);
             $table->string('value', 2000);

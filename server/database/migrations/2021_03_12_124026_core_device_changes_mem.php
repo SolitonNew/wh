@@ -14,11 +14,11 @@ class CoreDeviceChangesMem extends Migration
     public function up()
     {
         Schema::create('core_device_changes_mem', function (Blueprint $table) {
-            $table->integerIncrements('id');
-            $table->integer('device_id');
+            $table->bigIncrements('id')->unsigned();
+            $table->bigInteger('device_id')->unsigned();
             $table->timestamp('change_date')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->float('value');
-            $table->integer('from_id')->nullable();
+            $table->bigInteger('from_id')->nullable();
         });
         
         DB::statement('ALTER TABLE core_device_changes_mem ENGINE = MEMORY');

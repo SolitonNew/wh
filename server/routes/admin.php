@@ -124,3 +124,7 @@ Route::get('/jurnal/power', 'Jurnal\PowerController@index')->name('admin.jurnal-
 /* Settings  --------------------------------------------------- */
 Route::get('/settings', 'SettingsController@index')->name('admin.settings');
 Route::post('/settings-set-max-level/{value}', 'SettingsController@setMaxLevel')->name('admin.settings-set-max-level');
+
+
+/* Test  ------------------------------------------------- */
+Route::get('/test', 'TestController@test');

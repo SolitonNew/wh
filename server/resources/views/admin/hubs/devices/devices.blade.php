@@ -58,7 +58,7 @@
                     <td class="nowrap">{{ $row->room->name ?? '-- '.Lang::get('admin/hubs.device_group_empty').' --'  }}</td>
                     <td>{{ Lang::get('admin/hubs.app_control.'.$row->app_control) }}</td>
                     <td class="device-value" data-time="{{ \Carbon\Carbon::parse($row->last_update)->timestamp }}">{{ $row->value }}</td>
-                    <td>{{ $row->channel }}</td>
+                    <td>{{ $row->channel ?: '' }}</td>
                 </tr>
                 @empty
                 <tr class="table-empty">

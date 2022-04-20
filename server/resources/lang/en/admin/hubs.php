@@ -83,13 +83,17 @@ return [
         5 => 'Termostat',
         6 => 'Videcam',
         7 => 'Venting',
-        8 => 'Motion sensor',
-        9 => 'Leakage sensor',
-        10 => 'Humidity sensor',
+        8 => 'Motion',
+        9 => 'Leakage',
+        10 => 'Humidity',
         11 => 'Gas sensor',
         12 => 'Door sensor',
         13 => 'Atmosphere pressure',
-        14 => 'Current sensor',
+        14 => 'Current',
+        15 => 'Speed',
+        16 => 'Direction',
+        17 => 'Distance',
+        18 => 'Precents',
     ],
     
     'log_app_control' => [
@@ -107,7 +111,11 @@ return [
         11 => 'CO',
         12 => 'DOOR',
         13 => 'ATM.',
-        14 => 'CURR.',        
+        14 => 'CURR.',
+        15 => 'SPEED',
+        16 => 'DIRE.',
+        17 => 'DIST',
+        18 => 'PERC.',
     ],
     
     'log_app_control_dim' => [
@@ -126,6 +134,10 @@ return [
         11 => 'ppm',
         12 => [0 => 'OPEN', 1 => 'CLOSE'],
         13 => 'mm',
-        14 => 'A',        
+        14 => 'A',
+        15 => 'm/s',
+        16 => '°',
+        17 => 'km',
+        18 => '%'
     ],
 ];

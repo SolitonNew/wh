@@ -14,13 +14,13 @@ class CoreDeviceEvents extends Migration
     public function up()
     {
         Schema::create('core_device_events', function (Blueprint $table) {
-            $table->integerIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->integer('event_type');
-            $table->integer('device_id');
-            $table->integer('script_id');
+            $table->bigInteger('device_id')->unsigned()->nullable();
+            $table->bigInteger('script_id')->unsigned()->nullable();
             
-            $table->index('device_id');
-            $table->index('script_id');
+            $table->foreign('device_id')->references('id')->on('core_devices')->onDelete('cascade');
+            $table->foreign('script_id')->references('id')->on('core_scripts')->onDelete('cascade');
         });
     }
 

@@ -14,7 +14,7 @@ class CoreScripts extends Migration
     public function up()
     {
         Schema::create('core_scripts', function (Blueprint $table) {
-            $table->integerIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->string('comm');
             $table->string('data', 4000);
         });
