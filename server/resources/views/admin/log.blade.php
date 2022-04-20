@@ -2,7 +2,7 @@
 <div class="log-row" 
      data-id="{{ $row->id }}" data-varID="{{ $row->device_id }}" 
      data-value="{{ $row->value }}" data-time="{{ \Carbon\Carbon::parse($row->change_date)->timestamp }}">
-    <div class="log-time text-primary">[{{ \Carbon\Carbon::parse($row->change_date)->format('H:i:s') }}]</div>
+    <div class="log-time text-primary">[{{ parse_datetime($row->change_date)->format('H:i:s') }}]</div>
     <div class="log-text">
         @if($row->app_control > 0)
         '@lang('admin/hubs.log_app_control.'.$row->app_control). {{ $row->comm ?? $row->group_name }}'

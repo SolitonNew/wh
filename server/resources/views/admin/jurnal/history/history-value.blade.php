@@ -20,7 +20,7 @@
             <div class="form-label">@lang('admin/jurnal.history_CHANGE_DATE')</div>
         </div>
         <div class="col-sm-8">
-            <div class="form-control">{{ $item->change_date }}</div>
+            <div class="form-control">{{ parse_datetime($item->change_date)->format('d-m-Y H:i:s') }}</div>
             <div class="invalid-feedback"></div>
         </div>
     </div>

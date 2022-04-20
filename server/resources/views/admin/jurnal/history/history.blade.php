@@ -58,7 +58,7 @@
                         @forelse($data as $row)
                         <tr data-id="{{ $row->id }}">
                             <td>{{ $row->id }}</td>
-                            <td>{{ $row->change_date }}</td>
+                            <td>{{ parse_datetime($row->change_date)->format('d-m-Y H:i:s') }}</td>
                             <td>{{ $row->value }}</td>
                         </tr>
                         @empty
@@ -141,7 +141,7 @@
                 datasets: [{
                     data: [
                     @foreach($data as $row)
-                    {x: '{{ $row->change_date }}', y: {{ $row->value }} },
+                    {x: '{{ parse_datetime($row->change_date) }}', y: {{ $row->value }} },
                     @endforeach
                     ],
                     lineTension: 0,
