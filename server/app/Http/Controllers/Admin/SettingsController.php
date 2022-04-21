@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\Admin\SettingsService;
+use Illuminate\Http\Request;
+use App\Models\Property;
 
 class SettingsController extends Controller
 {
@@ -47,6 +49,30 @@ class SettingsController extends Controller
      */
     public function setMaxLevel($value) {
         $this->_service->setCurrentLevel($value);
+        
+        return 'OK';
+    }
+    
+    /**
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function setTimezone(Request $request)
+    {
+        Property::setTimezone($request->timezone);
+        
+        return 'OK';
+    }
+    
+    /**
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function setLocation(Request $request)
+    {
+        Property::setLocation($request->latitude, $request->longitude);
         
         return 'OK';
     }

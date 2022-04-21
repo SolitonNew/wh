@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use \Illuminate\Http\Request;
 use \Carbon\Carbon;
+use App\Library\SunTime;
 use Lang;
 use Log;
 
@@ -152,8 +153,8 @@ class Schedule extends Model
      */
     public function makeDateTime() 
     {
-        $action_datetime = Carbon::parse($this->action_datetime);
-        $now = now()->startOfDay();
+        $action_datetime = Carbon::parse($this->action_datetime, 'UTC');
+        $now = now(Property::getTimezone())->startOfDay();
         
         // Processing time intervals
         $dates = [];
@@ -187,7 +188,7 @@ class Schedule extends Model
                     try {
                         $i = trim($n) - 1;
                         $dates[] = $dw->copy()->addDay($i);
-                        $dates[] = $dw_next->copy()->addDay($i);                        
+                        $dates[] = $dw_next->copy()->addDay($i);
                     } catch (\Exception $ex) {
 
                     }
@@ -199,7 +200,7 @@ class Schedule extends Model
                     $d = explode('-', $day);
                     if (count($d) > 1) {
                         try {
-                            $dw = Carbon::create($now->year, $d[1], $d[0], 0, 0, 0);
+                            $dw = Carbon::create($now->year, $d[1], $d[0], 0, 0, 0, 'UTC');
                             $dw_next = $dw->copy()->addYear();
                             $dates[] = $dw;
                             $dates[] = $dw_next;                            
@@ -276,10 +277,9 @@ class Schedule extends Model
                 }
             } else { // Is it sunrise or sunset
                 try {
-                    $latitude = config('app.location_latitude');
-                    $longitude = config('app.location_longitude');
+                    $location = Property::getLocation();
                     $zenith = 90.8333333333333;
-                    $times[] = \App\Library\SunTime::get($date, $latitude, $longitude, $zenith, $time_type);
+                    $times[] = SunTime::get($date, $location->latitude, $location->longitude, $zenith, $time_type);
                 } catch (\Exception $ex) {
                     Log::error($ex->getMessage());
                 }

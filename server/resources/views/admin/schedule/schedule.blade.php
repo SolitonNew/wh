@@ -23,14 +23,14 @@
         <tbody>
             @forelse($data as $row)
             <tr data-id="{{ $row->id }}" 
-                class="{{ (\Carbon\Carbon::parse($row->action_datetime)->gt(now()) && 
-                           \Carbon\Carbon::parse($row->action_datetime)->lte(now()->startOfDay()->addDay())) ? 'schedule-exec-today' : '' }}">
+                class="{{ (parse_datetime($row->action_datetime)->gt(now()) && 
+                           parse_datetime($row->action_datetime)->lte(now()->startOfDay()->addDay())) ? 'schedule-exec-today' : '' }}">
                 <td>{{ $row->id }}</td>
                 <td>{{ $row->comm }}</td>
                 <td>
                     @if($row->action_datetime)
-                    {{ \Carbon\Carbon::parse($row->action_datetime)->format('Y-m-d') }}<br>
-                    {{ \Carbon\Carbon::parse($row->action_datetime)->format('H:i:s') }}
+                    {{ parse_datetime($row->action_datetime)->format('Y-m-d') }}<br>
+                    {{ parse_datetime($row->action_datetime)->format('H:i:s') }}
                     @else
                     @lang('admin/schedule.action_datetime_calc')
                     @endif

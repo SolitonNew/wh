@@ -257,4 +257,71 @@ class Property extends Model
         return $count;
     }
     
+    static private $_timezone = false;
+    
+    static public function getTimezone()
+    {
+        if (self::$_timezone === false) {
+            $item = self::whereName('TIMEZONE')->first();
+            if ($item) {
+                self::$_timezone = $item->value ?: 'UTC';
+            } else {
+                self::$_timezone = 'UTC';
+            }
+        }
+        
+        return self::$_timezone;
+    }
+    
+    static public function setTimezone($timezone)
+    {
+        $item = self::whereName('TIMEZONE')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'TIMEZONE';
+            $item->comm = '';
+        }
+        
+        $item->value = $timezone;
+        $item->save();
+        
+        self::$_timezone = $timezone;
+    }
+    
+    static private $_location = false;
+    
+    static public function getLocation()
+    {
+        if (self::$_location === false) {
+            $item = self::whereName('LOCATION')->first();
+            if ($item && $item->value) {
+                self::$_location = json_decode($item->value);
+            } else {
+                self::$_location = (object)[
+                    'latitude' => 0,
+                    'longitude' => 0,
+                ];
+            }
+        }
+        
+        return self::$_location;
+    }
+    
+    static public function setLocation($latitude, $longitude)
+    {
+        $item = self::whereName('LOCATION')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'LOCATION';
+            $item->comm = '';
+        }
+        
+        self::$_location = (object)[
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+        ];
+        
+        $item->value = json_encode(self::$_location);
+        $item->save();
+    }
 }

@@ -65,9 +65,6 @@ sudo -u www-data nano .env
 DB_DATABASE=wisehouse
 DB_USERNAME=wisehouse
 DB_PASSWORD=wisehousepass
-TIMEZONE="Europe/Kiev"
-LOCATION_LATITUDE=50.45466
-LOCATION_LONGITUDE=30.5238
 ```
 ```
 sudo -u www-data php artisan optimize

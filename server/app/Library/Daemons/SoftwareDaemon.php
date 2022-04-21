@@ -70,6 +70,12 @@ class SoftwareDaemon extends BaseDaemon
             return;
         }
         
+        $a = [];
+        foreach ($this->_providers as $provider) {
+            $a[] = $provider->title;
+        }
+        $this->printLine('PROVIDERS USED: ['.implode(', ', $a).']');
+        
         // Get last id of the change log
         $this->_lastSyncDeviceChangesID = DeviceChangeMem::max('id') ?? -1;
         

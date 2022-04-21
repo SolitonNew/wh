@@ -127,7 +127,8 @@ Route::get('/jurnal/power', 'Jurnal\PowerController@index')->name('admin.jurnal-
 /* Settings  --------------------------------------------------- */
 Route::get('/settings', 'SettingsController@index')->name('admin.settings');
 Route::post('/settings-set-max-level/{value}', 'SettingsController@setMaxLevel')->name('admin.settings-set-max-level');
-
+Route::post('/settings-set-timezone', 'SettingsController@setTimezone')->name('admin.settings-set-timezone');
+Route::post('/settings-set-location', 'SettingsController@setLocation')->name('admin.settings-set-location');
 
 /* Test  ------------------------------------------------- */
 Route::get('/test', 'TestController@test');

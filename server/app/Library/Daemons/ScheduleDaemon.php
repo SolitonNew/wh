@@ -33,7 +33,7 @@ class ScheduleDaemon extends BaseDaemon
             $row->save();
             $time = '--//--';
             if ($row->action_datetime) {
-                $time = Carbon::parse($row->action_datetime)->format('Y-m-d H:i:s');
+                $time = parse_datetime($row->action_datetime)->format('Y-m-d H:i:s');
             }
             $this->printLine("[$time] $row->comm       ".($row->enable ? '' : Lang::get('admin/daemons/schedule-daemon.disabled')));
         }
@@ -48,10 +48,10 @@ class ScheduleDaemon extends BaseDaemon
                 } elseif (Carbon::parse($row->action_datetime)->lte(now())) {
                     $next_time = $row->makeDateTime();
                     if ($row->enable) {
-                        // Выполняем
+                        // Runing
                         Execute::command($row->action);
                         $this->printLine(Lang::get('admin/daemons/schedule-daemon.line', [
-                            'datetime' => Carbon::parse($row->action_datetime),
+                            'datetime' => Carbon::parse($row->action_datetime, 'UTC'),
                             'comm' => $row->comm,
                             'action' => str_replace("\n", ' ', $row->action),
                         ]));
