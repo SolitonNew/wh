@@ -133,7 +133,7 @@ class Stormglass extends SoftHostBase
                         $value = $values[$device->channel];
                 }
                 
-                if ($device->value != $value) {
+                if (!eq_floats($device->value, $value)) {
                     Device::setValue($device->id, $value);
                     $resultLog[] = $value; 
                 }

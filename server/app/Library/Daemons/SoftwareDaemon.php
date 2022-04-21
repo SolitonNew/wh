@@ -16,7 +16,6 @@ use App\Library\SoftHosts\SoftHostsManager;
 use App\Models\SoftHost;
 use DB;
 use Lang;
-use Log;
 
 /**
  * Description of SoftwareDaemon
