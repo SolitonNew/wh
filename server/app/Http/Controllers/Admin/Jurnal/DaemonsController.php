@@ -13,15 +13,15 @@ class DaemonsController extends Controller
      *
      * @var type 
      */
-    private $_daemonsService;
+    private $_service;
     
     /**
      * 
-     * @param DaemonsService $daemonsService
+     * @param DaemonsService $service
      */
-    public function __construct(DaemonsService $daemonsService) 
+    public function __construct(DaemonsService $service) 
     {
-        $this->_daemonsService = $daemonsService;
+        $this->_service = $service;
     }
     
     /**
@@ -34,8 +34,8 @@ class DaemonsController extends Controller
     {        
         return view('admin.jurnal.daemons.daemons', [
             'id' => $id,
-            'stat' => $this->_daemonsService->isStarted($id),
-            'daemons' => $this->_daemonsService->daemonsList(),
+            'stat' => $this->_service->isStarted($id),
+            'daemons' => $this->_service->daemonsList(),
         ]);
     }
 
@@ -63,7 +63,7 @@ class DaemonsController extends Controller
      */
     public function daemonStart(string $id)
     {
-        $this->_daemonsService->daemonStart($id);
+        $this->_service->daemonStart($id);
         
         return 'OK';
     }
@@ -76,7 +76,7 @@ class DaemonsController extends Controller
      */
     public function daemonStop(string $id)
     {
-        $this->_daemonsService->daemonStop($id);
+        $this->_service->daemonStop($id);
         
         return 'OK';
     }
@@ -89,8 +89,40 @@ class DaemonsController extends Controller
      */
     public function daemonRestart(string $id)
     {
-        $this->_daemonsService->daemonRestart($id);
+        $this->_service->daemonRestart($id);
         
         return 'OK';
-    }    
+    }
+    
+    /**
+     * This route is for starting all daemons.
+     * 
+     * @return string
+     */
+    public function daemonStartAll()
+    {
+        foreach ($this->_service->daemonsList() as $daemon) {
+            if (!$daemon->stat) {
+                $this->_service->daemonStart($daemon->id);
+            }
+        }
+        
+        return 'OK';
+    }
+    
+    /**
+     * This route is for stoping all daemons.
+     * 
+     * @return string
+     */
+    public function daemonStopAll()
+    {
+        foreach ($this->_service->daemonsList() as $daemon) {
+            if ($daemon->stat) {
+                $this->_service->daemonStop($daemon->id);
+            }
+        }
+        
+        return 'OK';
+    }
 }
