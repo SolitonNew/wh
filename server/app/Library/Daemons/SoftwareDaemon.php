@@ -100,7 +100,7 @@ class SoftwareDaemon extends BaseDaemon
                 usleep(100000);
             }
         } catch (\Exception $ex) {
-            $s = "[".now()."] ERROR\n";
+            $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
             $this->printLine($s); 
         } finally {
@@ -151,10 +151,10 @@ class SoftwareDaemon extends BaseDaemon
             try {
                 $execute = new PhpExecute($script->data);
                 $execute->run();
-                $s = "[".now()."] RUN SCRIPT '".$script->comm."' \n";
+                $s = "[".parse_datetime(now())."] RUN SCRIPT '".$script->comm."' \n";
                 $this->printLine($s); 
             } catch (\Exception $ex) {
-                $s = "[".now()."] ERROR\n";
+                $s = "[".parse_datetime(now())."] ERROR\n";
                 $s .= $ex->getMessage();
                 $this->printLine($s); 
             }
@@ -212,7 +212,7 @@ class SoftwareDaemon extends BaseDaemon
                 // Request
                 if ($provider->canRequest()) {
                     $result = $provider->request();
-                    $s = "[".now()."] PROVIDER '".$provider->title."' HAS BEEN REQUESTED \n";
+                    $s = "[".parse_datetime(now())."] PROVIDER '".$provider->title."' HAS BEEN REQUESTED \n";
                     $this->printLine($s); 
                     if ($result) {
                         $this->printLine($result);
@@ -223,13 +223,13 @@ class SoftwareDaemon extends BaseDaemon
                 if ($provider->canUpdate()) {
                     $result = $provider->update();
                     if ($result) {
-                        $s = "[".now()."] PROVIDER '".$provider->title."' HAS BEEN UPDATED \n";
+                        $s = "[".parse_datetime(now())."] PROVIDER '".$provider->title."' HAS BEEN UPDATED \n";
                         $this->printLine($s);
                         $this->printLine($result);
                     }
                 }
             } catch (\Exception $ex) {
-                $s = "[".now()."] ERROR FOR '".$provider->title."'\n";
+                $s = "[".parse_datetime(now())."] ERROR FOR '".$provider->title."'\n";
                 $s .= $ex->getMessage();
                 $this->printLine($s); 
             }

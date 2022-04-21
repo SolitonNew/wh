@@ -186,7 +186,7 @@ class DinDaemon extends BaseDaemon
                 usleep(100000);
             }
         } catch (\Exception $ex) {
-            $s = "[".now()."] ERROR\n";
+            $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
             $this->printLine($s); 
         } finally {
@@ -433,7 +433,7 @@ class DinDaemon extends BaseDaemon
             $errorText = $ex->getMessage();
         }
         
-        $this->printLine("[".now()."] SYNC. '$controller->name': $stat");
+        $this->printLine("[".parse_datetime(now())."] SYNC. '$controller->name': $stat");
         if ($stat == 'OK') {
             foreach (array_chunk($vars_out, 15) as $key => $chunk) {
                 if ($key == 0) {

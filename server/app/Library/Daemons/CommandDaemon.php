@@ -41,7 +41,7 @@ class CommandDaemon extends BaseDaemon
 
             foreach(DB::select($sql) as $row) {
                 $this->printLine(Lang::get('admin/daemons/command-daemon.line', [
-                    'datetime' => Carbon::now(),
+                    'datetime' => parse_datetime(now()),
                     'command' => $row->command,
                 ]));
                 
