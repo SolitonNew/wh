@@ -45,7 +45,7 @@ class Stormglass extends SoftHostBase
             'http_errors' => false,
         ]);
         
-        $parans = [
+        $params = [
             'airTemperature',
             'pressure',
             'cloudCover',
@@ -65,7 +65,7 @@ class Stormglass extends SoftHostBase
             'form_params' => [
                 'lat' => $location->latitude,
                 'lng' => $location->longitude,
-                'params' => implode(',', $parans),
+                'params' => implode(',', $params),
             ],
         ];
         
@@ -147,5 +147,41 @@ class Stormglass extends SoftHostBase
         } else {
             return '';
         }
+    }
+    
+    /**
+     * 
+     * @param type $channel
+     * @param type $afterHours
+     * @return int
+     */
+    public function getForecastValue($channel, $afterHours)
+    {
+        $cannels = [
+            'TEMP' => 'airTemperature',
+            'P' => 'pressure',
+            'CC' => 'cloudCover',
+            'G' => 'gust',
+            'H' => 'humidity',
+            'V' => 'visibility',
+            'WD' => 'windDirection',
+            'WS' => 'windSpeed',
+        ];
+        
+        $attr = $cannels[$channel];
+        
+        $now = \Carbon\Carbon::now()->startOfHour()->addHours($afterHours);
+        
+        $data = json_decode($this->getLastStorageData());
+        
+        foreach ($data->hours as $hour) {
+            $time = \Carbon\Carbon::parse($hour->time);
+            $time->startOfHour();
+            if ($time == $now) {
+                return $hour->$attr->sg;
+            }
+        }
+        
+        return 0;
     }
 }

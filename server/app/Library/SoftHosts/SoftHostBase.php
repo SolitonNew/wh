@@ -173,4 +173,15 @@ class SoftHostBase
     {
         return '';
     }
+    
+    /**
+     * 
+     * @param type $channel
+     * @param type $afterHours
+     * @return int
+     */
+    public function getForecastValue($channel, $afterHours)
+    {
+        return 0;
+    }
 }
