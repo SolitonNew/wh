@@ -16,7 +16,6 @@ use App\Library\SoftHosts\SoftHostsManager;
 use App\Models\SoftHost;
 use DB;
 use Lang;
-use Log;
 
 /**
  * Description of SoftwareDaemon
@@ -70,6 +69,12 @@ class SoftwareDaemon extends BaseDaemon
             $this->disableAutorun();
             return;
         }
+        
+        $a = [];
+        foreach ($this->_providers as $provider) {
+            $a[] = $provider->title;
+        }
+        $this->printLine('PROVIDERS USED: ['.implode(', ', $a).']');
         
         // Get last id of the change log
         $this->_lastSyncDeviceChangesID = DeviceChangeMem::max('id') ?? -1;

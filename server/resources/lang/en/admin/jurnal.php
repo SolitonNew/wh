@@ -21,10 +21,14 @@ return [
     'daemon_run' => 'Start the current process',
     'daemon_stop' => 'Stop the current process',
     'daemon_reload' => 'Restart the current process',
+    'daemon_run_all' => 'Start for all processes',
+    'daemon_stop_all' => 'Stop for all processes',
     'daemon_btn_top' => 'Top',
     'daemon_run_confirm' => 'Start the current process?',
     'daemon_stop_confirm' => 'Stop the current process?',
     'daemon_reload_confirm' => 'Restart the current process?',
+    'daemon_run_all_confirm' => 'Start for all processes?',
+    'daemon_stop_all_confirm' => 'Stop for all processes?',
     
     'power' => 'Power',
 ];

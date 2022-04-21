@@ -5,6 +5,9 @@
 <a href="#" class="dropdown-item {{ $stat ? '' : 'disabled' }}" onclick="daemonStop(); return false;">@lang('admin/jurnal.daemon_stop')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="daemonReload(); return false;">@lang('admin/jurnal.daemon_reload')</a>
+<div class="dropdown-divider"></div>
+<a href="#" class="dropdown-item" onclick="daemonStartAll(); return false">@lang('admin/jurnal.daemon_run_all')</a>
+<a href="#" class="dropdown-item" onclick="daemonStopAll(); return false">@lang('admin/jurnal.daemon_stop_all')</a>
 @endsection
 
 @section('page-content')
@@ -141,6 +144,34 @@
     
     function daemonLogScrollTop() {
         $('.content-body').scrollTop(0);
+    }
+    
+    function daemonStartAll() {
+        confirmYesNo("@lang('admin/jurnal.daemon_run_all_confirm')", () => {
+            startGlobalWaiter();
+            $.ajax('{{ route("admin.jurnal-daemon-start-all") }}').done((data) => {
+                stopGlobalWaiter();
+                if (data == 'OK') {
+                    window.location.reload();
+                } else {
+                    console.log(data);
+                }
+            });
+        });
+    }
+    
+    function daemonStopAll() {
+        confirmYesNo("@lang('admin/jurnal.daemon_stop_all_confirm')", () => {
+            startGlobalWaiter();
+            $.ajax('{{ route("admin.jurnal-daemon-stop-all") }}').done((data) => {
+                stopGlobalWaiter();
+                if (data == 'OK') {
+                    window.location.reload();
+                } else {
+                    console.log(data);
+                }
+            });
+        });
     }
 
 </script>

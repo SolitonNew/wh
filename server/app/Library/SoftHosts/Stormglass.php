@@ -4,7 +4,7 @@ namespace App\Library\SoftHosts;
 
 use \Carbon\Carbon;
 use App\Models\Device;
-use Log;
+use App\Models\Property;
 
 class Stormglass extends SoftHostBase
 {
@@ -56,13 +56,15 @@ class Stormglass extends SoftHostBase
             'windSpeed',
         ];
         
+        $location = Property::getLocation();
+        
         $options = [
             'headers' => [
                 'Authorization' => $apiKey,
             ],
             'form_params' => [
-                'lat' => config('settings.location_latitude'),
-                'lng' => config('settings.location_longitude'),
+                'lat' => $location->latitude,
+                'lng' => $location->longitude,
                 'params' => implode(',', $parans),
             ],
         ];
@@ -133,7 +135,7 @@ class Stormglass extends SoftHostBase
                         $value = $values[$device->channel];
                 }
                 
-                if ($device->value != $value) {
+                if (!eq_floats($device->value, $value)) {
                     Device::setValue($device->id, $value);
                     $resultLog[] = $value; 
                 }
