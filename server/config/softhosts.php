@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'providers' => [
-        \App\Library\SoftHosts\Stormglass::class,
-        \App\Library\SoftHosts\DemoTwo::class,
+    'drivers' => [
+        \App\Library\SoftHostDrivers\Stormglass::class,
+        \App\Library\SoftHostDrivers\DemoTwo::class,
     ],
 ];

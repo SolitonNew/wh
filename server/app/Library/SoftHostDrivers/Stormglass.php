@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Library\SoftHosts;
+namespace App\Library\SoftHostDrivers;
 
 use \Carbon\Carbon;
 use App\Models\Device;
 use App\Models\Property;
 
-class Stormglass extends SoftHostBase
+class Stormglass extends SoftHostDriverBase
 {
     const URL = 'https://api.stormglass.io/v2';
+    const PRESSURE_K = 1.357; // 1.333
     
     public $name = 'stormglass';
     public $channels = [
@@ -30,6 +31,25 @@ class Stormglass extends SoftHostBase
     protected $updateCronExpression = '* * * * *';
     
     /**
+     * Override this method for request after reboot.
+     * 
+     * @return boolean
+     */
+    public function canRequest()
+    {
+        $result = parent::canRequest();
+        
+        if (!$result) {
+            $date = $this->getLastStorageDatetime();
+            if (!$date || Carbon::parse($date)->diffInHours(Carbon::now()) > 4) {
+                $result = true;
+            }
+        }
+        
+        return $result;
+    }
+    
+    /**
      * 
      * @return string
      * @throws \Exception
@@ -45,7 +65,7 @@ class Stormglass extends SoftHostBase
             'http_errors' => false,
         ]);
         
-        $parans = [
+        $params = [
             'airTemperature',
             'pressure',
             'cloudCover',
@@ -65,7 +85,7 @@ class Stormglass extends SoftHostBase
             'form_params' => [
                 'lat' => $location->latitude,
                 'lng' => $location->longitude,
-                'params' => implode(',', $parans),
+                'params' => implode(',', $params),
             ],
         ];
         
@@ -96,7 +116,6 @@ class Stormglass extends SoftHostBase
         if ($data == null) return '';
         
         $utcNow = Carbon::now('UTC')->startOfHour();
-        $utcNext = $utcNow->clone()->addHours(1);
         
         $values = [];
         
@@ -108,7 +127,7 @@ class Stormglass extends SoftHostBase
         
         $json = json_decode($data);
         foreach ($json->hours as $hour) {
-            $hourTime = Carbon::parse($hour->time)->startOfHour();
+            $hourTime = Carbon::parse($hour->time, 'UTC')->startOfHour();
             if ($hourTime->eq($utcNow)) {
                 $putValue($values, $hour, 'TEMP', 'airTemperature');
                 $putValue($values, $hour, 'P', 'pressure');
@@ -129,7 +148,7 @@ class Stormglass extends SoftHostBase
             if (isset($values[$device->channel])) {
                 switch ($device->channel) {
                     case 'P':
-                        $value = round($values[$device->channel] / 1.333);
+                        $value = round($values[$device->channel] / self::PRESSURE_K);
                         break;
                     default:
                         $value = $values[$device->channel];
@@ -147,5 +166,46 @@ class Stormglass extends SoftHostBase
         } else {
             return '';
         }
+    }
+    
+    /**
+     * 
+     * @param type $channel
+     * @param type $afterHours
+     * @return int
+     */
+    public function getForecastValue($channel, $afterHours)
+    {
+        $cannels = [
+            'TEMP' => 'airTemperature',
+            'P' => 'pressure',
+            'CC' => 'cloudCover',
+            'G' => 'gust',
+            'H' => 'humidity',
+            'V' => 'visibility',
+            'WD' => 'windDirection',
+            'WS' => 'windSpeed',
+        ];
+        
+        $attr = $cannels[$channel];
+        
+        $now = \Carbon\Carbon::now('UTC')->startOfHour()->addHours($afterHours);
+        
+        $data = json_decode($this->getLastStorageData());
+        
+        foreach ($data->hours as $hour) {
+            $time = \Carbon\Carbon::parse($hour->time, 'UTC');
+            $time->startOfHour();
+            if ($time == $now) {
+                switch ($attr) {
+                    case 'pressure':
+                        return round($hour->$attr->sg / self::PRESSURE_K);
+                    default:
+                        return $hour->$attr->sg;
+                }
+            }
+        }
+        
+        return 0;
     }
 }

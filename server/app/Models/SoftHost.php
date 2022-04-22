@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
-use Log;
 
 class SoftHost extends AffectsFirmwareModel
 {
@@ -31,6 +30,29 @@ class SoftHost extends AffectsFirmwareModel
                     ->orderBy('name', 'asc');
     }
     
+    private $_driver = false;
+    
+    /**
+     * 
+     * @return type
+     */
+    public function driver()
+    {
+        if ($this->_driver === false) {
+            foreach (config('softhosts.drivers') as $class) {
+                $instance = new $class();
+                if ($instance->name == $this->typ) {
+                    $instance->assignKey($this->id);
+                    $instance->assignData($this->data);
+                    $this->_driver = $instance;
+                    break;
+                }
+            }
+        }
+        
+        return $this->_driver;        
+    }
+    
     /**
      *
      * @var type 
@@ -44,17 +66,13 @@ class SoftHost extends AffectsFirmwareModel
     public function type()
     {
         if ($this->type === null) {
-            $manager = new \App\Library\SoftHosts\SoftHostsManager();
-            
-            $provider = $manager->providerByName($this->typ);
-            
-            if ($provider) {
+            if ($this->driver()) {
                 $type = [
-                    'title' => $provider->title,
-                    'description' => $provider->description,
-                    'channels' => $provider->channels,
+                    'title' => $this->driver()->title,
+                    'description' => $this->driver()->description,
+                    'channels' => $this->driver()->channels,
                     'consuming' => 0,
-                    'properties' => $provider->propertiesWithTitles(),
+                    'properties' => $this->driver()->propertiesWithTitles(),
                 ];
             } else {
                 $type = [
@@ -91,8 +109,11 @@ class SoftHost extends AffectsFirmwareModel
      */
     public function typeList()
     {
-        $manager = new \App\Library\SoftHosts\SoftHostsManager();
-        return $manager->providers();
+        $result = [];
+        foreach (config('softhosts.drivers') as $class) {
+            $result[] = new $class();
+        }
+        return $result;
     }
     
     /**

@@ -51,7 +51,7 @@ class ScheduleDaemon extends BaseDaemon
                         // Runing
                         Execute::command($row->action);
                         $this->printLine(Lang::get('admin/daemons/schedule-daemon.line', [
-                            'datetime' => Carbon::parse($row->action_datetime, 'UTC'),
+                            'datetime' => parse_datetime($row->action_datetime),
                             'comm' => $row->comm,
                             'action' => str_replace("\n", ' ', $row->action),
                         ]));

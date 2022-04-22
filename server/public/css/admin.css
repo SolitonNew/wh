@@ -12,6 +12,10 @@
     border-radius: 3px;
 }
 
+.btn {
+    white-space: nowrap;
+}
+
 .btn img {
     margin-top: -4px;
     filter: invert(100%);
@@ -50,12 +54,17 @@
 .navbar-down-menu {
     margin-left: 1rem;
     margin-right: 1.5rem;
+    white-space: nowrap;
 }
 
 .navbar-top-menu {
     display: flex; 
     flex-grow: 1; 
     align-items: center;
+    height: 47px;
+    position: fixed;
+    left: 490px;
+    transition-duration: 0.25s;
 }
 
 .navbar-top-menu-tab {
@@ -165,6 +174,15 @@
 
 .body-container.main-menu-collapse .navbar .navbar-down-menu {
     margin-left: 4px;
+}
+
+.navbar.navbar-with-tabs {
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+
+.body-container.main-menu-collapse .navbar-top-menu {
+    left: 310px;
 }
 
 .body-container.main-menu-collapse .main-left-panel {
@@ -830,9 +848,9 @@ select.select-tree option {
     }
     
     .navbar-top-menu {
-        position: absolute;
-        left: 56px;
-        top: 57px;
+        position: fixed;
+        left: 56px!important;
+        top: 43px;
     }
     
     /* Plan */

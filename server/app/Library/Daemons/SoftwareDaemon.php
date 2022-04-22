@@ -12,7 +12,6 @@ use App\Models\Hub;
 use App\Models\DeviceChangeMem;
 use App\Models\Device;
 use App\Library\Script\PhpExecute;
-use App\Library\SoftHosts\SoftHostsManager;
 use App\Models\SoftHost;
 use DB;
 use Lang;
@@ -100,7 +99,7 @@ class SoftwareDaemon extends BaseDaemon
                 usleep(100000);
             }
         } catch (\Exception $ex) {
-            $s = "[".now()."] ERROR\n";
+            $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
             $this->printLine($s); 
         } finally {
@@ -151,10 +150,10 @@ class SoftwareDaemon extends BaseDaemon
             try {
                 $execute = new PhpExecute($script->data);
                 $execute->run();
-                $s = "[".now()."] RUN SCRIPT '".$script->comm."' \n";
+                $s = "[".parse_datetime(now())."] RUN SCRIPT '".$script->comm."' \n";
                 $this->printLine($s); 
             } catch (\Exception $ex) {
-                $s = "[".now()."] ERROR\n";
+                $s = "[".parse_datetime(now())."] ERROR\n";
                 $s .= $ex->getMessage();
                 $this->printLine($s); 
             }
@@ -166,8 +165,6 @@ class SoftwareDaemon extends BaseDaemon
      */
     private function _initHostProviders()
     {
-        $manager = new SoftHostsManager();
-        
         $ids = $this->_controllers
             ->pluck('id')
             ->toArray();
@@ -176,12 +173,7 @@ class SoftwareDaemon extends BaseDaemon
             ->get();
         
         foreach ($hosts as $host) {
-             $provider = $manager->providerByName($host->typ);
-             if ($provider) {
-                $provider->assignKey($host->id);
-                $provider->assignData($host->data);
-                $this->_providers[$host->id] = $provider;
-             }
+            $this->_providers[$host->id] = $host->driver();
         }
     }
     
@@ -212,7 +204,7 @@ class SoftwareDaemon extends BaseDaemon
                 // Request
                 if ($provider->canRequest()) {
                     $result = $provider->request();
-                    $s = "[".now()."] PROVIDER '".$provider->title."' HAS BEEN REQUESTED \n";
+                    $s = "[".parse_datetime(now())."] PROVIDER '".$provider->title."' HAS BEEN REQUESTED \n";
                     $this->printLine($s); 
                     if ($result) {
                         $this->printLine($result);
@@ -223,13 +215,13 @@ class SoftwareDaemon extends BaseDaemon
                 if ($provider->canUpdate()) {
                     $result = $provider->update();
                     if ($result) {
-                        $s = "[".now()."] PROVIDER '".$provider->title."' HAS BEEN UPDATED \n";
+                        $s = "[".parse_datetime(now())."] PROVIDER '".$provider->title."' HAS BEEN UPDATED \n";
                         $this->printLine($s);
                         $this->printLine($result);
                     }
                 }
             } catch (\Exception $ex) {
-                $s = "[".now()."] ERROR FOR '".$provider->title."'\n";
+                $s = "[".parse_datetime(now())."] ERROR FOR '".$provider->title."'\n";
                 $s .= $ex->getMessage();
                 $this->printLine($s); 
             }

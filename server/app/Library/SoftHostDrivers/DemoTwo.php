@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Library\SoftHosts;
+namespace App\Library\SoftHostDrivers;
 
-class DemoTwo extends SoftHostBase
+class DemoTwo extends SoftHostDriverBase
 {
     public $name = 'demo_two';
     public $channels = [

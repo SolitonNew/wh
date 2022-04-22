@@ -147,8 +147,6 @@ class Device extends AffectsFirmwareModel
      */
     static public function setValue(int $deviceID, float $value)
     {
-        Log::info('"'.$value.'"');
-        
         try {
             DB::select("CALL CORE_SET_DEVICE($deviceID, $value, -1)");
         } catch (\Exception $e) {
@@ -319,5 +317,35 @@ class Device extends AffectsFirmwareModel
         if (!isset($position->cross)) $position->cross = ($defaults && isset($defaults->cross)) ? $defaults->cross : 0;
         
         return $position;
+    }
+    
+    /**
+     * 
+     * @param int $deviceID
+     * @param int $afterHours
+     * @return int
+     */
+    static public function getValue(int $deviceID, int $afterHours = 0)
+    {
+        $device = self::find($deviceID);
+        
+        if (!$device) return 0;
+        
+        // Return valur for now
+        if ($afterHours == 0) {
+            return $device->value;
+        }
+
+        if ($device->typ != 'software') return 0;
+
+        $host = SoftHost::find($device->host_id);
+        
+        if (!$host) return 0;
+        
+        $driver = $host->driver();
+        
+        if (!$driver) return 0;
+        
+        return $driver->getForecastValue($device->channel, $afterHours);
     }
 }

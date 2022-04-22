@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Library\SoftHosts;
+namespace App\Library\SoftHostDrivers;
 
 use App\Models\SoftHostStorage;
 use App\Models\Device;
 use \Cron\CronExpression;
 use Lang;
 
-class SoftHostBase 
+class SoftHostDriverBase
 {
     /**
      *
@@ -133,6 +133,15 @@ class SoftHostBase
      * 
      * @return type
      */
+    protected function getLastStorageDatetime()
+    {
+        return SoftHostStorage::where('soft_host_id', $this->key)->max('created_at');
+    }
+    
+    /**
+     * 
+     * @return type
+     */
     public function getAssociatedDevices()
     {
         return Device::whereHostId($this->key)
@@ -172,5 +181,16 @@ class SoftHostBase
     public function update()
     {
         return '';
+    }
+    
+    /**
+     * 
+     * @param type $channel
+     * @param type $afterHours
+     * @return int
+     */
+    public function getForecastValue($channel, $afterHours)
+    {
+        return 0;
     }
 }

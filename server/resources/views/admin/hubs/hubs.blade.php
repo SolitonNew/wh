@@ -3,7 +3,6 @@
 @section('down-menu')
 <style>
     .navbar-down-menu {
-        min-width: 250px;
         margin-right: 0.5rem;
     }
 </style>
