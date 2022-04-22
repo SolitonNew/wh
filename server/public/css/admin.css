@@ -178,7 +178,7 @@
 
 .navbar.navbar-with-tabs {
     flex-wrap: nowrap;
-    overflow: hidden;
+    #overflow: hidden;
 }
 
 .body-container.main-menu-collapse .navbar-top-menu {
