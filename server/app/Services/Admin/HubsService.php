@@ -143,7 +143,7 @@ class HubsService
         
         // Generation of devices for software hosts
         $hosts = SoftHost::whereHubId($hubID)->get();
-        $devs = Device::whereTyp('ow')->get();
+        $devs = Device::whereTyp('software')->get();
         
         try {
             foreach($hosts as $host) {

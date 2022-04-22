@@ -5,28 +5,29 @@ namespace App\Library\SoftHostDrivers;
 use \Carbon\Carbon;
 use App\Models\Device;
 use App\Models\Property;
+use Log;
 
-class Stormglass extends SoftHostDriverBase
+class OpenWeather extends SoftHostDriverBase
 {
-    const URL = 'https://api.stormglass.io/v2';
+    const URL = 'https://api.openweathermap.org/data/2.5';
     const PRESSURE_K = 1.357; // 1.333
     
-    public $name = 'stormglass';
+    public $name = 'openweather';
     public $channels = [
-        'TEMP', // airTemperature - Air temperature in degrees celsius
-        'P',    // pressure - Air pressure in hPa
-        'CC',   // cloudCover - Total cloud coverage in percent
-        'G',    // gust - Wind gust in meters per second
-        'H',    // humidity - Relative humidity in percent
-        'V',    // visibility - Horizontal visibility in km
-        'WD',   // windDirection - Direction of wind at 10m above sea level. 0° indicates wind coming from north
-        'WS',   // windSpeed - Speed of wind at 10m above sea level in meters per second.
+        'TEMP', // Air temperature in degrees celsius
+        'P',    // Air pressure in hPa
+        'CC',   // Total cloud coverage in percent
+        'G',    // Wind gust in meters per second
+        'H',    // Relative humidity in percent
+        'V',    // Horizontal visibility in km
+        'WD',   // Direction of wind at 10m above sea level. 0° indicates wind coming from north
+        'WS',   // Speed of wind at 10m above sea level in meters per second.
     ];
     public $properties = [
-        'api_key' => 'large',
+        'api_id' => 'large',
     ];
     
-    protected $requestCronExpression = '0 0,4,8,12,16,20 * * *';
+    protected $requestCronExpression = '0 * * * *'; // '0 0,4,8,12,16,20 * * *';
     
     protected $updateCronExpression = '* * * * *';
     
@@ -41,7 +42,7 @@ class Stormglass extends SoftHostDriverBase
         
         if (!$result) {
             $date = $this->getLastStorageDatetime();
-            if (!$date || Carbon::parse($date)->diffInHours(Carbon::now()) > 4) {
+            if (!$date || Carbon::parse($date)->diffInHours(Carbon::now()) > 1) {
                 $result = true;
             }
         }
@@ -56,40 +57,27 @@ class Stormglass extends SoftHostDriverBase
      */
     public function request()
     {
-        $apiKey = $this->getDataValue('api_key');
-        if (!$apiKey) {
-            throw new \Exception('Bad api key value');
+        $apiID = $this->getDataValue('api_id');
+        if (!$apiID) {
+            throw new \Exception('Bad api id value');
         }
         
         $client = new \GuzzleHttp\Client([
             'http_errors' => false,
         ]);
         
-        $params = [
-            'airTemperature',
-            'pressure',
-            'cloudCover',
-            'gust',
-            'humidity',
-            'visibility',
-            'windDirection',
-            'windSpeed',
-        ];
-        
         $location = Property::getLocation();
         
         $options = [
-            'headers' => [
-                'Authorization' => $apiKey,
-            ],
-            'form_params' => [
+            'query' => [
                 'lat' => $location->latitude,
-                'lng' => $location->longitude,
-                'params' => implode(',', $params),
+                'lon' => $location->longitude,
+                'appid' => $apiID,
+                'units' => 'metric',
             ],
         ];
         
-        $result = $client->get(self::URL.'/weather/point', $options);
+        $result = $client->get(self::URL.'/forecast', $options);
         
         if ($result->getStatusCode() == 200) {
             try {
@@ -113,14 +101,14 @@ class Stormglass extends SoftHostDriverBase
     private function _load_channels($item)
     {
         return [
-            'TEMP' => $item->airTemperature->sg,
-            'P' => round($item->pressure->sg / self::PRESSURE_K),
-            'CC' => $item->cloudCover->sg,
-            'G' => $item->gust->sg,
-            'H' => $item->humidity->sg,
-            'V' => $item->visibility->sg,
-            'WD' => $item->windDirection->sg,
-            'WS' => $item->windSpeed->sg,
+            'TEMP' => $item->main->temp,
+            'P' => round($item->main->pressure / self::PRESSURE_K),
+            'CC' => $item->clouds->all,
+            'G' => $item->wind->gust,
+            'H' => $item->main->humidity,
+            'V' => $item->visibility / 1000,
+            'WD' => $item->wind->deg,
+            'WS' => $item->wind->speed,
         ];
     }
     
@@ -139,10 +127,10 @@ class Stormglass extends SoftHostDriverBase
         $values = [];
         
         $json = json_decode($data);
-        foreach ($json->hours as $hour) {
-            $hourTime = Carbon::parse($hour->time, 'UTC')->startOfHour();
-            if ($hourTime->eq($utcNow)) {
-                $values = $this->_load_channels($hour);
+        foreach ($json->list as $item) {
+            $time = Carbon::createFromTimestamp($item->dt, 'UTC')->startOfHour();
+            if ($time->gte($utcNow)) {
+                $values = $this->_load_channels($item);
                 break;
             }
         }
@@ -179,11 +167,11 @@ class Stormglass extends SoftHostDriverBase
         
         $data = json_decode($this->getLastStorageData());
         
-        foreach ($data->hours as $hour) {
-            $time = \Carbon\Carbon::parse($hour->time, 'UTC');
+        foreach ($data->list as $item) {
+            $time = \Carbon\Carbon::createFromTimestamp($item->dt, 'UTC');
             $time->startOfHour();
-            if ($time == $now) {
-                $values = $this->_load_channels($hour);
+            if ($time->gte($now)) {
+                $values = $this->_load_channels($item);
                 return $values[$channel];
             }
         }
