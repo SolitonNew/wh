@@ -34,9 +34,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="navbar-top-menu">
-                @yield('top-menu')
-                </div>
+                <div class="flex-grow-1"></div>
                 @if(\App\Models\Hub::existsFirmwareHubs() && \App\Models\Property::getFirmwareChanges() > 0)
                 <a class="btn btn-danger" href="#" onclick="firmware(); return false;">
                     <img src="/img/menus/bolt-2x.png">
@@ -59,6 +57,9 @@
                     <img src="/img/menus/list-2x.png">
                     <span class="btn-label">@lang('admin/admin.menu_hide_log')</span>
                 </a>
+                <div class="navbar-top-menu">
+                @yield('top-menu')
+                </div>
             </nav>
         </div>
         <div class="main-container">
