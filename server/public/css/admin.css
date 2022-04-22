@@ -72,6 +72,15 @@
     border-bottom: 1px solid #ffffff;
 }
 
+.navbar-top-menu-tab .nav-link {
+    background-color: #eeeeee;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.navbar-top-menu-tab .nav-link:hover {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
 .navbar-top-menu-tab .nav-link.active {
     border: 1px solid rgba(0, 0, 0, 0.125);
     border-bottom: 0px;
