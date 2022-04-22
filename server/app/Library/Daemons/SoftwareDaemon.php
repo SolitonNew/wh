@@ -12,7 +12,6 @@ use App\Models\Hub;
 use App\Models\DeviceChangeMem;
 use App\Models\Device;
 use App\Library\Script\PhpExecute;
-use App\Library\SoftHosts\SoftHostsManager;
 use App\Models\SoftHost;
 use DB;
 use Lang;
@@ -166,8 +165,6 @@ class SoftwareDaemon extends BaseDaemon
      */
     private function _initHostProviders()
     {
-        $manager = new SoftHostsManager();
-        
         $ids = $this->_controllers
             ->pluck('id')
             ->toArray();
@@ -176,12 +173,7 @@ class SoftwareDaemon extends BaseDaemon
             ->get();
         
         foreach ($hosts as $host) {
-             $provider = $manager->providerByName($host->typ);
-             if ($provider) {
-                $provider->assignKey($host->id);
-                $provider->assignData($host->data);
-                $this->_providers[$host->id] = $provider;
-             }
+            $this->_providers[$host->id] = $host->driver();
         }
     }
     

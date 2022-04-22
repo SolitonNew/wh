@@ -9,7 +9,6 @@ use App\Http\Requests\Admin\SoftHostRequest;
 use App\Http\Requests\Admin\OwHostRequest;
 use App\Models\SoftHost;
 use App\Models\OwHost;
-use App\Library\SoftHosts\SoftHostsManager;
 
 class HostsController extends Controller
 {    

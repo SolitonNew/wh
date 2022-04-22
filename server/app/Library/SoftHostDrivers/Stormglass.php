@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Library\SoftHosts;
+namespace App\Library\SoftHostDrivers;
 
 use \Carbon\Carbon;
 use App\Models\Device;
 use App\Models\Property;
 
-class Stormglass extends SoftHostBase
+class Stormglass extends SoftHostDriverBase
 {
     const URL = 'https://api.stormglass.io/v2';
     const PRESSURE_K = 1.357; // 1.333

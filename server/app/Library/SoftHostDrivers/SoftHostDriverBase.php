@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Library\SoftHosts;
+namespace App\Library\SoftHostDrivers;
 
 use App\Models\SoftHostStorage;
 use App\Models\Device;
 use \Cron\CronExpression;
 use Lang;
 
-class SoftHostBase 
+class SoftHostDriverBase
 {
     /**
      *

@@ -342,13 +342,10 @@ class Device extends AffectsFirmwareModel
         
         if (!$host) return 0;
         
-        $manager = new \App\Library\SoftHosts\SoftHostsManager();
-        $provider = $manager->providerByName($host->typ);
+        $driver = $host->driver();
         
-        if (!$provider) return 0;
+        if (!$driver) return 0;
         
-        $provider->assignKey($host->id);
-        
-        return $provider->getForecastValue($device->channel, $afterHours);
+        return $driver->getForecastValue($device->channel, $afterHours);
     }
 }
