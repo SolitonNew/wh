@@ -133,6 +133,15 @@ class SoftHostBase
      * 
      * @return type
      */
+    protected function getLastStorageDatetime()
+    {
+        return SoftHostStorage::where('soft_host_id', $this->key)->max('created_at');
+    }
+    
+    /**
+     * 
+     * @return type
+     */
     public function getAssociatedDevices()
     {
         return Device::whereHostId($this->key)
