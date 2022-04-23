@@ -20,6 +20,10 @@
         white-space: nowrap;
         padding-left: 0.75rem!important;
     }
+    .without-host td {
+        color: rgba(0,0,0,0.4);
+        font-style: italic;
+    }
 </style>
 <div style="display: flex; flex-direction: column; height: 100%;">
     <div class="navbar navbar-page">
@@ -50,7 +54,8 @@
             </thead>
             <tbody>
                 @forelse($data as $row)
-                <tr data-id="{{ $row->id }}" class="{{ $row->events->isEmpty() ? '' : 'row-with-events' }}">
+                <tr data-id="{{ $row->id }}" 
+                    class="{{ $row->events->isEmpty() ? '' : 'row-with-events' }} {{ $row->freedevice ? 'without-host' : '' }}">
                     <td>{{ $row->id }}</td>
                     <td>{{ $row->typ }}</td>
                     <td>{{ $row->name }}</td>

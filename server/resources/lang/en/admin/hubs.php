@@ -93,7 +93,7 @@ return [
         15 => 'Speed',
         16 => 'Direction',
         17 => 'Distance',
-        18 => 'Precents',
+        18 => 'Percents',
     ],
     
     'log_app_control' => [

@@ -22,6 +22,7 @@ class OpenWeather extends SoftHostDriverBase
         'V',    // Horizontal visibility in km
         'WD',   // Direction of wind at 10m above sea level. 0° indicates wind coming from north
         'WS',   // Speed of wind at 10m above sea level in meters per second.
+        'MP',   // 
     ];
     public $properties = [
         'api_id' => 'large',
@@ -99,7 +100,7 @@ class OpenWeather extends SoftHostDriverBase
      * @return type
      */
     private function _load_channels($item)
-    {
+    {        
         return [
             'TEMP' => $item->main->temp,
             'P' => round($item->main->pressure / self::PRESSURE_K),
@@ -109,6 +110,7 @@ class OpenWeather extends SoftHostDriverBase
             'V' => $item->visibility / 1000,
             'WD' => $item->wind->deg,
             'WS' => $item->wind->speed,
+            'MP' => isset($item->rain) ? round($item->rain->{"3h"} / 3, 2) : 0,
         ];
     }
     

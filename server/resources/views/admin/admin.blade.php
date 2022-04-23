@@ -38,7 +38,7 @@
                 @if(\App\Models\Hub::existsFirmwareHubs() && \App\Models\Property::getFirmwareChanges() > 0)
                 <a class="btn btn-danger" href="#" onclick="firmware(); return false;">
                     <img src="/img/menus/bolt-2x.png">
-                    <span class="btn-label">@lang('admin/admin.menu_firmware') ({{ \App\Models\Property::getFirmwareChanges() }})</span>
+                    <span class="btn-label">@lang('admin/admin.menu_firmware')</span>
                 </a>
                 @endif
                 <a class="btn btn-primary" href="{{ route('home') }}" target="_blank">
