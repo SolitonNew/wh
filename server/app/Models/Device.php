@@ -158,18 +158,41 @@ class Device extends AffectsFirmwareModel
     {
         switch ($roomID) {
             case 'none':
-                return Device::whereHubId($hubID)
+                return Device::select([DB::raw('0 freedevice'), 'core_devices.*'])
+                            ->whereHubId($hubID)
+                            ->union(
+                                Device::select([DB::raw('1 freedevice'), 'core_devices.*'])->whereNotExists(function ($query) {
+                                    $query->from('core_hubs')
+                                        ->whereRaw('core_devices.hub_id = core_hubs.id');
+                                })
+                            )
                             ->orderBy('name', 'asc')
                             ->get();
             case 'empty':
-                return Device::whereHubId($hubID)
+                return Device::select([DB::raw('0 freedevice'), 'core_devices.*'])
+                            ->whereHubId($hubID)
                             ->doesntHave('room')
+                            ->union(
+                                Device::select([DB::raw('1 freedevice'), 'core_devices.*'])->whereNotExists(function ($query) {
+                                    $query->from('core_hubs')
+                                        ->whereRaw('core_devices.hub_id = core_hubs.id');
+                                })
+                                ->doesntHave('room')
+                            )
                             ->orderBy('name', 'asc')
                             ->get();
             default:
                 $ids = explode(',', Room::genIDsForRoomAtParent($roomID)) ?? [];
-                return Device::whereHubId($hubID)
+                return Device::select([DB::raw('0 freedevice'), 'core_devices.*'])
+                            ->whereHubId($hubID)
                             ->whereIn('room_id', $ids)
+                            ->union(
+                                Device::select([DB::raw('1 freedevice'), 'core_devices.*'])->whereNotExists(function ($query) use ($ids) {
+                                    $query->from('core_hubs')
+                                        ->whereRaw('core_devices.hub_id = core_hubs.id');
+                                })
+                                ->whereIn('room_id', $ids)
+                            )
                             ->orderBy('name', 'asc')
                             ->get();
         }
