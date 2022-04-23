@@ -84,6 +84,10 @@ class Translate
             'helper' => 'function ()',
             'args' => [0],
         ],
+        'print' => [
+            'helper' => 'function (text)',
+            'args' => [1],
+        ]
     ];
     
     /**
