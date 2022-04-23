@@ -4,6 +4,8 @@ return [
     'menu' => 'Planning',
     'title' => '',
     
+    'main_prompt' => 'To get started, you first need to add a plan item',
+    
     'plan_add' => 'Add plan item...',
     'plan_edit' => 'Plan item properties...',
     'plan_move_childs' => 'Move children...',

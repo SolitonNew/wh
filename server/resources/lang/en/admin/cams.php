@@ -4,6 +4,8 @@ return [
     'menu' => 'Videcams',
     'title' => '',
     
+    'main_prompt' => 'To get started, you first need to add a videcam',
+    
     'table_ID' => 'ID',
     'table_NAME' => 'Name',
     'table_URL' => 'URL',

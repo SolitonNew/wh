@@ -8,6 +8,7 @@
 @endsection
 
 @section('content')
+@if(count($data))
 <div class="content-body" scroll-store="scheduleList">
     <table id="scheduleList" class="table table-sm table-hover table-bordered table-fixed-header">
         <thead>
@@ -47,6 +48,16 @@
         </tbody>
     </table>
 </div>
+@else
+<div style="display: flex; flex-direction: column; flex-grow: 1;height: 100%; align-items: center;">
+    <div style="min-width: 50%;margin-top: 2rem;">
+        <div class="jumbotron">
+            <h5 class="mb-4">@lang('admin/schedule.main_prompt')</h5>
+            <a href="javascript:scheduleAdd()" class="btn btn-primary">@lang('admin/schedule.schedule_add')</a>
+        </div>
+    </div>
+</div>
+@endif
 
 <script>
     let scheduleActionOptions = {

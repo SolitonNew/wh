@@ -4,6 +4,8 @@ return [
     'menu' => 'Scripts',
     'title' => '',
     
+    'main_prompt' => 'To get started, you first need to add a script',
+    
     'script_add' => 'Add new script...',
     'script_edit' => 'Script properties...',
     'script_show_editor' => 'Script edit...',

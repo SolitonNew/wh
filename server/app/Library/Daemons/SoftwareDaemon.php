@@ -217,7 +217,7 @@ class SoftwareDaemon extends BaseDaemon
                     if ($result) {
                         $s = "[".parse_datetime(now())."] PROVIDER '".$provider->title."' HAS BEEN UPDATED \n";
                         if ($result) {
-                            $s .= "\n".$result;
+                            $s .= $result;
                         }
                         $this->printLine($s);
                     }
