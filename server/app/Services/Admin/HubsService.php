@@ -56,8 +56,12 @@ class HubsService
             10 => ['H'],                      // Humidity
             11 => ['CO'],                     // Gas sensor
             //12 => [],                       // Door sensor
-            //13 => [],                       // Atm. pressure
+            13 => ['P'],                       // Atm. pressure
             14 => ['AMP'],                    // Currency sensor
+            15 => ['G', 'WS'],                // Speed
+            16 => ['WD'],                     // Direction
+            17 => ['V', ''],                  // Distance
+            18 => ['H', 'CC'],                // Percents
         ];     
         
         $decodeChannel = function ($channel) use ($channelControl) {
@@ -165,7 +169,7 @@ class HubsService
                         $item->name = 'temp for software';
                         $item->host_id = $host->id;
                         $item->channel = $chan;
-                        $item->app_control = 0; //$appControl;
+                        $item->app_control = $appControl;
                         $item->save(['withoutevents']);
                         $item->name = 'soft_'.$item->id.'_'.$chan;
                         $item->save();

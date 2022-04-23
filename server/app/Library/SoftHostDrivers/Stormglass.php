@@ -21,6 +21,7 @@ class Stormglass extends SoftHostDriverBase
         'V',    // visibility - Horizontal visibility in km
         'WD',   // windDirection - Direction of wind at 10m above sea level. 0° indicates wind coming from north
         'WS',   // windSpeed - Speed of wind at 10m above sea level in meters per second.
+        'MP',   // precipitation - Mean precipitation in kg/m²/h = mm/h
     ];
     public $properties = [
         'api_key' => 'large',
@@ -74,6 +75,7 @@ class Stormglass extends SoftHostDriverBase
             'visibility',
             'windDirection',
             'windSpeed',
+            'precipitation',
         ];
         
         $location = Property::getLocation();
@@ -82,7 +84,7 @@ class Stormglass extends SoftHostDriverBase
             'headers' => [
                 'Authorization' => $apiKey,
             ],
-            'form_params' => [
+            'query' => [
                 'lat' => $location->latitude,
                 'lng' => $location->longitude,
                 'params' => implode(',', $params),
@@ -121,6 +123,7 @@ class Stormglass extends SoftHostDriverBase
             'V' => $item->visibility->sg,
             'WD' => $item->windDirection->sg,
             'WS' => $item->windSpeed->sg,
+            'MP' => $item->precipitation->sg,
         ];
     }
     
