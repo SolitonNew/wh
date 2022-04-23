@@ -29,11 +29,6 @@ class HubsService
                 break;
             }
         }
-
-        // Starting devices generator
-        // If the device is not found, it will create
-        $this->_generateDevs();
-        // --------------------------------------
         
         return $text;
     }
