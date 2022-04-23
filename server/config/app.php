@@ -235,36 +235,32 @@ return [
     ],
     
     /*
-     *  Время обновления графиков для Terminal
+     * The time of the chart update (milliseconds)
      */
     'chart_update_interval' => 60 * 1000,
     
     /*
-     *  Интервал запроса информации по обновлению данных
+     * The interval of the query update data (milliseconds)
      */
     'admin_log_update_interval' => 500,
     
     /*
-     *  Количество строк в отображаемом логе
+     * Number of lines in the system log
      */
-    'admin_log_lines_count' => 40,
+    'admin_log_lines_count' => 40,    
     
     /*
-     *  Идентификатор переменной значение которой озвучивается в команде info()
+     * ID of the device for info message
      */
     'command_info_temp_id' => env('COMMAND_INFO_TEMP_ID', -1),
     
-    
     /*
-     * Географические координаты вашего положенияё Используются для вычисления 
-     * времени восхода/заката
-     */
-    'location_latitude' => env('LOCATION_LATITUDE', 0),
-    'location_longitude' => env('LOCATION_LONGITUDE', 0),
-    
-    /*
-     * Кол-во строк отображаемых в логах процессов
+     * Number of lines in journal logs
      */
     'admin_daemons_log_lines_count' => 100,
     
+    /**
+     * Number interval of the query update daemon status (milliseconds)
+     */
+    'admin_daemins_status_update_interval' => 5 * 1000,
 ];

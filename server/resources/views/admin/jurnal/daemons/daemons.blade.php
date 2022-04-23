@@ -11,21 +11,30 @@
 @endsection
 
 @section('page-content')
+<style>
+    #daemonsList .start,
+    #daemonsList .started .stop {
+        display: none;
+    }
+    
+    #daemonsList .stop,
+    #daemonsList .started .start {
+        display: inline;
+    }
+</style>
 <div style="position:relative; display: flex; flex-direction: row; height: 100%;">
     <div id="daemonsList" class="tree" 
          style="width: 250px; min-width:250px; border-right: 1px solid rgba(0,0,0,0.125); justify-content: space-between;" 
          scroll-store="jurnalDaemonsList">
         @foreach($daemons as $row)
         <a href="{{ route('admin.jurnal-daemons', $row->id) }}"
-            class="tree-item {{ $row->id == $id ? 'active' : '' }}"
+            class="tree-item {{ $row->id == $id ? 'active' : '' }} {{ $row->stat ? 'started' : '' }}"
+            data-id="{{ $row->id }}"
             style="display: block;">
             <div style="display: flex;">
                 <div style="flex-grow: 1;">{{ $row->id }}</div>
-                @if ($row->stat)
-                <div class="badge badge-pill badge-success" style="margin-top: 0; margin-bottom: 0px;">RUN</div>
-                @else
-                <div class="badge badge-pill badge-warning" style="margin-top: 0; margin-bottom: 0px;">STOP</div>
-                @endif
+                <div class="badge badge-pill badge-success start" style="margin-top: 0; margin-bottom: 0px;">RUN</div>
+                <div class="badge badge-pill badge-warning stop" style="margin-top: 0; margin-bottom: 0px;">STOP</div>
             </div>
             <small class="text-muted" style="white-space: normal;">@lang('admin/daemons/'.$row->id.'.title')</small>
         </a>
