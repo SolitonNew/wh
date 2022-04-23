@@ -149,6 +149,15 @@
         </div>
     </div>
 </div>
+@else
+<div style="display: flex; flex-direction: column; flex-grow: 1;height: 100%; align-items: center;">
+    <div style="min-width: 50%;margin-top: 2rem;">
+        <div class="jumbotron">
+            <h5 class="mb-4">@lang('admin/plan.main_prompt')</h5>
+            <a href="javascript:planMenuAddPart()" class="btn btn-primary">@lang('admin/plan.menu_add_part')</a>
+        </div>
+    </div>
+</div>
 @endif
 
 <script>

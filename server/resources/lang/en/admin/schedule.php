@@ -4,6 +4,8 @@ return [
     'menu' => 'Schedule',
     'title' => '',
     
+    'main_prompt' => 'To get started, you first need to add a schedule record',
+    
     'schedule_add' => 'Add new schedule record...',
     'schedule_add_title' => 'New schedule record',
     'schedule_edit_title' => 'Schedule record properties',
