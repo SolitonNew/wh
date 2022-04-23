@@ -94,7 +94,7 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('jurnal')" href="{{ route('admin.jurnal') }}">
                             <img src="/img/menus/bar-chart-2x.png">
                             <span class="label">@lang('admin/jurnal.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ App\Models\Property::getRunedDaemons() }} / {{ App\Models\Property::getTotalDaemons() }}</span>
+                            <span id="daemonsState" class="badge badge-primary badge-pill">{{ App\Models\Property::getRunedDaemons() }} / {{ App\Models\Property::getTotalDaemons() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('users')" href="{{ route('admin.users') }}">
                             <img src="/img/menus/people-2x.png">
@@ -187,6 +187,7 @@
 
         calcLastVariableID();
         loadVariableChanges();
+        requestDaemonsState();
 
         $('.body-container').css({opacity: 1});
 
@@ -453,5 +454,31 @@
         dialog("{{ route('admin.firmware') }}");
     }
 
+    function requestDaemonsState() {
+        $.ajax('{{ route("admin.jurnal-daemons-state") }}').done((data) => {
+            if (typeof(data) == 'string') {
+                if (data && (data.substr(0, 15) == '<!DOCTYPE HTML>')) {
+                    window.location.reload();
+                    return ;
+                }
+            }
+
+            if (data) {
+                let count = data.length;
+                let enabled = 0;
+                for (let i = 0; i < count; i++) {
+                    if (data[i].stat) {
+                        enabled++;
+                        $('#daemonsList .tree-item[data-id="' + data[i].id + '"]').addClass('started');
+                    } else {
+                        $('#daemonsList .tree-item[data-id="' + data[i].id + '"]').removeClass('started');
+                    }
+                }
+                $('#daemonsState').text(enabled + ' / ' + count);
+            }
+
+            setTimeout(requestDaemonsState, {{ config("app.admin_daemins_status_update_interval") }});
+        });
+    }
 </script>
 @endsection

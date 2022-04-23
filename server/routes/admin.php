@@ -119,6 +119,7 @@ Route::get('/jurnal/daemon-stop/{id}', 'Jurnal\DaemonsController@daemonStop')->n
 Route::get('/jurnal/daemon-restart/{id}', 'Jurnal\DaemonsController@daemonRestart')->name('admin.jurnal-daemon-restart');
 Route::get('/jurnal/daemon-start-all', 'Jurnal\DaemonsController@daemonStartAll')->name('admin.jurnal-daemon-start-all');
 Route::get('/jurnal/daemon-stop-all', 'Jurnal\DaemonsController@daemonStopAll')->name('admin.jurnal-daemon-stop-all');
+Route::get('/jurnal/daemons-state', 'Jurnal\DaemonsController@daemonsState')->name('admin.jurnal-daemons-state');
 
 /* Power management routes */    
 Route::get('/jurnal/power', 'Jurnal\PowerController@index')->name('admin.jurnal-power');

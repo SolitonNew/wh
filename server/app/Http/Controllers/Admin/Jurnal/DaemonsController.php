@@ -125,4 +125,14 @@ class DaemonsController extends Controller
         
         return 'OK';
     }
+    
+    /**
+     * This route is for getting state of daemons.
+     * 
+     * @return type
+     */
+    public function daemonsState()
+    {
+        return response()->json($this->_service->daemonsList());
+    }
 }
