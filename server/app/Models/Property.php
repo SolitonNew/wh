@@ -200,7 +200,7 @@ class Property extends Model
     static public function getFirmwareChanges() 
     {
         if (self::$_firmwareChanges === false) {
-            $item = self::whereName('WIRMWARE_CHANGES')->first();
+            $item = self::whereName('FIRMWARE_CHANGES')->first();
             if ($item) {
                 self::$_firmwareChanges = $item->value ?? 0;
             } else {
