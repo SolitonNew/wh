@@ -84,7 +84,15 @@ class Translate
             'helper' => 'function ()',
             'args' => [0],
         ],
-        'print' => [
+        'print_i' => [
+            'helper' => 'function (int)',
+            'args' => [1],
+        ],
+        'print_f' => [
+            'helper' => 'function (float)',
+            'args' => [1],
+        ],
+        'print_s' => [
             'helper' => 'function (text)',
             'args' => [1],
         ]
@@ -235,22 +243,23 @@ class Translate
             if ($part == ',') {
                 $func_args++;
             } else
-            if (preg_match('/[0-9]/', $part[0])) { // Is it a number
+            if (preg_match('/[0-9]/', $part[0])) { // It is a number
                 $this->_prepared_numbers[$part] = (isset($this->_prepared_numbers[$part]) ? $this->_prepared_numbers[$part] + 1 : 1);
             } else
-            if (preg_match('/[a-zA-Z]/', $part[0])) { // Is it a function, phrase or variable
+            if (preg_match('/[a-zA-Z]/', $part[0])) { // It is a function, phrase or variable
                 if ($i < count($this->_parts) - 1) {
                     $is_keyword = false;
                     for ($k = $i + 1; $k < count($this->_parts); $k++) {
                         if (in_array($this->_parts[$k], $spaces)) continue;
-                        if ($this->_parts[$k] == '(') { // Is it a function or construction
+                        if ($this->_parts[$k] == '(') { // It is a function or construction
                             $args = 1;
                             $new_i = $this->_prepareBlock($k, $args);                            
-                            if (isset($this->_functions[$part])) { // Is it a function
+                            if (isset($this->_functions[$part])) { // It is a function
                                 // Check the number of arguments
                                 if (!in_array($args, $this->_functions[$part]['args'])) {
                                     throw new \Exception('Invalid number of arguments "'.$args.'" for "'.$part.'"');
-                                }
+                                }                                
+                                
                                 // Replace the record string with an object 
                                 // with extended information.
                                 $this->_parts[$i] = (object)[
@@ -365,7 +374,7 @@ class Translate
     {
         $parts = [];
         foreach($this->_parts as $part) {
-            if ($part != '') {
+            if ($part !== '') {
                 $parts[] = $part;
             }
         }

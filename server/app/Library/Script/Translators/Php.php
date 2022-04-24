@@ -50,7 +50,13 @@ class Php implements ITranslator
         'info' => [
             0 => '$this->function_info',
         ],
-        'print' => [
+        'print_i' => [
+            1 => '$this->function_print',
+        ],
+        'print_f' => [
+            1 => '$this->function_print',
+        ],
+        'print_s' => [
             1 => '$this->function_print',
         ]
     ];    

@@ -50,6 +50,15 @@ class C implements ITranslator
         'info' => [
             0 => 'command_info',
         ],
+        'print_i' => [
+            1 => 'command_print_i',
+        ],
+        'print_f' => [
+            1 => 'command_print_f',
+        ],
+        'print_s' => [
+            1 => 'command_print_s',
+        ],
     ];
     
     private $_variableNames = [];

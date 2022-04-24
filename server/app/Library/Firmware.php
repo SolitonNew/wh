@@ -87,10 +87,11 @@ class Firmware
         // Вычитываем все нужные данные
         $OwHostTyps = config('onewire.types');
         $owList = OwHost::orderBy('id', 'asc')->get();
-        $varList = DB::select('select v.*, c.rom controller_rom
+        $varList = DB::select("select v.*, c.rom controller_rom
                                  from core_devices v, core_hubs c
                                 where v.hub_id = c.id
-                               order by v.id');
+                                  and c.typ = 'din'
+                               order by v.id");
         $scriptList = Script::orderBy('id', 'asc')->get();
         $eventList = DB::select('select e.device_id, GROUP_CONCAT(e.script_id) script_ids
                                    from core_device_events e 
