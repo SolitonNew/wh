@@ -94,8 +94,8 @@ class DinDaemon extends BaseDaemon
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/daemons/din-daemon.description'));
-        $this->printLine('--    PORT: '.config('firmware.din_port')); 
-        $this->printLine('--    BAUD: '.config('firmware.din_baud')); 
+        $this->printLine('--    PORT: '.config('firmware.din.port')); 
+        $this->printLine('--    BAUD: '.config('firmware.din.baud')); 
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
@@ -112,8 +112,8 @@ class DinDaemon extends BaseDaemon
         $this->_lastSyncDeviceChangesID = DeviceChangeMem::max('id') ?? -1;
         
         try {           
-            $port = config('firmware.din_port');
-            $baud = config('firmware.din_baud');
+            $port = config('firmware.din.port');
+            $baud = config('firmware.din.baud');
             exec("stty -F $port $baud cs8 cstopb -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
             $this->_port = fopen($port, 'r+b');
             stream_set_blocking($this->_port, false);
@@ -318,7 +318,7 @@ class DinDaemon extends BaseDaemon
     public function _commandFirmware($controller) 
     {
         if (!$this->_firmwareHex) {
-            $firmware = new \App\Library\Firmware();
+            $firmware = new \App\Library\Firmware\Din();
             $this->_firmwareHex = $firmware->getHex();
             $this->_firmwareSpmPageSize = $firmware->spmPageSize();
         }

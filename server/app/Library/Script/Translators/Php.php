@@ -8,8 +8,6 @@
 
 namespace App\Library\Script\Translators;
 
-use Log;
-
 /**
  * Description of Php$prepareData$prepareData$prepareData
  *

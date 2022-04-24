@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace App\Library;
+namespace App\Library\Firmware;
 
 use App\Models\OwHost;
 use App\Models\Script;
@@ -14,24 +14,23 @@ use App\Library\Script\Translate;
 use App\Library\Script\Translators\C as TranslateC;
 use View;
 use DB;
-use Log;
 
 /**
- * Description of Firmware
+ * Description of Din
  *
  * @author soliton
  */
-class Firmware 
+class Din 
 {
     /**
-     * Название проекта прошивки щитового контроллера
+     * Din firmware project name
      * 
      * @var type 
      */
     protected $_project = 'din_master';
     
     /**
-     * Название микроконтроллера
+     * Controller name
      * 
      * @var type 
      */
@@ -63,8 +62,8 @@ class Firmware
      */
     public function __construct() 
     {
-        $this->_mmcu = config('firmware.mmcu');
-        $this->_spm_pagesize = config('firmware.spm_pagesize');
+        $this->_mmcu = config('firmware.din.mmcu');
+        $this->_spm_pagesize = config('firmware.din.spm_pagesize');
     }
     
     /**
@@ -283,7 +282,7 @@ class Firmware
     }
     
     /**
-     * Читает ранее созданый файл прошивки и формирует массив по 8 байт в записи.
+     * We read the firmware file and make an array of 8 bytes per record.
      * 
      * @return boolean|array
      */
