@@ -202,7 +202,7 @@ class Property extends Model
         if (self::$_firmwareChanges === false) {
             $item = self::whereName('FIRMWARE_CHANGES')->first();
             if ($item) {
-                self::$_firmwareChanges = $item->value ?? 0;
+                self::$_firmwareChanges = $item->value ?: 0;
             } else {
                 self::$_firmwareChanges = 0;
             }
