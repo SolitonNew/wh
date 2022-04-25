@@ -8,6 +8,7 @@
 
 return [
     'atmega8a' => [
+        'baud' => 9600,
         'spm_pagesize' => 128,
         'channels' => [
             'R1', 
@@ -17,6 +18,7 @@ return [
         ],
     ],
     'atmega328a' => [
+        'baud' => 9600,
         'spm_pagesize' => 128,
         'channels' => [
             'R1', 
@@ -26,6 +28,7 @@ return [
         ],
     ],
     'atmega16a' => [
+        'baud' => 9600,
         'spm_pagesize' => 128,
         'channels' => [
             'R1', 

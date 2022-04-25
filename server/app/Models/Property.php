@@ -357,7 +357,6 @@ class Property extends Model
             } else {
                 self::$_din_settings = (object)[
                     'port' => '/dev/ttyUSB0',
-                    'baud' => '9600',
                     'mmcu' => 'atmega16a',
                 ];
             }
@@ -369,10 +368,9 @@ class Property extends Model
     /**
      * 
      * @param type $port
-     * @param type $baud
      * @param type $mmcu
      */
-    static public function setDinSettings($port, $baud, $mmcu)
+    static public function setDinSettings($port, $mmcu)
     {
         $item = self::whereName('DIN_SETTINGS')->first();
         if (!$item) {
@@ -383,7 +381,6 @@ class Property extends Model
         
         self::$_din_settings = (object)[
             'port' => $port,
-            'baud' => $baud,
             'mmcu' => $mmcu,
         ];
         

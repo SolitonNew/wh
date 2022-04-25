@@ -5,25 +5,13 @@
             <div class="col-sm-2">
                 <label class="form-label">@lang('admin/settings.din_settings_port')</label>
             </div>
-            <div class=" col-sm-5">
+            <div class=" col-sm-4">
                 <input id="dinSettingsPort" class="form-control" value="{{ App\Models\Property::getDinSettings()->port }}">
             </div>
             <div class="col-sm-2">
-                <label class="form-label">@lang('admin/settings.din_settings_baud')</label>
-            </div>
-            <div class=" col-sm-3">
-                <select id="dinSettingsBaud" class="custom-select">
-                    @foreach(App\Library\Serial::BAUDS as $baud)
-                    <option value="{{ $baud }}" {{ App\Models\Property::getDinSettings()->baud == $baud ? 'selected' : '' }}>{{ $baud }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-sm-2">
                 <label class="form-label">@lang('admin/settings.din_settings_mmcu')</label>
             </div>
-            <div class="col-sm-5">
+            <div class="col-sm-4">
                 <select id="dinSettingsMmcu" class="custom-select">
                     @foreach(config('din') as $key => $val)
                     <option value="{{ $key }}" {{ App\Models\Property::getDinSettings()->mmcu == $key ? 'selected' : '' }}>{{ $key }}</option>
@@ -49,7 +37,6 @@
                 data: {
                     _token: '{{ @csrf_token() }}',
                     port: $('#dinSettingsPort').val(),
-                    baud: $('#dinSettingsBaud').val(),
                     mmcu: $('#dinSettingsMmcu').val(),
                 },
                 success: function (data) {

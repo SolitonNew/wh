@@ -97,7 +97,7 @@ class DinDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/daemons/din-daemon.description'));
         $this->printLine('--    PORT: '.$settings->port); 
-        $this->printLine('--    BAUD: '.$settings->baud); 
+        $this->printLine('--    BAUD: '.config('din.'.$settings->mmcu.'.baud')); 
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
@@ -116,7 +116,7 @@ class DinDaemon extends BaseDaemon
         try {
             $settings = Property::getDinSettings();
             $port = $settings->port;
-            $baud = $settings->baud;
+            $baud = config('din.'.$settings->mmcu.'.baud');
             exec("stty -F $port $baud cs8 cstopb -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
             $this->_port = fopen($port, 'r+b');
             stream_set_blocking($this->_port, false);
