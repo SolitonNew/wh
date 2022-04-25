@@ -29,6 +29,17 @@
     z-index: 1;
 }
 
+.navbar .version {
+    position: fixed;
+    display: inline-block;
+    font-size: 11px;
+    font-family: Verdana;
+    top: 44px;
+    text-align: center;
+    width: 200px;
+    opacity: 0.75;
+}
+
 .navbar .btn {
     margin: 0;
     margin-right: 0.5rem;
@@ -165,6 +176,10 @@
     flex-grow: 1;
     text-aligh: left;
     margin-left: 1rem;
+}
+
+.body-container.main-menu-collapse .navbar .version {
+    display: none;
 }
 
 .body-container.main-menu-collapse .logo {

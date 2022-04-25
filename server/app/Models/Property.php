@@ -9,6 +9,8 @@ class Property extends Model
     protected $table = 'core_properties';
     public $timestamps = false;
     
+    const VERSION = '2.0.1';
+    
     /**
      * 
      * @return type
@@ -259,6 +261,10 @@ class Property extends Model
     
     static private $_timezone = false;
     
+    /**
+     * 
+     * @return type
+     */
     static public function getTimezone()
     {
         if (self::$_timezone === false) {
@@ -273,6 +279,10 @@ class Property extends Model
         return self::$_timezone;
     }
     
+    /**
+     * 
+     * @param type $timezone
+     */
     static public function setTimezone($timezone)
     {
         $item = self::whereName('TIMEZONE')->first();
@@ -290,6 +300,10 @@ class Property extends Model
     
     static private $_location = false;
     
+    /**
+     * 
+     * @return type
+     */
     static public function getLocation()
     {
         if (self::$_location === false) {
@@ -307,6 +321,11 @@ class Property extends Model
         return self::$_location;
     }
     
+    /**
+     * 
+     * @param type $latitude
+     * @param type $longitude
+     */
     static public function setLocation($latitude, $longitude)
     {
         $item = self::whereName('LOCATION')->first();
@@ -324,4 +343,51 @@ class Property extends Model
         $item->value = json_encode(self::$_location);
         $item->save();
     }
+    
+    static private $_din_settings = false;
+    
+    /**
+     * 
+     * @return type
+     */
+    static public function getDinSettings()
+    {
+        if (self::$_din_settings === false) {
+            $item = self::whereName('DIN_SETTINGS')->first();
+            if ($item && $item->value) {
+                self::$_din_settings = json_decode($item->value);
+            } else {
+                self::$_din_settings = (object)[
+                    'port' => '/dev/ttyUSB0',
+                    'mmcu' => 'atmega16a',
+                ];
+            }
+        }
+        
+        return self::$_din_settings;
+    }
+    
+    /**
+     * 
+     * @param type $port
+     * @param type $mmcu
+     */
+    static public function setDinSettings($port, $mmcu)
+    {
+        $item = self::whereName('DIN_SETTINGS')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'DIN_SETTINGS';
+            $item->comm = '';
+        }
+        
+        self::$_din_settings = (object)[
+            'port' => $port,
+            'mmcu' => $mmcu,
+        ];
+        
+        $item->value = json_encode(self::$_din_settings);
+        $item->save();
+    }
+    
 }

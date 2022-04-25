@@ -268,66 +268,6 @@ class Device extends AffectsFirmwareModel
     
     /**
      * 
-     * @param int $hubID
-     * @return type
-     */
-    /*static public function hostList(int $hubID)
-    {
-        $OwHosts = OwHost::whereHubId($hubID)
-                ->with('devices')
-                ->orderBy('rom_1', 'asc')
-                ->orderBy('rom_2', 'asc')
-                ->orderBy('rom_3', 'asc')
-                ->orderBy('rom_4', 'asc')
-                ->orderBy('rom_5', 'asc')
-                ->orderBy('rom_6', 'asc')
-                ->orderBy('rom_7', 'asc')
-                ->orderBy('rom_8', 'asc')
-                ->get();
-        $data = [];
-        foreach ($OwHosts as $dev) {
-            $data[] = (object)[
-                'id' => $dev->id,
-                'rom' => $dev->romAsString(),
-                'count' => $dev->devices->count(),
-            ];
-        }
-        return $data;
-    }*/
-    
-    /**
-     * 
-     * @param string $typ
-     * @param int $hostID
-     * @return array
-     */
-    /*static public function hostChannelList(string $typ, int $hostID = null)
-    {
-        switch ($typ) {
-            case 'din':
-                $data = config('firmware.channels.'.config('firmware.mmcu'));
-                break;
-            case 'ow':
-                if ($hostID) {
-                    $OwHost = OwHost::find($hostID);
-                    if ($OwHost) {
-                        $data = $OwHost->channelsOfType();
-                    } else {
-                        $data = [];
-                    }
-                } else {
-                    $data = [];
-                }
-                break;
-            default:
-                $data = [];
-        }
-        
-        return $data;
-    } */
-    
-    /**
-     * 
      * @param type $defaults
      * @return type
      */

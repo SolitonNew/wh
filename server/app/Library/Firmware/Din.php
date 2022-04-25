@@ -12,6 +12,7 @@ use App\Models\OwHost;
 use App\Models\Script;
 use App\Library\Script\Translate;
 use App\Library\Script\Translators\C as TranslateC;
+use App\Models\Property;
 use View;
 use DB;
 
@@ -62,8 +63,9 @@ class Din
      */
     public function __construct() 
     {
-        $this->_mmcu = config('firmware.din.mmcu');
-        $this->_spm_pagesize = config('firmware.din.spm_pagesize');
+        $settings = Property::getDinSettings();
+        $this->_mmcu = $settings->mmcu;
+        $this->_spm_pagesize = config('din.'.$settings->mmcu.'.spm_pagesize');
     }
     
     /**

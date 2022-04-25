@@ -17,6 +17,7 @@
         <div class="col-sm-6">
             @include('admin.settings.timezone')
             @include('admin.settings.structure-deph')
+            @include('admin.settings.din-settings')
         </div>
         <div class="col-sm-6">
             @include('admin.settings.location')

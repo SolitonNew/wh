@@ -89,13 +89,15 @@ class DinDaemon extends BaseDaemon
     public function execute() 
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
+        
+        $settings = Property::getDinSettings();
 
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/daemons/din-daemon.description'));
-        $this->printLine('--    PORT: '.config('firmware.din.port')); 
-        $this->printLine('--    BAUD: '.config('firmware.din.baud')); 
+        $this->printLine('--    PORT: '.$settings->port); 
+        $this->printLine('--    BAUD: '.config('din.'.$settings->mmcu.'.baud')); 
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
@@ -111,9 +113,10 @@ class DinDaemon extends BaseDaemon
         
         $this->_lastSyncDeviceChangesID = DeviceChangeMem::max('id') ?? -1;
         
-        try {           
-            $port = config('firmware.din.port');
-            $baud = config('firmware.din.baud');
+        try {
+            $settings = Property::getDinSettings();
+            $port = $settings->port;
+            $baud = config('din.'.$settings->mmcu.'.baud');
             exec("stty -F $port $baud cs8 cstopb -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
             $this->_port = fopen($port, 'r+b');
             stream_set_blocking($this->_port, false);
