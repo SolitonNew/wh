@@ -76,4 +76,16 @@ class SettingsController extends Controller
         
         return 'OK';
     }
+    
+    /**
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function setDinSettings(Request $request)
+    {
+        Property::setDinSettings($request->port, $request->baud, $request->mmcu, $request->spm_pagesize);
+        
+        return 'OK';
+    }
 }

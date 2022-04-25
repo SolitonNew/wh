@@ -11,6 +11,7 @@ use App\Models\Room;
 use App\Models\Hub;
 use App\Models\OwHost;
 use App\Models\SoftHost;
+use App\Models\Property;
 
 class DevicesController extends Controller
 {
@@ -145,7 +146,8 @@ class DevicesController extends Controller
         $data = [];
         switch ($typ) {
             case 'din':
-                $data = config('firmware.din.channels.'.config('firmware.din.mmcu'));
+                $settings = Property::getDinSettings();
+                $data = config('din.'.$settings->mmcu.'.channels');
                 break;
             case 'ow':
                 $host = OwHost::find($hostID);

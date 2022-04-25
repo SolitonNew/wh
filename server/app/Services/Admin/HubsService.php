@@ -70,7 +70,7 @@ class HubsService
         
         if ($hub->typ == 'din') {
             // Generation of devices by channel
-            $din_channels = config('firmware.din.channels.'.config('firmware.din.mmcu'));
+            $din_channels = config('din.'.Property::getDinSettings()->mmcu.'.channels');
             $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "din"');
             
             try {
