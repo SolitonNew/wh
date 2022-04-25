@@ -9,7 +9,7 @@ class Property extends Model
     protected $table = 'core_properties';
     public $timestamps = false;
     
-    const VERSION = '2.0.1';
+    const VERSION = '2.0.2';
     
     /**
      * 

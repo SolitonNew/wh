@@ -171,14 +171,14 @@ class Din
         
         // Пакуем в файл devs.c
         $fs = new \Illuminate\Filesystem\Filesystem();
-        $fs->put($this->_firmwarePath().'/config/devs.h', View::make('admin.config.devs_h', [
+        $fs->put($this->_firmwarePath().'/config/devs.h', View::make('admin.firmware.din.devs_h', [
             'owList' => $owList,
             'varList' => $varList,
         ]));
 
         // Пакуем в файл devs.c
         $fs = new \Illuminate\Filesystem\Filesystem();
-        $fs->put($this->_firmwarePath().'/config/devs.c', View::make('admin.config.devs_c', [
+        $fs->put($this->_firmwarePath().'/config/devs.c', View::make('admin.firmware.din.devs_c', [
             'owList' => $owList,
             'varList' => $varList,
             'varTyps' => [
@@ -190,13 +190,13 @@ class Din
         
         // Пакуем в файл scripts.h
         $fs = new \Illuminate\Filesystem\Filesystem();
-        $fs->put($this->_firmwarePath().'/config/scripts.h', View::make('admin.config.scripts_h', [
+        $fs->put($this->_firmwarePath().'/config/scripts.h', View::make('admin.firmware.din.scripts_h', [
             'scriptList' => $scriptList,
         ]));
         
         // Пакуем в файл scripts.c
         $fs = new \Illuminate\Filesystem\Filesystem();
-        $fs->put($this->_firmwarePath().'/config/scripts.c', View::make('admin.config.scripts_c', [
+        $fs->put($this->_firmwarePath().'/config/scripts.c', View::make('admin.firmware.din.scripts_c', [
             'scriptList' => $scriptList,
             'eventList' => $eventList,
         ]));
