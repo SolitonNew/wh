@@ -156,7 +156,7 @@ class Stormglass extends SoftHostDriverBase
         foreach ($devices as $device) {
             if (isset($values[$device->channel])) {
                 $value = $values[$device->channel];
-                if (!eq_floats($device->value, $value)) {
+                if (!eq_floats($device->value, $value, 2)) {
                     Device::setValue($device->id, $value);
                     $resultLog[] = $value; 
                 }
