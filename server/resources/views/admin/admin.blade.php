@@ -15,6 +15,7 @@
         <div class="main-menu">
             <nav class="navbar">
                 <div class="logo">WISE HOUSE</div>
+                <div class="version">@lang('admin/admin.version') {{ App\Models\Property::VERSION }}</div>
                 <div class="logo-mini">WH</div>
                 <div class="navbar-down-menu">
                     <div class="btn-group">
