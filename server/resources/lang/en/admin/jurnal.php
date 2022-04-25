@@ -30,5 +30,17 @@ return [
     'daemon_run_all_confirm' => 'Start for all processes?',
     'daemon_stop_all_confirm' => 'Stop for all processes?',
     
+    'forecast' => 'Forecast',
+    'forecast_TIME' => 'Time',
+    'forecast_TEMP' => 'Temperature',
+    'forecast_P' => 'Pressure',
+    'forecast_CC' => 'Cloud Coverage',
+    'forecast_G' => 'Gust',
+    'forecast_H' => 'Humidity',
+    'forecast_V' => 'Visibility',
+    'forecast_WD' => 'Wind Direction',
+    'forecast_WS' => 'Wind Speed',
+    'forecast_MP' => 'Mean Precipitation',
+    
     'power' => 'Power',
 ];

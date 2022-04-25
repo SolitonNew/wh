@@ -193,4 +193,22 @@ class Stormglass extends SoftHostDriverBase
         
         return 0;
     }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getLastForecastData()
+    {
+        $storage = json_decode($this->getLastStorageData());
+        
+        if (!$storage) return [];
+        
+        $result = [];
+        foreach ($storage->hours as $hour) {
+            $time = \Carbon\Carbon::parse($hour->time, 'UTC')->startOfHour()->timestamp;
+            $result[$time] = (object)$this->_load_channels($hour);
+        }
+        return $result;
+    }
 }
