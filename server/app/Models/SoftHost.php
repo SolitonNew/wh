@@ -26,7 +26,7 @@ class SoftHost extends AffectsFirmwareModel
     public function devices()
     {
         return $this->hasMany(Device::class, 'host_id')
-                    //->whereTyp('software')
+                    ->whereTyp('software')
                     ->orderBy('name', 'asc');
     }
     

@@ -56,7 +56,7 @@ class ForecastService
             $time = $recTime->timestamp;
             
             $values = [
-                'localtime' => $recTime,
+                'localtime' => parse_datetime($recTime),
             ];
             
             foreach ($devices as $dev) {
