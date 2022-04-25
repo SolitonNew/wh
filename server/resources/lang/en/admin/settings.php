@@ -16,4 +16,15 @@ return [
     'din_settings_title' => 'DIN Settings',
     'din_settings_port' => 'Port',
     'din_settings_mmcu' => 'MMCU',
+    
+    'forecast_title' => 'Forecast',
+    'forecast_TEMP' => 'Temperature',
+    'forecast_P' => 'Pressure',
+    'forecast_CC' => 'Cloud Coverage',
+    'forecast_G' => 'Gust',
+    'forecast_H' => 'Humidity',
+    'forecast_V' => 'Visibility',
+    'forecast_WD' => 'Wind Direction',
+    'forecast_WS' => 'Wind Speed',
+    'forecast_MP' => 'Mean Precipitation',
 ];

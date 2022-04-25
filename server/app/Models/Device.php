@@ -311,4 +311,15 @@ class Device extends AffectsFirmwareModel
         
         return $driver->getForecastValue($device->channel, $afterHours);
     }
+    
+    /**
+     * 
+     * @return type
+     */
+    static public function getForecastSortList()
+    {
+        return self::whereTyp('software')
+            ->orderBy('name')
+            ->get();
+    }
 }

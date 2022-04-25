@@ -12,12 +12,13 @@
         margin-bottom: 1rem;
     }
 </style>
-<div class="content-body" style="margin: 1rem;">
-    <div class="row">
+<div class="content-body" style="margin: 1rem; margin-top: 0px; margin-right: 0px;" scroll-store="settingsList">
+    <div class="row" style="margin: 1rem; margin-top: 2rem; margin-left: 0px;">
         <div class="col-sm-6">
             @include('admin.settings.timezone')
             @include('admin.settings.structure-deph')
             @include('admin.settings.din-settings')
+            @include('admin.settings.forecast')
         </div>
         <div class="col-sm-6">
             @include('admin.settings.location')

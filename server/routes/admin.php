@@ -131,6 +131,7 @@ Route::post('/settings-set-max-level/{value}', 'SettingsController@setMaxLevel')
 Route::post('/settings-set-timezone', 'SettingsController@setTimezone')->name('admin.settings-set-timezone');
 Route::post('/settings-set-location', 'SettingsController@setLocation')->name('admin.settings-set-location');
 Route::post('/settings-set-din-settings', 'SettingsController@setDinSettings')->name('admin.settings-set-din-settings');
+Route::post('/settings-set-forecast', 'SettingsController@setForecast')->name('admin.settings-set-forecast');
 
 /* Test  ------------------------------------------------- */
 Route::get('/test', 'TestController@test');
