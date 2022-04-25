@@ -144,7 +144,8 @@ class SoftHostDriverBase
      */
     public function getAssociatedDevices()
     {
-        return Device::whereHostId($this->key)
+        return Device::whereTyp('software')
+            ->whereHostId($this->key)
             ->get();
     }
     
