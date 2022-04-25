@@ -194,4 +194,13 @@ class SoftHostDriverBase
     {
         return 0;
     }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getLastForecastData()
+    {
+        return [];
+    }
 }

@@ -9,7 +9,7 @@ class Property extends Model
     protected $table = 'core_properties';
     public $timestamps = false;
     
-    const VERSION = '2.0.1';
+    const VERSION = '2.1.0';
     
     /**
      * 
@@ -389,5 +389,73 @@ class Property extends Model
         $item->value = json_encode(self::$_din_settings);
         $item->save();
     }
+    
+    static private $_forecast_settings = false;
+    
+    /**
+     * 
+     * @return type
+     */
+    static public function getForecastSettings()
+    {
+        if (self::$_forecast_settings === false) {
+            $item = self::whereName('FORECAST_SETTINGS')->first();
+            if ($item && $item->value) {
+                self::$_forecast_settings = json_decode($item->value);
+            } else {
+                self::$_forecast_settings = (object)[
+                    'TEMP' => '',
+                    'P' => '',
+                    'CC' => '',
+                    'G' => '',
+                    'H' => '',
+                    'V' => '',
+                    'WD' => '',
+                    'WS' => '',
+                    'MP' => '',
+                ];
+            }
+        }
+        
+        return self::$_forecast_settings;
+    }
+    
+    /**
+     * 
+     * @param type $temp
+     * @param type $p
+     * @param type $cc
+     * @param type $g
+     * @param type $h
+     * @param type $v
+     * @param type $wd
+     * @param type $ws
+     * @param type $mp
+     */
+    static public function setForecastSettings($temp, $p, $cc, $g, $h, $v, $wd, $ws, $mp)
+    {
+        $item = self::whereName('FORECAST_SETTINGS')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'FORECAST_SETTINGS';
+            $item->comm = '';
+        }
+        
+        self::$_forecast_settings = (object)[
+            'TEMP' => $temp,
+            'P' => $p,
+            'CC' => $cc,
+            'G' => $g,
+            'H' => $h,
+            'V' => $v,
+            'WD' => $wd,
+            'WS' => $ws,
+            'MP' => $mp,
+        ];
+        
+        $item->value = json_encode(self::$_forecast_settings);
+        $item->save();
+    }
+    
     
 }

@@ -88,4 +88,26 @@ class SettingsController extends Controller
         
         return 'OK';
     }
+    
+    /**
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function setForecast(Request $request)
+    {
+        Property::setForecastSettings(
+            $request->TEMP, 
+            $request->P, 
+            $request->CC, 
+            $request->G, 
+            $request->H, 
+            $request->V, 
+            $request->WD, 
+            $request->WS, 
+            $request->MP
+        );
+        
+        return 'OK';
+    }
 }

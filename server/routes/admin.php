@@ -121,6 +121,9 @@ Route::get('/jurnal/daemon-start-all', 'Jurnal\DaemonsController@daemonStartAll'
 Route::get('/jurnal/daemon-stop-all', 'Jurnal\DaemonsController@daemonStopAll')->name('admin.jurnal-daemon-stop-all');
 Route::get('/jurnal/daemons-state', 'Jurnal\DaemonsController@daemonsState')->name('admin.jurnal-daemons-state');
 
+/* Forecast routes */
+Route::get('/jurnal/forecast', 'Jurnal\ForecastController@index')->name('admin.jurnal-forecast');
+
 /* Power management routes */    
 Route::get('/jurnal/power', 'Jurnal\PowerController@index')->name('admin.jurnal-power');
 
@@ -131,6 +134,7 @@ Route::post('/settings-set-max-level/{value}', 'SettingsController@setMaxLevel')
 Route::post('/settings-set-timezone', 'SettingsController@setTimezone')->name('admin.settings-set-timezone');
 Route::post('/settings-set-location', 'SettingsController@setLocation')->name('admin.settings-set-location');
 Route::post('/settings-set-din-settings', 'SettingsController@setDinSettings')->name('admin.settings-set-din-settings');
+Route::post('/settings-set-forecast', 'SettingsController@setForecast')->name('admin.settings-set-forecast');
 
 /* Test  ------------------------------------------------- */
 Route::get('/test', 'TestController@test');

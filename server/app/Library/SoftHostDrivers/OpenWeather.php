@@ -180,4 +180,22 @@ class OpenWeather extends SoftHostDriverBase
         
         return 0;
     }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getLastForecastData()
+    {
+        $storage = json_decode($this->getLastStorageData());
+        
+        if (!$storage) return [];
+        
+        $result = [];
+        foreach ($storage->list as $item) {
+            $time = \Carbon\Carbon::createFromTimestamp($item->dt, 'UTC')->startOfHour()->timestamp;
+            $result[$time] = (object)$this->_load_channels($item);
+        }
+        return $result;
+    }
 }

@@ -13,14 +13,14 @@ class TestController extends Controller
         //\App\Models\SoftHostStorage::truncate();
         //dd('OK');
         
-        /*$json = \App\Models\SoftHostStorage::where('soft_host_id', 7)
+        $json = \App\Models\SoftHostStorage::where('soft_host_id', 2)
             ->orderBy('created_at', 'desc')
             ->first()
             ->data;
         
         $data = json_decode($json);
         
-        dd($data);  */
+        dd($data);
         
         $time = parse_datetime(now())->startOfHour();
         $data = [];
