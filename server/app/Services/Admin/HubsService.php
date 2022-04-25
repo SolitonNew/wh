@@ -8,7 +8,7 @@ use App\Models\OwHost;
 use App\Models\SoftHost;
 use App\Models\Property;
 use App\Library\DaemonManager;
-use App\Library\Firmware;
+use App\Library\Firmware\Din;
 use DB;
 use Log;
 
@@ -70,7 +70,7 @@ class HubsService
         
         if ($hub->typ == 'din') {
             // Generation of devices by channel
-            $din_channels = config('firmware.channels.'.config('firmware.mmcu'));
+            $din_channels = config('firmware.din.channels.'.config('firmware.din.mmcu'));
             $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "din"');
             
             try {
@@ -225,7 +225,7 @@ class HubsService
         $makeError = false;
         $text = '';
         try {
-            $firmware = new Firmware();
+            $firmware = new Din();
             $firmware->generateConfig();
             
             $outs = [];

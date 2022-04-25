@@ -61,3 +61,15 @@ void command_play(char *file) {
 void command_speech(char *text) {
     
 }
+
+void command_print_i(int value) {
+
+}
+
+void command_print_f(float value) {
+
+}
+
+void command_print_s(char *text) {
+
+}

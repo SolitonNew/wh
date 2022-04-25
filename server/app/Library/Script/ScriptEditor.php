@@ -63,19 +63,21 @@ class ScriptEditor
             $report = [];
             $res = $execute->run(true, $report);
             
-            if (!$res) {
-                $log = [];
-                $log[] = 'Testing completed successfully';
-                $log[] = str_repeat('-', 40);
-                $log[] = 'FUNCTIONS ['.count($report['functions']).']';
-                foreach ($report['functions'] as $key => $val) {
-                    $log[] = '    '.$key;
-                }
-                $log[] = '';
-                
-                $res = implode("\n", $log);
+            $log = [];
+            $log[] = 'Testing completed successfully';
+            $log[] = str_repeat('-', 40);
+            $log[] = 'FUNCTIONS ['.count($report['functions']).']';
+            foreach ($report['functions'] as $key => $val) {
+                $log[] = '    '.$key;
             }
-            return $res;
+            $log[] = '';
+            if ($res) {
+                $log[] = 'Stream out';
+                $log[] = str_repeat('-', 40);
+                $log[] = $res;
+            }
+            
+            return implode("\n", $log);
         } catch (\Exception $ex) {
             return $ex->getMessage();
         }

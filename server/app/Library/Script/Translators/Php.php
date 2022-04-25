@@ -8,8 +8,6 @@
 
 namespace App\Library\Script\Translators;
 
-use Log;
-
 /**
  * Description of Php$prepareData$prepareData$prepareData
  *
@@ -50,6 +48,15 @@ class Php implements ITranslator
         'info' => [
             0 => '$this->function_info',
         ],
+        'print_i' => [
+            1 => '$this->function_print',
+        ],
+        'print_f' => [
+            1 => '$this->function_print',
+        ],
+        'print_s' => [
+            1 => '$this->function_print',
+        ]
     ];    
     
     /**

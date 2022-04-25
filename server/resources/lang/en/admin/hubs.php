@@ -75,6 +75,7 @@ return [
     
     
     'app_control' => [
+        -1 => '-//-',
         0 => '-//-',
         1 => 'Light',
         2 => 'Switch',

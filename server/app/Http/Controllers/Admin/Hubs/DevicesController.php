@@ -145,7 +145,7 @@ class DevicesController extends Controller
         $data = [];
         switch ($typ) {
             case 'din':
-                $data = config('firmware.channels.'.config('firmware.mmcu'));
+                $data = config('firmware.din.channels.'.config('firmware.din.mmcu'));
                 break;
             case 'ow':
                 $host = OwHost::find($hostID);
