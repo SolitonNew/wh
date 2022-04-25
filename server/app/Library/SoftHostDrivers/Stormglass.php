@@ -5,6 +5,7 @@ namespace App\Library\SoftHostDrivers;
 use \Carbon\Carbon;
 use App\Models\Device;
 use App\Models\Property;
+use Log;
 
 class Stormglass extends SoftHostDriverBase
 {
@@ -156,7 +157,9 @@ class Stormglass extends SoftHostDriverBase
         foreach ($devices as $device) {
             if (isset($values[$device->channel])) {
                 $value = $values[$device->channel];
-                if (!eq_floats($device->value, $value, 2)) {
+                if (!eq_floats($device->value, $value)) {
+                    Log::info($device->value.' '.$value);
+                    
                     Device::setValue($device->id, $value);
                     $resultLog[] = $value; 
                 }
