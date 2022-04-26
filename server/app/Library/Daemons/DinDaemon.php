@@ -401,7 +401,7 @@ class DinDaemon extends BaseDaemon
             
             $this->_inVariables = [];
             // Waiting for a controller's response.
-            switch ($this->_readPacks(100)) {
+            switch ($this->_readPacks(150)) {
                 case 5: // Controller request of the initialization data
                     $stat = 'INIT';
                     $vars_out = [];
