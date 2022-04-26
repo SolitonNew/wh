@@ -1,6 +1,7 @@
 @extends('admin.jurnal.jurnal')
 
 @section('page-down-menu')
+<a href="#" class="dropdown-item" onclick="forecastClearAll(); return false">@lang('admin/jurnal.forecast_clear_all')</a>
 @endsection
 
 @section('page-content')
@@ -52,4 +53,31 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    function forecastClearAll() {
+        confirmYesNo("@lang('admin/jurnal.forecast_clear_all_confirm')", () => {
+            startGlobalWaiter();
+            $.ajax({
+                type: 'delete',
+                url: '{{ route("admin.jurnal-forecast-clear") }}',
+                data: {
+                    _token: '{{ @csrf_token() }}',
+                },
+                success: function (data) {
+                    stopGlobalWaiter();
+                    if (data == 'OK') {
+                        window.location.reload();
+                    } else {
+                        console.log(data);
+                    }
+                },
+                error: function (err) {
+                    stopGlobalWaiter();
+                    console.log(err);
+                },
+            });
+        });
+    }
+</script>
 @endsection
