@@ -124,8 +124,8 @@ class DinDaemon extends BaseDaemon
                 $loopErrors = false;
                 $command = Property::getDinCommand(true);
                 
-                // Выполняем начальную подготовку итерации
-                // Она одинакова для все контроллеров
+                // Performing the initial preparation of the iteration
+                // It is the same for all controllers.
                 $variables = [];
                 switch ($command) {
                     case 'RESET':
@@ -175,7 +175,7 @@ class DinDaemon extends BaseDaemon
                     case 'FIRMWARE':
                         if (!$loopErrors) {
                             Property::setDinCommandInfo('COMPLETE', true);
-                            // Сбрасываем счетчик изменений прошивки
+                            // Reset the firmware change counter
                             Property::setFirmwareChanges(0);
                         } else {
                             Property::setDinCommandInfo('ERROR', true);
@@ -499,7 +499,7 @@ class DinDaemon extends BaseDaemon
                 $this->_inBuffer .= $c;
                 $cmd = 0;
                 if ($this->_processedInBuffer($cmd)) {        
-                    $this->_waitCount = 0; // Сбрасываем счетчик таймаута
+                    $this->_waitCount = 0; // Resets the timeout counter
                     if ($cmd > 0) {
                         $returnCmd = $cmd;
                     } else {
@@ -549,7 +549,7 @@ class DinDaemon extends BaseDaemon
                     $controller = unpack('C', $this->_inBuffer[3])[1];
                     $cmd = unpack('C', $this->_inBuffer[4])[1];
                     $tag = unpack('s', $this->_inBuffer[5].$this->_inBuffer[6])[1];
-                    if ($cmd === 4) { // Это пакет, в котором указано сколько читать после
+                    if ($cmd === 4) { // This is a package that indicates how much to read after
                         $this->_inPackCount = $tag;
                     }
                     $returnCmd = $cmd;
