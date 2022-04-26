@@ -43,6 +43,43 @@ class BaseDaemon {
     }
     
     /**
+     * 
+     * @param type $text
+     */
+    public function printLineToLast($text)
+    {
+        try {
+            $item = WebLogMem::whereDaemon($this->_signature)
+                ->orderBy('id', 'desc')
+                ->first();
+            if ($item) {
+                $item->data = $text;
+                $item->save();
+            }
+        } catch (\Exception $ex) {
+            echo $ex->getMessage()."\n";
+        }
+    }
+    
+    /**
+     * 
+     * @param type $percent
+     */
+    public function printProgress($percent = 0)
+    {
+        $s = '['.str_repeat('-', 100).']';
+        
+        if ($percent == 0) {
+            $this->printLine($s);
+        } else {
+            for ($i = 1; $i < $percent; $i++) {
+                $s[$i] = '*';
+            }
+            $this->printLineToLast($s);
+        }
+    }
+    
+    /**
      * Disabling autorun of this daemon
      */
     public function disableAutorun()
