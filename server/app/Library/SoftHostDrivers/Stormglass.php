@@ -153,6 +153,7 @@ class Stormglass extends SoftHostDriverBase
         
         $resultLog = [];
         
+        
         $devices = $this->getAssociatedDevices();
         foreach ($devices as $device) {
             if (isset($values[$device->channel])) {
