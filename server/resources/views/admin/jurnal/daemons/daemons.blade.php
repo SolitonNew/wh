@@ -130,7 +130,7 @@
                         $('.daemon-log-offset').prepend(lines);
                         daemonLogLastID = $(lines.first()).data('id');
                         
-                        if (prevProgress || (!daemonLogStart && nextFirstProgress)) {
+                        if (prevProgress || nextProgress || (!daemonLogStart && nextFirstProgress)) {
                             daemonLogLastID--;
                         }
                         
