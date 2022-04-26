@@ -65,7 +65,7 @@ class BaseDaemon {
      * 
      * @param type $percent
      */
-    public function printProgress($percent = 0)
+    public function printProgress(int $percent = 0)
     {
         if ($percent == 0) {
             $this->printLine('PROGRESS:0');
