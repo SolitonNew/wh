@@ -2,7 +2,7 @@
 
 namespace App\Library\Daemons;
 
-use App\Models\WebLog;
+use App\Models\WebLogMem;
 use App\Models\Property;
 
 /**
@@ -31,7 +31,7 @@ class BaseDaemon {
     public function printLine($text) 
     {
         try {
-            $item = new WebLog();
+            $item = new WebLogMem();
             $item->daemon = $this->_signature;
             $item->data = $text;
             $item->save();

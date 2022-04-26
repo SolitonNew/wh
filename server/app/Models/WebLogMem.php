@@ -17,7 +17,7 @@ class WebLogMem extends Model
      */
     static public function getDaemonDataFromID(string $daemonID, int $lastID)
     {
-        $data = WebLog::whereDaemon($daemonID)
+        $data = self::whereDaemon($daemonID)
                     ->where('id', '>', $lastID)
                     ->orderby('id', 'desc')
                     ->limit(config("app.admin_daemons_log_lines_count"))
