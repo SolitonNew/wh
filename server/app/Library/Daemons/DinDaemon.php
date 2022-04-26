@@ -425,6 +425,7 @@ class DinDaemon extends BaseDaemon
                     $stat = 'BOOTLOADER';
                     break;
                 case -1:
+                    $this->_inBuffer = '';
                     throw new \Exception('Controller did not respond');
                 default:
                     foreach ($this->_inVariables as $variable) {
@@ -470,7 +471,6 @@ class DinDaemon extends BaseDaemon
             }
         } elseif ($stat == 'ERROR') {
             $this->printLine($errorText);
-            usleep(50000);
         } elseif ($stat == 'IN BOOTLOADER') {
             //
         } elseif ($stat == 'FIRMWARE QUERY') {
