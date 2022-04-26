@@ -470,6 +470,7 @@ class DinDaemon extends BaseDaemon
             }
         } elseif ($stat == 'ERROR') {
             $this->printLine($errorText);
+            usleep(50000);
         } elseif ($stat == 'IN BOOTLOADER') {
             //
         } elseif ($stat == 'FIRMWARE QUERY') {
@@ -636,9 +637,9 @@ class DinDaemon extends BaseDaemon
      */
     private function _crc_table($data) 
     {
-	$crc = 0x0;
-	$fb_bit = 0;
-	for ($b = 0; $b < 8; $b++) { 
+        $crc = 0x0;
+        $fb_bit = 0;
+        for ($b = 0; $b < 8; $b++) { 
             $fb_bit = ($crc ^ $data) & 0x01;
             if ($fb_bit == 0x01) {
                 $crc = $crc ^ 0x18;
@@ -648,8 +649,8 @@ class DinDaemon extends BaseDaemon
                 $crc = $crc | 0x80;
             }
             $data >>= 1;
-	}
-	return $crc;
+        }
+        return $crc;
     }
     
     /**
@@ -664,10 +665,10 @@ class DinDaemon extends BaseDaemon
         $pack .= pack('C', $controllerROM);
         $pack .= pack('C', $cmd);
         $pack .= pack('s', $tag);        
-	$crc = 0x0;
-	for ($i = 0; $i < strlen($pack); $i++) {
+        $crc = 0x0;
+        for ($i = 0; $i < strlen($pack); $i++) {
             $crc = $this->_crc_table($crc ^ ord($pack[$i]));
-	}
+        }
         $pack .= pack('C', $crc);        
         fwrite($this->_port, $pack);
         fflush($this->_port);
@@ -685,10 +686,10 @@ class DinDaemon extends BaseDaemon
         $pack .= pack('C', $controllerROM);
         $pack .= pack('s', $id);
         $pack .= pack('s', ceil($value * 10));
-	$crc = 0x0;
-	for ($i = 0; $i < strlen($pack); $i++) {
+        $crc = 0x0;
+        for ($i = 0; $i < strlen($pack); $i++) {
             $crc = $this->_crc_table($crc ^ ord($pack[$i]));
-	}
+        }
         $pack .= pack('C', $crc);
         fwrite($this->_port, $pack);
         fflush($this->_port);
@@ -706,10 +707,10 @@ class DinDaemon extends BaseDaemon
         for ($i = 0; $i < 8; $i++) {
             $pack .= pack('C', isset($data[$i]) ? $data[$i] : 0xff);
         }
-	$crc = 0x0;
-	for ($i = 0; $i < strlen($pack); $i++) {
+        $crc = 0x0;
+        for ($i = 0; $i < strlen($pack); $i++) {
             $crc = $this->_crc_table($crc ^ ord($pack[$i]));
-	}
+        }
         $pack .= pack('C', $crc);
         fwrite($this->_port, $pack);
         fflush($this->_port);
