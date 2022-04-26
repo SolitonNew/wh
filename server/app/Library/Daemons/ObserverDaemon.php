@@ -38,10 +38,15 @@ class ObserverDaemon extends BaseDaemon
         
         $this->_lastChangeID = DeviceChangeMem::max('id') ?? -1;
         
-        /*for ($i = 0; $i <= 100; $i++) {
+        sleep(1);
+        $this->printLine('ZZZZZZZZZ');
+        $this->printLine('ZZZZZZZZZ');
+        sleep(1);
+        for ($i = 0; $i <= 100; $i++) {
             $this->printProgress($i);
-            usleep(500000);
-        }*/
+            usleep(50000);
+        }
+        $this->printLine('ZZZZZZZZZ');
         
         while(1) {
             $changes = DeviceChangeMem::with('device')
