@@ -59,6 +59,10 @@ class ForecastService
                 'localtime' => parse_datetime($recTime),
             ];
             
+            foreach ($fields as $key => $val) {
+                $values[$key] = '-//-';
+            } 
+            
             foreach ($devices as $dev) {
                 $storage = $storages[$dev->host_id];
                 if (isset($storage[$time])) {

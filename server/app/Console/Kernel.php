@@ -30,7 +30,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Проверяем работоспособность фоновых процессов. Если кто-то пропал - запускаем
+        // Checking background processes. 
+        // If process stopped - to start.
         $schedule->call(function (DaemonManager $daemonManager) {
             foreach(\App\Models\Property::runningDaemons() as $daemon) {
                 if (count($daemonManager->findDaemonPID($daemon)) == 0) {
@@ -39,28 +40,28 @@ class Kernel extends ConsoleKernel
             }
         })->everyMinute();
         
-        // Прочистка "web_logs"
+        // Reading "web_logs_mem"
         $schedule->call(function (DaemonManager $daemonManager) {
             foreach($daemonManager->daemons() as $daemon) {
                 $rows = DB::select('select id
-                                      from web_logs 
+                                      from web_logs_mem 
                                      where daemon = "'.$daemon.'"
                                     order by id desc
                                     limit '.config("app.admin_daemons_log_lines_count"));
                 if (count($rows)) {
                     $id = $rows[count($rows) - 1]->id;
-                    DB::delete('delete from web_logs where daemon = "'.$daemon.'" and id < '.$id);
+                    DB::delete('delete from web_logs_mem where daemon = "'.$daemon.'" and id < '.$id);
                 }
             }
         })->everyMinute();
         
-        // Прочистка "core_device_changes_mem"
+        // Clearing "core_device_changes_mem"
         $schedule->call(function () {
             DB::delete('delete from core_device_changes_mem
                          where change_date < CURRENT_TIMESTAMP - interval 1 day');
         })->hourly();
         
-        // Прочистка "core_execute"
+        // Clearing "core_execute"
         $schedule->call(function () {
             DB::delete('delete from core_execute
                          where id < (select a.maxID 
@@ -68,7 +69,7 @@ class Kernel extends ConsoleKernel
                                                from core_execute) a)');
         })->dailyAt('4:00');
         
-        // Прочистка "web_queue"
+        // Clearing "web_queue"
         $schedule->call(function () {
             DB::delete('delete from web_queue_mem
                          where id < (select a.maxID 
