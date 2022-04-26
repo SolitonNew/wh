@@ -320,8 +320,9 @@ class DinDaemon extends BaseDaemon
      */
     public function _commandFirmware($controller) 
     {
+        // ------------------------------
         $this->printProgress();
-        
+        // ------------------------------
         if (!$this->_firmwareHex) {
             $firmware = new \App\Library\Firmware\Din();
             $this->_firmwareHex = $firmware->getHex();
@@ -360,9 +361,9 @@ class DinDaemon extends BaseDaemon
                     round((($index * 100) + $p) / $count),
                 ];
                 Property::setDinCommandInfo(implode(';', $a), true);
-                
+                // ------------------------------
                 $this->printProgress(round($p));
-                
+                // ------------------------------
                 usleep($PAGE_STORE_PAUSE);
             }
             $p += $dp;

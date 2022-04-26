@@ -67,15 +67,10 @@ class BaseDaemon {
      */
     public function printProgress($percent = 0)
     {
-        $s = '['.str_repeat('-', 100).']';
-        
         if ($percent == 0) {
-            $this->printLine($s);
+            $this->printLine('PROGRESS:0');
         } else {
-            for ($i = 1; $i < $percent; $i++) {
-                $s[$i] = '*';
-            }
-            $this->printLineToLast($s);
+            $this->printLineToLast('PROGRESS:'.$percent);
         }
     }
     

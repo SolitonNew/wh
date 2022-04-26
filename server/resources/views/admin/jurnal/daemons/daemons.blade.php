@@ -118,8 +118,19 @@
                     let i = lines.length;
                     if (i > 0) {
                         $('.daemon-log-offset').css('top', '0px');
-                        $('.daemon-log-offset').prepend(lines);
-                        daemonLogLastID = $(lines.first()).data('id');
+                        
+                        let firstLine = $($('.daemon-log-offset').first()).html();
+                        if (firstLine && firstLine.indexOf('PROGRESS:') == 0) {
+                            if (lines.length == 1) {
+                                firstLine.html(lines.html());   
+                            } else {
+                                $('.daemon-log-offset').prepend(htmlLines);
+                                daemonLogLastID = $(lines.first()).data('id');
+                            }
+                        } else {
+                            $('.daemon-log-offset').prepend(htmlLines);
+                            daemonLogLastID = $(lines.first()).data('id');
+                        }
                         $('.daemon-log-offset > div:gt({{ config("app.admin_daemons_log_lines_count") }})').remove();
                     }
                     
