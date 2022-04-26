@@ -61,7 +61,10 @@
             $.ajax({
                 type: 'delete',
                 url: '{{ route("admin.jurnal-forecast-clear") }}',
-                sunccess: function (data) {
+                data: {
+                    _token: '{{ @csrf_token() }}',
+                },
+                success: function (data) {
                     stopGlobalWaiter();
                     if (data == 'OK') {
                         window.location.reload();
