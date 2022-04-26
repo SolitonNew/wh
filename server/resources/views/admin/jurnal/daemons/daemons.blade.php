@@ -114,30 +114,39 @@
             success: function (data) {
                 if (data) {
                     let lines = $(data);
-                    $('.daemon-log-offset').prepend(lines);
-                    let i = lines.length;
-                    if (i > 0) {
+                    let count = lines.length;
+                    if (count) {
                         $('.daemon-log-offset').css('top', '0px');
                         
-                        let firstLine = $($('.daemon-log-offset').first()).html();
-                        if (firstLine && firstLine.indexOf('PROGRESS:') == 0) {
-                            if (lines.length == 1) {
-                                firstLine.html(lines.html());   
-                            } else {
-                                $('.daemon-log-offset').prepend(lines);
-                                daemonLogLastID = $(lines.first()).data('id');
-                            }
-                        } else {
-                            $('.daemon-log-offset').prepend(lines);
-                            daemonLogLastID = $(lines.first()).data('id');
+                        let prevProgress = $('.daemon-log-offset > div:first').first().text().indexOf('PROGRESS:') == 0;
+                        let nextProgress = lines.last().text().indexOf('PROGRESS:') == 0;
+                        let nextFirstProgress = lines.first().text().indexOf('PROGRESS:') == 0;
+                        
+                        if (prevProgress && nextProgress) {
+                            $('.daemon-log-offset > div:first').replaceWith(lines.last());
+                            count--;
                         }
+                        
+                        $('.daemon-log-offset').prepend(lines);
+                        daemonLogLastID = $(lines.first()).data('id');
+                        
+                        if (prevProgress || (!daemonLogStart && nextFirstProgress)) {
+                            daemonLogLastID--;
+                        }
+                        
                         $('.daemon-log-offset > div:gt({{ config("app.admin_daemons_log_lines_count") }})').remove();
+                        
+                        $('.daemon-log-offset > div').each(function () {
+                            if ($(this).text().indexOf('PROGRESS:') == 0) {
+                                makeProgressForElement(this);
+                            }
+                        });
                     }
                     
                     if (!daemonLogStart || $('.content-body').scrollTop() > 0) {
                         
                     } else {                        
-                        if (i > 0) {
+                        if (count) {
                             $('.daemon-log-offset').stop(true);
                             let h = 0;
                             $(lines).each(function () {
@@ -160,6 +169,22 @@
                 setTimeout(getDaemonData, 3000);
             },
         });
+        
+        function makeProgressForElement(element) {
+            let div = $(element);
+            let percent = div.text().split(':')[1];
+            
+            let control = $('.progress', element);
+            
+            if (control.length == 0) { 
+                let html = '<div class="progress">' + 
+                           '<div class="progress-bar" role="progressbar" style="width: ' + percent + '%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>' +
+                           '</div>';
+                div.append(html);
+            } else {
+                
+            }
+        }
     }
     
     function daemonLogScrollTop() {

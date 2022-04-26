@@ -38,6 +38,11 @@ class ObserverDaemon extends BaseDaemon
         
         $this->_lastChangeID = DeviceChangeMem::max('id') ?? -1;
         
+        /*for ($i = 0; $i <= 100; $i++) {
+            $this->printProgress($i);
+            usleep(500000);
+        }*/
+        
         while(1) {
             $changes = DeviceChangeMem::with('device')
                 ->where('id', '>', $this->_lastDeviceChangesID)
