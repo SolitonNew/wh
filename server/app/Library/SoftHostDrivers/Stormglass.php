@@ -136,12 +136,14 @@ class Stormglass extends SoftHostDriverBase
         $data = $this->getLastStorageData();
         
         if ($data == null) return '';
+        $json = json_decode($data);
+        if ($json == null) return '';
         
         $utcNow = Carbon::now('UTC')->startOfHour();
         
         $values = [];
         
-        $json = json_decode($data);
+        
         foreach ($json->hours as $hour) {
             $hourTime = Carbon::parse($hour->time, 'UTC')->startOfHour();
             if ($hourTime->eq($utcNow)) {
