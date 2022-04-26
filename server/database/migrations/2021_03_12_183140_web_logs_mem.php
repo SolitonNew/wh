@@ -17,9 +17,9 @@ class WebLogsMem extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->string('daemon', 32);
             $table->string('data', 255);
-            
-            DB::statement('ALTER TABLE web_logs_mem ENGINE = MEMORY');
         });
+        
+        DB::statement('ALTER TABLE web_logs_mem ENGINE = MEMORY');
     }
 
     /**
