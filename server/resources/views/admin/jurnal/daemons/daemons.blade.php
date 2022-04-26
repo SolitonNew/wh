@@ -177,9 +177,11 @@
             let control = $('.progress', element);
             
             if (control.length == 0) { 
-                let html = '<div class="progress">' + 
+                let html = '<div class="progress-bg">' +
+                           '<div class="progress">' + 
                            '<div class="progress-bar" role="progressbar" style="width: ' + percent + '%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>' +
-                           '</div>';
+                           '</div>' +
+                           '</div>'
                 div.append(html);
             } else {
                 
