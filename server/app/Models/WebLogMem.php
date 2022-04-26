@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WebLog extends Model
+class WebLogMem extends Model
 {
-    protected $table = 'web_logs';
+    protected $table = 'web_logs_mem';
     public $timestamps = false;
     
     /**
