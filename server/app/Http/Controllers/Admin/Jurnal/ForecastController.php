@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Admin\Jurnal;
 
 use App\Http\Controllers\Controller;
 use App\Services\Admin\ForecastService;
+use App\Models\SoftHostStorage;
 
 /**
  * Description of ForecastController
@@ -34,5 +35,16 @@ class ForecastController extends Controller
         return view('admin.jurnal.forecast.forecast', [
             'data' => $this->_service->getData(),
         ]);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function clearStorageData()
+    {
+        SoftHostStorage::truncate();
+        
+        return 'OK';
     }
 }

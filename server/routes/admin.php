@@ -123,6 +123,7 @@ Route::get('/jurnal/daemons-state', 'Jurnal\DaemonsController@daemonsState')->na
 
 /* Forecast routes */
 Route::get('/jurnal/forecast', 'Jurnal\ForecastController@index')->name('admin.jurnal-forecast');
+Route::delete('/jurnal/forecast-clear', 'Jurnal\ForecastController@clearStorageData')->name('admin.jurnal-forecast-clear');
 
 /* Power management routes */    
 Route::get('/jurnal/power', 'Jurnal\PowerController@index')->name('admin.jurnal-power');

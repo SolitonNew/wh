@@ -41,6 +41,8 @@ return [
     'forecast_WD' => 'Wind Direction',
     'forecast_WS' => 'Wind Speed',
     'forecast_MP' => 'Mean Precipitation',
+    'forecast_clear_all' => 'Clear Storage Data',
+    'forecast_clear_all_confirm' => 'Clear Storage Data?',
     
     'power' => 'Power',
 ];
