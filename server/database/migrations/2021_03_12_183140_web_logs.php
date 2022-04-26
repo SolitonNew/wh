@@ -17,6 +17,8 @@ class WebLogs extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->string('daemon', 32);
             $table->string('data', 255);
+            
+            DB::statement('ALTER TABLE core_device_changes_mem ENGINE = MEMORY');
         });
     }
 
