@@ -201,6 +201,7 @@ class HubsService
         $daemons = [
             'din-daemon', 
             'software-daemon',
+            'orangepi-daemon',
         ];
         
         $daemonManager = new DaemonManager();
