@@ -38,7 +38,7 @@ class BaseDaemon {
     protected function initHubs($typ)
     {
         $this->_hubs = Hub::where('id', '>', 0)
-            ->whereTyp('software')
+            ->whereTyp($typ)
             ->orderBy('rom', 'asc')
             ->get();
         
