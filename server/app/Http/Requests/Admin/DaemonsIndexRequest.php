@@ -78,15 +78,12 @@ class DaemonsIndexRequest extends FormRequest
      * 
      * @return type
      */
-    public function getIdForView()
+    public function getIdForView(DaemonManager $daemonManager)
     {
         $id = $this->session()->get(self::LAST_VIEW_ID);
         $this->session()->put(self::LAST_VIEW_ID, null);
         if (!$id) {
-            $item = Hub::orderBy('name', 'asc')->first();
-            if ($item) {
-                $id = $item->id;
-            }
+            $id = $daemonManager->daemons()[0];
         }
         
         return $id;
