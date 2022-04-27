@@ -87,7 +87,7 @@
         let rules = [
             {},                                                    // time
             {color: '#ffff00', invert: false, min: 0, max: 28},    // TEMP
-            {color: '#00cc00', invert: false, min: 740, max: 750}, // P
+            {color: '#00ee00', invert: false, min: 740, max: 750}, // P
             {color: '#aaaaaa', invert: true, min: 0, max: 100},    // CC
             {color: '#00ffff', invert: false, min: 30, max: 100},  // H
             {color: '#333333', invert: true, min: 20, max: 0},     // V
