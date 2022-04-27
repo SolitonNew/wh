@@ -769,6 +769,14 @@ div.form-control {
 
 .daemon-log-line .progress-bg .progress {
     max-width: 350px;
+    border-radius: 0px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    padding: 1px;
+}
+
+.daemon-log-line .progress-bg .progress-bar {
+    margin-top: -1px;
 }
 
 .daemon-log-header {
