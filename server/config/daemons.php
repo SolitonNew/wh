@@ -13,6 +13,7 @@ return [
     'list' => [
         'software-daemon',
         'din-daemon',
+        'orangepi-daemon',
         'schedule-daemon',
         'command-daemon',
         'observer-daemon',

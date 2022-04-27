@@ -43,6 +43,7 @@ class BaseDaemon {
             ->get();
         
         if (count($this->_hubs) == 0) {
+            $this->printLine('Not found hubs.');
             $this->disableAutorun();
             return false;
         }

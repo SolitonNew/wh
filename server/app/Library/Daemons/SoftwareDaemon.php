@@ -8,10 +8,6 @@
 
 namespace App\Library\Daemons;
 
-use App\Models\Hub;
-use App\Models\DeviceChangeMem;
-use App\Models\Device;
-use App\Library\Script\PhpExecute;
 use App\Models\SoftHost;
 use DB;
 use Lang;
