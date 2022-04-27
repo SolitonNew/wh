@@ -78,12 +78,12 @@ class DaemonsIndexRequest extends FormRequest
      * 
      * @return type
      */
-    public function getIdForView(DaemonManager $daemonManager)
+    public function getIdForView()
     {
         $id = $this->session()->get(self::LAST_VIEW_ID);
         $this->session()->put(self::LAST_VIEW_ID, null);
         if (!$id) {
-            $id = $daemonManager->daemons()[0];
+            $id = (new DaemonManager())->daemons()[0];
         }
         
         return $id;
