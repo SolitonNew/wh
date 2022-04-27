@@ -118,6 +118,7 @@ class Hub extends AffectsFirmwareModel
         ],
         'orangepi' => [
             'variable',
+            'out',
             'i2c',
         ],
         'din' => [
@@ -128,10 +129,6 @@ class Hub extends AffectsFirmwareModel
         'zigbeeone' => [
             'variable',
         ],
-        /*'onewire' => [
-            'variable',
-            'ow',
-        ],*/
     ];
     
     /**
@@ -152,5 +149,19 @@ class Hub extends AffectsFirmwareModel
         }
         
         return self::$_existsFirmwareHubs;
+    }
+    
+    /**
+     * 
+     * @param type $typ
+     * @return boolean
+     */
+    static public function isFirstSingleHub($typ)
+    {
+        $single = ['orangepi', 'zigbeeone'];
+        if (in_array($typ, $single)) {
+            return (self::whereTyp($typ)->count() === 0);
+        }
+        return true;
     }
 }
