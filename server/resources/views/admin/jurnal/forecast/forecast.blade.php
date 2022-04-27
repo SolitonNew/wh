@@ -106,7 +106,13 @@
             let g = parseInt(color.substr(3, 2), 16);
             let b = parseInt(color.substr(5, 2), 16);
                         
-            let level = (parseFloat(value) - minValue) / Math.abs(maxValue - minValue);
+            let range = maxValue - minValue;
+            let level = 1; 
+            if (range > 0) {
+                level = (parseFloat(value) - minValue) / (maxValue - minValue);
+            } else {
+                level = (minValue - parseFloat(value)) / (minValue - maxValue);
+            }
             if (level < 0) level = 0;
             if (level > 1) level = 1;
             td.css({
