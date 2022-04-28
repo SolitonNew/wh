@@ -72,7 +72,7 @@ class OrangePiDaemon extends BaseDaemon
                 
                 $this->printLine('GPIO '.$num.' ['.$chan.'] ENABLED');
             } catch (\Exception $ex) {
-                $this->printLine('ERROR: GPIO '.$num.' ['.$chan.']');
+                $this->printLine('GPIO '.$num.' ['.$chan.'] ERROR: '.$ex->getMessage());
             }
         }
     }
