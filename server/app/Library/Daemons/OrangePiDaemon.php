@@ -68,12 +68,16 @@ class OrangePiDaemon extends BaseDaemon
         
         foreach ($channels as $chan => $num) {
             try {
-                exec('echo '.$num.' > /sys/class/gpio/export');
-                
-                $this->printLine('GPIO '.$num.' ['.$chan.'] ENABLED');
+                $res = exec('echo '.$num.' > /sys/class/gpio/export');
+                if ($res) {
+                    throw new \Exception($res);
+                }
+                $this->printLine('GPIO ['.$chan.'] ENABLED');
             } catch (\Exception $ex) {
-                $this->printLine('GPIO '.$num.' ['.$chan.'] ERROR: '.$ex->getMessage());
+                $this->printLine('GPIO ['.$chan.'] ERROR: '.$ex->getMessage());
             }
         }
+        
+        $this->printLine(str_repeat('-', 100));
     }
 }
