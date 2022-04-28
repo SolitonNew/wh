@@ -105,7 +105,7 @@ class OrangePiDaemon extends BaseDaemon
             if ($res) {
                 throw new \Exception($res);
             }
-            $this->printLine('GPIO ['.$chan.'] SET VALUE: '.$value);
+            $this->printLine('['.parse_datetime(now()).'] GPIO ['.$chan.'] SET VALUE: '.$value);
         } catch (\Exception $ex) {
             $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
