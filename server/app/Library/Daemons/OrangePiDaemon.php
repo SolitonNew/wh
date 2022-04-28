@@ -105,9 +105,11 @@ class OrangePiDaemon extends BaseDaemon
             if ($res) {
                 throw new \Exception($res);
             }
-            $this->printLine('GPIO SET VALUE ['.$chan.']: '.$value);
+            $this->printLine('GPIO ['.$chan.'] SET VALUE: '.$value);
         } catch (\Exception $ex) {
-            $this->printLine('GPIO VALUE ['.$chan.'] ERROR: '.$ex->getMessage());
+            $s = "[".parse_datetime(now())."] ERROR\n";
+            $s .= $ex->getMessage();
+            $this->printLine($s); 
         }
     }
     
@@ -115,9 +117,9 @@ class OrangePiDaemon extends BaseDaemon
      * 
      * @param type $device
      */
-    protected function _variableChange($device)
+    protected function _deviceChange($device)
     {
-        if ($device->typ == 'orange') {
+        if ($device->typ == 'orangepi') {
             $this->_setValueGPIO($device->channel, $device->value);
         }
     }

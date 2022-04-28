@@ -61,7 +61,7 @@ trait DeviceManagerTrait
                         // Store new device value
                         $device->value = $change->value;
                         
-                        $this->_variableChange($device);
+                        $this->_deviceChange($device);
                         
                         // Run event script if it's attached
                         $this->_executeEvents($device);
@@ -76,7 +76,7 @@ trait DeviceManagerTrait
      * 
      * @param type $device
      */
-    protected function _variableChange($device)
+    protected function _deviceChange($device)
     {
         //
     }
