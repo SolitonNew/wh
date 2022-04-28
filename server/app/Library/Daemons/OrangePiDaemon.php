@@ -35,6 +35,8 @@ class OrangePiDaemon extends BaseDaemon
         if (!$this->initHubs('orangepi')) return ;
         // ------------------------
         
+        $this->_initGPIO();
+        
         // Init device changes trait
         $this->initDeviceChanges();
         // -------------------------
@@ -54,6 +56,24 @@ class OrangePiDaemon extends BaseDaemon
             $this->printLine($s); 
         } finally {
             
+        }
+    }
+    
+    /**
+     * 
+     */
+    private function _initGPIO()
+    {
+        $channels = config('orangepi.channels');
+        
+        foreach ($channels as $chan => $num) {
+            try {
+                exec('echo '.$num.' > /sys/class/gpio/export');
+                
+                $this->printLine('GPIO '.$num.' ['.$chan.'] ENABLED');
+            } catch (\Exception $ex) {
+                $this->printLine('ERROR: GPIO '.$num.' ['.$chan.']');
+            }
         }
     }
 }

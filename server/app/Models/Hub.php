@@ -118,7 +118,7 @@ class Hub extends AffectsFirmwareModel
         ],
         'orangepi' => [
             'variable',
-            'out',
+            'orangepi',
             'i2c',
         ],
         'din' => [
