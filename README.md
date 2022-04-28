@@ -82,6 +82,12 @@ sudo nano /etc/cron.d/wh
 ```
 sudo apt-get install avr-libc gcc-avr
 ```
+```
+sudo addgroup gpio
+sudo chown -R root:gpio /sys/class/gpio
+sudo chmod -R 770 /sys/class/gpio
+sudo adduser www-data gpio
+```
 
 Admin Login/Password: wh/wh
 

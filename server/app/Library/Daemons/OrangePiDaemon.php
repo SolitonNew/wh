@@ -43,8 +43,6 @@ class OrangePiDaemon extends BaseDaemon
         
         try {
             while (1) {
-                
-                
                 // Get changes of the variables
                 $this->checkDeviceChanges();
                 // -----------------------------
@@ -61,6 +59,7 @@ class OrangePiDaemon extends BaseDaemon
     
     /**
      * 
+     * @throws \Exception
      */
     private function _initGPIO()
     {
@@ -72,6 +71,11 @@ class OrangePiDaemon extends BaseDaemon
                 if ($res) {
                     throw new \Exception($res);
                 }
+                
+                $res = exec('out > /sys/class/gpio/gpio'.$num.'/direction');
+                if ($res) {
+                    throw new \Exception($res);
+                }
                 $this->printLine('GPIO ['.$chan.'] ENABLED');
             } catch (\Exception $ex) {
                 $this->printLine('GPIO ['.$chan.'] ERROR: '.$ex->getMessage());
@@ -79,5 +83,42 @@ class OrangePiDaemon extends BaseDaemon
         }
         
         $this->printLine(str_repeat('-', 100));
+    }
+    
+    /**
+     * 
+     * @param type $chan
+     * @param type $value
+     * @throws \Exception
+     */
+    private function _setValueGPIO($chan, $value)
+    {
+        try {
+            $channels = config('orangepi.channels');
+            $num = $channels[$chan];
+            
+            if ($value) {
+                $res = exec('1 > /sys/class/gpio/gpio'.$num.'/value');
+            } else {
+                $res = exec('0 > /sys/class/gpio/gpio'.$num.'/value');
+            }
+            if ($res) {
+                throw new \Exception($res);
+            }
+            $this->printLine('GPIO SET VALUE ['.$chan.']: '.$value);
+        } catch (\Exception $ex) {
+            $this->printLine('GPIO VALUE ['.$chan.'] ERROR: '.$ex->getMessage());
+        }
+    }
+    
+    /**
+     * 
+     * @param type $device
+     */
+    protected function _variableChange($device)
+    {
+        if ($device->typ == 'orange') {
+            $this->_setValueGPIO($device->channel, $device->value);
+        }
     }
 }
