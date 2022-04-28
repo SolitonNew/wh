@@ -73,6 +73,7 @@ class SoftHost extends AffectsFirmwareModel
                     'channels' => $this->driver()->channels,
                     'consuming' => 0,
                     'properties' => $this->driver()->propertiesWithTitles(),
+                    'updated_at' => $this->driver()->getLastStorageDatetime(),
                 ];
             } else {
                 $type = [
@@ -81,6 +82,7 @@ class SoftHost extends AffectsFirmwareModel
                     'channels' => [],
                     'consuming' => 0,
                     'properties' => [],
+                    'updated_at' => false,
                 ];
             }
             

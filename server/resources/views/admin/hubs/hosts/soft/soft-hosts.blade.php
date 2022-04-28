@@ -20,7 +20,10 @@
             @forelse($data as $row)
             <tr data-id="{{ $row->id }}" class="{{ $row->lost ? 'row-with-ow-lost' : '' }}">
                 <td>{{ $row->id }}</td>
-                <td>{{ $row->type()->title }}</td>
+                <td>
+                    <div>{{ $row->type()->title }}</div>
+                    <small class="text-muted">{{ $row->type()->updated_at ? parse_datetime($row->type()->updated_at)->format('d-m-Y H:i') : '' }}</small>
+                </td>
                 <td>{{ implode(', ', $row->type()->channels) }}</td>
                 <td>
                     @foreach($row->devices as $v)
