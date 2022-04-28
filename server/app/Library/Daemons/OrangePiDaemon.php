@@ -10,6 +10,7 @@ namespace App\Library\Daemons;
 
 use Lang;
 use DB;
+use Log;
 
 /**
  * Description of OrangePiDaemon
@@ -59,7 +60,6 @@ class OrangePiDaemon extends BaseDaemon
     
     /**
      * 
-     * @throws \Exception
      */
     private function _initGPIO()
     {
@@ -67,14 +67,10 @@ class OrangePiDaemon extends BaseDaemon
         
         foreach ($channels as $chan => $num) {
             try {
-                $res = exec('echo '.$num.' > /sys/class/gpio/export');
-                if ($res) {
-                    throw new \Exception($res);
-                }
-                
-                $res = exec('out > /sys/class/gpio/gpio'.$num.'/direction');
-                if ($res) {
-                    throw new \Exception($res);
+                $res = [];
+                exec('gpio export '.$num.' out 2>&1', $res);
+                if (count($res)) {
+                    throw new \Exception(implode('; ', $res));
                 }
                 $this->printLine('GPIO ['.$chan.'] ENABLED');
             } catch (\Exception $ex) {
@@ -97,13 +93,14 @@ class OrangePiDaemon extends BaseDaemon
             $channels = config('orangepi.channels');
             $num = $channels[$chan];
             
+            $res = [];
             if ($value) {
-                $res = exec('1 > /sys/class/gpio/gpio'.$num.'/value');
+                exec('gpio write '.$num.' 1', $res);
             } else {
-                $res = exec('0 > /sys/class/gpio/gpio'.$num.'/value');
+                exec('gpio write '.$num.' 0', $res);
             }
             if ($res) {
-                throw new \Exception($res);
+                throw new \Exception(implode('; ', $res));
             }
             $this->printLine('['.parse_datetime(now()).'] GPIO ['.$chan.'] SET VALUE: '.($value ? 'ON' : 'OFF'));
         } catch (\Exception $ex) {
