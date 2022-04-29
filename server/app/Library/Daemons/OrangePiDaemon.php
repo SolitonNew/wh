@@ -8,6 +8,7 @@
 
 namespace App\Library\Daemons;
 
+use App\Models\Device;
 use Lang;
 use DB;
 use Log;
@@ -65,10 +66,29 @@ class OrangePiDaemon extends BaseDaemon
     {
         $channels = config('orangepi.channels');
         
+        $hubIds = $this->_hubs
+            ->pluck('id')
+            ->toArray();
+        
+        $devices = Device::whereIn('hub_id', $hubIds)
+            ->whereTyp('orangepi')
+            ->get();
+        
         foreach ($channels as $chan => $num) {
             try {
                 $res = [];
-                exec('gpioset 0 '.$num.'=0 2>&1', $res);
+                
+                foreach ($devices as $dev) {
+                    if ($device->channel == $chan) {
+                        if ($device->value) {
+                            exec('gpioset 0 '.$num.'=1 2>&1', $res);
+                        } else {
+                            exec('gpioset 0 '.$num.'=0 2>&1', $res);
+                        }
+                        break;
+                    }
+                }
+                
                 if (count($res)) {
                     throw new \Exception(implode('; ', $res));
                 }
