@@ -68,7 +68,7 @@ class OrangePiDaemon extends BaseDaemon
         foreach ($channels as $chan => $num) {
             try {
                 $res = [];
-                exec('gpio export '.$num.' out 2>&1', $res);
+                exec('gpioset 0 '.$num.'=0 2>&1', $res);
                 if (count($res)) {
                     throw new \Exception(implode('; ', $res));
                 }
@@ -95,9 +95,9 @@ class OrangePiDaemon extends BaseDaemon
             
             $res = [];
             if ($value) {
-                exec('gpio write '.$num.' 1', $res);
+                exec('gpioset 0 '.$num.'=1 2>&1', $res);
             } else {
-                exec('gpio write '.$num.' 0', $res);
+                exec('gpioset 0 '.$num.'=0 2>&1', $res);
             }
             if (count($res)) {
                 throw new \Exception(implode('; ', $res));
