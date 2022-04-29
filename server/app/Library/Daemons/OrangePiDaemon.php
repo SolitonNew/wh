@@ -99,7 +99,7 @@ class OrangePiDaemon extends BaseDaemon
             } else {
                 exec('gpio write '.$num.' 0', $res);
             }
-            if ($res) {
+            if (count($res)) {
                 throw new \Exception(implode('; ', $res));
             }
             $this->printLine('['.parse_datetime(now()).'] GPIO ['.$chan.'] SET VALUE: '.($value ? 'ON' : 'OFF'));
