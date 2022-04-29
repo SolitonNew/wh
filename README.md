@@ -83,10 +83,14 @@ sudo nano /etc/cron.d/wh
 sudo apt-get install avr-libc gcc-avr
 ```
 ```
-git clone https://github.com/orangepi-xunlong/wiringOP.git
-cd wiringOP
-./build clean
-./build 
+sudo addgroup gpio
+sudo adduser www-data gpio
+```
+```
+sudo nano /etc/udev/rules.d/20-gpio.rules
+```
+```
+KERNEL=="gpio*", GROUP="gpio"
 ```
 
 Admin Login/Password: wh/wh
