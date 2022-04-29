@@ -83,10 +83,9 @@ sudo nano /etc/cron.d/wh
 sudo apt-get install avr-libc gcc-avr
 ```
 ```
+sudo apt install libgpiod-dev gpiod
 sudo addgroup gpio
 sudo adduser www-data gpio
-```
-```
 sudo nano /etc/udev/rules.d/20-gpio.rules
 ```
 ```

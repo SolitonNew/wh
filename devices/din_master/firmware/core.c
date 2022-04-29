@@ -26,7 +26,7 @@ int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
 uint8_t core_variable_changed_count = 0;
 
 /**
- * Инициализация ядра
+ * Core initialization
  */
 void core_init(void) {
     din_init();
@@ -35,7 +35,7 @@ void core_init(void) {
 }
 
 /**
- * Обработка alarm событий на шине OW
+ * Handling alarm events on the OW bus
  */
 void core_onewire_alarm_processing(void) {
     if (onewire_alarms()) {
@@ -48,12 +48,12 @@ void core_onewire_alarm_processing(void) {
 }
 
 /**
- * Возвращает значение переменной конверьированое в float
- * Все действия с переменными проходят через этот механизм.
+ * Returns the value of a variable converted to a float
+ * All actions with variables go through this mechanism.
  *
- * Не используйте доступ к значениям переменных напрямую.
+ * Do not access variable values directly.
  *
- * Возвращает реальное значение переменной
+ * Returns the real value of a variable
  */
 float core_get_variable_value(int index) {
     if ((index < 0) || (index >= VARIABLE_COUNT)) return 0;
@@ -61,10 +61,10 @@ float core_get_variable_value(int index) {
 }
 
 /**
- * Главная функция обработки назначения значения переменной.
- * Все действия с переменными проходят через этот механизм.
+ * The main function for handling the assignment of a value to a variable.
+ * All actions with variables go through this mechanism.
  *
- * Не используйте доступ к значениям переменных напрямую.
+ * Do not access variable values directly.
  *
  * target: 0-server init, 1-server, 2-devs, 3-script
  */
@@ -77,8 +77,8 @@ void core_set_variable_value_int(int index, uint8_t target, int value) {
     variable_t variable;
     devs_get_varible(index, &variable);
 	
-    if (variable.controller_id == controller_id) { // Это переменная этого контроллера
-        // Выполняем пересылку новых состояний для devs
+    if (variable.controller_id == controller_id) { // This is a variable of this controller
+        // Sending new states to devs
         switch(variable.typ) {
             case 0: // din
                 din_set_value(variable.channel, value / 10);
@@ -90,28 +90,30 @@ void core_set_variable_value_int(int index, uint8_t target, int value) {
                 // not records
                 break;
         }
+    }
         
-        // Пишем в лог изменений для отправки на сервер
-        uint8_t exists = 0;
-        switch (target) {
-            case 0: // server init
-            case 1: // server
-                break;
-            case 2: // devs
-            case 3: // script
-                for (uint8_t i = 0; i < core_variable_changed_count; i++) {
-                    if (core_variable_changed[i] == variable.id) {
-                        exists = 1;
-                        break;
-                    }
+    // We write to the change log to send to the server
+    uint8_t exists = 0;
+    switch (target) {
+        case 0: // server init
+        case 1: // server
+            break;
+        case 2: // devs
+        case 3: // script
+            for (uint8_t i = 0; i < core_variable_changed_count; i++) {
+                if (core_variable_changed[i] == variable.id) {
+                    exists = 1;
+                    break;
                 }
-                if (!exists && core_variable_changed_count < CORE_VARIABLE_CHANGED_COUNT_MAX) {
-                    core_variable_changed[core_variable_changed_count++] = variable.id;
-                }                    
-                break;
-        }
-        
-        // Запрашиваем выполнение скрипта по событию изменения
+            }
+            if (!exists && core_variable_changed_count < CORE_VARIABLE_CHANGED_COUNT_MAX) {
+                core_variable_changed[core_variable_changed_count++] = variable.id;
+            }                    
+            break;
+    }
+
+    if (variable.controller_id == controller_id) { // This is a variable of this controller
+        // Request script execution on change event
         switch (target) {
             case 0: // server init
                 break;
@@ -120,15 +122,15 @@ void core_set_variable_value_int(int index, uint8_t target, int value) {
             case 3: // script
                 script_run_event_for_variable(index);
                 break;
-        }		
-    }	
+        }
+    }
 }
 
 /**
- * Главная функция обработки назначения значения переменной (реальное значение).
- * Все действия с переменными проходят через этот механизм.
+ * The main function of processing the assignment of the value of the variable (real value).
+ * All actions with variables go through this mechanism.
  *
- * Не используйте доступ к значениям переменных напрямую.
+ * Do not access variable values directly.
  *
  * target: 0-server init, 1-server, 2-devs, 3-script
  */
@@ -137,7 +139,7 @@ void core_set_variable_value(int index, uint8_t target, float value) {
 }
 
 /**
- * Собирает данные всех переменных с ow_index и отправляет в устройство
+ * Collects the data of all variables with ow_index and sends it to the device
  */
 void core_transmit_ow_values(int ow_index) {
     variable_t variable;
@@ -193,7 +195,7 @@ void core_transmit_ow_values(int ow_index) {
 }
 
 /**
- * Запрашивает данные каналов устройства по ow_index и применяет их в контроллере
+ * Requests device channel data by ow_index and applies it in the controller
  */
 void core_request_ow_values(uint8_t *rom) {
     variable_t variable;

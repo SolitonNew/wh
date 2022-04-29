@@ -31,8 +31,8 @@ void schedule_init(void) {
 }
 
 /**
- * Обработка отложенных назначений значения переменной
- * Должно вызываться раз в 1 сек.
+ * Handling Deferred Variable Value Assignments
+ * should be called once every 1 sec.
  */
 void schedule_processing(void) {
     if (schedule_counter < SCHEDULE_INTERVAL) return ;
@@ -42,7 +42,7 @@ void schedule_processing(void) {
         schedule_t *rec = &schedule_list[i];
         if (rec->duration > 0) {
             rec->duration--;
-            if (rec->duration == 0) { // Выполняем действие
+            if (rec->duration == 0) { // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 core_set_variable_value_int(rec->index, 3, rec->value_int);
             }
         }
@@ -50,7 +50,7 @@ void schedule_processing(void) {
 }
 
 /**
- * Регистрация отложенного назначения значения переменной.
+ * Registering a delayed assignment of a variable value.
  */
 void schedule_variable_value(int index, float value, int duration) {
     for (uint8_t i = 0; i < SCHEDULE_LIST_MAX; i++) {
