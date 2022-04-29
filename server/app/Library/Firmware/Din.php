@@ -53,7 +53,8 @@ class Din
     }
     
     /**
-     * Путь к папке с исходниками прошивки
+     * Path to the folder with firmware sources.
+     * 
      * @var type 
      */
     protected $_rel_path = 'devices/din_master/firmware';
@@ -69,7 +70,7 @@ class Din
     }
     
     /**
-     * Абсолютный путь к директории прошивки
+     * Absolute path to the firmware directory.
      */
     protected function _firmwarePath() 
     {
@@ -80,18 +81,17 @@ class Din
     }
     
     /**
-     * Создает файл настройки для включения в прошивку.
-     * Файл помещается по пути din_master
+     * Makes a config file to be included in the firmware.
+     * File path: din_master.
      */
     public function generateConfig() 
     {
-        // Вычитываем все нужные данные
+        // Reading all the necessary data
         $OwHostTyps = config('onewire.types');
         $owList = OwHost::orderBy('id', 'asc')->get();
         $varList = DB::select("select v.*, c.rom controller_rom
                                  from core_devices v, core_hubs c
                                 where v.hub_id = c.id
-                                  and c.typ = 'din'
                                order by v.id");
         $scriptList = Script::orderBy('id', 'asc')->get();
         $eventList = DB::select('select e.device_id, GROUP_CONCAT(e.script_id) script_ids
@@ -110,7 +110,7 @@ class Din
                 }
             } elseif ($row->typ == 'ow') {
                 if ($row->host_id) {
-                    // Проставляем индекс OW
+                    // Set index OW
                     $owCode = -1;
                     for ($i = 0; $i < count($owList); $i++) {
                         if ($row->host_id == $owList[$i]->id) {
@@ -120,7 +120,7 @@ class Din
                         }
                     }
 
-                    // Проставляем индекс канала
+                    // Set channel index
                     if ($owCode > 0) {
                         foreach($OwHostTyps as $typCode => $devTyp) {
                             if ($typCode == $owCode) {
@@ -152,7 +152,7 @@ class Din
             $row->data_to_c = $translator->run(new TranslateC($variableNames), $report);
         }
         
-        // Проставляем индексы для переменных в связях с эвентами
+        // Setting indexes for variables in events
         foreach($eventList as &$row) {
             $varIndex = -1;
             for ($i = 0; $i < count($varList); $i++) {
@@ -164,19 +164,19 @@ class Din
             $row->variableIndex = $varIndex;
         }
         
-        // Проверяем наличие директории config
+        // Checking for the existence of a config directory
         if (!file_exists($this->_firmwarePath().'/config')) {
             mkdir($this->_firmwarePath().'/config');
         }
         
-        // Пакуем в файл devs.c
+        // Pack to file devs.c
         $fs = new \Illuminate\Filesystem\Filesystem();
         $fs->put($this->_firmwarePath().'/config/devs.h', View::make('admin.firmware.din.devs_h', [
             'owList' => $owList,
             'varList' => $varList,
         ]));
 
-        // Пакуем в файл devs.c
+        // Pack to file devs.c
         $fs = new \Illuminate\Filesystem\Filesystem();
         $fs->put($this->_firmwarePath().'/config/devs.c', View::make('admin.firmware.din.devs_c', [
             'owList' => $owList,
@@ -185,16 +185,18 @@ class Din
                 'din' => 0,
                 'ow' => 1,
                 'variable' => 2,
+                'software' => 3,
+                'orangepi' => 4,
             ],
         ]));
         
-        // Пакуем в файл scripts.h
+        // Pack to file scripts.h
         $fs = new \Illuminate\Filesystem\Filesystem();
         $fs->put($this->_firmwarePath().'/config/scripts.h', View::make('admin.firmware.din.scripts_h', [
             'scriptList' => $scriptList,
         ]));
         
-        // Пакуем в файл scripts.c
+        // Pack to file scripts.c
         $fs = new \Illuminate\Filesystem\Filesystem();
         $fs->put($this->_firmwarePath().'/config/scripts.c', View::make('admin.firmware.din.scripts_c', [
             'scriptList' => $scriptList,
