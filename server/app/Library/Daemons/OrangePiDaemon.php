@@ -68,7 +68,7 @@ class OrangePiDaemon extends BaseDaemon
         foreach ($channels as $chan => $num) {
             try {
                 $res = [];
-                exec('gpio export '.$num.' out 2>&1', $res);
+                exec('sudo -u www-data gpio export '.$num.' out 2>&1', $res);
                 if (count($res)) {
                     throw new \Exception(implode('; ', $res));
                 }
