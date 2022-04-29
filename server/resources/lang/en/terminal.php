@@ -38,4 +38,9 @@ return [
     'btn_append' => 'APPEND',
     'btn_update' => 'UPDATE',
     'btn_delete' => 'DELETE',
+    
+    'switches_second' => [
+        'NIGHT',
+        'DINING',
+    ],
 ];
