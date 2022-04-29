@@ -78,7 +78,7 @@ class OrangePiDaemon extends BaseDaemon
             try {
                 $res = [];
                 
-                foreach ($devices as $dev) {
+                foreach ($devices as $device) {
                     if ($device->channel == $chan) {
                         if ($device->value) {
                             exec('gpioset 0 '.$num.'=1 2>&1', $res);
