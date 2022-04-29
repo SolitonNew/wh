@@ -8,35 +8,35 @@
 #define RS485_BUFF_MIN_SIZE 8
 
 /*
-    Пакет команды. Может быть отправлен в обе стороны.
+    Team package. Can be sent both ways.
     
     sign: "CMD"
-    controller_id: ИД контроллера с которым выполняется обмен.
-                   Другие контролеры видя пакеты с чужим ИД игнорируют их.
-    cmd: 1 - reset                 перезагрузка контроллера
-         2 - match receive         контроллеру приготовиться получать данные VAR (кол-во в поле tag) 
-                                   (если не инициализирован то игнорирует данные)
-         3 - match transmit        контроллеру приготовиться отдавать данные VAR
-         4 - pack transmit count   пакет передается сразу после transmit уже контроллером (кол-во записей 
-                                   передачи в поле tag)
-         5 - pack transmit init    может отдать контроллер после transmit если не инициализирован (запрос 
-                                   инициализации)
-         6 - match receive init    контроллер должен приготовиться пакеты инициализации (кол-во в поле tag)
-         7 - match ow scan         пакет запроса к контроллеру, что бы он просканировал свою сеть (по 
-                                   готовности отдает пакет pack transmit count и дальше пакеты ROM).
-        24 - firmware              Запрос начала прошивки по бутлоадеру. После него начинаем просто слать 
-		                           пакеты прошивки HEX. В поле tag кол-во пакетов для получения.
-		25 - firmware query size   Запрашивается кол-во пакетов HEX которые были получены контроллером. 
-                                   В tag передается кол-во пакетов, что были отправлены. 
-                                   Если числа совпадают, то контроллер после отправки cmd: 4 переходит 
-                                   к основной программе
-        26 - query firmware        Запрос прошивки в ручном режиме.
-        27 - from boot             Ответный пакет контроллера на cmd: 3 из бутлоадера. Такое может быть 
-                                   если контроллер перегрузили во время штатной работы.
-    tag: Некое число, которое может быть передано в пакете (в зависимости от ситуации)
-    crc: Контрольная сума с алгоритмом аналогичным onewire.
+    controller_id: ID of the controller with which the exchange is performed.
+                   Other controllers, seeing packets with a different ID, ignore them.
+    cmd: 1 - reset                 controller reboot
+         2 - match receive         controller get ready to receive VAR data (number in tag field)
+                                   (if not initialized it ignores the data)
+         3 - match transmit        controller prepare to give VAR data
+         4 - pack transmit count   the packet is transmitted immediately after transmit by the controller (number of records
+                                   transfers in the tag field)
+         5 - pack transmit init    can give the controller after transmit if not initialized (request
+                                   initialization)
+         6 - match receive init    the controller must prepare initialization packets (number in the tag field)
+         7 - match ow scan         request packet to the controller so that it scans its network (by
+                                   readiness sends the pack transmit count packet and further ROM packets).
+        24 - firmware              Request to start the firmware on the bootloader. After it, we just start sending
+                                   HEX firmware packages. In the tag field, the number of packets to receive.
+        25 - firmware query size   The number of HEX packets that were received by the controller is requested.
+                                   The tag contains the number of packets that were sent.
+                                   If the numbers match, then the controller after sending cmd: 4 goes
+                                   to the main program
+        26 - query firmware        Manual firmware request.
+        27 - from boot             Response controller package to cmd: 3 from the bootloader. This could be
+                                   if the controller is overloaded during normal operation.
+    tag: Some number that can be sent in a packet (depending on the situation)
+    crc: Checksum with an algorithm similar to onewire.
     
-    Примечание: Любой валидный пакет обработаный контроллером но не адресуемый ему сбрасывает флаг rs485_is_online
+    Note: Any valid packet processed by the controller but not addressed to it will reset the rs485_is_online flag
 */
 typedef struct _rs485_cmd_pack {  // 8 bytes
     uint8_t sign[3];  // CMD
@@ -47,14 +47,14 @@ typedef struct _rs485_cmd_pack {  // 8 bytes
 } rs485_cmd_pack_t;
 
 /*
-    Пакет передачи значения ОДНОЙ переменной.
+    Packet of transferring the value of ONE variable.
     
-    sign: "VAR"
-    controller_id: ИД контроллера с которым выполняется обмен.
-                   Другие контролеры видя пакеты с чужим ИД игнорируют его.
-    id: ИД переменной
-    value: значение переменной
-    crc: Контрольная сума с алгоритмом аналогичным onewire.
+    sign: "var"
+    controller_id: ID of the controller with which the exchange is performed.
+                   Other controllers seeing packets with someone else's ID ignore it.
+    id: ID of the variable
+    value: the value of the variable
+    crc: Checksum with algorithm similar to onewire.
 */
 typedef struct _rs485_var_pack {  // 9 bytes
     uint8_t sign[3];  // VAR
@@ -65,13 +65,13 @@ typedef struct _rs485_var_pack {  // 9 bytes
 } rs485_var_pack_t;
 
 /*
-    Пакет передачи ОДНОЙ записи ROM
+    ONE Record ROM Transfer Package
     
     sign: ROM
-    controller_id: ИД контроллера с которым выполняется обмен.
-                   Другие контролеры видя пакеты с чужим ИД игнорируют его.
+    controller_id: ID of the controller with which the exchange is performed.
+                   Other controllers seeing packets with someone else's ID ignore it.
     rom: ROM
-    crc: Контрольная сума с алгоритмом аналогичным onewire.
+    crc: Checksum with algorithm similar to onewire.
 */
 typedef struct _rs485_ow_rom_pack {  // 13 bytes
     uint8_t sign[3]; // ROM
@@ -81,15 +81,15 @@ typedef struct _rs485_ow_rom_pack {  // 13 bytes
 } rs485_ow_rom_pack_t;
 
 /*
-    Пакет передачи 8 байт прошивки.
-	Контроллер в штатном режиме должен знать про этот пакет только 
-	что бы игнорировать. Получается исключительно бутлоадером.
-	
-	sign: HEX
-	controller_id: ИД контроллера с которым выполняется обмен.
-                   Другие контролеры видя пакеты с чужим ИД игнорируют его.
-    data: hex данные
-	crc: Контрольная сума с алгоритмом аналогичным onewire.
+    Transfer package 8 bytes firmware.
+    The controller in normal mode should only know about this package
+    to ignore. It turns out exclusively by a bootloader.
+
+    sign: HEX
+    controller_id: ID of the controller with which the exchange is performed.
+                   Other controllers seeing packets with someone else's ID ignore it.
+    data: hex data
+    crc: Checksum with algorithm similar to onewire.
 */
 typedef struct _rs485_hex_pack { // 13 bytes
 	uint8_t sign[3]; // HEX

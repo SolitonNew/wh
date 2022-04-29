@@ -31,22 +31,22 @@ int main(void)
     sei();
 		
     while (1) {
-        // Обрабатываем входной буфер
+        // Processing the input buffer
         rs485_processing();
         
-        // Обрабатываем onewire на предмет alarm флагов
+        // Handling onewire alarm flags
         if (alarm_loop_space++ > ALARM_LOOP_SPACE_MAX) {
             alarm_loop_space = 0;
             core_onewire_alarm_processing();
         }
         
-        // Вызываем обработчик переодичных действий
+        // Calling the periodic action handler
         periodic_processing();
 		
-        // Обрабатываем отложенные назначения переменных
+        // Handling delayed variable assignments
         schedule_processing();
 		
-        // Обработка кнопок управления
+        // Handling control buttons
         control_check_btn(&control_btn_states);
         
         if (control_btn_states.btn_1_change && control_btn_states.btn_1_down == 0) {
