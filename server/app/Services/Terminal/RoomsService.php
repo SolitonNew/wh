@@ -5,6 +5,7 @@ namespace App\Services\Terminal;
 use App\Models\Room;
 use App\Models\Device;
 use App\Models\Property;
+use Lang;
 
 class RoomsService 
 {
@@ -73,10 +74,10 @@ class RoomsService
      */
     private function _makeItems($parentID, $level, &$data) 
     {
-        $switches_2 = [
-            ' НОЧНИК', 
-            ' СТОЛОВАЯ'
-        ];
+        $switches_2 = [];
+        foreach (Lang::get('terminal.switches_second') as $s) {
+            $switches_2[] = ' '.$s;
+        }
         
         for ($i = 0; $i < count($this->_groups); $i++) {
             $row = $this->_groups[$i];

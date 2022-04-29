@@ -8,10 +8,6 @@
 
 namespace App\Library\Daemons;
 
-use App\Models\Hub;
-use App\Models\DeviceChangeMem;
-use App\Models\Device;
-use App\Library\Script\PhpExecute;
 use App\Models\SoftHost;
 use DB;
 use Lang;
@@ -23,30 +19,19 @@ use Lang;
  */
 class SoftwareDaemon extends BaseDaemon
 {
+    use DeviceManagerTrait;
+    
     /**
      *
      * @var type 
      */
-    private $_controllers;
     private $_providers = [];
     private $_prevExecuteHostProviderTime = false;
     
     /**
-     *
-     * @var type 
-     */
-    private $_lastSyncDeviceChangesID = -1;
-    
-    /**
-     *
-     * @var type 
-     */
-    private $_devices = [];
-    
-    /**
      * 
      */
-    public function execute() 
+    public function execute()
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         
@@ -57,17 +42,11 @@ class SoftwareDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
-        $this->_controllers = Hub::where('id', '>', 0)
-                                ->whereTyp('software')
-                                ->orderBy('rom', 'asc')
-                                ->get();
+        // Init hubs  -------------
+        if (!$this->initHubs('software')) return ;
+        // ------------------------
         
         $this->_initHostProviders();
-        
-        if (count($this->_controllers) == 0) {
-            $this->disableAutorun();
-            return;
-        }
         
         $a = [];
         foreach ($this->_providers as $provider) {
@@ -75,12 +54,9 @@ class SoftwareDaemon extends BaseDaemon
         }
         $this->printLine('PROVIDERS USED: ['.implode(', ', $a).']');
         
-        // Get last id of the change log
-        $this->_lastSyncDeviceChangesID = DeviceChangeMem::max('id') ?? -1;
-        
-        // Get an up-to-date list of all variables
-        $this->_devices = Device::orderBy('id')
-            ->get();
+        // Init device changes trait
+        $this->initDeviceChanges();
+        // -------------------------
         
         try {
             while (1) {
@@ -88,13 +64,7 @@ class SoftwareDaemon extends BaseDaemon
                 $this->_executeHostProviders();
                 
                 // Get changes of the variables
-                $changes = DeviceChangeMem::where('id', '>', $this->_lastSyncDeviceChangesID)
-                                        ->orderBy('id', 'asc')
-                                        ->get();
-                if (count($changes)) {
-                    $this->_lastSyncDeviceChangesID = $changes[count($changes) - 1]->id;
-                }
-                $this->_syncVariables($changes);
+                $this->checkDeviceChanges();
                 // -----------------------------
                 usleep(100000);
             }
@@ -109,63 +79,10 @@ class SoftwareDaemon extends BaseDaemon
     
     /**
      * 
-     * @param type $changes
-     */
-    private function _syncVariables(&$changes)
-    {
-        foreach ($changes as $change) {
-            foreach ($this->_devices as $device) {
-                if ($device->id == $change->device_id) {
-                    if ($device->value != $change->value) {
-                        // Store new device value
-                        $device->value = $change->value;
-                        
-                        // Run event script if it's attached
-                        $this->_executeEvents($device);
-                    }
-                    break;
-                }
-            }
-        }
-    }
-    
-    /**
-     * 
-     * @param type $device
-     */
-    private function _executeEvents(&$device)
-    {
-        $hubIds = $this->_controllers
-            ->pluck('id')
-            ->toArray();
-        
-        if (!in_array($device->hub_id, $hubIds)) return ;
-        
-        $sql = "select s.comm, s.data
-                  from core_device_events de, core_scripts s
-                 where de.device_id = ".$device->id."
-                   and de.script_id = s.id";
-        
-        foreach (DB::select($sql) as $script) {
-            try {
-                $execute = new PhpExecute($script->data);
-                $execute->run();
-                $s = "[".parse_datetime(now())."] RUN SCRIPT '".$script->comm."' \n";
-                $this->printLine($s); 
-            } catch (\Exception $ex) {
-                $s = "[".parse_datetime(now())."] ERROR\n";
-                $s .= $ex->getMessage();
-                $this->printLine($s); 
-            }
-        }
-    }
-    
-    /**
-     * 
      */
     private function _initHostProviders()
     {
-        $ids = $this->_controllers
+        $ids = $this->_hubs
             ->pluck('id')
             ->toArray();
         

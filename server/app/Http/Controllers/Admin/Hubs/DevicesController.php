@@ -119,7 +119,9 @@ class DevicesController extends Controller
                     ];
                 }
                 break;
-            
+            case 'orangepi':
+                //
+                break;
             case 'din':
                 foreach ($hub->owHosts as $host) {
                     $data[] = (object)[
@@ -160,6 +162,9 @@ class DevicesController extends Controller
                 if ($host) {
                     $data = $host->channelsOfType();
                 }
+                break;
+            case 'orangepi':
+                $data = array_keys(config('orangepi.channels'));
                 break;
         }
         

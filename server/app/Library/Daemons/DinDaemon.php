@@ -28,12 +28,6 @@ class DinDaemon extends BaseDaemon
      *
      * @var type 
      */
-    private $_controllers;
-    
-    /**
-     *
-     * @var type 
-     */
     private $_waitCount = 0;
     
     /**
@@ -101,15 +95,9 @@ class DinDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
-        $this->_controllers = Hub::where('id', '>', 0)
-                                ->whereTyp('din')
-                                ->orderBy('rom', 'asc')
-                                ->get();
-        
-        if (count($this->_controllers) == 0) {
-            $this->disableAutorun();
-            return;
-        }
+        // Init hubs  -------------
+        if (!$this->initHubs('din')) return ;
+        // ------------------------
         
         $this->_lastSyncDeviceChangesID = DeviceChangeMem::max('id') ?? -1;
         
@@ -147,7 +135,7 @@ class DinDaemon extends BaseDaemon
                         }
                 }
                                 
-                foreach($this->_controllers as $controller) {
+                foreach($this->_hubs as $controller) {
                     switch ($command) {
                         case 'RESET':
                             $this->_commandReset($controller);
@@ -331,10 +319,10 @@ class DinDaemon extends BaseDaemon
         
         $PAGE_STORE_PAUSE = 100000;
         
-        $count = count($this->_controllers);
+        $count = count($this->_hubs);
         $index = 0;
         for ($i = 0; $i < $count; $i++) {
-            if ($this->_controllers[$i]->id == $controller->id) {
+            if ($this->_hubs[$i]->id == $controller->id) {
                 $index = $i;
                 break;
             }

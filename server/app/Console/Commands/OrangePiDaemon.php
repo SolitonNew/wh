@@ -11,25 +11,25 @@ namespace App\Console\Commands;
 use \Illuminate\Console\Command;
 
 /**
- * Description of SoftwareCommand
+ * Description of OrangePiDaemon
  *
- * @author soliton
+ * @author User
  */
-class SoftwareDaemon extends Command
+class OrangePiDaemon extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'software-daemon';
+    protected $signature = 'orangepi-daemon';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Processing software hubs';
+    protected $description = 'Processing Orange Pi hubs';
 
     /**
      * Create a new command instance.
@@ -48,7 +48,7 @@ class SoftwareDaemon extends Command
      */
     public function handle()
     {
-        $demon = new \App\Library\Daemons\SoftwareDaemon($this->signature);
+        $demon = new \App\Library\Daemons\OrangePiDaemon($this->signature);
         $demon->execute();
     }
 }

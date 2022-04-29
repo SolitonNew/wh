@@ -401,7 +401,7 @@ class Room extends Model
         if (!$device) abort(404);
         
         try {    
-            $device->room_id = -1;
+            $device->room_id = null;
             $device->position = null;
             $device->save();
         } catch (\Exception $ex) {

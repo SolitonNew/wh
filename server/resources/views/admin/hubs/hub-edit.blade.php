@@ -34,7 +34,10 @@
             @else
             <select class="custom-select" name="typ">
             @foreach(\App\Models\Hub::$typs as $key => $val)
-            <option value="{{ $key }}" data-description="@lang('admin/hubs.hub_types.'.$key)"  {{ $item->typ == $key ? 'selected' : '' }}>{{ $key }}</option>
+            <option value="{{ $key }}" 
+                    data-description="@lang('admin/hubs.hub_types.'.$key)" 
+                    {{ App\Models\Hub::isFirstSingleHub($key) ? '' : 'disabled' }}
+                    {{ $item->typ == $key ? 'selected' : '' }}>{{ $key }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>

@@ -4,6 +4,7 @@ namespace App\Library\Daemons;
 
 use App\Models\WebLogMem;
 use App\Models\Property;
+use App\Models\Hub;
 
 /**
  * This is the base class for all daemons.
@@ -21,6 +22,33 @@ class BaseDaemon {
     public function __construct($signature) 
     {
         $this->_signature = $signature;
+    }
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $_hubs = [];
+    
+    /**
+     * 
+     * @param type $typ
+     * @return type
+     */
+    protected function initHubs($typ)
+    {
+        $this->_hubs = Hub::where('id', '>', 0)
+            ->whereTyp($typ)
+            ->orderBy('rom', 'asc')
+            ->get();
+        
+        if (count($this->_hubs) == 0) {
+            $this->printLine('Not found hubs.');
+            $this->disableAutorun();
+            return false;
+        }
+        
+        return true;
     }
 
     /**

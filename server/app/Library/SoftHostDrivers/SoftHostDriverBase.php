@@ -133,7 +133,7 @@ class SoftHostDriverBase
      * 
      * @return type
      */
-    protected function getLastStorageDatetime()
+    public function getLastStorageDatetime()
     {
         return SoftHostStorage::where('soft_host_id', $this->key)->max('created_at');
     }

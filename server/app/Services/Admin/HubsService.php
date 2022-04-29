@@ -83,7 +83,7 @@ class HubsService
                         }
                     }
                     if (!$find) {
-                        $app_control = 1; // По умолчанию СВЕТ
+                        $app_control = 1; // Default Light
 
                         $item = new Device();
                         $item->hub_id = $hub->id;
@@ -95,6 +95,42 @@ class HubsService
                         $item->app_control = $app_control;
                         $item->save(['withoutevents']);
                         $item->name = 'din_'.$item->id.'_'.$chan;
+                        $item->save();
+                    }
+                }
+            } catch (\Exception $ex) {
+                Log::info($ex);
+                return ;
+            }
+        }
+        
+        if ($hub->typ == 'orangepi') {
+            // Generation of devices by channel
+            $channels = config('orangepi.channels');
+            $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "orangepi"');
+            
+            try {
+                foreach($channels as $chan => $num) {
+                    $find = false;
+                    foreach($devs as $dev) {
+                        if ($dev->hub_id == $hub->id && $dev->channel == $chan) {
+                            $find = true;
+                            break;
+                        }
+                    }
+                    if (!$find) {
+                        $app_control = 1; // Default Light
+
+                        $item = new Device();
+                        $item->hub_id = $hub->id;
+                        $item->typ = 'orangepi';
+                        $item->name = 'temp for din';
+                        //$item->comm = Lang::get('admin/hubs.app_control.'.$app_control);
+                        $item->host_id = null;
+                        $item->channel = $chan;
+                        $item->app_control = $app_control;
+                        $item->save(['withoutevents']);
+                        $item->name = 'orangepi_'.$item->id.'_'.$chan;
                         $item->save();
                     }
                 }
@@ -201,6 +237,7 @@ class HubsService
         $daemons = [
             'din-daemon', 
             'software-daemon',
+            'orangepi-daemon',
         ];
         
         $daemonManager = new DaemonManager();

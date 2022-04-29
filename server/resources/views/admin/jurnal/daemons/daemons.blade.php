@@ -122,15 +122,17 @@
                         let nextProgress = lines.last().text().indexOf('PROGRESS:') == 0;
                         let nextFirstProgress = lines.first().text().indexOf('PROGRESS:') == 0;
                         
+                        let nowProgress = false;
                         if (prevProgress && nextProgress) {
-                            $('.daemon-log-offset > div:first').replaceWith(lines.last());
+                            $('.daemon-log-offset > div:first').remove();
+                            nowProgress = (count == 1);
                             count--;
                         }
                         
                         $('.daemon-log-offset').prepend(lines);
                         daemonLogLastID = $(lines.first()).data('id');
                         
-                        if (prevProgress || nextProgress || nextFirstProgress || (!daemonLogStart && nextFirstProgress)) {
+                        if ((!daemonLogStart && nextFirstProgress) || (nowProgress || nextFirstProgress)) {
                             daemonLogLastID--;
                         }
                         
@@ -149,7 +151,7 @@
                         if (count) {
                             $('.daemon-log-offset').stop(true);
                             let h = 0;
-                            $(lines).each(function () {
+                            $('.daemon-log-offset > div:lt(' + count + ')').each(function () {
                                 h += $(this).height();
                             });
 
