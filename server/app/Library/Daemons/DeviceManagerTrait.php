@@ -58,7 +58,7 @@ trait DeviceManagerTrait
             if ($counter++ > 5) break;
             
             if ($repeat) {
-                usleep(10000);
+                usleep(25000);
             }
         }
     }
@@ -66,10 +66,11 @@ trait DeviceManagerTrait
     /**
      * 
      * @param type $changes
+     * @return boolean
      */
     private function _syncVariables(&$changes)
     {
-        $executed = false;
+        $scriptExecuted = false;
         foreach ($changes as $change) {
             foreach ($this->_devices as $device) {
                 if ($device->id == $change->device_id) {
@@ -81,13 +82,15 @@ trait DeviceManagerTrait
 
                         // Run event script if it's attached
                         if ($this->_executeEvents($device)) {
-                            $executed = true;
+                            $scriptExecuted = true;
                         }
                     }
                     break;
                 }
             }
         }
+        
+        return $scriptExecuted;
     }
     
     /**
@@ -116,7 +119,7 @@ trait DeviceManagerTrait
                  where de.device_id = ".$device->id."
                    and de.script_id = s.id";
         
-        $executed = false;
+        $scriptExecuted = false;
         
         foreach (DB::select($sql) as $script) {
             try {
@@ -125,7 +128,7 @@ trait DeviceManagerTrait
                 $s = "[".parse_datetime(now())."] RUN SCRIPT '".$script->comm."' \n";
                 $this->printLine($s); 
                 
-                $executed = true;
+                $scriptExecuted = true;
             } catch (\Exception $ex) {
                 $s = "[".parse_datetime(now())."] ERROR\n";
                 $s .= $ex->getMessage();
@@ -133,6 +136,6 @@ trait DeviceManagerTrait
             }
         }
         
-        return $executed;
+        return $scriptExecuted;
     }
 }

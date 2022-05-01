@@ -11,7 +11,6 @@ namespace App\Library\Daemons;
 use App\Models\Device;
 use Lang;
 use DB;
-use Log;
 
 /**
  * Description of OrangePiDaemon
@@ -161,21 +160,28 @@ class OrangePiDaemon extends BaseDaemon
      */
     private function _getSystemInfo()
     {
-        $val = file_get_contents('/sys/devices/virtual/thermal/thermal_zone0/temp');
-        $temp = preg_replace("/[^0-9]/", "", $val);
-        
-        if ($temp > 200) {
-            $temp = round($temp / 1000);
-        } else {
-            $temp = round($temp);
-        }
-        
-        foreach ($this->_devices as $dev) {
-            if ($dev->typ == 'orangepi' && $dev->channel == 'PROC_TEMP') {
-                if (round($dev->value) != $temp) {
-                    Device::setValue($dev->id, $temp);
-                }
+        try {
+            $val = file_get_contents('/sys/devices/virtual/thermal/thermal_zone0/temp');
+            $temp = preg_replace("/[^0-9]/", "", $val);
+
+            if ($temp > 200) {
+                $temp = round($temp / 1000);
+            } else {
+                $temp = round($temp);
             }
+
+            foreach ($this->_devices as $dev) {
+                if ($dev->typ == 'orangepi' && $dev->channel == 'PROC_TEMP') {
+                    if (round($dev->value) != $temp) {
+                        Device::setValue($dev->id, $temp);
+                    }
+                }
+            }    
+        } catch (\Exception $ex) {
+            $s = "[".parse_datetime(now())."] ERROR\n";
+            $s .= $ex->getMessage();
+            $this->printLine($s); 
         }
+        
     }
 }
