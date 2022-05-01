@@ -185,8 +185,6 @@ class Din
                 'din' => 0,
                 'ow' => 1,
                 'variable' => 2,
-                'software' => 3,
-                'orangepi' => 4,
             ],
         ]));
         
