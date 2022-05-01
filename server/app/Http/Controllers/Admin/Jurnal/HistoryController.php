@@ -14,15 +14,15 @@ class HistoryController extends Controller
      *
      * @var type 
      */
-    private $_historyService;
+    private $_service;
     
     /**
      * 
-     * @param HistoryService $historyService
+     * @param HistoryService $service
      */
-    public function __construct(HistoryService $historyService) 
+    public function __construct(HistoryService $service) 
     {
-        $this->_historyService = $historyService;
+        $this->_service = $service;
     }
     
     /**
@@ -34,9 +34,9 @@ class HistoryController extends Controller
      */
     public function index(HistoryIndexRequest $request, int $id = null) 
     {        
-        $this->_historyService->storeFilterDataFromRequest($request);
+        $this->_service->storeFilterDataFromRequest($request);
         
-        list($data, $errors) = $this->_historyService->getFilteringData($id);        
+        list($data, $errors) = $this->_service->getFilteringData($id);        
         
         $devices = Device::orderBy('name', 'asc')->get();
         
@@ -83,7 +83,7 @@ class HistoryController extends Controller
      */
     public function deleteAllVisibleValues(int $id) 
     {
-        $count = $this->_historyService->deleteAllVisibleValues($id);
+        $count = $this->_service->deleteAllVisibleValues($id);
         
         return 'OK: '.$count;
     }

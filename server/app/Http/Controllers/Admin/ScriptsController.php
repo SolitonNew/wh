@@ -15,15 +15,15 @@ class ScriptsController extends Controller
      *
      * @var type 
      */
-    private $_scriptsService;
+    private $_service;
     
     /**
      * 
-     * @param ScriptsService $scriptService
+     * @param ScriptsService $service
      */
-    public function __construct(ScriptsService $scriptService) 
+    public function __construct(ScriptsService $service) 
     {
-        $this->_scriptsService = $scriptService;
+        $this->_service = $service;
     }
     
     /**

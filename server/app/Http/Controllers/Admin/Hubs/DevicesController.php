@@ -19,15 +19,15 @@ class DevicesController extends Controller
      *
      * @var type 
      */
-    private $_devicesService;
+    private $_service;
     
     /**
      * 
-     * @param DevicesService $devicesService
+     * @param DevicesService $service
      */
-    public function __construct(DevicesService $devicesService) 
+    public function __construct(DevicesService $service) 
     {
-        $this->_devicesService = $devicesService;
+        $this->_service = $service;
     }
     
     /**
@@ -41,7 +41,7 @@ class DevicesController extends Controller
      */
     public function index(HubsIndexRequest $request, int $hubID = null, $groupID = null) 
     {                
-        $groupID = $this->_devicesService->prepareRoomFilter($groupID);
+        $groupID = $this->_service->prepareRoomFilter($groupID);
 
         $data = Device::devicesList($hubID, $groupID);
         
