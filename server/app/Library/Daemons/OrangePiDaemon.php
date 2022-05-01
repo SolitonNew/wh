@@ -166,11 +166,15 @@ class OrangePiDaemon extends BaseDaemon
         
         if ($temp > 200) {
             $temp = round($temp / 1000);
+        } else {
+            $temp = round($temp);
         }
         
         foreach ($this->_devices as $dev) {
             if ($dev->typ == 'orangepi' && $dev->channel == 'PROC_TEMP') {
-                Device::setValue($dev->id, $temp);
+                if (round($dev->value) != $temp) {
+                    Device::setValue($dev->id, $temp);
+                }
             }
         }
     }
