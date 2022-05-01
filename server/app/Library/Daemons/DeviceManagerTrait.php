@@ -44,8 +44,9 @@ trait DeviceManagerTrait
                 ->get();
         if (count($changes)) {
             $this->_lastSyncDeviceChangesID = $changes[count($changes) - 1]->id;
+            
+            $this->_syncVariables($changes);
         }
-        $this->_syncVariables($changes);
     }
     
     /**

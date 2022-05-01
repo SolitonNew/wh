@@ -1,8 +1,8 @@
 @extends('admin.jurnal.jurnal')
 
 @section('page-down-menu')
-<a href="#" class="dropdown-item {{ $stat ? 'disabled' : '' }}" onclick="daemonStart(); return false">@lang('admin/jurnal.daemon_run')</a>
-<a href="#" class="dropdown-item {{ $stat ? '' : 'disabled' }}" onclick="daemonStop(); return false;">@lang('admin/jurnal.daemon_stop')</a>
+<a href="#" class="dropdown-item" onclick="daemonStart(); return false">@lang('admin/jurnal.daemon_run')</a>
+<a href="#" class="dropdown-item" onclick="daemonStop(); return false;">@lang('admin/jurnal.daemon_stop')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="daemonReload(); return false;">@lang('admin/jurnal.daemon_reload')</a>
 <div class="dropdown-divider"></div>

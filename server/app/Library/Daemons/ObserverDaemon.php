@@ -9,9 +9,9 @@
 namespace App\Library\Daemons;
 
 use App\Models\DeviceChangeMem;
+use App\Models\Device;
 use DB;
 use Lang;
-use Log;
 
 /**
  * Description of ObserverDaemon
