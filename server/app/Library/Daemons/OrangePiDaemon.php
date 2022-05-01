@@ -163,6 +163,14 @@ class OrangePiDaemon extends BaseDaemon
     {
         $temp = file_get_contents('/sys/devices/virtual/thermal/thermal_zone0/temp');
         
-        $this->printLine('PROCESSOR TEMPERATURE: '.$temp);
+        if ($temp > 200) {
+            $temp = round($temp / 1000);
+        }
+        
+        foreach ($this->_devices as $dev) {
+            if ($dev->typ == 'orangepi' && $dev->channel == 'PROC_TEMP') {
+                Device::setValue($dev->id, $temp);
+            }
+        }
     }
 }
