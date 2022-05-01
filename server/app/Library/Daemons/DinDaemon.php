@@ -75,7 +75,7 @@ class DinDaemon extends BaseDaemon
     /**
      * 
      */
-    const SLEEP_TIME = 25;
+    const SLEEP_TIME = 50;
     
     /**
      * 
