@@ -43,11 +43,22 @@ class OrangePiDaemon extends BaseDaemon
         $this->initDeviceChanges();
         // -------------------------
         
+        $lastMinute = \Carbon\Carbon::now()->startOfMinute();
+        
         try {
             while (1) {
                 // Get changes of the variables
                 $this->checkDeviceChanges();
                 // -----------------------------
+                
+                // Get Orange Pi system info
+                $minute = \Carbon\Carbon::now()->startOfMinute();
+                if ($minute->gt($lastMinute)) {
+                    $this->_getSystemInfo();
+                }
+                $lastMinute = $minute;
+                // -----------------------------
+                
                 usleep(100000);
             }
         } catch (\Exception $ex) {
@@ -75,6 +86,7 @@ class OrangePiDaemon extends BaseDaemon
             ->get();
         
         foreach ($channels as $chan => $num) {
+            if ($num == -1) continue;
             try {
                 $res = [];
                 
@@ -113,6 +125,8 @@ class OrangePiDaemon extends BaseDaemon
             $channels = config('orangepi.channels');
             $num = $channels[$chan];
             
+            if ($num == -1) return ;
+            
             $res = [];
             if ($value) {
                 exec('gpioset 0 '.$num.'=1 2>&1', $res);
@@ -139,5 +153,16 @@ class OrangePiDaemon extends BaseDaemon
         if ($device->typ == 'orangepi') {
             $this->_setValueGPIO($device->channel, $device->value);
         }
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    private function _getSystemInfo()
+    {
+        $temp = file_get_contents('/sys/devices/virtual/thermal/thermal_zone0/temp');
+        
+        $this->printLine('PROCESSOR TEMPERATURE: '.$temp);
     }
 }
