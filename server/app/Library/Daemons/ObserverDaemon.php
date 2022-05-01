@@ -20,7 +20,17 @@ use Log;
  */
 class ObserverDaemon extends BaseDaemon
 {   
-    private $_lastDeviceChangesID = -1;
+    /**
+     *
+     * @var type 
+     */
+    private $_lastSyncDeviceChangesID = -1;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $_devices = [];
     
     /**
      * 
@@ -36,28 +46,24 @@ class ObserverDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');        
         
-        $this->_lastChangeID = DeviceChangeMem::max('id') ?? -1;
+        // Get last id of the change log
+        $this->_lastSyncDeviceChangesID = DeviceChangeMem::max('id') ?? -1;
         
-        /*sleep(1);
-        $this->printLine('ZZZZZZZZZ');
-        $this->printLine('ZZZZZZZZZ');
-        sleep(1);
-        for ($i = 0; $i <= 100; $i++) {
-            $this->printProgress($i);
-            usleep(50000);
-        }
-        $this->printLine('ZZZZZZZZZ'); */
+        // Get an up-to-date list of all variables
+        $this->_devices = Device::orderBy('id')
+            ->get();
         
         while(1) {
-            $changes = DeviceChangeMem::with('device')
-                ->where('id', '>', $this->_lastDeviceChangesID)
+            $changes = DeviceChangeMem::where('id', '>', $this->_lastSyncDeviceChangesID)
                 ->orderBy('id', 'asc')
                 ->get();
-            foreach($changes as $item) {
-                $this->_processedDevice($item);
-                $this->_lastDeviceChangesID = $item->id;
+            if (count($changes)) {
+                $this->_lastSyncDeviceChangesID = $changes[count($changes) - 1]->id;
+                
+                $this->_syncVariables($changes);
             }
-            usleep(200000);
+            
+            usleep(100000);
         }
     }
     
@@ -65,16 +71,17 @@ class ObserverDaemon extends BaseDaemon
      * 
      * @param type $changes
      */
-    private function _processedDevice(&$item)
+    private function _syncVariables(&$changes)
     {
-        $device = $item->device;
-        
-        if (!$device) return ;
-        
-        switch ($device->app_control) {
-            case 1: // Light
-                //
-                break;
+        foreach ($changes as $change) {
+            foreach ($this->_devices as $device) {
+                if ($device->id == $change->device_id) {
+                    if ($device->value != $change->value) {
+                        //
+                    }
+                    break;
+                }
+            }
         }
     }
 }
