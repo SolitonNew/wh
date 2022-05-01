@@ -39,13 +39,24 @@ trait DeviceManagerTrait
      */
     protected function checkDeviceChanges()
     {
-        $changes = DeviceChangeMem::where('id', '>', $this->_lastSyncDeviceChangesID)
-                ->orderBy('id', 'asc')
-                ->get();
-        if (count($changes)) {
-            $this->_lastSyncDeviceChangesID = $changes[count($changes) - 1]->id;
+        $repeat = true;
+        while ($repeat) {
+            $repeat = false;
+        
+            $changes = DeviceChangeMem::where('id', '>', $this->_lastSyncDeviceChangesID)
+                    ->orderBy('id', 'asc')
+                    ->get();
+            if (count($changes)) {
+                $this->_lastSyncDeviceChangesID = $changes[count($changes) - 1]->id;
+
+                if ($this->_syncVariables($changes)) {
+                    $repeat = true;
+                }
+            }
             
-            $this->_syncVariables($changes);
+            if ($repeat) {
+                usleep(10000);
+            }
         }
     }
     
@@ -55,29 +66,24 @@ trait DeviceManagerTrait
      */
     private function _syncVariables(&$changes)
     {
-        $repeat = true;
-        while ($repeat) {
-            $repeat = false;
-            foreach ($changes as $change) {
-                foreach ($this->_devices as $device) {
-                    if ($device->id == $change->device_id) {
-                        if ($device->value != $change->value) {
-                            // Store new device value
-                            $device->value = $change->value;
+        $executed = false;
+        foreach ($changes as $change) {
+            foreach ($this->_devices as $device) {
+                if ($device->id == $change->device_id) {
+                    if ($device->value != $change->value) {
+                        // Store new device value
+                        $device->value = $change->value;
 
-                            $this->_deviceChange($device);
+                        $this->_deviceChange($device);
 
-                            // Run event script if it's attached
-                            if ($this->_executeEvents($device)) {
-                                $repeat = true;
-                            }
+                        // Run event script if it's attached
+                        if ($this->_executeEvents($device)) {
+                            $executed = true;
                         }
-                        break;
                     }
+                    break;
                 }
             }
-            
-            if ($repeat) usleep(10000);
         }
     }
     
