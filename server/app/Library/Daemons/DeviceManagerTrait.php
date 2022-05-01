@@ -55,21 +55,29 @@ trait DeviceManagerTrait
      */
     private function _syncVariables(&$changes)
     {
-        foreach ($changes as $change) {
-            foreach ($this->_devices as $device) {
-                if ($device->id == $change->device_id) {
-                    if ($device->value != $change->value) {
-                        // Store new device value
-                        $device->value = $change->value;
-                        
-                        $this->_deviceChange($device);
-                        
-                        // Run event script if it's attached
-                        $this->_executeEvents($device);
+        $repeat = true;
+        while ($repeat) {
+            $repeat = false;
+            foreach ($changes as $change) {
+                foreach ($this->_devices as $device) {
+                    if ($device->id == $change->device_id) {
+                        if ($device->value != $change->value) {
+                            // Store new device value
+                            $device->value = $change->value;
+
+                            $this->_deviceChange($device);
+
+                            // Run event script if it's attached
+                            if ($this->_executeEvents($device)) {
+                                $repeat = true;
+                            }
+                        }
+                        break;
                     }
-                    break;
                 }
             }
+            
+            if ($repeat) usleep(10000);
         }
     }
     
@@ -92,12 +100,14 @@ trait DeviceManagerTrait
             ->pluck('id')
             ->toArray();
         
-        if (!in_array($device->hub_id, $hubIds)) return ;
+        if (!in_array($device->hub_id, $hubIds)) return false;
         
         $sql = "select s.comm, s.data
                   from core_device_events de, core_scripts s
                  where de.device_id = ".$device->id."
                    and de.script_id = s.id";
+        
+        $executed = false;
         
         foreach (DB::select($sql) as $script) {
             try {
@@ -105,11 +115,15 @@ trait DeviceManagerTrait
                 $execute->run();
                 $s = "[".parse_datetime(now())."] RUN SCRIPT '".$script->comm."' \n";
                 $this->printLine($s); 
+                
+                $executed = true;
             } catch (\Exception $ex) {
                 $s = "[".parse_datetime(now())."] ERROR\n";
                 $s .= $ex->getMessage();
                 $this->printLine($s); 
             }
         }
+        
+        return $executed;
     }
 }
