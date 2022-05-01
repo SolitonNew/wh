@@ -40,6 +40,7 @@ trait DeviceManagerTrait
     protected function checkDeviceChanges()
     {
         $repeat = true;
+        $counter = 0;
         while ($repeat) {
             $repeat = false;
         
@@ -53,6 +54,8 @@ trait DeviceManagerTrait
                     $repeat = true;
                 }
             }
+            
+            if ($counter++ > 5) break;
             
             if ($repeat) {
                 usleep(10000);
