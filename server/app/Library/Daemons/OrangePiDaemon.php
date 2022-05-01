@@ -161,7 +161,8 @@ class OrangePiDaemon extends BaseDaemon
      */
     private function _getSystemInfo()
     {
-        $temp = file_get_contents('/sys/devices/virtual/thermal/thermal_zone0/temp');
+        $val = file_get_contents('/sys/devices/virtual/thermal/thermal_zone0/temp');
+        $temp = preg_replace("/[^0-9]/", "", $val);
         
         if ($temp > 200) {
             $temp = round($temp / 1000);
