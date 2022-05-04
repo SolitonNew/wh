@@ -11,7 +11,7 @@ namespace App\Library\Daemons;
 use App\Models\DeviceChangeMem;
 use App\Models\Device;
 use DB;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Description of ObserverDaemon

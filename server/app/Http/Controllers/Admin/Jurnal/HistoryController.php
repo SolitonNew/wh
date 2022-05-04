@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin\Jurnal;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\HistoryIndexRequest;
 use App\Services\Admin\HistoryService;
 use App\Models\Device;
 use App\Models\DeviceChange;
+use App\Models\Property;
+use Illuminate\Http\Request;
 
 class HistoryController extends Controller
 {
@@ -28,12 +29,23 @@ class HistoryController extends Controller
     /**
      * Index route to display device history data.
      * 
-     * @param HistoryIndexRequest $request
      * @param int $id
      * @return type
      */
-    public function index(HistoryIndexRequest $request, int $id = null) 
+    public function index(Request $request, int $id = null) 
     {        
+        // Last view id  --------------------------
+        if (!$id) {
+            $id = Property::getLastViewID('HISTORY');
+            if ($id && Device::find($id)) {
+                return redirect(route('admin.jurnal-history', ['id' => $id]));
+            }
+            $id = null;
+        }
+        
+        Property::setLastViewID('HISTORY', $id);
+        // ----------------------------------------
+        
         $this->_service->storeFilterDataFromRequest($request);
         
         list($data, $errors) = $this->_service->getFilteringData($id);        

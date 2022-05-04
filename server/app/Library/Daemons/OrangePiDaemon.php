@@ -9,7 +9,7 @@
 namespace App\Library\Daemons;
 
 use App\Models\Device;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 use DB;
 
 /**

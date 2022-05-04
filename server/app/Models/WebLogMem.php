@@ -20,7 +20,7 @@ class WebLogMem extends Model
         $data = self::whereDaemon($daemonID)
                     ->where('id', '>', $lastID)
                     ->orderby('id', 'desc')
-                    ->limit(config("app.admin_daemons_log_lines_count"))
+                    ->limit(config("settings.admin_daemons_log_lines_count"))
                     ->get();
 
         foreach($data as &$row) {

@@ -33,9 +33,8 @@
             if ($('#keyword').val()) {
                 $.post({
                     method: 'POST',
-                    url: '{{ route("terminal.checked-edit-color-action", "add") }}',
+                    url: '{{ route("terminal.checked-edit-color-action", ["action" => "add"]) }}',
                     data: {
-                        _token: '{{ csrf_token() }}',
                         keyword: $('#keyword').val(),
                         color: $('#color').val(),
                     }
@@ -50,9 +49,8 @@
             if ($('#keyword').val()) {
                 $.post({
                     method: 'POST',
-                    url: '{{ route("terminal.checked-edit-color-action", "set") }}',
+                    url: '{{ route("terminal.checked-edit-color-action", ["action" => "set"]) }}',
                     data: {
-                        _token: '{{ csrf_token() }}',
                         keyword: $('#keyword').val(),
                         color: $('#color').val(),
                     }
@@ -66,9 +64,8 @@
             e.preventDefault();
             $.post({
                 method: 'POST',
-                url: '{{ route("terminal.checked-edit-color-action", "del") }}',
+                url: '{{ route("terminal.checked-edit-color-action", ["action" => "del"]) }}',
                 data: {
-                    _token: '{{ csrf_token() }}',
                     keyword: $(e.target).attr('data'),
                 }
             }).done((res) => {

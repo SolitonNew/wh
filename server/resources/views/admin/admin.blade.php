@@ -2,9 +2,7 @@
 
 @section('head')
 <link rel="stylesheet" href="/css/admin.css">
-<script src="/js/jquery.form.js"></script>
 <link rel="stylesheet" href="/css/script-editor.css">
-<script src="/js/script-editor.js"></script>
 @endsection
 
 @section('body')
@@ -67,42 +65,42 @@
             <div class="main-left-panel">
                 <div class="main-left-panel-container">
                     <div class="list-group">
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('plan')" href="{{ route('admin.plan') }}">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'plan') }}" href="{{ route('admin.plan') }}">
                             <img src="/img/menus/clipboard-2x.png">
                             <span class="label">@lang('admin/plan.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Models\Room::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('hubs')" href="{{ route('admin.hubs', '') }}">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'hubs') }}" href="{{ route('admin.hubs') }}">
                             <img src="/img/menus/pulse-2x.png">
                             <span class="label">@lang('admin/hubs.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Models\Device::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('scripts')" href="{{ route('admin.scripts') }}">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'scripts') }}" href="{{ route('admin.scripts') }}">
                             <img src="/img/menus/document-2x.png">
                             <span class="label">@lang('admin/scripts.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Models\Script::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('schedule')" href="{{ route('admin.schedule') }}">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'schedule') }}" href="{{ route('admin.schedule') }}">
                             <img src="/img/menus/calendar-2x.png">
                             <span class="label">@lang('admin/schedule.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Models\Schedule::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('cams')" href="{{ route('admin.cams') }}">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'cams') }}" href="{{ route('admin.cams') }}">
                             <img src="/img/menus/video-2x.png">
                             <span class="label">@lang('admin/cams.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Models\Videcam::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('jurnal')" href="{{ route('admin.jurnal') }}">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'jurnal') }}" href="{{ route('admin.jurnal') }}">
                             <img src="/img/menus/bar-chart-2x.png">
                             <span class="label">@lang('admin/jurnal.menu')</span>
-                            <span id="daemonsState" class="badge badge-primary badge-pill">{{ App\Models\Property::getRunedDaemons() }} / {{ App\Models\Property::getTotalDaemons() }}</span>
+                            <span id="daemonsState" class="badge badge-primary badge-pill">{{ \App\Models\Property::getRunedDaemons() }} / {{ \App\Models\Property::getTotalDaemons() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('users')" href="{{ route('admin.users') }}">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'users') }}" href="{{ route('admin.users') }}">
                             <img src="/img/menus/people-2x.png">
                             <span class="label">@lang('admin/users.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Models\User::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center @activeMenu('settings')" href="{{ route('admin.settings') }}">
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'settings') }}" href="{{ route('admin.settings') }}">
                             <img src="/img/menus/cog-2x.png">
                             <span class="label">@lang('admin/settings.menu')</span>
                         </a>
@@ -173,6 +171,9 @@
     </div>
 </div>
 
+<script src="/js/jquery.form.js"></script>
+<script src="/js/script-editor.js"></script>
+
 <script>
     var serverTimeOffset = (new Date()).getTime() / 1000 - {{ \Carbon\Carbon::now('UTC')->timestamp }};
     
@@ -207,7 +208,7 @@
 
             $(this).on('scroll', (e) => {
                 let o = $(this);
-                document.cookie = name + '=' + o.scrollTop() + '|' + o.scrollLeft() + '; path=/admin; max-age=3600';
+                setCookie(name, o.scrollTop() + '|' + o.scrollLeft());
             }).trigger('scroll');
         });
         
@@ -368,7 +369,7 @@
     }
 
     function loadVariableChanges() {
-        $.ajax('{{ route("admin.variable-changes", "") }}/' + lastDeviceChangeID).done((data) => {
+        $.ajax('{{ route("admin.variable-changes", ["lastID" => ""]) }}/' + lastDeviceChangeID).done((data) => {
             if (data && (data.substr(0, 15) == '<!DOCTYPE HTML>')) {
                 window.location.reload();
                 return ;
@@ -386,10 +387,10 @@
                 }
                 /*  --------------------------------------------------------  */                
                 
-                $('.log-row:gt({{ config("app.admin_log_lines_count") }})').remove();
+                $('.log-row:gt({{ config("settings.admin_log_lines_count") }})').remove();
             }
 
-            setTimeout(loadVariableChanges, {{ config("app.admin_log_update_interval") }});
+            setTimeout(loadVariableChanges, {{ config("settings.admin_log_update_interval") }});
         });
     }
 
@@ -433,17 +434,6 @@
         }).trigger('resize');
     }
 
-    function getCookie(name) {
-        let matches = document.cookie.match(new RegExp(
-            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-        ));
-        return matches ? decodeURIComponent(matches[1]) : undefined;
-    }
-
-    function setCookie(name, value) {
-        document.cookie = name + '=' + value + '; path=/admin; max-age=360000';
-    }
-
     function resetScrollStore(obj) {
         let name = $(obj).attr('scroll-store');
         if (name) {
@@ -478,7 +468,7 @@
                 $('#daemonsState').text(enabled + ' / ' + count);
             }
 
-            setTimeout(requestDaemonsState, {{ config("app.admin_daemins_status_update_interval") }});
+            setTimeout(requestDaemonsState, {{ config("settings.admin_daemins_status_update_interval") }});
         });
     }
 </script>

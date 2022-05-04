@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Admin\Jurnal;
 
 use App\Http\Controllers\Controller;
 use App\Services\Admin\DaemonsService;
-use App\Http\Requests\Admin\DaemonsIndexRequest;
 use App\Models\WebLogMem;
+use App\Models\Property;
+use App\Library\DaemonManager;
 
 class DaemonsController extends Controller
 {
@@ -30,8 +31,25 @@ class DaemonsController extends Controller
      * @param string $id
      * @return type
      */
-    public function index(DaemonsIndexRequest $request, string $id = null) 
+    public function index(DaemonManager $daemonManager, string $id = null) 
     {        
+        // Last view id  --------------------------
+        if (!$id) {
+            $id = Property::getLastViewID('DAEMON');
+            if ($id && in_array($id, $daemonManager->daemons())) {
+                return redirect(route('admin.jurnal-daemons', ['id' => $id]));
+            }
+            $id = null;
+        }
+        
+        if (!$id) {
+            $id = $daemonManager->daemons()[0];
+            return redirect(route('admin.jurnal-daemons', ['id' => $id]));
+        }
+        
+        Property::setLastViewID('DAEMON', $id);
+        // ----------------------------------------
+        
         return view('admin.jurnal.daemons.daemons', [
             'id' => $id,
             'stat' => $this->_service->isStarted($id),

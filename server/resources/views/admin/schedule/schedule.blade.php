@@ -24,8 +24,8 @@
         <tbody>
             @forelse($data as $row)
             <tr data-id="{{ $row->id }}" 
-                class="{{ (parse_datetime($row->action_datetime)->gt(now()) && 
-                           parse_datetime($row->action_datetime)->lte(now()->startOfDay()->addDay())) ? 'schedule-exec-today' : '' }}">
+                class="{{ (parse_datetime($row->action_datetime)->gt(\Carbon\Carbon::now()) && 
+                           parse_datetime($row->action_datetime)->lte(\Carbon\Carbon::now()->startOfDay()->addDay())) ? 'schedule-exec-today' : '' }}">
                 <td>{{ $row->id }}</td>
                 <td>{{ $row->comm }}</td>
                 <td>
@@ -38,7 +38,7 @@
                 </td>
                 <td style="padding: 0;"><div class="scheduleActionViewer" data-source="{!! addslashes($row->action) !!}"></div></td>
                 <td>{!! $row->interval_text !!}</td>
-                <td>{{ Lang::get('admin/schedule.enable_list.'.$row->enable) }}</td>
+                <td>@lang('admin/schedule.enable_list.'.$row->enable)</td>
             </tr>
             @empty
             <tr class="table-empty">
@@ -85,7 +85,7 @@
         $('#scheduleList tbody tr').on('click', (e) => {
             let id = $(e.currentTarget).attr('data-id');
             if (id) {
-                dialog('{{ route("admin.schedule-edit", "") }}/' + id);
+                dialog('{{ route("admin.schedule-edit", ["id" => ""]) }}/' + id);
             }
         });
         
@@ -103,7 +103,7 @@
     });
 
     function scheduleAdd() {
-        dialog('{{ route("admin.schedule-edit", "-1") }}');
+        dialog('{{ route("admin.schedule-edit", ["id" => -1]) }}');
     }
 
 </script>

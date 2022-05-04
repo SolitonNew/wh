@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Property extends Model
 {
     protected $table = 'core_properties';
     public $timestamps = false;
     
-    const VERSION = '2.2.3 alpha';
+    const VERSION = '2.3.0 alpha';
     
     /**
      * 
@@ -454,6 +455,55 @@ class Property extends Model
         ];
         
         $item->value = json_encode(self::$_forecast_settings);
+        $item->save();
+    }
+    
+    static private $_last_view_id = false;
+    
+    /**
+     * 
+     * @param type $page
+     * @return type
+     */
+    static public function getLastViewID($page)
+    {
+        if (self::$_last_view_id === false) {
+            $item = self::whereName('LAST_VIEW_ID')
+                ->whereUserId(Auth::user()->id)
+                ->first();
+            if ($item && $item->value) {
+                self::$_last_view_id = json_decode($item->value, true);
+            } else {
+                self::$_last_view_id = [];
+            }
+        }
+        
+        return isset(self::$_last_view_id[$page]) ? self::$_last_view_id[$page] : '';
+    }
+    
+    /**
+     * 
+     * @param type $page
+     * @param type $id
+     */
+    static public function setLastViewID($page, $id)
+    {
+        $userID = Auth::user()->id;
+        
+        $item = self::whereName('LAST_VIEW_ID')
+            ->whereUserId($userID)
+            ->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'LAST_VIEW_ID';
+            $item->comm = '';
+            $item->user_id = $userID;
+        }
+        
+        $data = $item->value ? json_decode($item->value, true) : [];
+        $data[$page] = $id;
+        self::$_last_view_id = json_encode($data);;
+        $item->value = self::$_last_view_id;
         $item->save();
     }
     

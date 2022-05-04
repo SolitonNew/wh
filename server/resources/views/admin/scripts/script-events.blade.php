@@ -5,8 +5,7 @@
 @endsection
 
 @section('content')
-<form id="script_events_form" class="container" method="POST" action="{{ route('admin.script-events', $id) }}">
-    {{ csrf_field() }}
+<form id="script_events_form" class="container" method="POST" action="{{ route('admin.script-events', ['id' => $id]) }}">
     <button type="submit" style="display: none;"></button>
     <select class="custom-select" name="variables[]" multiple="true" style="height: 400px;">
     @foreach(\App\Models\Device::orderBy('NAME', 'asc')->get() as $row)

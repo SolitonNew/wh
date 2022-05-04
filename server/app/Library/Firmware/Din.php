@@ -13,7 +13,7 @@ use App\Models\Script;
 use App\Library\Script\Translate;
 use App\Library\Script\Translators\C as TranslateC;
 use App\Models\Property;
-use View;
+use Illuminate\Support\Facades\View;
 use DB;
 
 /**

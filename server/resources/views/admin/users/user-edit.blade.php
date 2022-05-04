@@ -9,8 +9,7 @@
 @endsection
 
 @section('content')
-<form id="user_edit_form" class="container" method="POST" action="{{ route('admin.user-edit', $item->id) }}">
-    {{ csrf_field() }}
+<form id="user_edit_form" class="container" method="POST" action="{{ route('admin.user-edit', ['id' => $item->id]) }}">
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
     <div class="row">
@@ -63,7 +62,7 @@
         </div>
         <div class="col-sm-6">
             <select class="custom-select" name="access" {{ $item->id == Auth::user()->id ? 'disabled' : '' }} >
-            @foreach(Lang::get('admin/users.table_access_list') as $key => $val)
+            @foreach($tableAccessList as $key => $val)
                 <option value="{{ $key }}" {{ $item->access == $key ? 'selected' : '' }} >{{ $val }}</option>
             @endforeach
             </select>
@@ -104,8 +103,10 @@
         confirmYesNo("@lang('admin/users.user-delete-confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.user-delete", $item->id) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.user-delete", ["id" => $item->id]) }}',
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {

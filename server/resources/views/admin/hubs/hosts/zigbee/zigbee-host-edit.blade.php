@@ -9,8 +9,7 @@
 @endsection
 
 @section('content')
-<form id="host_edit_form" class="container" method="POST" action="{{ route('admin.hub-zigbeehost-edit', [$item->hub_id, $item->id]) }}">
-    {{ csrf_field() }}
+<form id="host_edit_form" class="container" method="POST" action="{{ route('admin.hub-zigbeehost-edit', ['hubID' => $item->hub_id, 'id' => $item->id]) }}">
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
     <div class="row">
@@ -152,8 +151,10 @@
         confirmYesNo("@lang('admin/hubs.host_delete_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.hub-zigbeehost-delete", [$item->hub_id, $item->id]) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.hub-zigbeehost-delete", ["hubID" => $item->hub_id, "id" => $item->id]) }}',
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {

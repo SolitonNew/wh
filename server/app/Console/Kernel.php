@@ -3,7 +3,7 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Laravel\Lumen\Console\Kernel as ConsoleKernel; 
 use App\Library\DaemonManager;
 use DB;
 
@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         Commands\ScheduleDaemon::class,
         Commands\CommandDaemon::class,
         Commands\ObserverDaemon::class,
+        Commands\OrangePiDaemon::class,
     ];
 
     /**

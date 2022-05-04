@@ -6,7 +6,6 @@
 
 @section('content')
 <form id="import_form" class="container" method="POST" action="{{ route('admin.plan-import') }}">
-    {{ csrf_field() }}
     <div class="form-group" style="margin-top: 1rem;">
         <div class="custom-file">
             <input type="file" class="custom-file-input" id="file" name="file">

@@ -5,7 +5,7 @@ namespace App\Services\Terminal;
 use \Illuminate\Http\Request;
 use App\Models\Property;
 use App\Models\Device;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 use DB;
 
 class CheckedService 

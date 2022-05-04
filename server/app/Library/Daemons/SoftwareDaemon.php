@@ -10,7 +10,7 @@ namespace App\Library\Daemons;
 
 use App\Models\SoftHost;
 use DB;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Description of SoftwareDaemon

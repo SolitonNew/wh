@@ -77,7 +77,7 @@
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div id="planParts" class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
         @foreach(\App\Models\Room::generateTree(null, false) as $row)
-        <a href="{{ route('admin.plan', $row->id) }}" data-id="{{ $row->id }}"
+        <a href="{{ route('admin.plan', ['id' => $row->id]) }}" data-id="{{ $row->id }}"
             class="tree-item {{ $row->id == $partID ? 'active' : '' }}">
             @foreach($row->treePath as $v)
             <span class="tree-item-path tree-item-path-{{ $v }}"></span>
@@ -198,7 +198,7 @@
         $('#planContent .plan-part').on('click', function (e) {
             if (planMouseScroll) return ;
             if (planContextMenuOpened) return ;
-            dialog('{{ route("admin.plan-edit", "") }}/' + $(this).attr('data-id'));
+            dialog('{{ route("admin.plan-edit", ["id" => ""]) }}/' + $(this).attr('data-id'));
         }).on('contextmenu', function (e) {
             planShowContextMenu(e, 'part');
             return false;
@@ -211,7 +211,7 @@
         $('#planContent .plan-port').on('click', function (e) {
             if (planMouseScroll) return ;
             if (planContextMenuOpened) return ;
-            dialog('{{ route("admin.plan-port-edit", ["", ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('index'));
+            dialog('{{ route("admin.plan-port-edit", ["planID" => "", "portIndex" => ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('index'));
         }).on('contextmenu', function (e) {
             planShowContextMenu(e, 'port');
             return false;
@@ -220,7 +220,7 @@
         $('#planContent .plan-device').on('click', function (e) {
             if (planMouseScroll) return ;
             if (planContextMenuOpened) return ;
-            dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('id'));
+            dialog('{{ route("admin.plan-link-device", ["planID" => "", "deviceID" => ""]) }}/' + $(this).data('part-id') + '/' + $(this).data('id'));
         }).on('contextmenu', function (e) {
             planShowContextMenu(e, 'device');
             return false;
@@ -288,7 +288,7 @@
         
         // Compact Navigate
         $('#planPartsCombobox').on('change', function () {
-            window.location.href = '{{ route("admin.plan", "") }}/' + $(this).val();
+            window.location.href = '{{ route("admin.plan", ["id" => ""]) }}/' + $(this).val();
         });
     });
     
@@ -636,20 +636,20 @@
     }
 
     function planAdd() {
-        dialog('{{ route("admin.plan-edit", [-1, $partID]) }}');
+        dialog('{{ route("admin.plan-edit", ["id" => -1, "p_id" => $partID]) }}');
     }
 
     @if($partID)
     function planEdit() {
-        dialog('{{ route("admin.plan-edit", $partID) }}');
+        dialog('{{ route("admin.plan-edit", ["id" => $partID]) }}');
     }
 
     function planMoveChilds() {
-        dialog('{{ route("admin.plan-move-childs", $partID) }}');
+        dialog('{{ route("admin.plan-move-childs", ["id" => $partID]) }}');
     }
 
     function planOrder() {
-        dialog('{{ route("admin.plan-order", $partID) }}');
+        dialog('{{ route("admin.plan-order", ["id" => $partID]) }}');
     }
     @endif
     
@@ -659,15 +659,15 @@
     
     @if($partID)
     function planMenuPlanEdit() {
-        dialog('{{ route("admin.plan-edit", "") }}/' + planContextMenuID);
+        dialog('{{ route("admin.plan-edit", ["id" => ""]) }}/' + planContextMenuID);
     }
 
     function planSelInTree() {
-        window.location.href = '{{ route("admin.plan", "") }}/' + planContextMenuID;
+        window.location.href = '{{ route("admin.plan", ["id" => ""]) }}/' + planContextMenuID;
     }
 
     function planMenuAddPart() {
-        dialog('{{ route("admin.plan-edit", [-1, ""]) }}/' + planContextMenuID);
+        dialog('{{ route("admin.plan-edit", ["id" => -1, "p_id" => ""]) }}/' + planContextMenuID);
     }
         
     function planMenuAddDevice() {
@@ -748,12 +748,12 @@
                 break;
         }
         
-        dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + planContextMenuID + '/-1?surface=' + surface + '&offset=' + offset + '&cross=' + cross);
+        dialog('{{ route("admin.plan-link-device", ["planID" => "", "deviceID" => ""]) }}/' + planContextMenuID + '/-1?surface=' + surface + '&offset=' + offset + '&cross=' + cross);
     }
     
     function planMenuClonePart(direction) {
         $.ajax({
-            url: '{{ route("admin.plan-clone", ["", ""]) }}/' + planContextMenuID + '/' + direction,
+            url: '{{ route("admin.plan-clone", ["id" => "", "direction" => ""]) }}/' + planContextMenuID + '/' + direction,
             success: function (data) {
                 if (data == 'OK') {
                     window.location.reload();
@@ -849,8 +849,10 @@
                 let newY = parseFloat($('#toolbarValue2').val()) + parseFloat($('#toolbarValue2').data('parent'));
                 
                 $.post({
-                    url: '{{ route("admin.plan-move", ["", "", ""]) }}/' + id + '/' + newX + '/' + newY,
-                    data: {_token: '{{ csrf_token() }}'},
+                    url: '{{ route("admin.plan-move", ["id" => "", "newX" => "", "newY" => ""]) }}/' + id + '/' + newX + '/' + newY,
+                    data: {
+                        
+                    },
                     success: function (data) {
                         if (data == 'OK') {
                             $('#planToolbar').fadeOut(250);
@@ -865,8 +867,10 @@
                 let newW = $('#toolbarValue1').val();
                 let newH = $('#toolbarValue2').val();
                 $.post({
-                    url: '{{ route("admin.plan-size", ["", "", ""]) }}/' + id + '/' + newW + '/' + newH,
-                    data: {_token: '{{ csrf_token() }}'},
+                    url: '{{ route("admin.plan-size", ["id" => "", "newW" => "", "newH" => ""]) }}/' + id + '/' + newW + '/' + newH,
+                    data: {
+                        
+                    },
                     success: function (data) {
                         if (data == 'OK') {
                             $('#planToolbar').fadeOut(250);
@@ -899,11 +903,11 @@
     
     function planMenuDeviceLink() {
         let device = $('#planContentOff .plan-device[data-id="' + planContextMenuID + '"]');
-        dialog('{{ route("admin.plan-link-device", ["", ""]) }}/' + device.data('part-id') + '/' + device.data('id'));
+        dialog('{{ route("admin.plan-link-device", ["planID" => "", "deviceID" => ""]) }}/' + device.data('part-id') + '/' + device.data('id'));
     }
     
     function planMenuDeviceEdit() {       
-        dialog('{{ route("admin.hub-device-edit", [-1, ""]) }}/' + planContextMenuID);
+        dialog('{{ route("admin.hub-device-edit", ["hubID" => -1, "id" => ""]) }}/' + planContextMenuID);
     }
     
     function planMenuAddPort() {
@@ -974,12 +978,12 @@
                 break;
         }
         
-        dialog('{{ route("admin.plan-port-edit", ["", ""]) }}/' + planContextMenuID + '/-1?surface=' + surface + '&offset=' + offset);
+        dialog('{{ route("admin.plan-port-edit", ["planID" => "", "portIndex" => ""]) }}/' + planContextMenuID + '/-1?surface=' + surface + '&offset=' + offset);
     }
     
     function planMenuPortEdit() {
         let port = $('#planContentOff .plan-port[data-id="' + planContextMenuID + '"]');
-        dialog('{{ route("admin.plan-port-edit", ["", ""]) }}/' + port.data('part-id') + '/' + port.data('index'));
+        dialog('{{ route("admin.plan-port-edit", ["planID" => "", "portIndex" => ""]) }}/' + port.data('part-id') + '/' + port.data('index'));
     }
     
     @endif

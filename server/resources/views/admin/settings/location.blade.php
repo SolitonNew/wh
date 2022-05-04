@@ -49,7 +49,6 @@
                 method: 'post',
                 url: '{{ route("admin.settings-set-location") }}',
                 data: {
-                    _token: '{{ @csrf_token() }}',
                     latitude: $('#locationLatitude').val(),
                     longitude: $('#locationLongitude').val(),
                 },

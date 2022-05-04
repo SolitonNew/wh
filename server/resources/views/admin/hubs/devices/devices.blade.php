@@ -60,8 +60,10 @@
                     <td>{{ $row->typ }}</td>
                     <td>{{ $row->name }}</td>
                     <td>{{ $row->comm }}</td>
-                    <td class="nowrap">{{ $row->room->name ?? '-- '.Lang::get('admin/hubs.device_group_empty').' --'  }}</td>
-                    <td>{{ Lang::get('admin/hubs.app_control.'.$row->app_control) }}</td>
+                    <td class="nowrap">
+                        @if($row->room && $row->room->name){{ $row->room->name }}@else -- @lang('admin/hubs.device_group_empty') -- @endif
+                    </td>
+                    <td>@lang('admin/hubs.app_control.'.$row->app_control)</td>
                     <td class="device-value" data-time="{{ \Carbon\Carbon::parse($row->last_update)->timestamp }}">{{ $row->value }}</td>
                     <td>{{ $row->channel ?: '' }}</td>
                 </tr>
@@ -80,12 +82,12 @@
     
     $(document).ready(() => {
         $('#deviceFilter').on('change', function () {
-            window.location.href = '{{ route("admin.hub-devices", [$hubID, ""]) }}/' + $(this).val();
+            window.location.href = '{{ route("admin.hub-devices", ["hubID" => $hubID, "groupID" => ""]) }}/' + $(this).val();
         });
         
         $('#devices_table tbody tr').on('click', function () {
             if ($(this).hasClass('table-empty')) return ;
-            dialog('{{ route("admin.hub-device-edit", [$hubID, ""]) }}/' + $(this).data('id'));
+            dialog('{{ route("admin.hub-device-edit", ["hubID" => $hubID, "id" => ""]) }}/' + $(this).data('id'));
         });
         
         setInterval(function () {
@@ -96,7 +98,7 @@
     });
 
     function deviceAdd() {
-        dialog('{{ route("admin.hub-device-edit", [$hubID, -1]) }}');
+        dialog('{{ route("admin.hub-device-edit", ["hubID" => $hubID, "id" => -1]) }}');
     }
     
     function deviceUpdateValue(id, value, time) {

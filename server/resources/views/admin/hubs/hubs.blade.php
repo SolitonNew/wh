@@ -24,10 +24,10 @@
 @section('top-menu')
 @if($hubID)
 <div class="nav nav-tabs navbar-top-menu-tab">
-    <a class="nav-link @activeSegment(4, 'hosts')" 
-        href="{{ route('admin.hub-hosts', $hubID) }}">@lang('admin/hubs.hosts') ({{ \App\Models\Hub::find($hubID)->hostsCount() }})</a>
-    <a class="nav-link @activeSegment(4, 'devices')" 
-        href="{{ route('admin.hub-devices', $hubID) }}">@lang('admin/hubs.devices') ({{ \App\Models\Hub::find($hubID)->devices->count() }})</a>
+    <a class="nav-link {{ active_segment(4, 'hosts') }}" 
+        href="{{ route('admin.hub-hosts', ['hubID' => $hubID]) }}">@lang('admin/hubs.hosts') ({{ \App\Models\Hub::find($hubID)->hostsCount() }})</a>
+    <a class="nav-link {{ active_segment(4, 'devices') }}" 
+        href="{{ route('admin.hub-devices', ['hubID' => $hubID]) }}">@lang('admin/hubs.devices') ({{ \App\Models\Hub::find($hubID)->devices->count() }})</a>
 </div>
 @endif
 @yield('page-top-menu')
@@ -38,7 +38,7 @@
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div id="hubsList" class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="hubsList">
         @foreach(\App\Models\Hub::orderBy('rom', 'asc')->get() as $row)
-        <a href="{{ route('admin.hubs', $row->id).'/'.$page }}"
+        <a href="{{ route('admin.hubs', ['hubID' => $row->id]).'/'.$page }}"
            class="tree-item {{ $row->id == $hubID ? 'active' : '' }}" style="white-space: normal;">
             <div style="flex-grow: 1;">
                 <div style="display: flex; justify-content: space-between; width: 100%;">
@@ -71,13 +71,13 @@
     });
     
     function hubAdd() {
-        dialog("{{ route('admin.hub-edit', -1) }}");
+        dialog("{{ route('admin.hub-edit', ['id' => -1]) }}");
     }
     
     @if($hubID)
     function devicesAddAll() {
         $.ajax({
-            url: '{{ route("admin.hubs-add-devices-for-all-hosts", $hubID) }}',
+            url: '{{ route("admin.hubs-add-devices-for-all-hosts", ["hubID" => $hubID]) }}',
             success: function (data) {
                 window.location.reload();
             }
@@ -85,7 +85,7 @@
     }
         
     function hubEdit() {
-        dialog("{{ route('admin.hub-edit', $hubID) }}");
+        dialog("{{ route('admin.hub-edit', ['id' => $hubID]) }}");
     }
 
     function hubsScan() {

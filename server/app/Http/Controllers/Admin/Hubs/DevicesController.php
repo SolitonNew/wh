@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Admin\Hubs;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\HubsIndexRequest;
-use App\Http\Requests\Admin\DeviceRequest;
 use App\Services\Admin\DevicesService;
+use Illuminate\Http\Request;
 use App\Models\Device;
 use App\Models\Room;
 use App\Models\Hub;
 use App\Models\OwHost;
 use App\Models\SoftHost;
 use App\Models\Property;
+use Illuminate\Support\Facades\Lang;
 
 class DevicesController extends Controller
 {
@@ -34,13 +34,33 @@ class DevicesController extends Controller
      * This is an index route for displaying devices a list of the hub.
      * If the hub id does not exist, redirect to the owner route.
      * 
-     * @param HubsIndexRequest $request
      * @param int $hubID
      * @param type $groupID
      * @return type
      */
-    public function index(HubsIndexRequest $request, int $hubID = null, $groupID = null) 
+    public function index(int $hubID = null, $groupID = null) 
     {                
+        // Last view id  --------------------------
+        if (!$hubID) {
+            $hubID = Property::getLastViewID('HUB');
+            if ($hubID) {
+                return redirect(route('admin.hub-hosts', ['hubID' => $hubID]));
+            } else {
+                $hubID = null;
+            }
+        }
+        
+        if (!$hubID) {
+            $item = Hub::orderBy('name', 'asc')->first();
+            if ($item) {
+                return redirect(route('admin.hub-hosts', ['hubID' => $item->id]));
+            }
+        }
+        
+        Property::setLastViewID('HUB', $hubID);
+        // ----------------------------------------
+        
+        
         $groupID = $this->_service->prepareRoomFilter($groupID);
 
         $data = Device::devicesList($hubID, $groupID);
@@ -64,24 +84,25 @@ class DevicesController extends Controller
     {
         $item = Device::findOrCreate($id, $hubID);
         $groupPath = Room::getPath($item->room_id, ' / ');
+        $appControls = Lang::get('admin/hubs.app_control');
 
         return view('admin.hubs.devices.device-edit', [
             'item' => $item,
             'groupPath' => $groupPath,
+            'appControls' => $appControls,
         ]);
     }
     
     /**
      * Route to create or update device properties.
      * 
-     * @param DeviceRequest $request
      * @param int $hubID
      * @param int $id
      * @return string
      */
-    public function editPost(DeviceRequest $request, int $hubID, int $id) 
+    public function editPost(Request $request, int $hubID, int $id) 
     {
-        Device::storeFromRequest($request, $hubID, $id);
+        $res = Device::storeFromRequest($request, $hubID, $id);
         
         return 'OK';
     }

@@ -9,8 +9,7 @@
 @endsection
 
 @section('content')
-<form id="script_edit_form" class="container" method="POST" action="{{ route('admin.script-edit', $item->id) }}">
-    {{ csrf_field() }}
+<form id="script_edit_form" class="container" method="POST" action="{{ route('admin.script-edit', ['id' => $item->id]) }}">
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
     <div class="row">
@@ -66,8 +65,10 @@
         confirmYesNo("@lang('admin/scripts.script_delete_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.script-delete", $item->id) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.script-delete", ["id" => $item->id]) }}',
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {

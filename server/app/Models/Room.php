@@ -110,6 +110,25 @@ class Room extends Model
      */
     static public function storeFromRequest(Request $request, int $id)
     {
+        // Validation  ----------------------
+        $rules = [
+            'name' => 'required|string',
+            'X' => 'required|numeric',
+            'Y' => 'required|numeric',
+            'W' => 'required|numeric',
+            'H' => 'required|numeric',
+            'pen_width' => 'nullable|numeric',
+            'name_dx' => 'nullable|numeric',
+            'name_dy' => 'nullable|numeric',
+        ];
+        
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
+        
         try {
             $item = Room::find($id);
             
@@ -159,9 +178,9 @@ class Room extends Model
 
             return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     
@@ -236,13 +255,27 @@ class Room extends Model
      */
     static public function moveChildsFromRequest(Request $request, int $id)
     {
+        // Validation  ----------------------
+        $rules = [
+            'DX' => 'required|numeric',
+            'DY' => 'required|numeric',
+        ];
+        
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
+        
         try {
             $item = Room::find($id);
             $item->moveChilds($request->DX, $request->DY);
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     
@@ -331,13 +364,25 @@ class Room extends Model
      */
     static public function importFromRequest(Request $request)
     {
+        // Validation  ----------------------
+        $rules = [
+            'file' => 'file|required',
+        ];
+        
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
         try {
             $data = file_get_contents($request->file('file'));
             Room::importFromString($data);
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     
@@ -350,6 +395,20 @@ class Room extends Model
     static public function linkDeviceFromRequest(Request $request, int $planID, int $deviceID)
     {
         $deviceID = $request->device ?? $deviceID;
+        
+        // Validation  ----------------------
+        $rules = [
+            'device' => ($deviceID > 0) ? '' : 'required',
+            'offset' => 'numeric|required',
+            'cross' => 'numeric|required',
+        ];
+        
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
 
         $device = Device::find($deviceID);
         if (!$device) abort(404);
@@ -362,11 +421,12 @@ class Room extends Model
             ];
             $device->room_id = $planID;
             $device->position = json_encode($position);
-            $device->save();            
+            $device->save();
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     
@@ -419,6 +479,19 @@ class Room extends Model
      */
     static public function storePortFromRequest(Request $request, int $planID, int $portIndex)
     {
+        // Validation  ----------------------
+        $rules = [
+            'offset' => 'numeric|required',
+            'width' => 'numeric|required',
+            'depth' => 'numeric|required',
+        ];
+        
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
         try {
             $part = Room::find($planID);
             if (!$part) abort(404);
@@ -439,10 +512,11 @@ class Room extends Model
             array_values($ports);
             $part->ports = json_encode($ports);
             $part->save();
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     

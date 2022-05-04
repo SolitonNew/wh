@@ -6,12 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Room;
 use App\Models\Device;
-use App\Http\Requests\Admin\PlanIndexRequest;
-use App\Http\Requests\Admin\PlanRequest;
-use App\Http\Requests\Admin\PlanMoveChildsRequest;
-use App\Http\Requests\Admin\PlanImportRequest;
-use App\Http\Requests\Admin\PlanLinkDeviceRequest;
-use App\Http\Requests\Admin\PlanPortRequest;
+use App\Models\Property;
 use Log;
 
 class PlanController extends Controller
@@ -22,8 +17,29 @@ class PlanController extends Controller
      * @param int $id
      * @return type
      */
-    public function index(PlanIndexRequest $request, int $id = null) 
+    public function index(int $id = null) 
     {
+        // Last view id  --------------------------
+        if (!$id) {
+            $id = Property::getLastViewID('PLAN');
+            if ($id && Room::find($id)) {
+                return redirect(route('admin.plan', ['id' => $id]));
+            }
+            $id = null;
+        }
+        
+        if (!$id) {
+            $item = Room::whereParentId(null)
+                ->orderBy('order_num', 'asc')
+                ->first();
+            if ($item) {
+                return redirect(route('admin.plan', ['id' => $item->id]));
+            }
+        }
+        
+        Property::setLastViewID('PLAN', $id);
+        // ----------------------------------------
+        
         // Load plan records with port records and with devices
         list($parts, $ports, $devices) = Room::listAllForIndex($id);
         
@@ -56,16 +72,13 @@ class PlanController extends Controller
     /**
      * Route to create or update plan entries.
      * 
-     * @param PlanRequest $request
      * @param int $id
      * @param int $p_id
      * @return string
      */
-    public function editPost(PlanRequest $request, int $id, int $p_id = -1)
+    public function editPost(Request $request, int $id, int $p_id = -1)
     {
-        Room::storeFromRequest($request, $id, $p_id);
-        
-        return 'OK';
+        return Room::storeFromRequest($request, $id, $p_id);
     }
     
     /**
@@ -114,15 +127,12 @@ class PlanController extends Controller
     /**
      * Route to displaying the plan owner change window.
      * 
-     * @param Request $request
      * @param int $id
      * @return string
      */
-    public function moveChildsPost(PlanMoveChildsRequest $request, int $id)
+    public function moveChildsPost(Request $request, int $id)
     {
-        Room::moveChildsFromRequest($request, $id);
-        
-        return 'OK';
+        return Room::moveChildsFromRequest($request, $id);
     }
     
     /**
@@ -203,11 +213,9 @@ class PlanController extends Controller
      * @param Request $request
      * @return string
      */
-    public function planImportPost(PlanImportRequest $request) 
+    public function planImportPost(Request $request) 
     {
-        Room::importFromRequest($request);
-        
-        return 'OK';
+        return Room::importFromRequest($request);
     }
     
     /**
@@ -275,11 +283,9 @@ class PlanController extends Controller
      * @return string
      * @throws Exception
      */
-    public function linkDevicePost(PlanLinkDeviceRequest $request, int $planID, int $deviceID = -1) 
+    public function linkDevicePost(Request $request, int $planID, int $deviceID = -1) 
     {
-        Room::linkDeviceFromRequest($request, $planID, $deviceID);
-        
-        return 'OK';
+        return Room::linkDeviceFromRequest($request, $planID, $deviceID);
     }
     
     /**
@@ -323,11 +329,9 @@ class PlanController extends Controller
      * @param int $portID
      * @return type
      */
-    public function portEditPost(PlanPortRequest $request, int $planID, int $portIndex = -1) 
+    public function portEditPost(Request $request, int $planID, int $portIndex = -1) 
     {
-        Room::storePortFromRequest($request, $planID, $portIndex);
-        
-        return 'OK';
+        return Room::storePortFromRequest($request, $planID, $portIndex);
     }
     
     /**

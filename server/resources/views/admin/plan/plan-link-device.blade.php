@@ -16,8 +16,7 @@
     }
 </style>
 
-<form id="plan_link_device_form" class="container" method="POST" action="{{ route('admin.plan-link-device', [$planID, $deviceID]) }}">
-    {{ csrf_field() }}
+<form id="plan_link_device_form" class="container" method="POST" action="{{ route('admin.plan-link-device', ['planID' => $planID, 'deviceID' => $deviceID]) }}">
     <button type="submit" style="display: none;"></button>
     <input type="hidden" name="add_device_id">
     <div class="row">
@@ -159,8 +158,10 @@
         confirmYesNo("@lang('admin/plan.device_unlink_confirm')", () => {
             $.ajax({
                 method: 'delete',
-                url: '{{ route("admin.plan-unlink-device", $deviceID) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.plan-unlink-device", ["deviceID" => $deviceID]) }}',
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {

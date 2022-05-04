@@ -65,7 +65,7 @@
                 type: 'delete',
                 url: '{{ route("admin.jurnal-forecast-clear") }}',
                 data: {
-                    _token: '{{ @csrf_token() }}',
+                    
                 },
                 success: function (data) {
                     stopGlobalWaiter();

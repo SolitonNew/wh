@@ -9,8 +9,7 @@
 @endsection
 
 @section('content')
-<form id="hub_edit_form" class="container" method="POST" action="{{ route('admin.hub-edit', $item->id) }}">
-    {{ csrf_field() }}
+<form id="hub_edit_form" class="container" method="POST" action="{{ route('admin.hub-edit', ['id' => $item->id]) }}">
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
     <div class="row">
@@ -127,8 +126,10 @@
     function hubDelete() {
         confirmYesNo("@lang('admin/hubs.hub_delete_confirm')", () => {
             $.ajax({
-                url: '{{ route("admin.hub-delete", $item->id) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.hub-delete", ["id" => $item->id]) }}',
+                data: {
+                    
+                },
                 type: 'delete',
                 success: function (data) {
                     if (data == 'OK') {

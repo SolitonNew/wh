@@ -20,7 +20,7 @@
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div id="scriptList" class="tree" style="width: 320px;min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="scriptsList">
         @foreach($list as $row)
-        <a href="{{ route('admin.scripts', $row->id) }}"
+        <a href="{{ route('admin.scripts', ['id' => $row->id]) }}"
            class="tree-item {{ $row->id == $scriptID ? 'active' : '' }}" style="white-space: normal; justify-content: space-between;">
             {{ $row->comm }}
             @if($row->var_count > 0)
@@ -84,12 +84,12 @@
     });
 
     function scriptAdd() {
-        dialog('{{ route("admin.script-edit", -1) }}');
+        dialog('{{ route("admin.script-edit", ["id" => -1]) }}');
     }
 
     @if($scriptID)
     function scriptEdit() {
-        dialog('{{ route("admin.script-edit", $scriptID) }}');
+        dialog('{{ route("admin.script-edit", ["id" => $scriptID]) }}');
     }
 
     function scriptEditSource() {
@@ -100,7 +100,6 @@
         $.post({
             url: '{{ route("admin.script-test") }}',
             data: {
-                _token: '{{ csrf_token() }}',
                 command: source,
             },
             success: function(data) {
@@ -117,7 +116,7 @@
     }
 
     function scriptAttachEvent() {
-        dialog('{{ route("admin.script-events", $scriptID) }}');
+        dialog('{{ route("admin.script-events", ["id" => $scriptID]) }}');
     }
     @endif    
 </script>

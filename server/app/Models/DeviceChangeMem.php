@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Lang;
 use DB;
-use Lang;
 
 class DeviceChangeMem extends Model
 {
@@ -68,7 +68,7 @@ class DeviceChangeMem extends Model
                       from core_device_changes_mem m, core_devices v
                      where m.device_id = v.id
                     order by m.id desc
-                    limit '.config('app.admin_log_lines_count');
+                    limit '.config("settings.admin_log_lines_count");
         }
         return DB::select($sql);
     }

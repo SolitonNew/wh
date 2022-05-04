@@ -9,7 +9,7 @@
 namespace App\Library\Script\PhpFunctions;
 
 use App\Models\Device;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 
 trait FunctionInfo 
 {
@@ -44,7 +44,7 @@ trait FunctionInfo
         $this->function_speech($text);
 
         // Формируем строку текущей температуры на улице  ------------------
-        $temp_item = Device::find(config('app.command_info_temp_id'));
+        $temp_item = Device::find(config("settings.command_info_temp_id"));
         if ($temp_item) {
             $t_out = $temp_item->value;
             $t_round = round($t_out);

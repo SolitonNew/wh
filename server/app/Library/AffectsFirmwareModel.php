@@ -27,7 +27,7 @@ class AffectsFirmwareModel extends Model
         $firmwareChanged = count($this->_affectFirmwareFields) ? $this->isDirty($this->_affectFirmwareFields) : true;
         parent::finishSave($options);
         if ($firmwareChanged && !in_array('withoutevents', $options)) {
-            event(new \App\Http\Events\FirmwareChangedEvent());
+            event(new \App\Events\FirmwareChangedEvent());
         }
     }
         
@@ -37,7 +37,7 @@ class AffectsFirmwareModel extends Model
     public function delete() 
     {
         $return = parent::delete();
-        event(new \App\Http\Events\FirmwareChangedEvent());
+        event(new \App\Events\FirmwareChangedEvent());
         return $return;
     }
 }

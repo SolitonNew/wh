@@ -24,7 +24,6 @@
                 method: 'post',
                 url: '{{ route("admin.settings-set-timezone") }}',
                 data: {
-                    _token: '{{ @csrf_token() }}',
                     timezone: $('#timezoneSelect').val(),
                 },
                 success: function (data) {

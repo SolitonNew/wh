@@ -39,7 +39,9 @@
             $.ajax({
                 method: "POST",
                 url: "/device-set/" + deviceID + "/" + varVal,
-                data: {_token: '{{ csrf_token() }}' },
+                data: {
+                    
+                },
             }).done((data)=>{
                 if (data) {
                     alert(data);

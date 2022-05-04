@@ -28,7 +28,7 @@ class RoomsController extends Controller
      * @return type
      */
     public function index() 
-    {       
+    {
         $data = $this->_roomsService->roomsData();
         $columnCount = $this->_roomsService->roomsColumnCount($data);
         

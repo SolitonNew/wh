@@ -49,15 +49,15 @@
     });
     
     function hostAdd() {
-        dialog('{{ route("admin.hub-softhost-edit", [$hubID, -1]) }}');
+        dialog('{{ route("admin.hub-softhost-edit", ["hubID" => $hubID, "id" => -1]) }}');
     }
     
     function hostEdit(id) {
-        dialog('{{ route("admin.hub-softhost-edit", [$hubID, ""]) }}/' + id);
+        dialog('{{ route("admin.hub-softhost-edit", ["hubID" => $hubID, "id" => ""]) }}/' + id);
     }
     
     function deviceEdit(id) {
-        dialog('{{ route("admin.hub-device-edit", [$hubID, ""]) }}/' + id);
+        dialog('{{ route("admin.hub-device-edit", ["hubID" => $hubID, "id" => ""]) }}/' + id);
     }
 </script>
 @endsection

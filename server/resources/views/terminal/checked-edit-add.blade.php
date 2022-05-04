@@ -37,7 +37,7 @@
             let id = $(e.currentTarget).attr('id').substr(4);
             
             $.ajax({
-                url: '{{ route("terminal.checked-edit-add-del", "") }}/' + id,
+                url: '{{ route("terminal.checked-edit-add-del", ["id" => ""]) }}/' + id,
             }).done((res) => {
                 if (res == 'OK') {
                     $(e.currentTarget).parent().removeClass('del');
@@ -52,7 +52,7 @@
             let id = $(e.currentTarget).attr('id').substr(4);
             
             $.ajax({
-                url: '{{ route("terminal.checked-edit-add-add", "") }}/' + id,
+                url: '{{ route("terminal.checked-edit-add-add", ["id" => ""]) }}/' + id,
             }).done((res) => {
                 if (res == 'OK') {
                     $(e.currentTarget).parent().addClass('del');
@@ -64,7 +64,7 @@
         
         $('#filter').change((e) => {
             let id = $(e.target).val()
-            let url = '{{ route("terminal.checked-edit-add", "") }}';
+            let url = '{{ route("terminal.checked-edit-add", ["selKey" => ""]) }}';
             if (id == -1) {
                 //
             } else {

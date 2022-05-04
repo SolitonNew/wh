@@ -6,7 +6,6 @@
 
 @section('content')
 <form id="host_form" class="container" method="POST">
-    {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
     <div class="row">
         <div class="col-sm-3">
@@ -77,8 +76,10 @@
         confirmYesNo("@lang('admin/hubs.host_delete_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.hub-dinhost-delete", [$item->hub_id, $item->id]) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.hub-dinhost-delete", ["hubID" => $item->hub_id, "id" => $item->id]) }}',
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {

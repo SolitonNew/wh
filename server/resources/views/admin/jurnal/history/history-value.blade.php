@@ -48,8 +48,10 @@
         confirmYesNo("@lang('admin/jurnal.history_value_delete_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.jurnal-history-value-delete", $item->id) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.jurnal-history-value-delete", ["id" => $item->id]) }}',
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data === 'OK') {
                         dialogHide(() => {

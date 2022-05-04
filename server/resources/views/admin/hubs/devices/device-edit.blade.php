@@ -9,8 +9,7 @@
 @endsection
 
 @section('content')
-<form id="device_edit_form" class="container" method="POST" action="{{ route('admin.hub-device-edit', [$item->hub_id, $item->id]) }}">
-    {{ csrf_field() }}
+<form id="device_edit_form" class="container" method="POST" action="{{ route('admin.hub-device-edit', ["hubID" => $item->hub_id, "id" => $item->id]) }}">
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
     <div class="row">
@@ -29,7 +28,7 @@
         </div>
         <div class="col-sm-8">
             <select class="custom-select" name="app_control">
-                @foreach(Lang::get('admin/hubs.app_control') as $key => $val)
+                @foreach($appControls as $key => $val)
                 <option value="{{ $key }}" {{ $key == $item->app_control ? 'selected' : '' }}>{{ $val }}</option>
                 @endforeach
             </select>
@@ -202,7 +201,7 @@
     function reloadHostList(afterHandle = null) {
         let controller = $('#device_edit_form select[name="hub_id"]').val();
         controller = controller ? controller : -1;
-        $.ajax('{{ route("admin.hub-device-host-list", "") }}/' + controller).done((data) => {
+        $.ajax('{{ route("admin.hub-device-host-list", ["hubID" => ""]) }}/' + controller).done((data) => {
             let rom = $('#device_edit_form select[name="typ"]').val();
             if (rom == 'ow' || rom == 'software' || rom == 'i2c') {
                 let hostList = $('#device_edit_form select[name="host_id"]');
@@ -233,7 +232,7 @@
         let host_id = $('#device_edit_form select[name="host_id"]').val();
         if (host_id == null) host_id = '';
 
-        $.ajax('{{ route("admin.hub-device-host-channel-list", ["", ""]) }}/' + typ + '/' + host_id).done((data) => {
+        $.ajax('{{ route("admin.hub-device-host-channel-list", ["typ" => "", "hostID" => ""]) }}/' + typ + '/' + host_id).done((data) => {
             let rom = $('#device_edit_form select[name="typ"]').val();
             if (((rom == 'ow' || rom == 'software' || rom == 'i2c') && (host_id > 0)) || (rom == 'din') || (rom == 'orangepi')) {
                 let chanList = $('#device_edit_form select[name="channel"]');
@@ -266,8 +265,10 @@
         confirmYesNo("@lang('admin/hubs.device_delete_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.hub-device-delete", $item->id) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.hub-device-delete", ["id" => $item->id]) }}',
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {

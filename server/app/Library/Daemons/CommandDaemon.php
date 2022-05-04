@@ -4,7 +4,7 @@ namespace App\Library\Daemons;
 
 use \Carbon\Carbon;
 use DB;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Description of CommandDaemon

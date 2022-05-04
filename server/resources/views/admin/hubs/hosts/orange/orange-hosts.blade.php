@@ -46,15 +46,15 @@
     });
     
     function hostAdd() {
-        dialog('{{ route("admin.hub-orangehost-edit", [$hubID, -1]) }}');
+        dialog('{{ route("admin.hub-orangehost-edit", ["hubID" => $hubID, "id" => -1]) }}');
     }
     
     function hostEdit(id) {
-        dialog('{{ route("admin.hub-orangehost-edit", [$hubID, ""]) }}/' + id);
+        dialog('{{ route("admin.hub-orangehost-edit", ["hubID" => $hubID, "id" => ""]) }}/' + id);
     }
     
     function deviceEdit(id) {
-        dialog('{{ route("admin.hub-device-edit", [$hubID, ""]) }}/' + id);
+        dialog('{{ route("admin.hub-device-edit", ["hubID" => $hubID, "id" => ""]) }}/' + id);
     }
 </script>
 @endsection

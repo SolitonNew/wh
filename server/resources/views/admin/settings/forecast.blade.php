@@ -136,7 +136,6 @@
                 method: 'post',
                 url: '{{ route("admin.settings-set-forecast") }}',
                 data: {
-                    _token: '{{ @csrf_token() }}',
                     TEMP: $('#forecastTEMP').val(),
                     P: $('#forecastP').val(),
                     CC: $('#forecastCC').val(),

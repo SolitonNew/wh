@@ -10,7 +10,7 @@ namespace App\Library\Script;
 
 use App\Library\Script\PhpExecute;
 use App\Models\Device;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Класс обслуживает script-editor.js

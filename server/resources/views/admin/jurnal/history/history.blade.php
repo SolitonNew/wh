@@ -10,14 +10,13 @@
         <div id="jurnalHistoryFiltrPanel" style="width: 320px; margin-left: -1rem; padding: 0px 1rem;">
             <input id="jurnalHistoryFiltr" type="text" class="form-control" placeholder="@lang('admin/jurnal.history_var_filtr')" >
         </div>
-        <form id="historyFilter" class="navbar-page-group" method="POST" action="{{ route('admin.jurnal-history', $id) }}">
-            {{ csrf_field() }}
+        <form id="historyFilter" class="navbar-page-group" method="POST" action="{{ route('admin.jurnal-history', ['id' => $id]) }}">
             <span class="strong">@lang('admin/jurnal.history_date_filtr'):</span>
-            <input type="date" class="form-control" style="width: auto;" name="date" value="{{ Session::get('STATISTICS-TABLE-DATE') }}" required="true">
+            <input type="date" class="form-control" style="width: auto;" name="date" value="{{ isset($_COOKIE['STATISTICS-TABLE-DATE']) ? $_COOKIE['STATISTICS-TABLE-DATE'] : '' }}" required="true">
             <span>@lang('admin/jurnal.history_sql_filtr'):</span>
             <div>
                 <input type="text" class="form-control {{ $errors->first('sql') ? 'is-invalid' : '' }}" 
-                       style="width: auto;" name="sql" value="{{ Session::get('STATISTICS-TABLE-SQL') }}">
+                       style="width: auto;" name="sql" value="{{ isset($_COOKIE['STATISTICS-TABLE-SQL']) ? $_COOKIE['STATISTICS-TABLE-SQL'] : '' }}">
             </div>
             <button id="jurnalHistoryBtn" class="btn btn-primary" style="display:none;">@lang('admin/jurnal.history_show')</button>
         </form>
@@ -27,7 +26,7 @@
             <div id="historyList" class="tree" style="width: 320px; min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" 
                  scroll-store="jurnalHistoryVarList">
                 @foreach($devices as $row)
-                <a href="{{ route('admin.jurnal-history', $row->id) }}"
+                <a href="{{ route('admin.jurnal-history', ['id' => $row->id]) }}"
                     class="tree-item {{ $row->id == $id ? 'active' : '' }}"
                     style="display: block; justify-content: space-between; white-space: normal;">
                     {{ $row->name }}
@@ -86,6 +85,11 @@
     $(document).ready(() => {
         $('#jurnalHistoryFiltr').val(getCookie('jurnalHistoryFiltr'));
         
+        $('#historyFilter').on('submit', function () {
+            setCookie('STATISTICS-TABLE-DATE', $('#historyFilter [name="date"]').val());
+            setCookie('STATISTICS-TABLE-SQL', $('#historyFilter [name="sql"]').val());
+        });
+        
         $('#jurnalHistoryFiltr').on('input', function () {
             let s = $(this).val().toUpperCase();
             if (s == '') {
@@ -121,7 +125,7 @@
         
         $('#jurnal_history_List tbody tr').on('click', function () {
             if ($(this).hasClass('table-empty')) return ;
-            dialog('{{ route("admin.jurnal-history-value-view", "") }}/' + $(this).data('id'));
+            dialog('{{ route("admin.jurnal-history-value-view", ["id" => ""]) }}/' + $(this).data('id'));
         });
         
         $('input[name="date"], input[name="sql"]').on('input', () => {
@@ -178,8 +182,10 @@
         confirmYesNo("@lang('admin/jurnal.history_delete_all_visible_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: "{{ route('admin.jurnal-history-delete-all-visible', $id) }}",
-                data: {_token: '{{ csrf_token() }}'},
+                url: "{{ route('admin.jurnal-history-delete-all-visible', ['id' => $id]) }}",
+                data: {
+                    
+                },
                 success: function (data) {
                     alert(data);
                     window.location.reload();

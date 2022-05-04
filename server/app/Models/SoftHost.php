@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
+use Log;
 
 class SoftHost extends AffectsFirmwareModel
 {
@@ -156,6 +157,18 @@ class SoftHost extends AffectsFirmwareModel
      */
     static public function storeFromRequest(Request $request, int $hubID, int $id)
     {
+        // Validation  ----------------------
+        $rules = [
+            'typ' => ($id == -1) ? 'required' : 'nullable',
+        ];
+        
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
+        
         try {
             $item = self::find($id);
             if (!$item) {
@@ -179,9 +192,9 @@ class SoftHost extends AffectsFirmwareModel
             
             return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     

@@ -5,8 +5,7 @@
 @endsection
 
 @section('content')
-<form id="plan_move_childs_form" class="container" method="POST" action="{{ route('admin.plan-move-childs', $partID) }}">
-    {{ csrf_field() }}
+<form id="plan_move_childs_form" class="container" method="POST" action="{{ route('admin.plan-move-childs', ['id' => $partID]) }}">
     <button type="submit" style="display: none;"></button>
     <div class="row">
         <div class="col-sm-6">
