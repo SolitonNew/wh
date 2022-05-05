@@ -86,6 +86,11 @@ sudo nano /etc/udev/rules.d/20-gpio.rules
 ```
 KERNEL=="gpio*", GROUP="gpio"
 ```
+```
+sudo apt-get install python3-dev
+sudo apt-get install pip
+pip install pyA20
+```
 
 Admin Login/Password: wh/wh
 
