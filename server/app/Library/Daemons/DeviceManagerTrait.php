@@ -5,7 +5,7 @@ namespace App\Library\Daemons;
 use App\Models\Device;
 use App\Models\DeviceChangeMem;
 use App\Library\Script\PhpExecute;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 trait DeviceManagerTrait 
 {
@@ -39,11 +39,10 @@ trait DeviceManagerTrait
      */
     protected function checkDeviceChanges()
     {
-        $repeat = true;
         $counter = 0;
-        while ($repeat) {
+        do {        
             $repeat = false;
-        
+            
             $changes = DeviceChangeMem::where('id', '>', $this->_lastSyncDeviceChangesID)
                     ->orderBy('id', 'asc')
                     ->get();
@@ -52,15 +51,12 @@ trait DeviceManagerTrait
 
                 if ($this->_syncVariables($changes)) {
                     $repeat = true;
+                    usleep(5000);
                 }
             }
             
-            if ($counter++ > 5) break;
-            
-            if ($repeat) {
-                usleep(25000);
-            }
-        }
+            if ($counter++ > 10) break;
+        } while ($repeat);
     }
     
     /**
@@ -78,7 +74,8 @@ trait DeviceManagerTrait
                         // Store new device value
                         $device->value = $change->value;
 
-                        $this->_deviceChange($device);
+                        // Call change value handler
+                        $this->_deviceChangeValue($device);
 
                         // Run event script if it's attached
                         if ($this->_executeEvents($device)) {
@@ -97,7 +94,7 @@ trait DeviceManagerTrait
      * 
      * @param type $device
      */
-    protected function _deviceChange($device)
+    protected function _deviceChangeValue($device)
     {
         //
     }

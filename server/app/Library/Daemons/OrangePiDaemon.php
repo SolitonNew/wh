@@ -10,7 +10,7 @@ namespace App\Library\Daemons;
 
 use App\Models\Device;
 use Illuminate\Support\Facades\Lang;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Description of OrangePiDaemon
@@ -147,7 +147,7 @@ class OrangePiDaemon extends BaseDaemon
      * 
      * @param type $device
      */
-    protected function _deviceChange($device)
+    protected function _deviceChangeValue($device)
     {
         if ($device->typ == 'orangepi') {
             $this->_setValueGPIO($device->channel, $device->value);
