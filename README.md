@@ -81,15 +81,12 @@ sudo apt-get install avr-libc gcc-avr
 sudo apt-get install libgpiod-dev gpiod
 sudo addgroup gpio
 sudo adduser www-data gpio
+sudo adduser www-data i2c
 sudo nano /etc/udev/rules.d/20-gpio.rules
 ```
 ```
 KERNEL=="gpio*", GROUP="gpio"
-```
-```
-sudo apt-get install python3-dev
-sudo apt-get install pip
-pip install pyA20
+SUBSYSTEM=="i2c-dev", GROUP="i2c"
 ```
 
 Admin Login/Password: wh/wh
