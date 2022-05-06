@@ -9,6 +9,7 @@ use App\Models\Device;
 use App\Models\Room;
 use App\Models\Hub;
 use App\Models\OwHost;
+use App\Models\I2cHost;
 use App\Models\SoftHost;
 use App\Models\Property;
 use Illuminate\Support\Facades\Lang;
@@ -141,7 +142,13 @@ class DevicesController extends Controller
                 }
                 break;
             case 'orangepi':
-                //
+                foreach ($hub->i2cHosts as $host) {
+                    $data[] = (object)[
+                        'id' => $host->id,
+                        'rom' => $host->typ.' (0x'.dechex($host->address).')',
+                        'count' => $host->devices->count(),
+                    ];
+                }
                 break;
             case 'din':
                 foreach ($hub->owHosts as $host) {
@@ -186,6 +193,12 @@ class DevicesController extends Controller
                 break;
             case 'orangepi':
                 $data = array_keys(config('orangepi.channels'));
+                break;
+            case 'i2c':
+                $host = I2cHost::find($hostID);
+                if ($host) {
+                    $data = $host->channelsOfType();
+                }
                 break;
         }
         

@@ -5,9 +5,9 @@ namespace App\Models;
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
 
-class OwHost extends AffectsFirmwareModel
-{    
-    protected $table = 'core_ow_hosts';
+class I2cHost extends AffectsFirmwareModel
+{
+    protected $table = 'core_i2c_hosts';
     public $timestamps = false;
     
     protected $_affectFirmwareFields = [
@@ -30,7 +30,7 @@ class OwHost extends AffectsFirmwareModel
     public function devices()
     {
         return $this->hasMany(Device::class, 'host_id')
-                    ->whereTyp('ow')
+                    ->whereTyp('i2c')
                     ->orderBy('name', 'asc');
     }
     
@@ -47,11 +47,15 @@ class OwHost extends AffectsFirmwareModel
     public function type()
     {
         if ($this->type === null) {
-            $types = config('onewire.types');
-            $type = isset($types[$this->rom_1]) ? $types[$this->rom_1] : [];
+            $types = config('i2c.types');
+            $type = isset($types[$this->typ]) ? $types[$this->typ] : [];
 
             if (!isset($type['description'])) {
                 $type['description'] = '';
+            }
+            
+            if (!isset($type['address'])) {
+                $type['address'] = [];
             }
 
             if (!isset($type['channels'])) {
@@ -83,19 +87,20 @@ class OwHost extends AffectsFirmwareModel
     
     /**
      * 
-     * @return type
+     * @return \App\Models\class
      */
-    public function romAsString()
+    public function typeList()
     {
-        return sprintf("x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X x%'02X", 
-            $this->rom_1, 
-            $this->rom_2, 
-            $this->rom_3, 
-            $this->rom_4, 
-            $this->rom_5, 
-            $this->rom_6, 
-            $this->rom_7
-        );
+        $result = [];
+        foreach (config('i2c.types') as $type => $details) {
+            $result[] = (object)[
+                'name' => $type,
+                'description' => $details['description'],
+                'address' => implode(';', $details['address']),
+                'channels' => implode(';', $details['channels']),
+            ];
+        }
+        return $result;
     }
     
     /**
@@ -105,14 +110,9 @@ class OwHost extends AffectsFirmwareModel
      */
     static public function listForIndex(int $hubID)
     {
-        return OwHost::whereHubId($hubID)
-            ->orderBy('rom_1', 'asc')
-            ->orderBy('rom_2', 'asc')
-            ->orderBy('rom_3', 'asc')
-            ->orderBy('rom_4', 'asc')
-            ->orderBy('rom_5', 'asc')
-            ->orderBy('rom_6', 'asc')
-            ->orderBy('rom_7', 'asc')
+        return self::whereHubId($hubID)
+            ->orderBy('typ', 'asc')
+            ->orderBy('address', 'asc')
             ->get();
     }
     
@@ -120,7 +120,7 @@ class OwHost extends AffectsFirmwareModel
      * 
      * @param int $hubID
      * @param int $id
-     * @return \App\Models\OwHost
+     * @return \App\Models\I2cHost
      */
     static public function findOrCreate(int $hubID, int $id)
     {
@@ -128,7 +128,7 @@ class OwHost extends AffectsFirmwareModel
             ->whereId($id)
             ->first();
         if (!$item) {
-            $item = new OwHost();
+            $item = new I2cHost();
             $item->id = $id;
             $item->hub_id = $hubID;
         }
@@ -141,24 +141,59 @@ class OwHost extends AffectsFirmwareModel
      * @param Request $request
      * @param int $hubID
      * @param int $id
+     * @return string
      */
     static public function storeFromRequest(Request $request, int $hubID, int $id)
     {
+        // Validation  ----------------------
+        $rules = [
+            'typ' => 'string|required',
+            'address' => 'numeric|required|unique:core_i2c_hosts,address,'.($id > 0 ? $id : ''),
+            'comm' => 'string|nullable',
+        ];
         
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
+        try {
+            $item = I2cHost::find($id);
+            
+            if (!$item) {
+                $item = new I2cHost();
+                $item->hub_id = $hubID;
+            }
+            $item->name = $request->typ;
+            $item->comm = $request->comm;
+            $item->typ = $request->typ;
+            $item->address = $request->address;
+            $item->save();
+            
+            return 'OK';
+        } catch (\Exception $ex) {
+            return response()->json([
+                'errors' => [$ex->getMessage()],
+            ]);
+        }
     }
     
     /**
      * 
      * @param int $id
+     * @return string
      */
     static public function deleteById(int $id)
     {
         try {
-            Device::whereTyp('ow')
+            Device::whereTyp('i2c')
                     ->whereHostId($id)
                     ->delete();
-            $item = OwHost::find($id);
+            $item = I2cHost::find($id);
             $item->delete();
+            
+            return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [$ex->getMessage()],

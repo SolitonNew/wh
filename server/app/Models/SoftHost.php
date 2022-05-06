@@ -210,10 +210,12 @@ class SoftHost extends AffectsFirmwareModel
                     ->delete();
             $item = SoftHost::find($id);
             $item->delete();
+            
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
 }

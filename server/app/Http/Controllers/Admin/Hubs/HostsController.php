@@ -7,6 +7,7 @@ use App\Services\Admin\HostsService;
 use Illuminate\Http\Request;
 use App\Models\SoftHost;
 use App\Models\OwHost;
+use App\Models\I2cHost;
 use App\Models\Property;
 use App\Models\Hub;
 
@@ -68,7 +69,7 @@ class HostsController extends Controller
                 return view('admin.hubs.hosts.orange.orange-hosts', [
                     'hubID' => $hubID,
                     'page' => 'hosts',
-                    'data' => [],
+                    'data' => I2cHost::listForIndex($hubID),
                 ]);
             case 'din':
                 return view('admin.hubs.hosts.din.din-hosts', [
@@ -133,9 +134,7 @@ class HostsController extends Controller
      */
     public function deleteSoft(int $hubID, int $id)
     {
-        SoftHost::deleteById($id);
-        
-        return 'OK';
+        return SoftHost::deleteById($id);
     }
     
     /**
@@ -147,7 +146,11 @@ class HostsController extends Controller
      */
     public function editOrangeShow(int $hubID, int $id)
     {
-        return 'DEMO';
+        $item = I2cHost::findOrCreate($hubID, $id);
+        
+        return view('admin.hubs.hosts.orange.orange-host-edit', [
+            'item' => $item,
+        ]);
     }
     
     
@@ -160,7 +163,13 @@ class HostsController extends Controller
      */
     public function editOrangePost(Request $request, int $hubID, int $id)
     {
-        return 'DEMO'; 
+        $res = I2cHost::storeFromRequest($request, $hubID, $id);
+        
+        if ($res == 'OK') {
+            
+        }
+        
+        return $res;
     }
     
     /**
@@ -172,7 +181,7 @@ class HostsController extends Controller
      */
     public function deleteOrange(int $hubID, int $id)
     {
-        return 'DEMO';
+        return I2cHost::deleteById($id);
     }
     
     /**

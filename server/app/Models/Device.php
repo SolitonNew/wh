@@ -248,7 +248,7 @@ class Device extends AffectsFirmwareModel
             
             $item->hub_id = $request->hub_id;
             $item->typ = $request->typ;
-            $item->host_id = in_array($request->typ, ['ow', 'software']) ? $request->host_id : null;
+            $item->host_id = in_array($request->typ, ['ow', 'software', 'i2c']) ? $request->host_id : null;
             $item->name = $request->name;
             $item->comm = $request->comm;
             $item->channel = $request->channel ?? 0;

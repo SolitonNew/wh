@@ -12,6 +12,7 @@
             <tr>
                 <th scope="col" style="width: 60px;"><span>@lang('admin/hubs.host_ID')</span></th>
                 <th scope="col" style="width: 150px;"><span>@lang('admin/hubs.host_TYP')</span></th>
+                <th scope="col" style="width: 60px;"><span>@lang('admin/hubs.host_ADDRESS')</span></th>
                 <th scope="col" style="width: 110px;"><span>@lang('admin/hubs.host_CHANNELS')</span></th>
                 <th scope="col" style="width: 250px;"><span>@lang('admin/hubs.host_DEVICES')</span></th>
             </tr>
@@ -20,7 +21,8 @@
             @forelse($data as $row)
             <tr data-id="{{ $row->id }}" class="{{ $row->lost ? 'row-with-ow-lost' : '' }}">
                 <td>{{ $row->id }}</td>
-                <td>{{ $row->type()->title }}</td>
+                <td>{{ $row->typ }}</td>
+                <td>0x{{ dechex($row->address) }}</td>
                 <td>{{ implode(', ', $row->type()->channels) }}</td>
                 <td>
                     @foreach($row->devices as $v)
