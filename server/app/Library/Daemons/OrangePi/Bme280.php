@@ -80,7 +80,14 @@ class Bme280 extends I2c
     public function __construct($address = 0x76)
     {
         parent::__construct($address);
-        
+        $this->init();
+    }
+    
+    /**
+     * 
+     */
+    protected function init()
+    {
         // Read calibration values
         $this->_digs['t1'] = $this->readWord(self::BME280_DIG_T1);      // Unsigned
         $this->_digs['t2'] = $this->readWordSign(self::BME280_DIG_T2);
@@ -115,6 +122,10 @@ class Bme280 extends I2c
         $this->writeByte(self::BME280_CONTROL_MEAS, self::BME280_CONTROL_MEAS_SET);
     }
     
+    /**
+     * 
+     * @return type
+     */
     public function getData()
     {
         $adc_t = $this->readLong(self::BME280_TEMP);
@@ -143,8 +154,8 @@ class Bme280 extends I2c
         $pressure = round(($pressure / 133.322) * 10) / 10;
 
         return (object)[
-            't' => $temperature, 
-            'p' => $pressure,
+            'T' => $temperature, 
+            'P' => $pressure,
         ];
     }
 }
