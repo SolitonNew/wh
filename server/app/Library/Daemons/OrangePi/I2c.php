@@ -34,7 +34,7 @@ class I2c
      */
     protected function readByte($adr): int
     {
-        return intval(trim(shell_exec('i2cget -y '.self::PORT.' '.$this->_address.' '.$adr)));
+        return hexdec(trim(shell_exec('i2cget -y '.self::PORT.' '.$this->_address.' '.$adr)));
     }
 
     /**

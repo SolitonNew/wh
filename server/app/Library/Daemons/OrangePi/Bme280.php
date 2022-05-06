@@ -4,10 +4,7 @@ namespace OrangePi;
 
 class Bme280 extends I2c
 {
-    # BME280 default address.
-    const BME280_I2CADDR           = 0x77;
-
-    # BME280 Registers
+    // BME280 Registers
     const BME280_CONTROL_MEAS      = 0xF4;
     const BME280_CONTROL_HUM       = 0xF2;
 
@@ -34,7 +31,7 @@ class Bme280 extends I2c
     const BME280_DIG_H5            = 0xE5;
     const BME280_DIG_H6            = 0xE7;
 
-    # Oversampling Setting
+    // Oversampling Setting
     const BME280_OVERS_T1          = 0x20;
     const BME280_OVERS_T2          = 0x40;
     const BME280_OVERS_T4          = 0x60;
@@ -53,7 +50,7 @@ class Bme280 extends I2c
     const BME280_OVERS_H8          = 0x04;
     const BME280_OVERS_H16         = 0x05;
 
-    # Power Modes.
+    // Power Modes.
     const BME280_NORMAL_MODE       = 0x03;
 
     const BME280_TSB_0_5           = 0x00;
@@ -146,8 +143,8 @@ class Bme280 extends I2c
         $pressure = round(($pressure / 133.322) * 10) / 10;
 
         return (object)[
-            't' => temperature, 
-            'p' => pressure,
+            't' => $temperature, 
+            'p' => $pressure,
         ];
     }
 }

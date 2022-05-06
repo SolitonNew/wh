@@ -8,7 +8,7 @@ include_once 'Bme280.php';
 try {
     $bme = new Bme280();
     $data = $bme->getData();
-    print(print_r($data, true));
+    print_r($data);
 } catch (\Exception $ex) {
     print($ex->getMessage());
 }
