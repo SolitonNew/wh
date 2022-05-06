@@ -4,7 +4,7 @@ namespace OrangePi;
 
 class I2c 
 {
-    const PORT = '/dev/i2c-0';
+    const PORT = 0;
     
     private $_address = false;
     
@@ -24,19 +24,7 @@ class I2c
      */
     protected function writeByte($adr, $byte)
     {
-        try {
-            $f = fopen(self::PORT, 'r+b');
-            if (!$f) return ;
-            fwrite($f, pack('C', $adr));
-            fwrite($f, pack('C', $byte));
-            fflush($f);
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        } finally {
-            if ($f) {
-                fclose($f);
-            }
-        }
+        shell_exec('i2cset -y '.self::PORT.' '.$this->_address.' '.$adr.' '.$byte);
     }
 
     /**
@@ -44,32 +32,9 @@ class I2c
      * @param type $adr
      * @return type
      */
-    protected function readByte($adr)
+    protected function readByte($adr): int
     {
-        $res = null;
-        $counter = 0;
-        try {
-            $f = fopen(self::PORT, 'r+b');
-            if (!$f) return null;
-            fwrite($f, pack('C', $adr));
-            fflush($f);
-            while ($counter < 1000) {
-                $c = fgetc($f);
-                if ($c !== false) {
-                    $res = unpack('C', $c);
-                } else {
-                    usleep(1000);
-                    $counter++;
-                }
-            }
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        } finally {
-            if ($f) {
-                fclose($f);
-            }
-        }
-        return $res;
+        return intval(trim(shell_exec('i2cget -y '.self::PORT.' '.$this->_address.' '.$adr)));
     }
 
     /**
