@@ -25,18 +25,18 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <label class="form-label">@lang('admin/hubs.host_ROM')</label>
-        </div>
-        <div class="col-sm-9">
-            <div class="form-control">{{ $item->romAsString() }}</div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3">
             <label class="form-label">@lang('admin/hubs.host_TYP')</label>
         </div>
         <div class="col-sm-9">
             <div class="form-control">{{ $item->type()->description }}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="form-label">@lang('admin/hubs.host_ROM')</label>
+        </div>
+        <div class="col-sm-9">
+            <div class="form-control">{{ $item->romAsString() }}</div>
         </div>
     </div>
     <div class="row">
