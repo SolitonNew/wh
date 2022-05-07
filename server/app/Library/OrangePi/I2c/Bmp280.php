@@ -1,8 +1,8 @@
 <?php
 
-namespace OrangePi;
+namespace App\Library\OrangePi\I2c;
 
-class Bme280 extends I2c
+class Bmp280 extends I2c
 {
     // BME280 Registers
     const BME280_CONTROL_MEAS      = 0xF4;
@@ -153,8 +153,8 @@ class Bme280 extends I2c
         $pressure = round(($p + ($var1 + $var2 + $this->_digs['p7']) / 16.0));
         $pressure = round(($pressure / 133.322) * 10) / 10;
 
-        return (object)[
-            'T' => $temperature, 
+        return [
+            'TEMP' => $temperature, 
             'P' => $pressure,
         ];
     }

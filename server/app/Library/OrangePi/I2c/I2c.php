@@ -1,6 +1,6 @@
 <?php
 
-namespace OrangePi;
+namespace App\Library\OrangePi\I2c;
 
 class I2c 
 {
@@ -78,5 +78,14 @@ class I2c
         $val = ($mbs << 16) + ($lbs << 8) + $xbs;
         $val = ($val >> 4);
         return $val;
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getData()
+    {
+        return [];
     }
 }

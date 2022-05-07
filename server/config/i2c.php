@@ -5,7 +5,7 @@ return [
         'bmp280' => [
             'address' => [0x76, 0x77],
             'description' => 'Humidity, Pressure and Temperature Sensor',
-            'channels' => ['T', 'P'],
+            'channels' => ['TEMP', 'P'],
             'consuming' => 1,
         ],
     ],
