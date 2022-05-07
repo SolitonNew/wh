@@ -135,6 +135,8 @@ class Bmp280 extends I2c
         $var2 = (($adc_t / 131072.0 - $this->_digs['t1'] / 8192.0) * ($adc_t / 131072.0 - $this->_digs['t1'] / 8192.0)) * $this->_digs['t3'];
         $t_fine = ($var1 + $var2);
         $temperature = round(($t_fine / 5120.0) * 10) / 10;
+        
+        if ($temperature < -40 || $temperature > 85) return null;
 
         $var1 = ($t_fine / 2.0) - 64000.0;
         $var2 = $var1 * $var1 * $this->_digs['p6'] / 32768.0;
