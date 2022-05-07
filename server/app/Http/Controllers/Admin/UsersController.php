@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\UsersRequest;
-use \App\Models\User;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Lang;
 
 class UsersController extends Controller
 {
@@ -34,21 +35,19 @@ class UsersController extends Controller
         
         return view('admin.users.user-edit', [
             'item' => $item,
+            'tableAccessList' => Lang::get('admin/users.table_access_list'),
         ]);
     }
     
     /**
      * The route to create or update the user entries.
      * 
-     * @param Request $request
      * @param int $id
      * @return string
      */
-    public function editPost(UsersRequest $request, int $id)
+    public function editPost(Request $request, int $id)
     {
-        User::storeFromRequest($request, $id);
-        
-        return 'OK';
+        return User::storeFromRequest($request, $id);
     }
     
     /**

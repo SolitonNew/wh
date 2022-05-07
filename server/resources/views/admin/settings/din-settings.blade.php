@@ -35,7 +35,6 @@
                 method: 'post',
                 url: '{{ route("admin.settings-set-din-settings") }}',
                 data: {
-                    _token: '{{ @csrf_token() }}',
                     port: $('#dinSettingsPort').val(),
                     mmcu: $('#dinSettingsMmcu').val(),
                 },

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use \App\Library\AffectsFirmwareModel;
 use \Illuminate\Http\Request;
+use Log;
 
 class Hub extends AffectsFirmwareModel
 {
@@ -24,6 +25,11 @@ class Hub extends AffectsFirmwareModel
         return $this->hasMany(OwHost::class);
     }
     
+    public function i2cHosts()
+    {
+        return $this->hasMany(I2cHost::class);
+    }
+    
     public function devices()
     {
         return $this->hasMany(Device::class);
@@ -40,6 +46,8 @@ class Hub extends AffectsFirmwareModel
                 return $this->softHosts->count();
             case 'din':
                 return $this->owHosts->count();
+            case 'orangepi':
+                return $this->i2cHosts->count();
         }
         return 0;
     }
@@ -67,6 +75,29 @@ class Hub extends AffectsFirmwareModel
      */
     static public function storeFromRequest(Request $request, int $id)
     {
+        // Validation  ----------------------
+        $rules = [];
+        if ($request->typ == 'din') {
+            $rules = [
+                'name' => 'string|required',
+                'typ' => 'string|required',
+                'rom' => 'numeric|required|min:1|max:15|unique:core_hubs,rom,'.($id > 0 ? $id : ''),
+                'comm' => 'string|nullable',
+            ];
+        } else {
+            $rules = [
+                'name' => 'string|required',
+                'typ' => 'string|required',
+                'comm' => 'string|nullable',
+            ];
+        }
+        
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
         try {
             $item = Hub::find($id);
             
@@ -81,11 +112,13 @@ class Hub extends AffectsFirmwareModel
                 $item->rom = null;
             }
             $item->comm = $request->comm;
-            $item->save();                
+            $item->save();
+            
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     
@@ -101,9 +134,9 @@ class Hub extends AffectsFirmwareModel
 
             $item->delete();
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     

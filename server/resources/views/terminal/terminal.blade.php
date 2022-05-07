@@ -47,8 +47,8 @@
     $('document').ready(() => {
         isMobile = (window.orientation !== undefined);
         
-        lockScrollLeft = {{ Request::url() == route('home') ? 'true' : 'false' }};
-        lockScrollRight = {{ Request::segment(1) == 'checked' ? 'true' : 'false' }};
+        lockScrollLeft = {{ app('request')->url() == route('home') ? 'true' : 'false' }};
+        lockScrollRight = {{ app('request')->segment(1) == 'checked' ? 'true' : 'false' }};
                 
         if (!isMobile) {
             $('.body-page-main').css('overflow', 'hidden');
@@ -72,8 +72,7 @@
             }
             $.ajax({
                 method: "POST",
-                url: "{{ route('terminal.device-set', ['', '']) }}/" + varID + "/" + varVal,
-                data: {_token: '{{ csrf_token() }}'},
+                url: "/terminal/device-set/" + varID + "/" + varVal,
             }).done((data)=>{
                 if (data) {
                     alert(data);
@@ -118,7 +117,7 @@
     
     function loadChanges() {
         $.ajax({
-            url: '{{ route("terminal.device-changes", '') }}/' + lastDeviceChangeID, 
+            url: '{{ route("terminal.device-changes", ["lastID" => ""]) }}/' + lastDeviceChangeID, 
             success: (data) => {
                 setTimeout(loadChanges, 500);
 
@@ -155,7 +154,7 @@
     
     function loadQueue() {
         $.ajax({
-            url: '{{ route("terminal.queue-changes", '') }}/' + lastQueueID,
+            url: '{{ route("terminal.queue-changes", ["lastID" => ""]) }}/' + lastQueueID,
             success: (data) => {
                 if (typeof(data) == 'string') {
                     if ((data.substr(0, 15) == '<!DOCTYPE HTML>')) {
@@ -342,7 +341,6 @@
         $('#speech').attr('src', 'audio/notify.wav');
         $('.audio-button').hide(150);
     }
-    
 </script>
 
 @endsection

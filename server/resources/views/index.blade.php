@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="{{ App::getLocale() }}">
+<html lang="{{ app('translator')->getLocale() }}">
     <head>
         <title>WISEHOUSE</title>
         <link rel="shortcut icon" href="/favicon.ico"/>
@@ -13,5 +13,21 @@
     </head>
 <body>
     @yield('body')
+    <script>
+        @if(isset($_GET['api_token']))
+        setCookie('api_token', "{{ $_GET['api_token'] }}");
+        @endif
+        
+        function getCookie(name) {
+            let matches = document.cookie.match(new RegExp(
+                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+            ));
+            return matches ? decodeURIComponent(matches[1]) : undefined;
+        }
+
+        function setCookie(name, value) {
+            document.cookie = name + '=' + value + '; path=/; max-age=360000';
+        }
+    </script>
 </body>
 </html>

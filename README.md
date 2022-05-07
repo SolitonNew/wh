@@ -38,7 +38,7 @@ sudo systemctl restart apache2
 ```
 ```
 sudo apt install mysql-server
-sudo apt install php7.4-mysql
+sudo apt install php8.1-mysql
 ```
 ```
 sudo mysql
@@ -55,25 +55,20 @@ sudo apt install php-xml
 sudo apt install composer
 cd server
 sudo -u www-data composer install
-```
-```
 sudo -u www-data cp .env.example .env
-sudo -u www-data php artisan key:generate
 sudo -u www-data nano .env
 ```
 ```
+APP_KEY=
 DB_DATABASE=wisehouse
 DB_USERNAME=wisehouse
 DB_PASSWORD=wisehousepass
 ```
 ```
-sudo -u www-data php artisan optimize
 sudo -u www-data php artisan migrate --force --seed
 ```
 ```
 sudo adduser www-data dialout
-```
-```
 sudo nano /etc/cron.d/wh
 ```
 ```
@@ -83,13 +78,15 @@ sudo nano /etc/cron.d/wh
 sudo apt-get install avr-libc gcc-avr
 ```
 ```
-sudo apt install libgpiod-dev gpiod
+sudo apt-get install libgpiod-dev gpiod
 sudo addgroup gpio
 sudo adduser www-data gpio
+sudo adduser www-data i2c
 sudo nano /etc/udev/rules.d/20-gpio.rules
 ```
 ```
 KERNEL=="gpio*", GROUP="gpio"
+SUBSYSTEM=="i2c-dev", GROUP="i2c"
 ```
 
 Admin Login/Password: wh/wh

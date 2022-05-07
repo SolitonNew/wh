@@ -5,7 +5,6 @@ namespace App\Services\Admin;
 use Illuminate\Http\Request;
 use App\Models\DeviceChange;
 use \Carbon\Carbon;
-use Session;
 
 class HistoryService 
 {
@@ -19,8 +18,8 @@ class HistoryService
     public function storeFilterDataFromRequest(Request $request)
     {
         if ($request->method() == 'POST') {
-            Session::put(self::FILTER_DATE, $request->post('date'));
-            Session::put(self::FILTER_SQL, $request->post('sql'));
+            //Session::put(self::FILTER_DATE, $request->post('date'));
+            //Session::put(self::FILTER_SQL, $request->post('sql'));
         }
     }
     
@@ -31,8 +30,8 @@ class HistoryService
      */
     public function getFilteringData(int $deviceID = null)
     {
-        $date = Session::get(self::FILTER_DATE);
-        $sql = Session::get(self::FILTER_SQL);
+        $date = isset($_COOKIE[self::FILTER_DATE]) ? $_COOKIE[self::FILTER_DATE] : '';
+        $sql = isset($_COOKIE[self::FILTER_SQL]) ? $_COOKIE[self::FILTER_SQL] : '';
         $errors = [];
         $data = [];
         
@@ -66,8 +65,8 @@ class HistoryService
     public function deleteAllVisibleValues(int $deviceID)
     {
         try {
-            $date = Session::get(self::FILTER_DATE);
-            $sql = Session::get(self::FILTER_SQL);
+            $date = isset($_COOKIE[self::FILTER_DATE]) ? $_COOKIE[self::FILTER_DATE] : '';
+            $sql = isset($_COOKIE[self::FILTER_SQL]) ? $_COOKIE[self::FILTER_SQL] : '';
             
             if (!$date) {
                 throw new \Exception('Field date is required');

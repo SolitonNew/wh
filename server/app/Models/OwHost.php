@@ -124,11 +124,13 @@ class OwHost extends AffectsFirmwareModel
      */
     static public function findOrCreate(int $hubID, int $id)
     {
-        $item = OwHost::whereHubId($hubID)->whereId($id)->first();
+        $item = self::whereHubId($hubID)
+            ->whereId($id)
+            ->first();
         if (!$item) {
             $item = new OwHost();
             $item->id = $id;
-            $item->hubId = $hubID;
+            $item->hub_id = $hubID;
         }
         
         return $item;
@@ -158,9 +160,9 @@ class OwHost extends AffectsFirmwareModel
             $item = OwHost::find($id);
             $item->delete();
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
 }

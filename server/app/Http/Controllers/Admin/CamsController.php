@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\CamsRequest;
-use \App\Models\Videcam;
+use Illuminate\Http\Request;
+use App\Models\Videcam;
 
 class CamsController extends Controller
 {
@@ -40,15 +40,12 @@ class CamsController extends Controller
     /**
      * Route to create or update the videcam entries.
      * 
-     * @param CamsRequest $request
      * @param int $id
      * @return string
      */
-    public function editPost(CamsRequest $request, int $id)
+    public function editPost(Request $request, int $id)
     {
-        Videcam::storeFromRequest($request);
-        
-        return 'OK';
+        return Videcam::storeFromRequest($request, $id);
     }
     
     /**

@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\ScriptsService;
-use App\Http\Requests\Admin\ScriptsIndexRequest;
-use App\Http\Requests\Admin\ScriptsRequest;
 use App\Models\Script;
+use App\Models\Property;
 
 class ScriptsController extends Controller
 {
@@ -15,15 +14,15 @@ class ScriptsController extends Controller
      *
      * @var type 
      */
-    private $_scriptsService;
+    private $_service;
     
     /**
      * 
-     * @param ScriptsService $scriptService
+     * @param ScriptsService $service
      */
-    public function __construct(ScriptsService $scriptService) 
+    public function __construct(ScriptsService $service) 
     {
-        $this->_scriptsService = $scriptService;
+        $this->_service = $service;
     }
     
     /**
@@ -32,8 +31,28 @@ class ScriptsController extends Controller
      * @param int $scriptID
      * @return type
      */
-    public function index(ScriptsIndexRequest $request, int $id = null)
+    public function index(int $id = null)
     {        
+        // Last view id  --------------------------
+        if (!$id) {
+            $id = Property::getLastViewID('SCRIPT');
+            if ($id && Script::find($id)) {
+                return redirect(route('admin.scripts', ['id' => $id]));
+            }
+            $id = null;
+        }
+        
+        if (!$id) {
+            $item = Script::orderBy('comm', 'asc')->first();
+            if ($item) {
+                return redirect(route('admin.scripts', ['id' => $item->id]));
+            }
+        }
+        
+        Property::setLastViewID('SCRIPT', $id);
+        // ----------------------------------------
+        
+        
         $list = Script::listAll();
         $item = Script::find($id);
         
@@ -62,15 +81,12 @@ class ScriptsController extends Controller
     /**
      * The route to create or update script record properties.
      * 
-     * @param ScriptsRequest $request
      * @param int $id
      * @return string
      */
-    public function editPost(ScriptsRequest $request, int $id)
+    public function editPost(Request $request, int $id)
     {
-        Script::storeFromRequest($request, $id);
-        
-        return 'OK';
+        return Script::storeFromRequest($request, $id);
     }
     
     /**

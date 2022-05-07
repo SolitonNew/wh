@@ -13,7 +13,7 @@ use App\Models\Script;
 use App\Library\Script\Translate;
 use App\Library\Script\Translators\C as TranslateC;
 use App\Models\Property;
-use View;
+use Illuminate\Support\Facades\View;
 use DB;
 
 /**
@@ -185,8 +185,6 @@ class Din
                 'din' => 0,
                 'ow' => 1,
                 'variable' => 2,
-                'software' => 3,
-                'orangepi' => 4,
             ],
         ]));
         

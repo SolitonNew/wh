@@ -13,6 +13,6 @@ class HostsService
      */
     public function getHostType(int $hubID)
     {
-        return Hub::findOrFail($hubID)->typ;
+        return Hub::findOrCreate($hubID)->typ;
     }
 }

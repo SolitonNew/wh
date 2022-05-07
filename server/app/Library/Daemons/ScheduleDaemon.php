@@ -5,7 +5,7 @@ namespace App\Library\Daemons;
 use App\Models\Schedule;
 use App\Models\Execute;
 use \Carbon\Carbon;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 use DB;
 
 /**

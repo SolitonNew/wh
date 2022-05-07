@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 use Log;
 use DB;
 
@@ -225,6 +225,21 @@ class Device extends AffectsFirmwareModel
      */
     static public function storeFromRequest(Request $request, int $hubId, int $id)
     {
+        // Validation  ----------------------
+        $rules = [
+            'hub_id' => 'required|numeric',
+            'name' => 'required|string|unique:core_devices,name,'.($id > 0 ? $id : ''),
+            'comm' => 'nullable|string',
+            'host_id' => ($request->typ === 'ow' ? 'required|numeric' : ''),
+            'value' => 'nullable|numeric',
+        ];
+        
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
         try {
             $item = Device::find($id);
             if (!$item) {
@@ -233,19 +248,21 @@ class Device extends AffectsFirmwareModel
             
             $item->hub_id = $request->hub_id;
             $item->typ = $request->typ;
-            $item->host_id = in_array($request->typ, ['ow', 'software']) ? $request->host_id : null;
+            $item->host_id = in_array($request->typ, ['ow', 'software', 'i2c']) ? $request->host_id : null;
             $item->name = $request->name;
             $item->comm = $request->comm;
             $item->channel = $request->channel ?? 0;
             $item->app_control = $request->app_control;
             $item->save();
-            if ($request->value !== null) {
+            
+            if (strlen($request->value)) {
                 Device::setValue($item->id, $request->value);
             }
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     

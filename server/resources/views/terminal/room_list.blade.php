@@ -123,7 +123,7 @@
             chartAutoscrollCounter = 0;
         }
         
-        setTimeout(chartAutoScroll, {{ config('app.chart_update_interval') }});
+        setTimeout(chartAutoScroll, {{ config("settings.chart_update_interval") }});
     }
     
     chartAutoScroll();

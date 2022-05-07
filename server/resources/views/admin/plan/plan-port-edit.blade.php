@@ -9,8 +9,7 @@
 @endsection
 
 @section('content')
-<form id="plan_port_form" class="container" method="POST" action="{{ route('admin.plan-port-edit', [$planID, $portIndex]) }}">
-    {{ csrf_field() }}
+<form id="plan_port_form" class="container" method="POST" action="{{ route('admin.plan-port-edit', ['planID' => $planID, 'portIndex' => $portIndex]) }}">
     <button type="submit" style="display: none;"></button>
     <input type="hidden" name="add_device_id">
     <div class="row">
@@ -115,8 +114,10 @@
         confirmYesNo("@lang('admin/plan.port_delete_confirm')", () => {
             $.ajax({
                 method: 'delete',
-                url: '{{ route("admin.plan-port-delete", [$planID, $portIndex]) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.plan-port-delete", ["planID" => $planID, "portIndex" => $portIndex]) }}',
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {

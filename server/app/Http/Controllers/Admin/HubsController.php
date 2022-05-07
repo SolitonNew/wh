@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\HubsIndexRequest;
-use App\Http\Requests\Admin\HubRequest;
+use Illuminate\Http\Request;
 use App\Services\Admin\HubsService;
 use App\Models\Hub;
+use App\Models\Property;
+use Log;
 
 class HubsController extends Controller
 {
@@ -32,8 +33,27 @@ class HubsController extends Controller
      * @param int $hubID
      * @return type
      */
-    public function index(HubsIndexRequest $request, int $hubID = null) 
+    public function index(int $hubID = null) 
     {
+        // Last view id  --------------------------
+        if (!$hubID) {
+            $hubID = Property::getLastViewID('HUB');
+            if ($hubID && Hub::find($hubID)) {
+                return redirect(route('admin.hub-hosts', ['hubID' => $hubID]));
+            }
+            $hubID = null;
+        }
+        
+        if (!$hubID) {
+            $item = Hub::orderBy('name', 'asc')->first();
+            if ($item) {
+                return redirect(route('admin.hub-hosts', ['hubID' => $item->id]));
+            }
+        }
+        
+        Property::setLastViewID('HUB', $hubID);
+        // ----------------------------------------
+        
         return view('admin/hubs/hubs', [
             'hubID' => $hubID,
         ]);
@@ -57,18 +77,19 @@ class HubsController extends Controller
     /**
      * Route to create or update a hub property.
      * 
-     * @param HubRequest $request
      * @param int $id
      * @return string
      */
-    public function editPost(HubRequest $request, int $id) 
+    public function editPost(Request $request, int $id) 
     {
-        Hub::storeFromRequest($request, $id);
+        $res = Hub::storeFromRequest($request, $id);
 
-        // Restart service daemons
-        $this->_service->restartServiceDaemons();
+        if ($res == 'OK') {
+            // Restart service daemons
+            $this->_service->restartServiceDaemons();
+        }
 
-        return 'OK';
+        return $res;
     }
     
     /**

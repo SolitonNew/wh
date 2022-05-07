@@ -1,8 +1,8 @@
 @extends('admin.jurnal.jurnal')
 
 @section('page-down-menu')
-<a href="#" class="dropdown-item {{ $stat ? 'disabled' : '' }}" onclick="daemonStart(); return false">@lang('admin/jurnal.daemon_run')</a>
-<a href="#" class="dropdown-item {{ $stat ? '' : 'disabled' }}" onclick="daemonStop(); return false;">@lang('admin/jurnal.daemon_stop')</a>
+<a href="#" class="dropdown-item" onclick="daemonStart(); return false">@lang('admin/jurnal.daemon_run')</a>
+<a href="#" class="dropdown-item" onclick="daemonStop(); return false;">@lang('admin/jurnal.daemon_stop')</a>
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="daemonReload(); return false;">@lang('admin/jurnal.daemon_reload')</a>
 <div class="dropdown-divider"></div>
@@ -27,7 +27,7 @@
          style="width: 250px; min-width:250px; border-right: 1px solid rgba(0,0,0,0.125); justify-content: space-between;" 
          scroll-store="jurnalDaemonsList">
         @foreach($daemons as $row)
-        <a href="{{ route('admin.jurnal-daemons', $row->id) }}"
+        <a href="{{ route('admin.jurnal-daemons', ['id' => $row->id]) }}"
             class="tree-item {{ $row->id == $id ? 'active' : '' }} {{ $row->stat ? 'started' : '' }}"
             data-id="{{ $row->id }}"
             style="display: block;">
@@ -69,7 +69,7 @@
     function daemonStart() {
         confirmYesNo("@lang('admin/jurnal.daemon_run_confirm')", () => {
             startGlobalWaiter();
-            $.ajax('{{ route("admin.jurnal-daemon-start", $id) }}').done((data) => {
+            $.ajax('{{ route("admin.jurnal-daemon-start", ["id" => $id]) }}').done((data) => {
                 stopGlobalWaiter();
                 if (data == 'OK') {
                     window.location.reload();
@@ -83,7 +83,7 @@
     function daemonStop() {
         confirmYesNo("@lang('admin/jurnal.daemon_stop_confirm')", () => {
             startGlobalWaiter();
-            $.ajax('{{ route("admin.jurnal-daemon-stop", $id) }}').done((data) => {
+            $.ajax('{{ route("admin.jurnal-daemon-stop", ["id" => $id]) }}').done((data) => {
                 stopGlobalWaiter();
                 if (data == 'OK') {
                     window.location.reload();
@@ -97,7 +97,7 @@
     function daemonReload() {
         confirmYesNo("@lang('admin/jurnal.daemon_reload_confirm')", () => {
             startGlobalWaiter();
-            $.ajax('{{ route("admin.jurnal-daemon-restart", $id) }}').done((data) => {
+            $.ajax('{{ route("admin.jurnal-daemon-restart", ["id" => $id]) }}').done((data) => {
                 stopGlobalWaiter();
                 if (data == 'OK') {
                     window.location.reload();
@@ -110,7 +110,7 @@
 
     function getDaemonData() {
         $.ajax({
-            url: '{{ route("admin.jurnal-daemon-data", [$id, ""]) }}/' + daemonLogLastID,
+            url: '{{ route("admin.jurnal-daemon-data", ["id" => $id, "lastID" => ""]) }}/' + daemonLogLastID,
             success: function (data) {
                 if (data) {
                     let lines = $(data);
@@ -136,7 +136,7 @@
                             daemonLogLastID--;
                         }
                         
-                        $('.daemon-log-offset > div:gt({{ config("app.admin_daemons_log_lines_count") }})').remove();
+                        $('.daemon-log-offset > div:gt({{ config("settings.admin_daemons_log_lines_count") }})').remove();
                         
                         $('.daemon-log-offset > div').each(function () {
                             if ($(this).text().indexOf('PROGRESS:') == 0) {

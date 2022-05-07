@@ -45,9 +45,25 @@ class Videcam extends Model
     /**
      * 
      * @param Request $request
+     * @param int $id
+     * @return string
      */
-    static public function storeFromRequest(Request $request)
+    static public function storeFromRequest(Request $request, int $id)
     {
+        // Validation  ----------------------
+        $rules = [
+            'name' => 'required|string|unique:plan_videcams,name,'.($id > 0 ? $id : ''),
+            'url' => 'required|string',
+            'url_low' => 'required|string',
+            'url_high' => 'required|string',
+        ];
+        
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
         try {
             $id = $request->route('id');
             $item = Videcam::find($id);
@@ -58,17 +74,18 @@ class Videcam extends Model
             $item->url = $request->url;
             $item->url_low = $request->url_low;
             $item->url_high = $request->url_high;
-            $item->alert_var_id = $request->alert_var_id;
+            $item->alert_var_id = $request->alert_var_id ?: null;
             $item->save();
 
             if ($id == -1) {
                 $item->order_num = $item->id;
                 $item->save();
             }
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     

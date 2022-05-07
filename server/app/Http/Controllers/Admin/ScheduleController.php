@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ScheduleRequest;
+use Illuminate\Http\Request;
 use App\Models\Schedule;
+use Illuminate\Support\Facades\Lang;
 
 class ScheduleController extends Controller
 {
@@ -34,6 +35,8 @@ class ScheduleController extends Controller
 
         return view('admin.schedule.schedule-edit', [
             'item' => $item,
+            'enableList' => Lang::get('admin/schedule.enable_list'),
+            'interval' => Lang::get('admin/schedule.interval'),
         ]);        
     }
     
@@ -44,11 +47,9 @@ class ScheduleController extends Controller
      * @param int $id
      * @return string
      */
-    public function editPost(ScheduleRequest $request, int $id) 
+    public function editPost(Request $request, int $id) 
     {
-        Schedule::storeFromRequest($request, $id);
-        
-        return 'OK';
+        return Schedule::storeFromRequest($request, $id);
     }
     
     /**

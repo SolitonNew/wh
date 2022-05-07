@@ -9,8 +9,7 @@
 @endsection
 
 @section('content')
-<form id="schedule_edit_form" class="container" method="POST" action="{{ route('admin.schedule-edit', $item->id) }}">
-    {{ csrf_field() }}
+<form id="schedule_edit_form" class="container" method="POST" action="{{ route('admin.schedule-edit', ['id' => $item->id]) }}">
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
     <div class="row">
@@ -45,7 +44,7 @@
         </div>
         <div class="col-sm-5">
             <select class="custom-select" name="enable">
-            @foreach(Lang::get('admin/schedule.enable_list') as $key => $val)
+            @foreach($enableList as $key => $val)
             <option value="{{ $key }}" {{ $key == $item->enable ? 'selected' : '' }}>{{ $val }}</option>
             @endforeach
             </select>
@@ -61,8 +60,10 @@
         </div>
         <div class="col-sm-5">
             <select class="custom-select" name="interval_type">
-            @foreach(Lang::get('admin/schedule.interval') as $key => $val)
+            @foreach($interval as $key => $val)
+            @if($key < 4)
             <option value="{{ $key }}" {{ $key == $item->interval_type ? 'selected' : '' }}>{{ $val }}</option>
+            @endif
             @endforeach
             </select>
             <div class="invalid-feedback"></div>
@@ -166,8 +167,10 @@
         confirmYesNo("@lang('admin/schedule.schedule-delete-confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.schedule-delete", $item->id) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.schedule-delete", ["id" => $item->id]) }}',
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {
@@ -185,7 +188,6 @@
         $.post({
             url: '{{ route("admin.script-test") }}',
             data: {
-                _token: '{{ csrf_token() }}',
                 command: actionEditor.getData(),
             },
             success: function(data) {

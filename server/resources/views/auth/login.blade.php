@@ -4,7 +4,6 @@
 <div class="content">
     <div class="modal-dialog">
         <form class="modal-content" method="POST" action="{{ route('loginPost') }}">
-            {{ csrf_field() }}
             <button type="submit" style="display: none;"></button>
             <div class="modal-header">
                 <h5 class="modal-title">@Lang('auth.login_title')</h5>
@@ -27,14 +26,6 @@
                             <input class="form-control" type="password" name="password" value="">
                         </div>
                     </div>
-                    @if($errors->has('login'))
-                    <div class="row">
-                        <div class="offset-sm-3 col-sm-7">
-                            <div class="error">{{ $errors->first('login') }}</div>
-                        </div>
-                    </div>
-                    @endif
-                    
                     @if(request()->method() == 'POST')
                     <div>{{ dd($errors) }}</div>
                     @endif

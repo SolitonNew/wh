@@ -5,7 +5,7 @@ namespace App\Library\SoftHostDrivers;
 use App\Models\SoftHostStorage;
 use App\Models\Device;
 use \Cron\CronExpression;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 
 class SoftHostDriverBase
 {

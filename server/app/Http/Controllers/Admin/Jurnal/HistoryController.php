@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin\Jurnal;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\HistoryIndexRequest;
 use App\Services\Admin\HistoryService;
 use App\Models\Device;
 use App\Models\DeviceChange;
+use App\Models\Property;
+use Illuminate\Http\Request;
 
 class HistoryController extends Controller
 {
@@ -14,29 +15,40 @@ class HistoryController extends Controller
      *
      * @var type 
      */
-    private $_historyService;
+    private $_service;
     
     /**
      * 
-     * @param HistoryService $historyService
+     * @param HistoryService $service
      */
-    public function __construct(HistoryService $historyService) 
+    public function __construct(HistoryService $service) 
     {
-        $this->_historyService = $historyService;
+        $this->_service = $service;
     }
     
     /**
      * Index route to display device history data.
      * 
-     * @param HistoryIndexRequest $request
      * @param int $id
      * @return type
      */
-    public function index(HistoryIndexRequest $request, int $id = null) 
+    public function index(Request $request, int $id = null) 
     {        
-        $this->_historyService->storeFilterDataFromRequest($request);
+        // Last view id  --------------------------
+        if (!$id) {
+            $id = Property::getLastViewID('HISTORY');
+            if ($id && Device::find($id)) {
+                return redirect(route('admin.jurnal-history', ['id' => $id]));
+            }
+            $id = null;
+        }
         
-        list($data, $errors) = $this->_historyService->getFilteringData($id);        
+        Property::setLastViewID('HISTORY', $id);
+        // ----------------------------------------
+        
+        $this->_service->storeFilterDataFromRequest($request);
+        
+        list($data, $errors) = $this->_service->getFilteringData($id);        
         
         $devices = Device::orderBy('name', 'asc')->get();
         
@@ -83,7 +95,7 @@ class HistoryController extends Controller
      */
     public function deleteAllVisibleValues(int $id) 
     {
-        $count = $this->_historyService->deleteAllVisibleValues($id);
+        $count = $this->_service->deleteAllVisibleValues($id);
         
         return 'OK: '.$count;
     }

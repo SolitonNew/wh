@@ -9,8 +9,8 @@
 namespace App\Library\Daemons;
 
 use App\Models\SoftHost;
-use DB;
-use Lang;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Description of SoftwareDaemon
@@ -145,5 +145,10 @@ class SoftwareDaemon extends BaseDaemon
                 $this->printLine($s); 
             }
         }
+    }
+    
+    protected function _deviceChangeValue($device)
+    {
+        //
     }
 }

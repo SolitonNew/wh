@@ -2,8 +2,6 @@
 
 namespace App\Services\Admin;
 
-use Session;
-
 class DevicesService 
 {
     const FILTER_ROOM = 'DEVICES_room_id';
@@ -16,14 +14,14 @@ class DevicesService
     public function prepareRoomFilter(string $roomID = null)
     {
         if (!$roomID) {
-            $roomID = Session::get(self::FILTER_ROOM);
+            $roomID = isset($_COOKIE[self::FILTER_ROOM]) ? $_COOKIE[self::FILTER_ROOM] : '';
         }
         
         if (!$roomID) {
             $roomID = 'none';
         }
         
-        Session::put(self::FILTER_ROOM, $roomID);
+        //Session::put(self::FILTER_ROOM, $roomID);
         
         return $roomID;
     }

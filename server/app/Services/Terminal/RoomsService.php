@@ -5,7 +5,7 @@ namespace App\Services\Terminal;
 use App\Models\Room;
 use App\Models\Device;
 use App\Models\Property;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 
 class RoomsService 
 {

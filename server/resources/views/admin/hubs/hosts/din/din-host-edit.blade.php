@@ -6,7 +6,6 @@
 
 @section('content')
 <form id="host_form" class="container" method="POST">
-    {{ csrf_field() }}
     <button type="submit" style="display: none;"></button>
     <div class="row">
         <div class="col-sm-3">
@@ -26,18 +25,18 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <label class="form-label">@lang('admin/hubs.host_ROM')</label>
-        </div>
-        <div class="col-sm-9">
-            <div class="form-control">{{ $item->romAsString() }}</div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3">
             <label class="form-label">@lang('admin/hubs.host_TYP')</label>
         </div>
         <div class="col-sm-9">
             <div class="form-control">{{ $item->type()->description }}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="form-label">@lang('admin/hubs.host_ROM')</label>
+        </div>
+        <div class="col-sm-9">
+            <div class="form-control">{{ $item->romAsString() }}</div>
         </div>
     </div>
     <div class="row">
@@ -77,8 +76,10 @@
         confirmYesNo("@lang('admin/hubs.host_delete_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.hub-dinhost-delete", [$item->hub_id, $item->id]) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.hub-dinhost-delete", ["hubID" => $item->hub_id, "id" => $item->id]) }}',
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {

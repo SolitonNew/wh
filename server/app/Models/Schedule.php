@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use \Illuminate\Http\Request;
 use \Carbon\Carbon;
 use App\Library\SunTime;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 use Log;
 
 class Schedule extends Model
@@ -74,6 +74,20 @@ class Schedule extends Model
      */
     static public function storeFromRequest(Request $request, int $id) 
     {
+        // Validation  ----------------------
+        $rules = [
+            'comm' => 'required|string',
+            'action' => 'required|string',
+            'interval_time_of_day' => 'required|string',
+            'interval_day_of_type' => 'string|'.(in_array($request->interval_type, [1, 2, 3]) ? 'required' : 'nullable'),
+        ];
+        
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
         try {
             $item = Schedule::find($id);
             if (!$item) {
@@ -88,10 +102,11 @@ class Schedule extends Model
             $item->interval_type = $request->interval_type;
             $item->enable = $request->enable;
             $item->save();
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     

@@ -5,8 +5,7 @@
 @endsection
 
 @section('content')
-<form id="plan_order_form" method="POST" action="{{ route('admin.plan-order', $partID) }}">
-    {{ csrf_field() }}
+<form id="plan_order_form" method="POST" action="{{ route('admin.plan-order', ['id' => $partID]) }}">
     <button type="submit" style="display: none;"></button>
     <div class="form-control tree" style="height: auto; min-height: 300px;max-height: 300px;">
     @foreach($data as $row)

@@ -9,8 +9,7 @@
 @endsection
 
 @section('content')
-<form id="host_edit_form" class="container" method="POST" action="{{ route('admin.hub-softhost-edit', [$item->hub_id, $item->id]) }}">
-    {{ csrf_field() }}
+<form id="host_edit_form" class="container" method="POST" action="{{ route('admin.hub-softhost-edit', ['hubID' => $item->hub_id, 'id' => $item->id]) }}">
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
     <div class="row">
@@ -112,8 +111,6 @@
         @endif
         
         function buildProperties(properties) {
-            console.log(properties);
-            
             $('#host_edit_form .property').remove();
             let lastFormRow = $('#lastFormRow');
             let i = 0;
@@ -152,8 +149,10 @@
         confirmYesNo("@lang('admin/hubs.host_delete_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.hub-softhost-delete", [$item->hub_id, $item->id]) }}',
-                data: {_token: '{{ csrf_token() }}'},
+                url: '{{ route("admin.hub-softhost-delete", ["hubID" => $item->hub_id, "id" => $item->id]) }}',
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {

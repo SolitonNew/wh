@@ -8,7 +8,7 @@ use App\Models\DeviceChangeMem;
 use App\Models\OwHost;
 use App\Models\Device;
 use DB;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 use Log;
 
 /**
@@ -75,7 +75,7 @@ class DinDaemon extends BaseDaemon
     /**
      * 
      */
-    const SLEEP_TIME = 25;
+    const SLEEP_TIME = 50;
     
     /**
      * 

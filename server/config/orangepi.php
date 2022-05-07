@@ -26,5 +26,12 @@ return [
         'PG7' => 199,
         'PG8' => 200,
         'PG9' => 201,
+        'PROC_TEMP' => -1,
     ],
+    'drivers' => [
+        'bmp280' => [
+            'cron' => '* * * * *',
+            'class' => App\Library\OrangePi\I2c\Bmp280::class,
+        ],
+    ]
 ];

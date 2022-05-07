@@ -19,6 +19,7 @@ class WebUsers extends Migration
             $table->string('email')->nullable()->default('');
             $table->string('password');
             $table->integer('access')->default(0);
+            $table->string('api_token', 60)->nullable();
         });
     }
 

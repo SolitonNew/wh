@@ -51,7 +51,7 @@
         $('#cams_list tbody tr').on('click', (e) => {
             let id = $(e.currentTarget).attr('data-id');
             if (id) {
-                dialog('{{ route("admin.cam-edit", "") }}/' + id);
+                dialog('{{ route("admin.cam-edit", ["id" => ""]) }}/' + id);
             }
         });
 
@@ -60,7 +60,7 @@
 
             let id = $(this).data('id');
             if (id) {
-                dialog('{{ route("admin.hub-device-edit", [-1, ""]) }}/' + id);
+                dialog('{{ route("admin.hub-device-edit", ["hubID" => -1, "id" => ""]) }}/' + id);
             }
             
             return false;
@@ -68,7 +68,7 @@
     });
 
     function camAdd() {
-        dialog('{{ route("admin.cam-edit", "-1") }}');
+        dialog('{{ route("admin.cam-edit", ["id" => "-1"]) }}');
     }
 </script>
 @endsection

@@ -31,8 +31,10 @@
         $('#terminalMaxLevel input').on('input', function () {
             $.ajax({
                 method: 'post',
-                url: '{{ route("admin.settings-set-max-level", "") }}/' + $(this).data('value'),
-                data: {_token: '{{ @csrf_token() }}'},
+                url: '{{ route("admin.settings-set-max-level", ["value" => ""]) }}/' + $(this).data('value'),
+                data: {
+                    
+                },
                 success: function (data) {
                     if (data == 'OK') {
                         

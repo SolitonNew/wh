@@ -24,3 +24,23 @@ if (!function_exists('eq_floats')) {
         }
     }
 }
+
+if (!function_exists('active_segment')) {
+    function active_segment(int $segment, string $page)
+    {
+        $uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $uri_segments = explode('/', $uri_path);
+        
+        if (isset($uri_segments[$segment]) && $uri_segments[$segment] == $page) {
+            return 'active';
+        }
+        return '';
+    }
+}
+
+if (!function_exists('now')) {
+    function now($tz = 'UTC')
+    {
+        return \Carbon\Carbon::now($tz);
+    }
+}

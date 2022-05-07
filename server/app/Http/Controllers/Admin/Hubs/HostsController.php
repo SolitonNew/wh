@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Hubs;
 
-use App\Http\Requests\Admin\HubsIndexRequest;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\HostsService;
-use App\Http\Requests\Admin\SoftHostRequest;
-use App\Http\Requests\Admin\OwHostRequest;
+use Illuminate\Http\Request;
 use App\Models\SoftHost;
 use App\Models\OwHost;
+use App\Models\I2cHost;
+use App\Models\Property;
+use App\Models\Hub;
 
 class HostsController extends Controller
 {    
@@ -31,12 +32,32 @@ class HostsController extends Controller
      * This is an index route for displaying a list of host.
      * If the hub id does not exists, redirect to the owner route.
      * 
-     * @param HubsIndexRequest $request
      * @param int $hubID
      * @return type
      */
-    public function index(HubsIndexRequest $request, int $hubID = null) 
+    public function index(int $hubID = null) 
     {        
+        // Last view id  --------------------------
+        if (!$hubID) {
+            $hubID = Property::getLastViewID('HUB');
+            if ($hubID) {
+                return redirect(route('admin.hub-hosts', ['hubID' => $hubID]));
+            } else {
+                $hubID = null;
+            }
+        }
+        
+        if (!$hubID) {
+            $item = Hub::orderBy('name', 'asc')->first();
+            if ($item) {
+                return redirect(route('admin.hub-hosts', ['hubID' => $item->id]));
+            }
+        }
+        
+        Property::setLastViewID('HUB', $hubID);
+        // ----------------------------------------
+        
+        
         switch ($this->_service->getHostType($hubID)) {
             case 'software':
                 return view('admin.hubs.hosts.soft.soft-hosts', [
@@ -48,7 +69,7 @@ class HostsController extends Controller
                 return view('admin.hubs.hosts.orange.orange-hosts', [
                     'hubID' => $hubID,
                     'page' => 'hosts',
-                    'data' => [],
+                    'data' => I2cHost::listForIndex($hubID),
                 ]);
             case 'din':
                 return view('admin.hubs.hosts.din.din-hosts', [
@@ -62,6 +83,8 @@ class HostsController extends Controller
                     'page' => 'hosts',
                     'data' => [],
                 ]);
+            default:
+                return redirect(route('admin.hubs'));
         }
         
         abort(404);
@@ -87,14 +110,19 @@ class HostsController extends Controller
     /**
      * Route to create or update software host properties.
      * 
-     * @param SoftHostRequest $request
      * @param int $hubID
      * @param int $id
      * @return type
      */
-    public function editSoftPost(SoftHostRequest $request, int $hubID, int $id)
+    public function editSoftPost(Request $request, int $hubID, int $id)
     {
-        return SoftHost::storeFromRequest($request, $hubID, $id);
+        $res = SoftHost::storeFromRequest($request, $hubID, $id);
+        
+        if ($res == 'OK') {
+            
+        }
+        
+        return $res;
     }
     
     /**
@@ -106,9 +134,7 @@ class HostsController extends Controller
      */
     public function deleteSoft(int $hubID, int $id)
     {
-        SoftHost::deleteById($id);
-        
-        return 'OK';
+        return SoftHost::deleteById($id);
     }
     
     /**
@@ -120,21 +146,30 @@ class HostsController extends Controller
      */
     public function editOrangeShow(int $hubID, int $id)
     {
-        return 'DEMO';
+        $item = I2cHost::findOrCreate($hubID, $id);
+        
+        return view('admin.hubs.hosts.orange.orange-host-edit', [
+            'item' => $item,
+        ]);
     }
     
     
     /**
      * Route to create or update orange pi host properties.
      * 
-     * @param SoftHostRequest $request
      * @param int $hubID
      * @param int $id
      * @return type
      */
-    public function editOrangePost(SoftHostRequest $request, int $hubID, int $id)
+    public function editOrangePost(Request $request, int $hubID, int $id)
     {
-        return 'DEMO'; 
+        $res = I2cHost::storeFromRequest($request, $hubID, $id);
+        
+        if ($res == 'OK') {
+            
+        }
+        
+        return $res;
     }
     
     /**
@@ -146,7 +181,7 @@ class HostsController extends Controller
      */
     public function deleteOrange(int $hubID, int $id)
     {
-        return 'DEMO';
+        return I2cHost::deleteById($id);
     }
     
     /**
@@ -168,12 +203,11 @@ class HostsController extends Controller
     /**
      * Route to create or update din host properties.
      * 
-     * @param OwHostRequest $request
      * @param int $hubID
      * @param int $id
      * @return type
      */
-    public function editDinPost(OwHostRequest $request, int $hubID, int $id)
+    public function editDinPost(Request $request, int $hubID, int $id)
     {
         return OwHost::storeFromRequest($request, $hubID, $id);
     }
@@ -207,12 +241,11 @@ class HostsController extends Controller
     /**
      * Route to create or update Zigbee One host properties.
      * 
-     * @param OwHostRequest $request
      * @param int $hubID
      * @param int $id
      * @return type
      */
-    public function editZigbeePost(OwHostRequest $request, int $hubID, int $id)
+    public function editZigbeePost(Request $request, int $hubID, int $id)
     {
         return 'DEMO';
     }

@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
 use App\Models\DeviceEvent;
-use App\Http\Events\FirmwareChangedEvent;
+use App\Events\FirmwareChangedEvent;
 use DB;
 
 class Script extends AffectsFirmwareModel
@@ -58,6 +58,17 @@ class Script extends AffectsFirmwareModel
      */
     static public function storeFromRequest(Request $request, int $id)
     {
+        // Validation  ----------------------
+        $rules = [
+            'comm' => 'required|string|unique:core_scripts,comm,'.($id > 0 ? $id : ''),
+        ];
+        
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        
+        // Saving -----------------------
         try {
             $item = Script::find($id);
             if (!$item) {
@@ -68,9 +79,9 @@ class Script extends AffectsFirmwareModel
             $item->save();
             return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     

@@ -61,6 +61,7 @@ return [
     'host_ID' => 'ID',
     'host_CONTROLLER' => 'Hub',
     'host_ROM' => 'ROM',
+    'host_ADDRESS' => 'ADDRESS',
     'host_TYP' => 'Type',
     'host_CHANNELS' => 'Channels',
     'host_DEVICES' => 'Devices',

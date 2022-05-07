@@ -18,6 +18,9 @@ class CoreProperties extends Migration
             $table->string('name');
             $table->string('comm', 2000);
             $table->string('value', 2000);
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            
+            $table->foreign('user_id')->references('id')->on('web_users')->onDelete('cascade');
         });
     }
 
