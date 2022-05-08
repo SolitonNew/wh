@@ -113,7 +113,7 @@
         $('.body-page-main > div').css('opacity', 1);
     });
     
-    let lastDeviceChangeID = {{ \App\Models\DeviceChangeMem::lastDeviceChangeID() ?? -1 }};
+    let lastDeviceChangeID = {{ \App\Models\EventMem::lastDeviceChangeID() ?? -1 }};
     
     function loadChanges() {
         $.ajax({

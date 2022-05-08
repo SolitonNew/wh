@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\DeviceChangeMem;
+use App\Models\EventMem;
 
 class IndexController extends Controller
 {
@@ -27,7 +27,8 @@ class IndexController extends Controller
      */
     public function variableChanges(int $lastID) 
     {
-        DeviceChangeMem::setLastDeviceChangeID($lastID);
-        return view('admin.log');
+        return view('admin.log', [
+            'logLastID' => $lastID,
+        ]);
     }
 }

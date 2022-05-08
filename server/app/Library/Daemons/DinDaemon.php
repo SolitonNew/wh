@@ -4,7 +4,7 @@ namespace App\Library\Daemons;
 
 use App\Models\Hub;
 use App\Models\Property;
-use App\Models\DeviceChangeMem;
+use App\Models\EventMem;
 use App\Models\OwHost;
 use App\Models\Device;
 use DB;
@@ -99,7 +99,7 @@ class DinDaemon extends BaseDaemon
         if (!$this->initHubs('din')) return ;
         // ------------------------
         
-        $this->_lastSyncDeviceChangesID = DeviceChangeMem::max('id') ?? -1;
+        $this->_lastSyncDeviceChangesID = EventMem::max('id') ?? -1;
         
         try {
             $settings = Property::getDinSettings();
@@ -127,7 +127,7 @@ class DinDaemon extends BaseDaemon
                         $this->_firmwareHex = false;
                         break;
                     default:
-                        $variables = DeviceChangeMem::where('id', '>', $this->_lastSyncDeviceChangesID)
+                        $variables = EventMem::where('id', '>', $this->_lastSyncDeviceChangesID)
                                         ->orderBy('id', 'asc')
                                         ->get();
                         if (count($variables)) {

@@ -3,7 +3,7 @@
 namespace App\Library\Daemons;
 
 use App\Models\Device;
-use App\Models\DeviceChangeMem;
+use App\Models\EventMem;
 use App\Library\Script\PhpExecute;
 use Illuminate\Support\Facades\DB;
 
@@ -27,7 +27,7 @@ trait DeviceManagerTrait
     protected function initDeviceChanges()
     {
         // Get last id of the change log
-        $this->_lastSyncDeviceChangesID = DeviceChangeMem::max('id') ?? -1;
+        $this->_lastSyncDeviceChangesID = EventMem::max('id') ?? -1;
         
         // Get an up-to-date list of all variables
         $this->_devices = Device::orderBy('id')
@@ -43,7 +43,7 @@ trait DeviceManagerTrait
         do {        
             $repeat = false;
             
-            $changes = DeviceChangeMem::where('id', '>', $this->_lastSyncDeviceChangesID)
+            $changes = EventMem::where('id', '>', $this->_lastSyncDeviceChangesID)
                     ->orderBy('id', 'asc')
                     ->get();
             if (count($changes)) {

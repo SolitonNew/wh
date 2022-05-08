@@ -6,9 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Lang;
 use DB;
 
-class DeviceChangeMem extends Model
+class EventMem extends Model
 {
-    protected $table = 'core_device_changes_mem';
+    const PLAN_LIST_CHANGE = 'PLAN_LIST_CHANGE';
+    const HUB_LIST_CHANGE = 'HUB_LIST_CHANGE';
+    const HOST_LIST_CHANGE = 'HOST_LIST_CHANGE';
+    const DEVICE_LIST_CHANGE = 'DEVICE_LIST_CHANGE';
+    const DEVICE_CHANGE_VALUE = 'DEVICE_CHANGE_VALUE';
+    
+    protected $table = 'core_events_mem';
     public $timestamps = false;
     
     /**
@@ -19,56 +25,39 @@ class DeviceChangeMem extends Model
     {
         return $this->belongsTo(Device::class, 'device_id');
     }
-
+    
     /**
-     *
-     * @var type
-     */
-    static private $_lastDeviceChangeID = -1;
-
-    /**
-     *
+     * 
      * @return type
      */
-    static public function lastDeviceChangeID() 
+    static public function lastDeviceChangeID()
     {
-        if (self::$_lastDeviceChangeID == -1) {
-            self::$_lastDeviceChangeID = DeviceChangeMem::max('id') ?? -1;
-        }
-        return self::$_lastDeviceChangeID;
+        return self::max('id');
     }
 
     /**
-     *
-     * @param type $id
-     */
-    static public function setLastDeviceChangeID($id) 
-    {
-        self::$_lastDeviceChangeID = $id;
-    }
-
-    /**
-     *
+     * 
      * @param type $lastID
-     * @param type $count
      * @return type
      */
-    static public function getLastDeviceChanges() 
+    static public function getLastDeviceChanges(int $lastID) 
     {
-        if (self::$_lastDeviceChangeID > 0) {
-            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.device_id,
+        if ($lastID > 0) {
+            $sql = "select m.id, m.change_date, m.value, v.comm, v.app_control, m.device_id,
                            (select p.name from plan_rooms p where p.id = v.room_id) group_name
-                      from core_device_changes_mem m, core_devices v
+                      from core_events_mem m, core_devices v
                      where m.device_id = v.id
-                       and m.id > '.self::$_lastDeviceChangeID.'
-                    order by m.id desc';
+                       and m.id > ".$lastID."
+                       and m.typ = 'DEVICE_CHANGE_VALUE'
+                    order by m.id desc";
         } else {
-            $sql = 'select m.id, m.change_date, m.value, v.comm, v.app_control, m.device_id,
+            $sql = "select m.id, m.change_date, m.value, v.comm, v.app_control, m.device_id,
                            (select p.name from plan_rooms p where p.id = v.room_id) group_name
-                      from core_device_changes_mem m, core_devices v
+                      from core_events_mem m, core_devices v
                      where m.device_id = v.id
+                       and m.typ = 'DEVICE_CHANGE_VALUE'
                     order by m.id desc
-                    limit '.config("settings.admin_log_lines_count");
+                    limit ".config("settings.admin_log_lines_count");
         }
         return DB::select($sql);
     }

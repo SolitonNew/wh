@@ -3,7 +3,7 @@
 namespace App\Services\Terminal;
 
 use App\Models\Device;
-use App\Models\DeviceChangeMem;
+use App\Models\EventMem;
 use DB;
 
 class DeviceService 
@@ -54,12 +54,12 @@ class DeviceService
     {
         if ($lastID > 0) {
             $res = DB::select("select c.id, c.device_id, c.value, UNIX_TIMESTAMP(c.change_date) * 1000 change_date ".
-                              "  from core_device_changes_mem c ".
+                              "  from core_events_mem c ".
                               " where c.id > $lastID ".
                               " order by c.id");
             return response()->json($res);
         } else {
-            return 'LAST_ID: '.DeviceChangeMem::lastDeviceChangeID();
+            return 'LAST_ID: '.EventMem::lastDeviceChangeID();
         }
     }
     

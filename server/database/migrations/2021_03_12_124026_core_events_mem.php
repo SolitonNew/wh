@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CoreDeviceChangesMem extends Migration
+class CoreEventsMem extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,16 @@ class CoreDeviceChangesMem extends Migration
      */
     public function up()
     {
-        Schema::create('core_device_changes_mem', function (Blueprint $table) {
+        Schema::create('core_events_mem', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->bigInteger('device_id')->unsigned();
+            $table->bigInteger('device_id')->unsigned()->nullale();
             $table->timestamp('change_date')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            $table->float('value');
+            $table->float('value')->nullable();
             $table->bigInteger('from_id')->nullable();
+            $table->string('typ', 30);
         });
         
-        DB::statement('ALTER TABLE core_device_changes_mem ENGINE = MEMORY');
+        DB::statement('ALTER TABLE core_events_mem ENGINE = MEMORY');
     }
 
     /**
@@ -31,6 +32,6 @@ class CoreDeviceChangesMem extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('core_device_changes_mem');
+        Schema::dropIfExists('core_events_mem');
     }
 }

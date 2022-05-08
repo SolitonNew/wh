@@ -56,9 +56,9 @@ class Kernel extends ConsoleKernel
             }
         })->everyMinute();
         
-        // Clearing "core_device_changes_mem"
+        // Clearing "core_events_mem"
         $schedule->call(function () {
-            DB::delete('delete from core_device_changes_mem
+            DB::delete('delete from core_events_mem
                          where change_date < CURRENT_TIMESTAMP - interval 1 day');
         })->hourly();
         

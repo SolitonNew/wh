@@ -1,4 +1,4 @@
-@foreach(\App\Models\DeviceChangeMem::getLastDeviceChanges() as $row)
+@foreach(\App\Models\EventMem::getLastDeviceChanges($logLastID) as $row)
 <div class="log-row" 
      data-id="{{ $row->id }}" data-varID="{{ $row->device_id }}" 
      data-value="{{ $row->value }}" data-time="{{ \Carbon\Carbon::parse($row->change_date)->timestamp }}">
@@ -9,7 +9,7 @@
         @else
         '{{ $row->comm ?? $row->group_name }}'
         @endif
-        <span class="strong">{{ \App\Models\DeviceChangeMem::decodeLogValue($row->app_control, $row->value) }}</span>
+        <span class="strong">{{ \App\Models\EventMem::decodeLogValue($row->app_control, $row->value) }}</span>
     </div>
 </div>
 @endforeach

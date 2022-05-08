@@ -8,7 +8,7 @@
 
 namespace App\Library\Daemons;
 
-use App\Models\DeviceChangeMem;
+use App\Models\EventMem;
 use App\Models\Device;
 use DB;
 use Illuminate\Support\Facades\Lang;
@@ -47,14 +47,14 @@ class ObserverDaemon extends BaseDaemon
         $this->printLine('');        
         
         // Get last id of the change log
-        $this->_lastSyncDeviceChangesID = DeviceChangeMem::max('id') ?? -1;
+        $this->_lastSyncDeviceChangesID = EventMem::max('id') ?? -1;
         
         // Get an up-to-date list of all variables
         $this->_devices = Device::orderBy('id')
             ->get();
         
         while(1) {
-            $changes = DeviceChangeMem::where('id', '>', $this->_lastSyncDeviceChangesID)
+            $changes = EventMem::where('id', '>', $this->_lastSyncDeviceChangesID)
                 ->orderBy('id', 'asc')
                 ->get();
             if (count($changes)) {

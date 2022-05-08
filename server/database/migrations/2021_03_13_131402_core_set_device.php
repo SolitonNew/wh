@@ -27,14 +27,14 @@ BEGIN
     values
       (VAR_ID, VAR_VALUE, DEV_ID);
 
-    insert into core_device_changes_mem
-      (ID, device_id, VALUE, FROM_ID)
-    values
-      (LAST_INSERT_ID(), VAR_ID, VAR_VALUE, DEV_ID);
-
     update core_devices
        set VALUE = VAR_VALUE
      where ID = VAR_ID;
+     
+    insert into core_events_mem
+      (ID, DEVICE_ID, VALUE, FROM_ID, TYP)
+    values
+      (LAST_INSERT_ID(), VAR_ID, VAR_VALUE, DEV_ID, 'DEVICE_CHANGE_VALUE');
 END
         ");
     }
