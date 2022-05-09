@@ -375,9 +375,9 @@ class DinDaemon extends BaseDaemon
             $this->_transmitCMD($controller->rom, 2, count($this->_devicesLoopChanges));
 
             // Send devace values
-            foreach ($this->_devicesLoopChanges as $variable) {
-                $this->_transmitVAR($controller->rom, $variable->device_id, $variable->value);
-                $vars_out[] = "$variable->device_id: $variable->value";
+            foreach ($this->_devicesLoopChanges as $device) {
+                $this->_transmitVAR($controller->rom, $device->device_id, $device->value);
+                $vars_out[] = "$device->device_id: $device->value";
             }
 
             // Send command "prepare to give your changes"
@@ -389,12 +389,11 @@ class DinDaemon extends BaseDaemon
                 case 5: // Controller request of the initialization data
                     $stat = 'INIT';
                     $vars_out = [];
-                    $devicesInit = Device::orderBy('id', 'asc')->get();
-                    $this->_transmitCMD($controller->rom, 6, count($devicesInit));
+                    $this->_transmitCMD($controller->rom, 6, count($this->_devices));
                     $counter = 0;
-                    foreach ($devicesInit as $variable) {
-                        $this->_transmitVAR($controller->rom, $variable->id, $variable->value);
-                        $vars_out[] = "$variable->id: $variable->value";
+                    foreach ($this->_devices as $device) {
+                        $this->_transmitVAR($controller->rom, $device->id, $device->value);
+                        $vars_out[] = "$device->id: $device->value";
                         if ($counter++ > 5) {
                             usleep(75000); // We slow down periodically. The controller on the other end is not powerful.
                             $counter = 0;
