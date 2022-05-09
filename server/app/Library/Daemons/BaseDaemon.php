@@ -134,9 +134,10 @@ class BaseDaemon
      * Must be called in the main daemon loop
      * 
      * @param type $withScripts
+     * @param type $noCheckValue
      * @return boolean
      */
-    protected function checkEvents($withScripts = true)
+    protected function checkEvents($withScripts = true, $noCheckValue = false)
     {
         $changes = EventMem::where('id', '>', $this->_lastEventID)
                     ->orderBy('id', 'asc')
@@ -147,7 +148,7 @@ class BaseDaemon
             if ($change->typ == EventMem::DEVICE_CHANGE_VALUE) {
                 foreach ($this->_devices as $device) {
                     if ($device->id == $change->device_id) {
-                        if ($device->value != $change->value) {
+                        if ($noCheckValue || $device->value != $change->value) {
                             // Store new device value
                             $device->value = $change->value;
                             
