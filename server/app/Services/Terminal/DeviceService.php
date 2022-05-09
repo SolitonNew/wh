@@ -59,7 +59,7 @@ class DeviceService
                               " order by c.id");
             return response()->json($res);
         } else {
-            return 'LAST_ID: '.EventMem::lastDeviceChangeID();
+            return 'LAST_ID: '.(EventMem::lastDeviceChangeID() ?? -1);
         }
     }
     

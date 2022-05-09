@@ -127,7 +127,7 @@
                         return ;
                     } else
                     if (data.substr(0, 9) == 'LAST_ID: ') {
-                        lastDeviceChangeID = data.substr(9);             
+                        lastDeviceChangeID = data.substr(9);
                     }
                 } else {
                     for (let i = 0; i < data.length; i++) {
