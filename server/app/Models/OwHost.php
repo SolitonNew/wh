@@ -159,6 +159,15 @@ class OwHost extends AffectsFirmwareModel
                     ->delete();
             $item = OwHost::find($id);
             $item->delete();
+            
+            // Store event
+            EventMem::addEvent(EventMem::HOST_LIST_CHANGE, [
+                'id' => $item->id,
+                'hubID' => $item->hub_id,
+            ]);
+            // ------------
+            
+            return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [$ex->getMessage()],

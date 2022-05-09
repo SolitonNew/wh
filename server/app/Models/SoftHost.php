@@ -190,6 +190,13 @@ class SoftHost extends AffectsFirmwareModel
             
             $item->save();
             
+            // Store event
+            EventMem::addEvent(EventMem::HOST_LIST_CHANGE, [
+                'id' => $item->id,
+                'hubID' => $item->hub_id,
+            ]);
+            // ------------
+            
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -210,6 +217,13 @@ class SoftHost extends AffectsFirmwareModel
                     ->delete();
             $item = SoftHost::find($id);
             $item->delete();
+            
+            // Store event
+            EventMem::addEvent(EventMem::HOST_LIST_CHANGE, [
+                'id' => $item->id,
+                'hubID' => $item->hub_id,
+            ]);
+            // ------------
             
             return 'OK';
         } catch (\Exception $ex) {

@@ -14,6 +14,7 @@ class EventMem extends Model
     const HOST_LIST_CHANGE = 'HOST_LIST_CHANGE';
     const DEVICE_LIST_CHANGE = 'DEVICE_LIST_CHANGE';
     const DEVICE_CHANGE_VALUE = 'DEVICE_CHANGE_VALUE';
+    const SCRIPT_LIST_CHANGE = 'SCRIPT_LIST_CHANGE';
     
     protected $table = 'core_events_mem';
     public $timestamps = false;
@@ -93,7 +94,7 @@ class EventMem extends Model
         try {
             $rec = new EventMem();
             $rec->typ = $typ;
-            $rec->data = $data;
+            $rec->data = json_encode($data);
             $rec->save();
         } catch (\Exception $ex) {
             Log::error($ex->getMessage());

@@ -175,6 +175,12 @@ class Room extends Model
 
             // Recalc max level
             Room::calcAndStoreMaxLevel();
+            
+            // Store event
+            EventMem::addEvent(EventMem::PLAN_LIST_CHANGE, [
+                'id' => $item->id,
+            ]);
+            // ------------
 
             return 'OK';
         } catch (\Exception $ex) {
@@ -187,6 +193,7 @@ class Room extends Model
     /**
      * 
      * @param int $id
+     * @return string
      */
     static public function deleteById(int $id)
     {
@@ -196,10 +203,18 @@ class Room extends Model
             
             // Recalc max level
             Room::calcAndStoreMaxLevel();
+            
+            // Store event
+            EventMem::addEvent(EventMem::PLAN_LIST_CHANGE, [
+                'id' => $item->id,
+            ]);
+            // ------------
+            
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }        
     }
     
@@ -241,10 +256,12 @@ class Room extends Model
             $new_part->save();
             $new_part->order_num = $new_part->id;
             $new_part->save();
+            
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }        
     }
     
@@ -327,10 +344,12 @@ class Room extends Model
             $bounds->Y = $newY;
             $item->bounds = json_encode($bounds);
             $item->save();
+            
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     
@@ -351,10 +370,12 @@ class Room extends Model
             $bounds->H = $newH;
             $item->bounds = json_encode($bounds);
             $item->save();
+            
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     
@@ -464,10 +485,12 @@ class Room extends Model
             $device->room_id = null;
             $device->position = null;
             $device->save();
+            
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     
@@ -537,10 +560,12 @@ class Room extends Model
                 $part->ports = json_encode($ports);
                 $part->save();
             }
+            
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     

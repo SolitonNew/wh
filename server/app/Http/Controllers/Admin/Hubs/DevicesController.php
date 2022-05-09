@@ -103,9 +103,7 @@ class DevicesController extends Controller
      */
     public function editPost(Request $request, int $hubID, int $id) 
     {
-        $res = Device::storeFromRequest($request, $hubID, $id);
-        
-        return 'OK';
+        return Device::storeFromRequest($request, $hubID, $id);
     }
     
     /**
@@ -116,9 +114,7 @@ class DevicesController extends Controller
      */
     public function delete(int $id) 
     {
-        Device::deleteById($id);
-        
-        return 'OK';
+        return Device::deleteById($id);
     }
     
     /**

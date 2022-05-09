@@ -258,6 +258,14 @@ class Device extends AffectsFirmwareModel
             if (strlen($request->value)) {
                 Device::setValue($item->id, $request->value);
             }
+            
+            // Store event
+            EventMem::addEvent(EventMem::DEVICE_LIST_CHANGE, [
+                'id' => $item->id,
+                'hubID' => $item->hub_id,
+            ]);
+            // ------------
+            
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -276,10 +284,18 @@ class Device extends AffectsFirmwareModel
             $item = Device::find($id);
             if (!$item) abort(404);
             $item->delete();
+            
+            // Store event
+            EventMem::addEvent(EventMem::DEVICE_LIST_CHANGE, [
+                'id' => $item->id,
+                'hubID' => $item->hub_id,
+            ]);
+            // ------------
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     
