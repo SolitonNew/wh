@@ -69,12 +69,12 @@ class RoomService
             $varSteps[] = "{id: ".$row->data->id.", step: ".$row->control->varStep."}";
             
             if ($row->control->typ == 1) {
-                $sql = "select UNIX_TIMESTAMP(v.change_date) * 1000 v_date, v.value ".
-                       "  from core_device_changes_mem v ".
+                $sql = "select UNIX_TIMESTAMP(v.created_at) * 1000 v_date, v.value ".
+                       "  from core_events_mem v ".
                        " where v.device_id = ".$row->data->id.
                        "   and v.value <> 85 ".
-                       "   and v.change_date > (select max(zz.change_date) ".
-                       "                          from core_device_changes_mem zz ".
+                       "   and v.created_at > (select max(zz.created_at) ".
+                       "                          from core_events_mem zz ".
                        "                         where zz.device_id = ".$row->data->id.") - interval 3 hour ".
                        " order by v.id ";
                 

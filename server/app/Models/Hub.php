@@ -114,6 +114,13 @@ class Hub extends AffectsFirmwareModel
             $item->comm = $request->comm;
             $item->save();
             
+            // Store event
+            EventMem::addEvent(EventMem::HUB_LIST_CHANGE, [
+                'id' => $item->id,
+                'typ' => $item->typ,
+            ]);
+            // ------------
+            
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -133,6 +140,14 @@ class Hub extends AffectsFirmwareModel
             if (!$item) abort(404);
 
             $item->delete();
+            // Store event
+            EventMem::addEvent(EventMem::HUB_LIST_CHANGE, [
+                'id' => $item->id,
+                'typ' => $item->typ,
+            ]);
+            // ------------
+            
+            return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [$ex->getMessage()],

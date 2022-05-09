@@ -82,14 +82,7 @@ class HubsController extends Controller
      */
     public function editPost(Request $request, int $id) 
     {
-        $res = Hub::storeFromRequest($request, $id);
-
-        if ($res == 'OK') {
-            // Restart service daemons
-            $this->_service->restartServiceDaemons();
-        }
-
-        return $res;
+        return Hub::storeFromRequest($request, $id);
     }
     
     /**
@@ -100,12 +93,7 @@ class HubsController extends Controller
      */
     public function delete(int $id) 
     {
-        Hub::deleteById($id);
-        
-        // Restart service daemons
-        $this->_service->restartServiceDaemons();
-        
-        return 'OK';
+        return Hub::deleteById($id);
     }
     
     /**

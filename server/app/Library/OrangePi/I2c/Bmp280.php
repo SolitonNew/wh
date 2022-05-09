@@ -154,6 +154,8 @@ class Bmp280 extends I2c
         $var2 = $p * $this->_digs['p8'] / 32768.0;
         $pressure = round(($p + ($var1 + $var2 + $this->_digs['p7']) / 16.0));
         $pressure = round(($pressure / 133.322) * 10) / 10;
+        
+        if ($pressure < 550) return null;
 
         return [
             'TEMP' => $temperature, 

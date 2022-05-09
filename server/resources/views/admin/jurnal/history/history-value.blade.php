@@ -17,10 +17,10 @@
     </div>
     <div class="row">
         <div class="col-sm-4">
-            <div class="form-label">@lang('admin/jurnal.history_CHANGE_DATE')</div>
+            <div class="form-label">@lang('admin/jurnal.history_CREATED_AT')</div>
         </div>
         <div class="col-sm-8">
-            <div class="form-control">{{ parse_datetime($item->change_date)->format('d-m-Y H:i:s') }}</div>
+            <div class="form-control">{{ parse_datetime($item->created_at)->format('d-m-Y H:i:s') }}</div>
             <div class="invalid-feedback"></div>
         </div>
     </div>

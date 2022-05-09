@@ -77,6 +77,13 @@ class Script extends AffectsFirmwareModel
             }
             $item->comm = $request->comm;
             $item->save();
+            
+            // Store event
+            EventMem::addEvent(EventMem::SCRIPT_LIST_CHANGE, [
+                'id' => $item->id,
+            ]);
+            // ------------
+            
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -95,10 +102,18 @@ class Script extends AffectsFirmwareModel
             DeviceEvent::whereScriptId($id)->delete();
             $item = Script::find($id);
             $item->delete();
+            
+            // Store event
+            EventMem::addEvent(EventMem::SCRIPT_LIST_CHANGE, [
+                'id' => $item->id,
+            ]);
+            // ------------
+            
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(result()->json([
+            return response()->json([
                 'errors' => [$ex->getMessage()],
-            ]), 422);
+            ]);
         }
     }
     

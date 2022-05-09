@@ -113,7 +113,7 @@
         $('.body-page-main > div').css('opacity', 1);
     });
     
-    let lastDeviceChangeID = {{ \App\Models\DeviceChangeMem::lastDeviceChangeID() ?? -1 }};
+    let lastDeviceChangeID = {{ \App\Models\EventMem::lastDeviceChangeID() ?? -1 }};
     
     function loadChanges() {
         $.ajax({
@@ -127,14 +127,14 @@
                         return ;
                     } else
                     if (data.substr(0, 9) == 'LAST_ID: ') {
-                        lastDeviceChangeID = data.substr(9);             
+                        lastDeviceChangeID = data.substr(9);
                     }
                 } else {
                     for (let i = 0; i < data.length; i++) {
                         let rec = data[i];
                         let varID = parseInt(rec.device_id);
                         let varValue = parseFloat(rec.value);
-                        let varTime = parseInt(rec.change_date);
+                        let varTime = parseInt(rec.created_at);
                         lastDeviceChangeID = rec.id;
 
                         /* Call Event */

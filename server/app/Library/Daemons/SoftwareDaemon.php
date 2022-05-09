@@ -19,8 +19,6 @@ use Illuminate\Support\Facades\Lang;
  */
 class SoftwareDaemon extends BaseDaemon
 {
-    use DeviceManagerTrait;
-    
     /**
      *
      * @var type 
@@ -42,30 +40,17 @@ class SoftwareDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
-        // Init hubs  -------------
-        if (!$this->initHubs('software')) return ;
-        // ------------------------
-        
-        $this->_initHostProviders();
-        
-        $a = [];
-        foreach ($this->_providers as $provider) {
-            $a[] = $provider->title;
-        }
-        $this->printLine('PROVIDERS USED: ['.implode(', ', $a).']');
-        
-        // Init device changes trait
-        $this->initDeviceChanges();
-        // -------------------------
+        // Base init
+        if (!$this->initialization('software')) return ;
         
         try {
             while (1) {
                 // Software Host Providers Execute
                 $this->_executeHostProviders();
                 
-                // Get changes of the variables
-                $this->checkDeviceChanges();
-                // -----------------------------
+                // Check event log
+                if (!$this->checkEvents()) break;
+                
                 usleep(100000);
             }
         } catch (\Exception $ex) {
@@ -80,7 +65,7 @@ class SoftwareDaemon extends BaseDaemon
     /**
      * 
      */
-    private function _initHostProviders()
+    protected function initializationHosts()
     {
         $ids = $this->_hubs
             ->pluck('id')
@@ -89,9 +74,14 @@ class SoftwareDaemon extends BaseDaemon
         $hosts = SoftHost::whereIn('hub_id', $ids)
             ->get();
         
+        $list = [];
         foreach ($hosts as $host) {
-            $this->_providers[$host->id] = $host->driver();
+            $driver = $host->driver();
+            $this->_providers[$host->id] = $driver;
+            $list[] = $driver->title;
         }
+        
+        $this->printLine('PROVIDERS USED: ['.implode(', ', $list).']');
     }
     
     /**
@@ -147,8 +137,8 @@ class SoftwareDaemon extends BaseDaemon
         }
     }
     
-    protected function _deviceChangeValue($device)
+    protected function deviceChangeValue($device)
     {
-        //
+        
     }
 }

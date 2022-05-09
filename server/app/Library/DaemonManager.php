@@ -118,6 +118,5 @@ class DaemonManager
             }
         }
         return $pids;
-    }
-    
+    }    
 }

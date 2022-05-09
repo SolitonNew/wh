@@ -113,7 +113,7 @@
         </div>
     </div>
     <div id="logList" class="body-content-log">
-    @include('admin.log')
+    @include('admin.log', ['logLastID' => -1])
     </div>
 </div>
 

@@ -116,13 +116,7 @@ class HostsController extends Controller
      */
     public function editSoftPost(Request $request, int $hubID, int $id)
     {
-        $res = SoftHost::storeFromRequest($request, $hubID, $id);
-        
-        if ($res == 'OK') {
-            
-        }
-        
-        return $res;
+        return SoftHost::storeFromRequest($request, $hubID, $id);
     }
     
     /**
@@ -163,13 +157,7 @@ class HostsController extends Controller
      */
     public function editOrangePost(Request $request, int $hubID, int $id)
     {
-        $res = I2cHost::storeFromRequest($request, $hubID, $id);
-        
-        if ($res == 'OK') {
-            
-        }
-        
-        return $res;
+        return I2cHost::storeFromRequest($request, $hubID, $id);
     }
     
     /**
@@ -221,9 +209,7 @@ class HostsController extends Controller
      */
     public function deleteDin(int $hubID, int $id)
     {
-        OwHost::deleteById($id);
-        
-        return 'OK';
+        return OwHost::deleteById($id);
     }
     
     /**

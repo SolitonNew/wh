@@ -17,24 +17,23 @@ class CoreSetDevice extends Migration
         
         DB::unprepared("
 CREATE PROCEDURE `CORE_SET_DEVICE` (
-    IN VAR_ID int,
-    IN VAR_VALUE float,
-    IN DEV_ID int
+    IN DEV_ID int,
+    IN DEV_VALUE float
 )
 BEGIN
-    insert into core_device_changes
-      (device_id, VALUE, FROM_ID)
-    values
-      (VAR_ID, VAR_VALUE, DEV_ID);
-
-    insert into core_device_changes_mem
-      (ID, device_id, VALUE, FROM_ID)
-    values
-      (LAST_INSERT_ID(), VAR_ID, VAR_VALUE, DEV_ID);
-
     update core_devices
-       set VALUE = VAR_VALUE
-     where ID = VAR_ID;
+       set VALUE = DEV_VALUE
+     where ID = DEV_ID;
+
+    insert into core_device_changes
+       (DEVICE_ID, VALUE)
+    values
+       (DEV_ID, DEV_VALUE);
+     
+    insert into core_events_mem
+       (TYP, DEVICE_CHANGES_ID, DEVICE_ID, VALUE)
+    values
+       ('DEVICE_CHANGE_VALUE', LAST_INSERT_ID(), DEV_ID, DEV_VALUE);
 END
         ");
     }
