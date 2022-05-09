@@ -210,6 +210,8 @@ class BaseDaemon
     
     /**
      * Can be overloaded to track device value changes.
+     * 
+     * @param type $device
      */
     protected function deviceChangeValue(&$device)
     {
