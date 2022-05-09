@@ -15,6 +15,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\FirmwareChangedEvent::class => [
             \App\Listeners\FirmwareChangedListener::class,
         ],
+        \App\Events\AddedEventMem::class => [
+            \App\Listeners\AddedEventMemListener::class,
+        ],
     ];
 
     /**

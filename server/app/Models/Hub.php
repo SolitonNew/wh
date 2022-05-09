@@ -117,6 +117,7 @@ class Hub extends AffectsFirmwareModel
             // Store event
             EventMem::addEvent(EventMem::HUB_LIST_CHANGE, [
                 'id' => $item->id,
+                'typ' => $item->typ,
             ]);
             // ------------
             
@@ -142,6 +143,7 @@ class Hub extends AffectsFirmwareModel
             // Store event
             EventMem::addEvent(EventMem::HUB_LIST_CHANGE, [
                 'id' => $item->id,
+                'typ' => $item->typ,
             ]);
             // ------------
             

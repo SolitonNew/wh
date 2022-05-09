@@ -89,15 +89,26 @@ class EventMem extends Model
      * @param string $typ
      * @param string $data
      */
-    static public function addEvent(string $typ, string $data = null)
+    static public function addEvent(string $typ, $data = null)
     {
         try {
-            $rec = new EventMem();
-            $rec->typ = $typ;
-            $rec->data = json_encode($data);
-            $rec->save();
+            $event = new EventMem();
+            $event->typ = $typ;
+            $event->data = json_encode($data);
+            $event->save();
+            
+            event(new \App\Events\AddedEventMem($event));
         } catch (\Exception $ex) {
             Log::error($ex->getMessage());
         }
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getData()
+    {
+        return json_decode($this->data);
     }
 }
