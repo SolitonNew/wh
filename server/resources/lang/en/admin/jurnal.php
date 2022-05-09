@@ -13,7 +13,7 @@ return [
     'history_show' => 'Apply',
     'history_view_title' => 'Record properties',
     'history_ID' => 'ID',
-    'history_CHANGE_DATE' => 'Date/Time',
+    'history_CREATED_AT' => 'Date/Time',
     'history_VALUE' => 'Value',
     'history_value_delete_confirm' => 'Delete this recotrd?',
     

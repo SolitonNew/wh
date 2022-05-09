@@ -15,11 +15,11 @@ class CoreEventsMem extends Migration
     {
         Schema::create('core_events_mem', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->bigInteger('device_id')->unsigned()->nullale();
-            $table->timestamp('change_date')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            $table->float('value')->nullable();
-            $table->bigInteger('from_id')->nullable();
             $table->string('typ', 30);
+            $table->bigInteger('device_id')->unsigned()->nullale();
+            $table->float('value')->nullable();
+            $table->string('data', 255)->nullable();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
         
         DB::statement('ALTER TABLE core_events_mem ENGINE = MEMORY');

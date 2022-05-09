@@ -15,7 +15,7 @@ switch ($page) {
     case 'changes':
         if (isset($_GET['lastID']) && $_GET['lastID'] > -1) {
             $lastID = (int)$_GET['lastID'];
-            $rows = $pdo->query("select c.ID, c.VARIABLE_ID, c.VALUE, UNIX_TIMESTAMP(c.CHANGE_DATE) * 1000 CHANGE_DATE ".
+            $rows = $pdo->query("select c.ID, c.VARIABLE_ID, c.VALUE, UNIX_TIMESTAMP(c.CREATED_AT) * 1000 CREATED_AT ".
                                 "  from core_variable_changes_mem c ".
                                 " where c.ID > $lastID ".
                                 "   and c.VALUE <> 85 ".

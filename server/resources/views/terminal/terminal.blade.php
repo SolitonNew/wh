@@ -134,7 +134,7 @@
                         let rec = data[i];
                         let varID = parseInt(rec.device_id);
                         let varValue = parseFloat(rec.value);
-                        let varTime = parseInt(rec.change_date);
+                        let varTime = parseInt(rec.created_at);
                         lastDeviceChangeID = rec.id;
 
                         /* Call Event */

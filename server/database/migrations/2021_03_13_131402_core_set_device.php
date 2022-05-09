@@ -19,22 +19,21 @@ class CoreSetDevice extends Migration
 CREATE PROCEDURE `CORE_SET_DEVICE` (
     IN VAR_ID int,
     IN VAR_VALUE float,
-    IN DEV_ID int
 )
 BEGIN
     insert into core_device_changes
-      (device_id, VALUE, FROM_ID)
+      (device_id, VALUE)
     values
-      (VAR_ID, VAR_VALUE, DEV_ID);
+      (VAR_ID, VAR_VALUE);
 
     update core_devices
        set VALUE = VAR_VALUE
      where ID = VAR_ID;
      
     insert into core_events_mem
-      (ID, DEVICE_ID, VALUE, FROM_ID, TYP)
+      (ID, TYP, DEVICE_ID, VALUE)
     values
-      (LAST_INSERT_ID(), VAR_ID, VAR_VALUE, DEV_ID, 'DEVICE_CHANGE_VALUE');
+      (LAST_INSERT_ID(), 'DEVICE_CHANGE_VALUE', VAR_ID, VAR_VALUE);
 END
         ");
     }

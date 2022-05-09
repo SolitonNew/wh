@@ -16,13 +16,11 @@ class CoreDeviceChanges extends Migration
         Schema::create('core_device_changes', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
             $table->bigInteger('device_id')->unsigned();
-            $table->timestamp('change_date')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->float('value');
-            $table->integer('from_id')->nullable();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             
             $table->foreign('device_id', 'core_device_changes_fk_devices')->references('id')->on('core_devices')->onDelete('cascade');
-            $table->index('change_date');
-            $table->index('from_id');
+            $table->index('created_at');
         });
     }
 

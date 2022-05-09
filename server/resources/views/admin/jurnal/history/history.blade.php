@@ -49,7 +49,7 @@
                                     <span class="text-primary">({{ count($data) }})</span>    
                                 </span>
                             </th>
-                            <th scope="col" style="width: 180px;"><span>@lang('admin/jurnal.history_CHANGE_DATE')</span></th>
+                            <th scope="col" style="width: 180px;"><span>@lang('admin/jurnal.history_CREATED_AT')</span></th>
                             <th scope="col" style="width: 100px;"><span>@lang('admin/jurnal.history_VALUE')</span></th>
                         </tr>
                     </thead>
@@ -57,7 +57,7 @@
                         @forelse($data as $row)
                         <tr data-id="{{ $row->id }}">
                             <td>{{ $row->id }}</td>
-                            <td>{{ parse_datetime($row->change_date)->format('d-m-Y H:i:s') }}</td>
+                            <td>{{ parse_datetime($row->created_at)->format('d-m-Y H:i:s') }}</td>
                             <td>{{ $row->value }}</td>
                         </tr>
                         @empty
@@ -145,7 +145,7 @@
                 datasets: [{
                     data: [
                     @foreach($data as $row)
-                    {x: '{{ parse_datetime($row->change_date) }}', y: {{ $row->value }} },
+                    {x: '{{ parse_datetime($row->created_at) }}', y: {{ $row->value }} },
                     @endforeach
                     ],
                     lineTension: 0,

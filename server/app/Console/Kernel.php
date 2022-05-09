@@ -58,8 +58,8 @@ class Kernel extends ConsoleKernel
         
         // Clearing "core_events_mem"
         $schedule->call(function () {
-            DB::delete('delete from core_events_mem
-                         where change_date < CURRENT_TIMESTAMP - interval 1 day');
+            DB::delete('delete from core_events_mem m
+                         where m.created_at < CURRENT_TIMESTAMP - interval 1 day');
         })->hourly();
         
         // Clearing "core_execute"

@@ -143,7 +143,7 @@
                     let rec = values[i];
                     let varID = parseInt(rec.VARIABLE_ID);
                     let varValue = parseFloat(rec.VALUE);
-                    let varTime = parseInt(rec.CHANGE_DATE);
+                    let varTime = parseInt(rec.CREATED_AT);
                     lastVariableID = rec.ID;
                     
                     /* Call Event */
