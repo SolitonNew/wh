@@ -45,7 +45,7 @@ class ObserverDaemon extends BaseDaemon
      * 
      * @param type $device
      */
-    protected function deviceChangeValue(&$device)
+    protected function deviceChangeValue($device)
     {
         
     }

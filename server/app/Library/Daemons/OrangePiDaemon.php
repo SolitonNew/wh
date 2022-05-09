@@ -151,7 +151,7 @@ class OrangePiDaemon extends BaseDaemon
      * 
      * @param type $device
      */
-    protected function deviceChangeValue(&$device)
+    protected function deviceChangeValue($device)
     {
         if (in_array($device->hub_id, $this->_hubIds) && $device->typ == 'orangepi') {
             $this->_setValueGPIO($device->channel, $device->value);

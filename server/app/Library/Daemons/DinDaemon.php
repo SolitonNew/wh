@@ -178,6 +178,15 @@ class DinDaemon extends BaseDaemon
     }
     
     /**
+     * 
+     * @param type $device
+     */
+    protected function deviceChangeValue($device)
+    {
+        $this->_devicesLoopChanges[] = $device;
+    }
+    
+    /**
      * Controller reboot processing command.
      * 
      * @param type $conrollerROM
@@ -463,15 +472,6 @@ class DinDaemon extends BaseDaemon
                 $this->printLine('FIRMWARE ERROR');
             }
         }
-    }
-    
-    /**
-     * 
-     * @param type $device
-     */
-    protected function deviceChangeValue(&$device)
-    {
-        $this->_devicesLoopChanges[] = $device;
     }
     
     /**

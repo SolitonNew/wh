@@ -213,7 +213,7 @@ class BaseDaemon
      * 
      * @param type $device
      */
-    protected function deviceChangeValue(&$device)
+    protected function deviceChangeValue($device)
     {
         // For inheriting
     }
