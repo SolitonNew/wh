@@ -8,9 +8,7 @@
 
 namespace App\Library\Daemons;
 
-use App\Models\EventMem;
-use App\Models\Device;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 
 /**
@@ -20,18 +18,6 @@ use Illuminate\Support\Facades\Lang;
  */
 class ObserverDaemon extends BaseDaemon
 {   
-    /**
-     *
-     * @var type 
-     */
-    private $_lastSyncDeviceChangesID = -1;
-    
-    /**
-     *
-     * @var type 
-     */
-    private $_devices = [];
-    
     /**
      * 
      */
@@ -44,24 +30,12 @@ class ObserverDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/daemons/observer-daemon.description'));
         $this->printLine(str_repeat('-', 100));
-        $this->printLine('');        
+        $this->printLine('');
         
-        // Get last id of the change log
-        $this->_lastSyncDeviceChangesID = EventMem::max('id') ?? -1;
-        
-        // Get an up-to-date list of all variables
-        $this->_devices = Device::orderBy('id')
-            ->get();
-        
-        while(1) {
-            $changes = EventMem::where('id', '>', $this->_lastSyncDeviceChangesID)
-                ->orderBy('id', 'asc')
-                ->get();
-            if (count($changes)) {
-                $this->_lastSyncDeviceChangesID = $changes[count($changes) - 1]->id;
+        $this->initialization();
                 
-                $this->_syncVariables($changes);
-            }
+        while(1) {
+            if (!$this->checkEvents()) break;
             
             usleep(100000);
         }
@@ -69,19 +43,10 @@ class ObserverDaemon extends BaseDaemon
     
     /**
      * 
-     * @param type $changes
+     * @param type $device
      */
-    private function _syncVariables(&$changes)
+    protected function deviceChangeValue(&$device)
     {
-        foreach ($changes as $change) {
-            foreach ($this->_devices as $device) {
-                if ($device->id == $change->device_id) {
-                    if ($device->value != $change->value) {
-                        //
-                    }
-                    break;
-                }
-            }
-        }
+        
     }
 }

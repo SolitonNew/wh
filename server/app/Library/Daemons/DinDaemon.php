@@ -2,7 +2,6 @@
 
 namespace App\Library\Daemons;
 
-use App\Models\Hub;
 use App\Models\Property;
 use App\Models\EventMem;
 use App\Models\OwHost;
@@ -58,12 +57,6 @@ class DinDaemon extends BaseDaemon
      *
      * @var type 
      */
-    private $_lastSyncDeviceChangesID = -1;
-    
-    /**
-     *
-     * @var type 
-     */
     private $_firmwareHex = [];
     
     /**
@@ -71,6 +64,12 @@ class DinDaemon extends BaseDaemon
      * @var type 
      */
     private $_firmwareSpmPageSize = 0;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $_devicesLoopChanges = [];
     
     /**
      * 
@@ -95,11 +94,7 @@ class DinDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
-        // Init hubs  -------------
-        if (!$this->initHubs('din')) return ;
-        // ------------------------
-        
-        $this->_lastSyncDeviceChangesID = EventMem::max('id') ?? -1;
+        if (!$this->initialization('din')) return ;
         
         try {
             $settings = Property::getDinSettings();
@@ -114,7 +109,7 @@ class DinDaemon extends BaseDaemon
                 
                 // Performing the initial preparation of the iteration
                 // It is the same for all controllers.
-                $variables = [];
+                $this->_devicesLoopChanges = [];
                 switch ($command) {
                     case 'RESET':
                         Property::setDinCommandInfo('', true);
@@ -127,12 +122,7 @@ class DinDaemon extends BaseDaemon
                         $this->_firmwareHex = false;
                         break;
                     default:
-                        $variables = EventMem::where('id', '>', $this->_lastSyncDeviceChangesID)
-                                        ->orderBy('id', 'asc')
-                                        ->get();
-                        if (count($variables)) {
-                            $this->_lastSyncDeviceChangesID = $variables[count($variables) - 1]->id;
-                        }
+                        if (!$this->checkEvents(false)) return;
                 }
                                 
                 foreach($this->_hubs as $controller) {
@@ -149,7 +139,7 @@ class DinDaemon extends BaseDaemon
                             }
                             break;
                         default:
-                            $this->_syncVariables($controller, $variables);
+                            $this->_syncVariables($controller);
                     }
                 }
                 
@@ -375,17 +365,17 @@ class DinDaemon extends BaseDaemon
      * 
      * @param type $conrollerROM
      */
-    private function _syncVariables($controller, &$variables) 
+    private function _syncVariables($controller) 
     {
         $stat = 'OK';        
         $vars_out = [];
         $errorText = '';
         try {
             // Send command "prepare to receive"
-            $this->_transmitCMD($controller->rom, 2, count($variables));
+            $this->_transmitCMD($controller->rom, 2, count($this->_devicesLoopChanges));
 
             // Send devace values
-            foreach ($variables as $variable) {
+            foreach ($this->_devicesLoopChanges as $variable) {
                 $this->_transmitVAR($controller->rom, $variable->device_id, $variable->value);
                 $vars_out[] = "$variable->device_id: $variable->value";
             }
@@ -399,10 +389,10 @@ class DinDaemon extends BaseDaemon
                 case 5: // Controller request of the initialization data
                     $stat = 'INIT';
                     $vars_out = [];
-                    $variablesInit = Device::orderBy('id', 'asc')->get();
-                    $this->_transmitCMD($controller->rom, 6, count($variablesInit));
+                    $devicesInit = Device::orderBy('id', 'asc')->get();
+                    $this->_transmitCMD($controller->rom, 6, count($devicesInit));
                     $counter = 0;
-                    foreach ($variablesInit as $variable) {
+                    foreach ($devicesInit as $variable) {
                         $this->_transmitVAR($controller->rom, $variable->id, $variable->value);
                         $vars_out[] = "$variable->id: $variable->value";
                         if ($counter++ > 5) {
@@ -474,6 +464,15 @@ class DinDaemon extends BaseDaemon
                 $this->printLine('FIRMWARE ERROR');
             }
         }
+    }
+    
+    /**
+     * 
+     * @param type $device
+     */
+    protected function deviceChangeValue(&$device)
+    {
+        $this->_devicesLoopChanges[] = $device;
     }
     
     /**

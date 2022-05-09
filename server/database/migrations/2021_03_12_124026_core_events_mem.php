@@ -16,6 +16,7 @@ class CoreEventsMem extends Migration
         Schema::create('core_events_mem', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
             $table->string('typ', 30);
+            $table->bigInteger('device_changes_id')->unsigned()->nullable();
             $table->bigInteger('device_id')->unsigned()->nullable();
             $table->float('value')->nullable();
             $table->string('data', 255)->nullable();

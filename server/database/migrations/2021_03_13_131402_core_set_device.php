@@ -22,18 +22,18 @@ CREATE PROCEDURE `CORE_SET_DEVICE` (
 )
 BEGIN
     insert into core_device_changes
-      (device_id, VALUE)
+       (DEVICE_ID, VALUE)
     values
-      (DEV_ID, DEV_VALUE);
-
+       (DEV_ID, DEV_VALUE);
+      
     update core_devices
        set VALUE = DEV_VALUE
      where ID = DEV_ID;
      
     insert into core_events_mem
-      (ID, TYP, DEVICE_ID, VALUE)
+       (TYP, DEVICE_CHANGES_ID, DEVICE_ID, VALUE)
     values
-      (LAST_INSERT_ID(), 'DEVICE_CHANGE_VALUE', DEV_ID, DEV_VALUE);
+       ('DEVICE_CHANGE_VALUE', LAST_INSERT_ID(), DEV_ID, DEV_VALUE);
 END
         ");
     }

@@ -21,8 +21,6 @@ use \Cron\CronExpression;
  */
 class OrangePiDaemon extends BaseDaemon
 {
-    use DeviceManagerTrait;
-    
     private $_prevExecuteHostI2cTime = false;
     private $_i2cHosts = [];
     private $_i2cDrivers = [];
@@ -38,29 +36,16 @@ class OrangePiDaemon extends BaseDaemon
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
-        // Init hubs  -------------
-        if (!$this->initHubs('orangepi')) return ;
-        // ------------------------
+        if (!$this->initialization('orangepi')) return ;
         
         // Init GPIO pins
         $this->_initGPIO();
         // ------------------------
         
-        // Init I2C hosts
-        $this->_initI2cHosts();
-        // ------------------------
-        
-        // Init device changes trait
-        $this->initDeviceChanges();
-        // -------------------------
-        
         $lastMinute = \Carbon\Carbon::now()->startOfMinute();
-        
         try {
             while (1) {
-                // Get changes of the variables
-                $this->checkDeviceChanges();
-                // -----------------------------
+                if (!$this->checkEvents()) break;
                 
                 // I2c hosts
                 $this->_processingI2cHosts();
@@ -87,40 +72,44 @@ class OrangePiDaemon extends BaseDaemon
     /**
      * 
      */
+    protected function initializationHosts()
+    {
+        $this->_i2cDrivers = config('orangepi.drivers');
+        
+        $this->_i2cHosts = I2cHost::whereIn('hub_id', $this->_hubIds)
+            ->get();
+    }
+    
+    /**
+     * 
+     */
     private function _initGPIO()
     {
         $channels = config('orangepi.channels');
         
-        $hubIds = $this->_hubs
-            ->pluck('id')
-            ->toArray();
-        
-        $devices = Device::whereIn('hub_id', $hubIds)
-            ->whereTyp('orangepi')
-            ->get();
-        
         foreach ($channels as $chan => $num) {
-            if ($num == -1) continue;
-            try {
-                $res = [];
-                
-                foreach ($devices as $device) {
-                    if ($device->channel == $chan) {
-                        if ($device->value) {
-                            exec('gpioset 0 '.$num.'=1 2>&1', $res);
-                        } else {
-                            exec('gpioset 0 '.$num.'=0 2>&1', $res);
+            if ($num > -1) {
+                try {
+                    $res = [];
+
+                    foreach ($this->_devices as $device) {
+                        if (in_array($device->hub_id, $this->_hubIds) && $device->channel == $chan) {
+                            if ($device->value) {
+                                exec('gpioset 0 '.$num.'=1 2>&1', $res);
+                            } else {
+                                exec('gpioset 0 '.$num.'=0 2>&1', $res);
+                            }
+                            break;
                         }
-                        break;
                     }
+
+                    if (count($res)) {
+                        throw new \Exception(implode('; ', $res));
+                    }
+                    $this->printLine('GPIO ['.$chan.'] ENABLED');
+                } catch (\Exception $ex) {
+                    $this->printLine('GPIO ['.$chan.'] ERROR: '.$ex->getMessage());
                 }
-                
-                if (count($res)) {
-                    throw new \Exception(implode('; ', $res));
-                }
-                $this->printLine('GPIO ['.$chan.'] ENABLED');
-            } catch (\Exception $ex) {
-                $this->printLine('GPIO ['.$chan.'] ERROR: '.$ex->getMessage());
             }
         }
         
@@ -162,9 +151,9 @@ class OrangePiDaemon extends BaseDaemon
      * 
      * @param type $device
      */
-    protected function _deviceChangeValue($device)
+    protected function deviceChangeValue(&$device)
     {
-        if ($device->typ == 'orangepi') {
+        if (in_array($device->hub_id, $this->_hubIds) && $device->typ == 'orangepi') {
             $this->_setValueGPIO($device->channel, $device->value);
         }
     }
@@ -197,21 +186,6 @@ class OrangePiDaemon extends BaseDaemon
             $s .= $ex->getMessage();
             $this->printLine($s); 
         }
-    }
-    
-    /**
-     * 
-     */
-    private function _initI2cHosts()
-    {
-        $this->_i2cDrivers = config('orangepi.drivers');
-        
-        $hubIds = $this->_hubs
-            ->pluck('id')
-            ->toArray();
-        
-        $this->_i2cHosts = I2cHost::whereIn('hub_id', $hubIds)
-            ->get();
     }
     
     /**
