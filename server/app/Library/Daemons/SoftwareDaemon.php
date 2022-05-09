@@ -137,8 +137,8 @@ class SoftwareDaemon extends BaseDaemon
         }
     }
     
-    protected function _deviceChangeValue($device)
+    protected function deviceChangeValue($device)
     {
-        //
+        
     }
 }
