@@ -21,14 +21,14 @@ CREATE PROCEDURE `CORE_SET_DEVICE` (
     IN DEV_VALUE float
 )
 BEGIN
+    update core_devices
+       set VALUE = DEV_VALUE
+     where ID = DEV_ID;
+
     insert into core_device_changes
        (DEVICE_ID, VALUE)
     values
        (DEV_ID, DEV_VALUE);
-      
-    update core_devices
-       set VALUE = DEV_VALUE
-     where ID = DEV_ID;
      
     insert into core_events_mem
        (TYP, DEVICE_CHANGES_ID, DEVICE_ID, VALUE)
