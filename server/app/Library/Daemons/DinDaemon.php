@@ -107,9 +107,9 @@ class DinDaemon extends BaseDaemon
                 $loopErrors = false;
                 $command = Property::getDinCommand(true);
                 
+                $this->_devicesLoopChanges = [];
                 // Performing the initial preparation of the iteration
                 // It is the same for all controllers.
-                $this->_devicesLoopChanges = [];
                 switch ($command) {
                     case 'RESET':
                         Property::setDinCommandInfo('', true);
