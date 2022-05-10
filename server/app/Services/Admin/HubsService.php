@@ -5,7 +5,7 @@ namespace App\Services\Admin;
 use App\Models\Hub;
 use App\Models\Device;
 use App\Models\OwHost;
-use App\Models\SoftHost;
+use App\Models\ExtApiHost;
 use App\Models\Property;
 use App\Library\DaemonManager;
 use App\Library\Firmware\Din;
@@ -65,7 +65,7 @@ class HubsService
                     return $key;
                 }
             }
-            return -1;
+            return 0;
         };
         
         if ($hub->typ == 'din') {
@@ -176,9 +176,9 @@ class HubsService
             return ;
         }
         
-        // Generation of devices for software hosts
-        $hosts = SoftHost::whereHubId($hubID)->get();
-        $devs = Device::whereTyp('software')->get();
+        // Generation of devices for extapi hosts
+        $hosts = ExtApiHost::whereHubId($hubID)->get();
+        $devs = Device::whereTyp('extapi')->get();
         
         try {
             foreach($hosts as $host) {
@@ -196,13 +196,13 @@ class HubsService
                         
                         $item = new Device();
                         $item->hub_id = $host->hub_id;
-                        $item->typ = 'software';
-                        $item->name = 'temp for software';
+                        $item->typ = 'extapi';
+                        $item->name = 'temp for extapi';
                         $item->host_id = $host->id;
                         $item->channel = $chan;
                         $item->app_control = $appControl;
                         $item->save(['withoutevents']);
-                        $item->name = 'soft_'.$item->id.'_'.$chan;
+                        $item->name = 'extapi_'.$item->id.'_'.$chan;
                         $item->save();
                     }
                 }
@@ -236,7 +236,7 @@ class HubsService
     {
         $daemons = [
             'din-daemon', 
-            'software-daemon',
+            'extapi-daemon',
             'orangepi-daemon',
         ];
         

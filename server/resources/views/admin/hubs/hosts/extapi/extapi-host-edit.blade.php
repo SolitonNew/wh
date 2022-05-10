@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-<form id="host_edit_form" class="container" method="POST" action="{{ route('admin.hub-softhost-edit', ['hubID' => $item->hub_id, 'id' => $item->id]) }}">
+<form id="host_edit_form" class="container" method="POST" action="{{ route('admin.hub-extapihost-edit', ['hubID' => $item->hub_id, 'id' => $item->id]) }}">
     <button type="submit" style="display: none;"></button>
     @if($item->id > 0)
     <div class="row">
@@ -149,7 +149,7 @@
         confirmYesNo("@lang('admin/hubs.host_delete_confirm')", () => {
             $.ajax({
                 type: 'delete',
-                url: '{{ route("admin.hub-softhost-delete", ["hubID" => $item->hub_id, "id" => $item->id]) }}',
+                url: '{{ route("admin.hub-extapihost-delete", ["hubID" => $item->hub_id, "id" => $item->id]) }}',
                 data: {
                     
                 },

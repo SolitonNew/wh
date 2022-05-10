@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Services\Admin\HubsService;
 use App\Models\Hub;
 use App\Models\Property;
-use Log;
 
 class HubsController extends Controller
 {

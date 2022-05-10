@@ -15,9 +15,9 @@ class Hub extends AffectsFirmwareModel
         'rom',
     ];
     
-    public function softHosts()
+    public function extapiHosts()
     {
-        return $this->hasMany(SoftHost::class);
+        return $this->hasMany(ExtApiHost::class);
     }
     
     public function owHosts()
@@ -42,8 +42,8 @@ class Hub extends AffectsFirmwareModel
     public function hostsCount()
     {
         switch ($this->typ) {
-            case 'software':
-                return $this->softHosts->count();
+            case 'extapi':
+                return $this->extapiHosts->count();
             case 'din':
                 return $this->owHosts->count();
             case 'orangepi':
@@ -160,9 +160,9 @@ class Hub extends AffectsFirmwareModel
      * @var type 
      */
     static public $typs = [
-        'software' => [
+        'extapi' => [
             'variable',
-            'software',
+            'extapi',
         ],
         'orangepi' => [
             'variable',

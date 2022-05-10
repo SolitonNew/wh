@@ -203,7 +203,7 @@
         controller = controller ? controller : -1;
         $.ajax('{{ route("admin.hub-device-host-list", ["hubID" => ""]) }}/' + controller).done((data) => {
             let rom = $('#device_edit_form select[name="typ"]').val();
-            if (rom == 'ow' || rom == 'software' || rom == 'i2c') {
+            if (rom == 'ow' || rom == 'extapi' || rom == 'i2c') {
                 let hostList = $('#device_edit_form select[name="host_id"]');
                 let selValue = hostList.attr('data-value');
                 hostList.html('');
@@ -234,7 +234,7 @@
 
         $.ajax('{{ route("admin.hub-device-host-channel-list", ["typ" => "", "hostID" => ""]) }}/' + typ + '/' + host_id).done((data) => {
             let rom = $('#device_edit_form select[name="typ"]').val();
-            if (((rom == 'ow' || rom == 'software' || rom == 'i2c') && (host_id > 0)) || (rom == 'din') || (rom == 'orangepi')) {
+            if (((rom == 'ow' || rom == 'extapi' || rom == 'i2c') && (host_id > 0)) || (rom == 'din') || (rom == 'orangepi')) {
                 let chanList = $('#device_edit_form select[name="channel"]');
                 let selValue = chanList.attr('data-value');
                 chanList.html('');

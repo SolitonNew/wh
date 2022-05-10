@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CoreSoftHostStorages extends Migration
+class CoreExtapiHostStorages extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CoreSoftHostStorages extends Migration
      */
     public function up()
     {
-        Schema::create('core_soft_host_storages', function (Blueprint $table) {
+        Schema::create('core_extapi_host_storages', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->bigInteger('soft_host_id')->unsigned();
+            $table->bigInteger('extapi_host_id')->unsigned();
             $table->longText('data')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             
-            $table->foreign('soft_host_id')->references('id')->on('core_soft_hosts')->onDelete('cascade');
+            $table->foreign('extapi_host_id')->references('id')->on('core_extapi_hosts')->onDelete('cascade');
         });
     }
 
@@ -30,6 +30,6 @@ class CoreSoftHostStorages extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('core_soft_host_storages');
+        Schema::dropIfExists('core_extapi_host_storages');
     }
 }

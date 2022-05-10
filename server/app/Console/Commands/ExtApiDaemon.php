@@ -11,25 +11,25 @@ namespace App\Console\Commands;
 use \Illuminate\Console\Command;
 
 /**
- * Description of SoftwareCommand
+ * Description of ExtApiCommand
  *
  * @author soliton
  */
-class SoftwareDaemon extends Command
+class ExtApiDaemon extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'software-daemon';
+    protected $signature = 'extapi-daemon';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Processing software hubs';
+    protected $description = 'Processing External Api Hubs';
 
     /**
      * Create a new command instance.
@@ -48,7 +48,7 @@ class SoftwareDaemon extends Command
      */
     public function handle()
     {
-        $demon = new \App\Library\Daemons\SoftwareDaemon($this->signature);
+        $demon = new \App\Library\Daemons\ExtApiDaemon($this->signature);
         $demon->execute();
     }
 }

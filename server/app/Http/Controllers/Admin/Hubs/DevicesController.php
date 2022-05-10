@@ -10,7 +10,7 @@ use App\Models\Room;
 use App\Models\Hub;
 use App\Models\OwHost;
 use App\Models\I2cHost;
-use App\Models\SoftHost;
+use App\Models\ExtApiHost;
 use App\Models\Property;
 use Illuminate\Support\Facades\Lang;
 
@@ -128,8 +128,8 @@ class DevicesController extends Controller
         $hub = Hub::find($hubID);
         $data = [];
         switch ($hub->typ) {
-            case 'software':
-                foreach ($hub->softHosts as $host) {
+            case 'extapi':
+                foreach ($hub->extapiHosts as $host) {
                     $data[] = (object)[
                         'id' => $host->id,
                         'rom' => $host->type()->title,
@@ -163,7 +163,7 @@ class DevicesController extends Controller
     /**
      * Route for requesting a list of host channels by id.
      * 
-     * @param string $typ [din, ow, software, variable]
+     * @param string $typ [din, ow, extapi, variable]
      * @param int $hostID
      * @return type
      */
@@ -181,8 +181,8 @@ class DevicesController extends Controller
                     $data = $host->channelsOfType();
                 }
                 break;
-            case 'software':
-                $host = SoftHost::find($hostID);
+            case 'extapi':
+                $host = ExtApiHost::find($hostID);
                 if ($host) {
                     $data = $host->channelsOfType();
                 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Library\SoftHostDrivers;
+namespace App\Library\ExtApiHostDrivers;
 
-use App\Models\SoftHostStorage;
+use App\Models\ExtApiHostStorage;
 use App\Models\Device;
 use \Cron\CronExpression;
 use Illuminate\Support\Facades\Lang;
 
-class SoftHostDriverBase
+class ExtApiHostDriverBase
 {
     /**
      *
@@ -55,7 +55,7 @@ class SoftHostDriverBase
         switch ($name) {
             case 'title':
             case 'description':
-                return Lang::get('admin/softhosts/'.$this->name.'.'.$name);
+                return Lang::get('admin/extapihosts/'.$this->name.'.'.$name);
         }
     }
     
@@ -86,7 +86,7 @@ class SoftHostDriverBase
         $result = [];
         foreach ($this->properties as $key => $val) {
             $result[$key] = (object)[
-                'title' => Lang::get('admin/softhosts/'.$this->name.'.'.$key),
+                'title' => Lang::get('admin/extapihosts/'.$this->name.'.'.$key),
                 'size' => $val,
             ];
         }
@@ -110,8 +110,8 @@ class SoftHostDriverBase
      */
     protected function putStorageData($data)
     {
-        SoftHostStorage::create([
-            'soft_host_id' => $this->key, 
+        ExtApiHostStorage::create([
+            'extapi_host_id' => $this->key, 
             'data' => $data,
         ]);
     }
@@ -122,7 +122,7 @@ class SoftHostDriverBase
      */
     protected function getLastStorageData()
     {
-        $row = SoftHostStorage::where('soft_host_id', $this->key)
+        $row = ExtApiHostStorage::where('extapi_host_id', $this->key)
             ->orderBy('created_at', 'desc')
             ->first();
         
@@ -135,7 +135,7 @@ class SoftHostDriverBase
      */
     public function getLastStorageDatetime()
     {
-        return SoftHostStorage::where('soft_host_id', $this->key)->max('created_at');
+        return ExtApiHostStorage::where('extapi_host_id', $this->key)->max('created_at');
     }
     
     /**
@@ -144,7 +144,7 @@ class SoftHostDriverBase
      */
     public function getAssociatedDevices()
     {
-        return Device::whereTyp('software')
+        return Device::whereTyp('extapi')
             ->whereHostId($this->key)
             ->get();
     }

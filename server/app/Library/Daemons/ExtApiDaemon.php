@@ -8,16 +8,16 @@
 
 namespace App\Library\Daemons;
 
-use App\Models\SoftHost;
+use App\Models\ExtApiHost;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Description of SoftwareDaemon
+ * Description of ExtApiDaemon
  *
  * @author soliton
  */
-class SoftwareDaemon extends BaseDaemon
+class ExtApiDaemon extends BaseDaemon
 {
     /**
      *
@@ -36,16 +36,16 @@ class SoftwareDaemon extends BaseDaemon
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/daemons/software-daemon.description'));
+        $this->printLine(Lang::get('admin/daemons/extapi-daemon.description'));
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
         
         // Base init
-        if (!$this->initialization('software')) return ;
+        if (!$this->initialization('extapi')) return ;
         
         try {
             while (1) {
-                // Software Host Providers Execute
+                // ExtApi Host Providers Execute
                 $this->_executeHostProviders();
                 
                 // Check event log
@@ -71,7 +71,7 @@ class SoftwareDaemon extends BaseDaemon
             ->pluck('id')
             ->toArray();
         
-        $hosts = SoftHost::whereIn('hub_id', $ids)
+        $hosts = ExtApiHost::whereIn('hub_id', $ids)
             ->get();
         
         $list = [];
