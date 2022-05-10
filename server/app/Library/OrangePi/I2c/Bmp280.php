@@ -159,7 +159,7 @@ class Bmp280 extends I2c
 
         return [
             'TEMP' => $temperature, 
-            'P' => $pressure,
+            'P' => round($pressure),
         ];
     }
 }
