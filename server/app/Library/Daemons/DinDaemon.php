@@ -209,7 +209,7 @@ class DinDaemon extends BaseDaemon
         $this->_transmitCMD($controller->rom, 7, 0);
         $this->_readPacks(500);
         
-        Log::info(print_r($this->_inRooms), true);
+        Log::info(print_r($this->_inRooms, true));
         
         // We got the data. You need to combine them with what is already in 
         // the system and issue a report on the operation.
