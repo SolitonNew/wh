@@ -209,7 +209,7 @@ class ExtApiHost extends AffectsFirmwareModel
      * @param int $id
      */
     static public function deleteById(int $id)
-    {
+    {        
         try {
             Device::whereTyp('extapi')
                     ->whereHostId($id)

@@ -126,7 +126,7 @@ class HostsController extends Controller
      * @param int $id
      * @return string
      */
-    public function deleteSoft(int $hubID, int $id)
+    public function deleteExtApi(int $hubID, int $id)
     {
         return ExtApiHost::deleteById($id);
     }
