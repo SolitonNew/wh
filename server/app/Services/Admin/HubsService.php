@@ -19,8 +19,8 @@ class HubsService
      */
     public function hubsScan()
     {
-        Log::info('START: '.Property::getDinCommandInfo());
         Property::setDinCommand('OW SEARCH');
+        usleep(250000);
         $i = 0;
         while ($i++ < 50) { // 5 sec
             usleep(100000);
@@ -29,10 +29,7 @@ class HubsService
                 $text = substr($text, 0, $t);
                 break;
             }
-        }
-        
-        Log::info('END: '.Property::getDinCommandInfo());
-        
+        }        
         return $text;
     }
     
