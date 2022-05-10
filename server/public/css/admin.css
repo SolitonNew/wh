@@ -867,8 +867,27 @@ select.select-tree option {
     background-color: #001484;
 }
 
+.page-jumbotron {
+    min-width: 50%;
+    margin: 2rem 1rem;
+}
+
+#hideLogMobile {
+    display: none;
+}
 
 @media(max-width: 768px) {
+    .page-jumbotron {
+        margin: 1rem;
+    }
+    
+    .card {
+        margin-left: calc(-1rem + 1px);
+        margin-top: -1rem;
+        margin-right: -1rem;
+        margin-bottom: 2rem!important;
+    }
+    
     #sizeMainMenu {
         display: none;
     }
@@ -948,5 +967,23 @@ select.select-tree option {
     
     #daemonViewer {
         display: none!important;
+    }
+    
+    .show-log #hideLogMobile {
+        display: inline-block;
+        position: fixed;
+        top: 0.5rem;
+        right: 1rem;
+        z-index: 3;
+        border-radius: 1.75rem;
+        padding: 6px 10px;
+    }
+    
+    #logList {
+        position: absolute;
+        height: 100vh;
+        width: 100vw!important;
+        background-color: #ffffff;
+        z-index: 2;
     }
 }

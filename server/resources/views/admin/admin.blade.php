@@ -115,6 +115,9 @@
     <div id="logList" class="body-content-log">
     @include('admin.log', ['logLastID' => -1])
     </div>
+    <a id="hideLogMobile" class="btn btn-dark" href="#" style="margin-right: 0;">
+        <img src="/img/menus/x-2x.png">
+    </a>
 </div>
 
 <div class="modal fade dialog-background" id="dialog_window" tabindex="-1" role="dialog"
@@ -218,17 +221,17 @@
             $('.body-container').addClass('show-log');
             $('.body-content-log')
                 .css({width: '0px', 'min-width': '0px'})
-                .animate({width: '370px', 'min-width': '370px'}, 250, function () {
+                .animate({width: '370px', 'min-width': '370px'}, $(window).width() > 768 ? 250 : 1, function () {
                     $(window).trigger('resize');
                 });
             setCookie('SHOW_LOG', 'true');
             return false;
         });
         
-        $('#hideLog').on('click', function () {
+        $('#hideLog, #hideLogMobile').on('click', function () {
             $('.body-content-log')
                 .css({width: '370px', 'min-width': '370px'})
-                .animate({width: '0px', 'min-width': '0px'}, 250, function () {
+                .animate({width: '0px', 'min-width': '0px'}, $(window).width() > 768 ? 250 : 1, function () {
                     $('.body-container').removeClass('show-log');
                     $(window).trigger('resize');
                 });
@@ -381,7 +384,7 @@
                 ls.slideToggle(250);
                 calcLastVariableID();
                 
-                /*  Вызываем обработчик, если он зарегистрирован на странице  */
+                /*  Call handler if registered  */
                 if (window.variableChangesHandler) {
                     variableChangesHandler(data);
                 }

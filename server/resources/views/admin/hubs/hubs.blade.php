@@ -56,7 +56,7 @@
 </div>
 @else
 <div style="display: flex; flex-direction: column; flex-grow: 1;height: 100%; align-items: center;">
-    <div style="min-width: 50%;margin-top: 2rem;">
+    <div class="page-jumbotron">
         <div class="jumbotron">
             <h5 class="mb-4">@lang('admin/hubs.main_prompt')</h5>
             <a href="javascript:hubAdd()" class="btn btn-primary">@lang('admin/hubs.hub_add')</a>
