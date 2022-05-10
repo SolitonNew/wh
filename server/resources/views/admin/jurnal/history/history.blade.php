@@ -187,8 +187,9 @@
                     
                 },
                 success: function (data) {
-                    alert(data);
-                    window.location.reload();
+                    alert(data, function () {
+                        window.location.reload();
+                    });
                 },
             });
         });
