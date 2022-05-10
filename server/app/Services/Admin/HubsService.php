@@ -9,8 +9,8 @@ use App\Models\ExtApiHost;
 use App\Models\Property;
 use App\Library\DaemonManager;
 use App\Library\Firmware\Din;
-use DB;
-use Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class HubsService 
 {
@@ -24,6 +24,7 @@ class HubsService
         while ($i++ < 50) { // 5 sec
             usleep(100000);
             $text = Property::getDinCommandInfo();
+            Log::info(Property::getDinCommandInfo());
             if ($t = strpos($text, 'END_OW_SCAN')) {
                 $text = substr($text, 0, $t);
                 break;
