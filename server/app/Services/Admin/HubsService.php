@@ -19,17 +19,19 @@ class HubsService
      */
     public function hubsScan()
     {
+        Log::info('START: '.Property::getDinCommandInfo());
         Property::setDinCommand('OW SEARCH');
         $i = 0;
         while ($i++ < 50) { // 5 sec
             usleep(100000);
             $text = Property::getDinCommandInfo();
-            Log::info(Property::getDinCommandInfo());
             if ($t = strpos($text, 'END_OW_SCAN')) {
                 $text = substr($text, 0, $t);
                 break;
             }
         }
+        
+        Log::info('END: '.Property::getDinCommandInfo());
         
         return $text;
     }
