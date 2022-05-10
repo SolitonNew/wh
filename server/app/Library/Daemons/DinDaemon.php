@@ -3,12 +3,11 @@
 namespace App\Library\Daemons;
 
 use App\Models\Property;
-use App\Models\EventMem;
 use App\Models\OwHost;
 use App\Models\Device;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Description of CommandDaemon
@@ -209,6 +208,8 @@ class DinDaemon extends BaseDaemon
         $this->_inRooms = [];
         $this->_transmitCMD($controller->rom, 7, 0);
         $this->_readPacks(500);
+        
+        Log::info(print_r($this->_inRooms), true);
         
         // We got the data. You need to combine them with what is already in 
         // the system and issue a report on the operation.
