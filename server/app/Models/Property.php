@@ -135,7 +135,7 @@ class Property extends Model
         $item = self::whereName('DIN_COMMAND')->first();
         if ($item) {
             $value = $item->value;
-            if ($clear) {
+            if ($clear && $value != '') {
                 $item->value = '';
                 $item->save();
             }
