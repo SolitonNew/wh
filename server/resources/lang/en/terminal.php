@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'menu_admin' => 'ADMIN',
     'menu_home' => 'ROOMS',
     'menu_checked' => 'FAVORITES',
     'menu_checked_edit' => 'SETTINGS',

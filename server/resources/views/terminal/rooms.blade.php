@@ -6,6 +6,9 @@
     <ol class="row breadcrumb">
         <li style="flex-grow: 1;">@lang('terminal.menu_home')</li>
         <li><a href="{{ route('terminal.checked') }}">@lang('terminal.menu_checked')</a></li>
+        @if(Auth::user()->access > 1)
+        <li style="margin: -0.5rem 0px; margin-right: -0.5rem;"><a href="{{ route('admin') }}" class="btn btn-danger" style="margin-left: 1rem;">@lang('terminal.menu_admin')</a></li>
+        @endif
     </ol>
 </nav>
 
