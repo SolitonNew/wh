@@ -213,9 +213,9 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
             board_onewire_search(0);
             onewire_roms_buff_count = 0;
             break;
-		case 24: 
-		    break;
-		case 25: 
+	case 24: 
+            break;
+	case 25: 
             break;
         case 26: 
             break;
