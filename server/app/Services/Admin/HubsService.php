@@ -20,7 +20,7 @@ class HubsService
     public function hubsScan()
     {
         Property::setDinCommand('OW SEARCH');
-        usleep(250000);
+        usleep(500000);
         $i = 0;
         while ($i++ < 50) { // 5 sec
             usleep(100000);
