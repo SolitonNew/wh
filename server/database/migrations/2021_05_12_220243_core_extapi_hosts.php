@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CoreSoftHosts extends Migration
+class CoreExtapiHosts extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CoreSoftHosts extends Migration
      */
     public function up()
     {
-        Schema::create('core_soft_hosts', function (Blueprint $table) {
+        Schema::create('core_extapi_hosts', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
             $table->bigInteger('hub_id')->unsigned();
             $table->string('typ', 20);
@@ -32,6 +32,6 @@ class CoreSoftHosts extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('core_soft_hosts');
+        Schema::dropIfExists('core_extapi_hosts');
     }
 }

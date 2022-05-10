@@ -49,7 +49,7 @@ class AddedEventMemListener
     private function _checkDaemonState($typ)
     {
         $cross = [
-            'software' => 'software-daemon',
+            'extapi' => 'extapi-daemon',
             'orangepi' => 'orangepi-daemon',
             'din' => 'din-daemon',
         ];

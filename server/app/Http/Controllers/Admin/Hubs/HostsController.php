@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Hubs;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\HostsService;
 use Illuminate\Http\Request;
-use App\Models\SoftHost;
+use App\Models\ExtApiHost;
 use App\Models\OwHost;
 use App\Models\I2cHost;
 use App\Models\Property;
@@ -59,11 +59,11 @@ class HostsController extends Controller
         
         
         switch ($this->_service->getHostType($hubID)) {
-            case 'software':
-                return view('admin.hubs.hosts.soft.soft-hosts', [
+            case 'extapi':
+                return view('admin.hubs.hosts.extapi.extapi-hosts', [
                     'hubID' => $hubID,
                     'page' => 'hosts',
-                    'data' => SoftHost::listForIndex($hubID),
+                    'data' => ExtApiHost::listForIndex($hubID),
                 ]);
             case 'orangepi':
                 return view('admin.hubs.hosts.orange.orange-hosts', [
@@ -91,44 +91,44 @@ class HostsController extends Controller
     }
     
     /**
-     * Route to show software host properties.
+     * Route to show extapi host properties.
      * 
      * @param int $hubID
      * @param int $id
      * @return type
      */
-    public function editSoftShow(int $hubID, int $id)
+    public function editExtApiShow(int $hubID, int $id)
     {
-        $item = SoftHost::findOrCreate($hubID, $id);
+        $item = ExtApiHost::findOrCreate($hubID, $id);
         
-        return view('admin.hubs.hosts.soft.soft-host-edit', [
+        return view('admin.hubs.hosts.extapi.extapi-host-edit', [
             'item' => $item,
         ]);
     }
     
     
     /**
-     * Route to create or update software host properties.
+     * Route to create or update extapi host properties.
      * 
      * @param int $hubID
      * @param int $id
      * @return type
      */
-    public function editSoftPost(Request $request, int $hubID, int $id)
+    public function editExtApiPost(Request $request, int $hubID, int $id)
     {
-        return SoftHost::storeFromRequest($request, $hubID, $id);
+        return ExtApiHost::storeFromRequest($request, $hubID, $id);
     }
     
     /**
-     * Route to delete software host by id.
+     * Route to delete extapi host by id.
      * 
      * @param int $hubID
      * @param int $id
      * @return string
      */
-    public function deleteSoft(int $hubID, int $id)
+    public function deleteExtApi(int $hubID, int $id)
     {
-        return SoftHost::deleteById($id);
+        return ExtApiHost::deleteById($id);
     }
     
     /**

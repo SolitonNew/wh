@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Admin\Jurnal;
 
 use App\Http\Controllers\Controller;
 use App\Services\Admin\ForecastService;
-use App\Models\SoftHostStorage;
+use App\Models\ExtApiHostStorage;
 
 /**
  * Description of ForecastController
@@ -43,7 +43,7 @@ class ForecastController extends Controller
      */
     public function clearStorageData()
     {
-        SoftHostStorage::truncate();
+        ExtApiHostStorage::truncate();
         
         return 'OK';
     }

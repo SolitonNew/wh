@@ -122,7 +122,7 @@ class DinDaemon extends BaseDaemon
                         $this->_firmwareHex = false;
                         break;
                     default:
-                        if (!$this->checkEvents(false)) return;
+                        if (!$this->checkEvents(false, true)) return;
                 }
                                 
                 foreach($this->_hubs as $controller) {

@@ -43,10 +43,10 @@ $router->get('/hubs-add-devices-for-all-hosts/{hubID}', ['as' => 'admin.hubs-add
 
 /* Hosts management routes */
 $router->get('/hubs/{hubID}/hosts', ['as' => 'admin.hub-hosts', 'uses' => 'Hubs\HostsController@index']);
-// Software hosts
-$router->get('/hub-softhost-edit/{hubID}/{id}', ['as' => 'admin.hub-softhost-edit', 'uses' => 'Hubs\HostsController@editSoftShow']);
-$router->post('/hub-softhost-edit/{hubID}/{id}', ['as' => 'admin.hub-softhost-edit', 'uses' => 'Hubs\HostsController@editSoftPost']);
-$router->delete('/hub-softhost-delete/{hubID}/{id}', ['as' => 'admin.hub-softhost-delete', 'uses' => 'Hubs\HostsController@deleteSoft']);
+// ExtApi hosts
+$router->get('/hub-extapihost-edit/{hubID}/{id}', ['as' => 'admin.hub-extapihost-edit', 'uses' => 'Hubs\HostsController@editExtApiShow']);
+$router->post('/hub-extapihost-edit/{hubID}/{id}', ['as' => 'admin.hub-extapihost-edit', 'uses' => 'Hubs\HostsController@editExtApiPost']);
+$router->delete('/hub-extapihost-delete/{hubID}/{id}', ['as' => 'admin.hub-extapihost-delete', 'uses' => 'Hubs\HostsController@deleteExtApi']);
 // Orange Pi hosts
 $router->get('/hub-orangehost-edit/{hubID}/{id}', ['as' => 'admin.hub-orangehost-edit', 'uses' => 'Hubs\HostsController@editOrangeShow']);
 $router->post('/hub-orangehost-edit/{hubID}/{id}', ['as' => 'admin.hub-orangehost-edit', 'uses' => 'Hubs\HostsController@editOrangePost']);

@@ -248,7 +248,7 @@ class Device extends AffectsFirmwareModel
             
             $item->hub_id = $request->hub_id;
             $item->typ = $request->typ;
-            $item->host_id = in_array($request->typ, ['ow', 'software', 'i2c']) ? $request->host_id : null;
+            $item->host_id = in_array($request->typ, ['ow', 'extapi', 'i2c']) ? $request->host_id : null;
             $item->name = $request->name;
             $item->comm = $request->comm;
             $item->channel = $request->channel ?? 0;
@@ -332,9 +332,9 @@ class Device extends AffectsFirmwareModel
             return $device->value;
         }
 
-        if ($device->typ != 'software') return 0;
+        if ($device->typ != 'extapi') return 0;
 
-        $host = SoftHost::find($device->host_id);
+        $host = ExtApiHost::find($device->host_id);
         
         if (!$host) return 0;
         
@@ -351,7 +351,7 @@ class Device extends AffectsFirmwareModel
      */
     static public function getForecastSortList()
     {
-        return self::whereTyp('software')
+        return self::whereTyp('extapi')
             ->orderBy('name')
             ->get();
     }

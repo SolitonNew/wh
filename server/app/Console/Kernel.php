@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\SoftwareDaemon::class,
+        Commands\ExtApiDaemon::class,
         Commands\DinDaemon::class,
         Commands\ScheduleDaemon::class,
         Commands\CommandDaemon::class,

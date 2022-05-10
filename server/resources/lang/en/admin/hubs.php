@@ -22,7 +22,7 @@ return [
     'hub_ROM' => 'ROM',
     'hub_COMM' => 'Description',
     'hub_types' => [
-        'software' => 'Software hub',
+        'extapi' => 'External Api hub',
         'orangepi' => 'Orange Pi hub',
         'din' => 'Din hub',
         'onewire' => 'OneWire hub',
@@ -67,7 +67,7 @@ return [
     'host_DEVICES' => 'Devices',
     
     'host_add' => 'Add new host...',
-    'soft_host_add' => 'Add software host...',
+    'extapi_host_add' => 'Add External Api host...',
     'orange_host_add' => 'Add Orange Pi host...',
     'zigbee_host_add' => 'Add Zigbee One host...',
     'host_add_title' => 'New host',

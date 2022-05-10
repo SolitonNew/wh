@@ -4,11 +4,10 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
-use Log;
 
-class SoftHost extends AffectsFirmwareModel
+class ExtApiHost extends AffectsFirmwareModel
 {
-    protected $table = 'core_soft_hosts';
+    protected $table = 'core_extapi_hosts';
     public $timestamps = false;
     
     /**
@@ -27,7 +26,7 @@ class SoftHost extends AffectsFirmwareModel
     public function devices()
     {
         return $this->hasMany(Device::class, 'host_id')
-                    ->whereTyp('software')
+                    ->whereTyp('extapi')
                     ->orderBy('name', 'asc');
     }
     
@@ -40,7 +39,7 @@ class SoftHost extends AffectsFirmwareModel
     public function driver()
     {
         if ($this->_driver === false) {
-            foreach (config('softhosts.drivers') as $class) {
+            foreach (config('extapi.drivers') as $class) {
                 $instance = new $class();
                 if ($instance->name == $this->typ) {
                     $instance->assignKey($this->id);
@@ -113,7 +112,7 @@ class SoftHost extends AffectsFirmwareModel
     public function typeList()
     {
         $result = [];
-        foreach (config('softhosts.drivers') as $class) {
+        foreach (config('extapi.drivers') as $class) {
             $result[] = new $class();
         }
         return $result;
@@ -126,7 +125,7 @@ class SoftHost extends AffectsFirmwareModel
      */
     static public function listForIndex(int $hubID)
     {
-        return SoftHost::whereHubId($hubID)
+        return ExtApiHost::whereHubId($hubID)
             ->orderBy('name', 'asc')
             ->get();
     }
@@ -135,13 +134,13 @@ class SoftHost extends AffectsFirmwareModel
      * 
      * @param int $hubID
      * @param int $id
-     * @return \App\Models\SoftHost
+     * @return \App\Models\ExtApiHost
      */
     static public function findOrCreate(int $hubID, int $id)
     {
-        $item = SoftHost::whereHubId($hubID)->whereId($id)->first();
+        $item = self::whereHubId($hubID)->whereId($id)->first();
         if (!$item) {
-            $item = new SoftHost();
+            $item = new ExtApiHost();
             $item->id = $id;
             $item->hub_id = $hubID;
         }
@@ -172,9 +171,9 @@ class SoftHost extends AffectsFirmwareModel
         try {
             $item = self::find($id);
             if (!$item) {
-                $item = new SoftHost();
+                $item = new ExtApiHost();
                 $item->hub_id = $hubID;
-                $item->name = 'Software Host';
+                $item->name = 'ExtApi Host';
                 $item->typ = $request->typ;
             }
             
@@ -210,12 +209,12 @@ class SoftHost extends AffectsFirmwareModel
      * @param int $id
      */
     static public function deleteById(int $id)
-    {
+    {        
         try {
-            Device::whereTyp('software')
+            Device::whereTyp('extapi')
                     ->whereHostId($id)
                     ->delete();
-            $item = SoftHost::find($id);
+            $item = self::find($id);
             $item->delete();
             
             // Store event

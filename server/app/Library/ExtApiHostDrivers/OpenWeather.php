@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Library\SoftHostDrivers;
+namespace App\Library\ExtApiHostDrivers;
 
 use \Carbon\Carbon;
 use App\Models\Device;
 use App\Models\Property;
-use Log;
 
-class OpenWeather extends SoftHostDriverBase
+class OpenWeather extends ExtApiHostDriverBase
 {
     const URL = 'https://api.openweathermap.org/data/2.5';
     const PRESSURE_K = 1.357; // 1.333

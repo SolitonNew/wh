@@ -38,6 +38,8 @@ void core_init(void) {
  * Handling alarm events on the OW bus
  */
 void core_onewire_alarm_processing(void) {
+    if (ONEWIRE_ROMS_COUNT == 0) return ;
+    
     if (onewire_alarms()) {
         uint8_t* ind = (uint8_t*)&onewire_roms_buff[0];
         for (uint8_t i = 0; i < onewire_roms_buff_count; i++) {

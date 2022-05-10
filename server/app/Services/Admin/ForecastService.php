@@ -4,7 +4,7 @@ namespace App\Services\Admin;
 
 use App\Models\Property;
 use App\Models\Device;
-use App\Models\SoftHost;
+use App\Models\ExtApiHost;
 
 class ForecastService 
 {
@@ -32,7 +32,7 @@ class ForecastService
         }
         
         $devices = Device::whereIn('id', $ids)
-            ->whereTyp('software')
+            ->whereTyp('extapi')
             ->get();
         
         $hostIds = [];
@@ -42,7 +42,7 @@ class ForecastService
             }
         }
         
-        $hosts = SoftHost::whereIn('id', $hostIds)
+        $hosts = ExtApiHost::whereIn('id', $hostIds)
             ->get();
         
         $storages = [];

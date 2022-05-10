@@ -2,7 +2,7 @@
 
 @section('page-down-menu')
 <div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onclick="hostAdd(); return false;">@lang('admin/hubs.soft_host_add')</a>
+<a href="#" class="dropdown-item" onclick="hostAdd(); return false;">@lang('admin/hubs.extapi_host_add')</a>
 @endsection
 
 @section('page-content')
@@ -49,11 +49,11 @@
     });
     
     function hostAdd() {
-        dialog('{{ route("admin.hub-softhost-edit", ["hubID" => $hubID, "id" => -1]) }}');
+        dialog('{{ route("admin.hub-extapihost-edit", ["hubID" => $hubID, "id" => -1]) }}');
     }
     
     function hostEdit(id) {
-        dialog('{{ route("admin.hub-softhost-edit", ["hubID" => $hubID, "id" => ""]) }}/' + id);
+        dialog('{{ route("admin.hub-extapihost-edit", ["hubID" => $hubID, "id" => ""]) }}/' + id);
     }
     
     function deviceEdit(id) {

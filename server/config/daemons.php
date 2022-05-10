@@ -11,7 +11,7 @@ return [
      * List of processes running in the background
      */
     'list' => [
-        'software-daemon',
+        'extapi-daemon',
         'din-daemon',
         'orangepi-daemon',
         'schedule-daemon',
