@@ -44,6 +44,12 @@ class DinDaemon extends BaseDaemon
      *
      * @var type 
      */
+    private $_inServerCommands = [];
+    
+    /**
+     *
+     * @var type 
+     */
     private $_inVariables = [];
     
     /**
@@ -392,6 +398,7 @@ class DinDaemon extends BaseDaemon
             $this->_transmitCMD($controller->rom, 3, 0);
             
             $this->_inVariables = [];
+            $this->_inServerCommands = [];
             // Waiting for a controller's response.
             switch ($this->_readPacks(150)) {
                 case 5: // Controller request of the initialization data
@@ -419,9 +426,16 @@ class DinDaemon extends BaseDaemon
                     $this->_inBuffer = '';
                     throw new \Exception('Controller did not respond');
                 default:
+                    // Confirm loading data
+                    $this->_readPacks(150);
+                    
+                    // Saving variables data
                     foreach ($this->_inVariables as $variable) {
                         Device::setValue($variable->id, $variable->value);
                     }
+                    
+                    // Processing server commands
+                    $this->_processingServerCommands();
             }            
         } catch (\Exception $ex) {
             $stat = 'ERROR';
@@ -470,6 +484,16 @@ class DinDaemon extends BaseDaemon
             } else {
                 $this->printLine('FIRMWARE ERROR');
             }
+        }
+    }
+    
+    /**
+     * 
+     */
+    private function _processingServerCommands()
+    {
+        foreach ($this->_inServerCommands as $val) {
+            Log::info($val);
         }
     }
     
@@ -547,6 +571,24 @@ class DinDaemon extends BaseDaemon
                     $returnCmd = $cmd;
                 } else {
                     $size = 0;
+                }
+                break;
+            case 'INT':
+                if (strlen($this->_inBuffer) < 7) return $result;
+                $size = 7;
+                $crc = 0;
+                for ($i = 0; $i < $size; $i++) {
+                    $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                }
+                if ($crc === 0) {
+                    $returnCmd = 0;
+                    $controller = unpack('C', $this->_inBuffer[3])[1];
+                    $data = unpack('s', $this->_inBuffer[5].$this->_inBuffer[6])[1];
+                    $this->_inServerCommands[] = $data;
+                    $this->_inPackCount--;                    
+                } else {
+                    $size = 0;
+                    Log::info('DIN CRC');
                 }
                 break;
             case 'VAR':

@@ -25,6 +25,9 @@ int variable_values[VARIABLE_COUNT];
 int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
 uint8_t core_variable_changed_count = 0;
 
+int core_server_commands[CORE_SERVER_COMMANDS_SIZE_MAX];
+uint8_t core_server_commands_count = 0;
+
 /**
  * Core initialization
  */

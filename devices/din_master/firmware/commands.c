@@ -56,11 +56,25 @@ void command_info(void) {
 }
 
 void command_play(char args, int id, ...) {
-    
+    core_server_commands[core_server_commands_count++] = 1 | (int)args >> 8;
+    core_server_commands[core_server_commands_count++] = id;
+    va_list a;
+    va_start(a, id);
+    for (uint8_t i = 0; i < args; i++) {
+        core_server_commands[core_server_commands_count++] = va_arg(a, int);
+    }
+    va_end(a);
 }
 
 void command_speech(char args, int id, ...) {
-    
+    core_server_commands[core_server_commands_count++] = 2 | (int)args >> 8;
+    core_server_commands[core_server_commands_count++] = id;
+    va_list a;
+    va_start(a, id);
+    for (uint8_t i = 0; i < args; i++) {
+        core_server_commands[core_server_commands_count++] = va_arg(a, int);
+    }
+    va_end(a);
 }
 
 void command_print_i(int value) {

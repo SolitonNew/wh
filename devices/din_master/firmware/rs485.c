@@ -30,6 +30,9 @@ int core_variable_changed[CORE_VARIABLE_CHANGED_COUNT_MAX];
 uint8_t core_variable_changed_count;
 int variable_values[VARIABLE_COUNT];
 
+int core_server_commands[CORE_SERVER_COMMANDS_SIZE_MAX];
+uint8_t core_server_commands_count;
+
 uint8_t rs485_in_buff_lock = 0;
 
 ISR(USARTRXC_vect) {
@@ -125,6 +128,22 @@ void rs485_transmit_CMD(uint8_t cmd, int tag) {
     rs485_flush();
 }
 
+void rs485_transmit_INT(int data) {
+    rs485_int_pack_t pack;
+    memcpy(pack.sign, "INT", 3);
+    pack.controller_id = controller_id;
+    pack.data = data;
+    uint8_t *ind = (uint8_t*)&pack;
+    uint8_t crc = 0;
+    for (uint8_t i = 0; i < sizeof(pack) - 1; i++) {
+        uint8_t b = *ind++;
+        crc = rs485_crc_table(crc ^ b);
+        rs485_write_byte(b);
+    }
+    rs485_write_byte(crc);
+    rs485_flush();
+}
+
 void rs485_transmit_VAR(int id, int value) {
     rs485_var_pack_t pack;
     memcpy(pack.sign, "VAR", 3);
@@ -182,12 +201,20 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
             if (!controller_initialized) {
                 rs485_transmit_CMD(5, 0);
             } else {
+                // Transmit Variables
                 rs485_transmit_CMD(4, core_variable_changed_count);
                 for (i = 0; i < core_variable_changed_count; i++) {
                     index = devs_get_variable_index(core_variable_changed[i]);
                     rs485_transmit_VAR(core_variable_changed[i], variable_values[index]);
                 }
                 core_variable_changed_count = 0;
+                
+                // Transmit Server Commands
+                rs485_transmit_CMD(4, core_server_commands_count);
+                for (i = 0; i < core_server_commands_count; i++) {
+                    rs485_transmit_INT(core_server_commands[i]);
+                }
+                core_server_commands_count = 0;
             }
             break;
         case 4: // pack transmit count
