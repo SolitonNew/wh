@@ -369,7 +369,7 @@ class DinDaemon extends BaseDaemon
         usleep($PAGE_STORE_PAUSE);
         
         $this->_transmitCMD($controller->rom, 25, count($this->_firmwareHex));
-        $this->_readPacks(500);
+        $this->_readPacks(750);
         
         return ($this->_inPackCount == count($this->_firmwareHex));
     }
