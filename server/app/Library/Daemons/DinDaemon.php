@@ -371,8 +371,6 @@ class DinDaemon extends BaseDaemon
         $this->_transmitCMD($controller->rom, 25, count($this->_firmwareHex));
         $this->_readPacks(500);
         
-        Log::info('FIRMWARE: '.$this->_inPackCount.' '.count($this->_firmwareHex));
-        
         return ($this->_inPackCount == count($this->_firmwareHex));
     }
     
