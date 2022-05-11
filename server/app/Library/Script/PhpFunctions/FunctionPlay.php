@@ -12,9 +12,10 @@ trait FunctionPlay
 {
     /**
      * 
-     * @param type $media
+     * @param type $mediaID
+     * @param type $args
      */
-    public function function_play($media) 
+    public function function_play($mediaID, ...$args) 
     {
         
     }

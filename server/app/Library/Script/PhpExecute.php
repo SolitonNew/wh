@@ -43,7 +43,7 @@ class PhpExecute
      */
     public function __construct($source) 
     {
-        $this->_translator = new Translate($source);
+        $this->_translator = new TranslateDB($source);
     }
     
     /**

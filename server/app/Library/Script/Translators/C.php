@@ -40,10 +40,10 @@ class C implements ITranslator
             2 => 'command_toggle_later',
         ],
         'speech' => [
-            1 => 'command_speech',
+            '+' => 'command_speech',
         ],
         'play' => [
-            1 => 'command_play',
+            '+' => 'command_play',
         ],
         'info' => [
             0 => 'command_info',
@@ -89,10 +89,21 @@ class C implements ITranslator
             }
         }
         
-        for($i = 0; $i < count($parts); $i++) {
+        for ($i = 0; $i < count($parts); $i++) {
             if (is_object($parts[$i])) {
-                if (isset($this->_functions[$parts[$i]->name])) {                    
-                    $parts[$i] = $this->_functions[$parts[$i]->name][$parts[$i]->args];
+                if (isset($this->_functions[$parts[$i]->name])) {
+                    if (isset($this->_functions[$parts[$i]->name]['+'])) {
+                        $args = $parts[$i]->args;
+                        $parts[$i] = $this->_functions[$parts[$i]->name]['+'];
+                        for (; $i < count($parts); $i++) {
+                            if ($parts[$i] == '(') {
+                                $parts[$i] = '('.$args.', ';
+                                break;
+                            }
+                        }
+                    } else {
+                        $parts[$i] = $this->_functions[$parts[$i]->name][$parts[$i]->args];
+                    }
                 } else {
                     $parts[$i] = $parts[$i]->name;
                 }

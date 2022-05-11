@@ -5,6 +5,7 @@
 #include "core.h"
 #include "schedule.h"
 #include <math.h>
+#include <stdarg.h>
 
 float command_get(int index) {
     return core_get_variable_value(index);
@@ -39,7 +40,7 @@ void command_on(int index) {
 }
 
 void command_on_later(int index, int duration) {
-	command_set_later(index, 1, duration);
+    command_set_later(index, 1, duration);
 }
 
 void command_off(int index) {
@@ -47,18 +48,18 @@ void command_off(int index) {
 }
 
 void command_off_later(int index, int duration) {
-	command_set_later(index, 0, duration);
+    command_set_later(index, 0, duration);
 }
 
 void command_info(void) {
     
 }
 
-void command_play(char *file) {
+void command_play(char args, int id, ...) {
     
 }
 
-void command_speech(char *text) {
+void command_speech(char args, int id, ...) {
     
 }
 

@@ -40,10 +40,10 @@ class Php implements ITranslator
             2 => '$this->function_toggle',
         ],
         'speech' => [
-            1 => '$this->function_speech',
+            '+' => '$this->function_speech',
         ],
         'play' => [
-            1 => '$this->function_play',
+            '+' => '$this->function_play',
         ],
         'info' => [
             0 => '$this->function_info',
@@ -71,7 +71,11 @@ class Php implements ITranslator
         for($i = 0; $i < count($parts); $i++) {
             if (is_object($parts[$i])) {
                 if (isset($this->_functions[$parts[$i]->name])) {
-                    $parts[$i] = $this->_functions[$parts[$i]->name][$parts[$i]->args];
+                    if (isset($this->_functions[$parts[$i]->name]['+'])) {
+                        $parts[$i] = $this->_functions[$parts[$i]->name]['+'];
+                    } else {
+                        $parts[$i] = $this->_functions[$parts[$i]->name][$parts[$i]->args];
+                    }
                 } else {
                     $parts[$i] = $parts[$i]->name;
                 }
