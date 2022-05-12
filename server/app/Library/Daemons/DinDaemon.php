@@ -500,6 +500,8 @@ class DinDaemon extends BaseDaemon
      */
     private function _processingInServerCommands()
     {
+        if (count($this->_inServerCommands) == 0) return ;
+        
         try {
             for ($i = 0; $i < count($this->_inServerCommands); $i++) {
                 $w = $this->_inServerCommands[$i++];
@@ -532,6 +534,7 @@ class DinDaemon extends BaseDaemon
                     }
                 }
             }
+            $this->printLine('Server command data. ['.implode(', ', $this->_inServerCommands).']');
         } catch (\Exception $ex) {
             $this->printLine('Bad server command data. ['.implode(', ', $this->_inServerCommands).']');
         }
