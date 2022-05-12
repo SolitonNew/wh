@@ -500,36 +500,40 @@ class DinDaemon extends BaseDaemon
      */
     private function _processingInServerCommands()
     {
-        for ($i = 0; $i < count($this->_inServerCommands); $i++) {
-            $w = $this->_inServerCommands[$i++];
-            $cmd = $w & 0xff;
-            $args = (($w & 0xff00) >> 8) - 1;
-            $id = $this->_inServerCommands[$i++];
-            $params = [];
-            for ($p = 0; $p < $args; $p++) {
-                $params[] = $this->_inServerCommands[$i++];
-            }
-            $string = \App\Models\ScriptString::find($id);
-            if ($string) {
-                $command = '';
-                switch ($cmd) {
-                    case 1:
-                        $command = "play";
-                        break;
-                    case 2:
-                        $command = "speech";
-                        break;
+        try {
+            for ($i = 0; $i < count($this->_inServerCommands); $i++) {
+                $w = $this->_inServerCommands[$i++];
+                $cmd = $w & 0xff;
+                $args = (($w & 0xff00) >> 8) - 1;
+                $id = $this->_inServerCommands[$i++];
+                $params = [];
+                for ($p = 0; $p < $args; $p++) {
+                    $params[] = $this->_inServerCommands[$i++];
                 }
-                if ($command) {
-                    $command .= "('".$string->data."'";
-                    if (count($params)) {
-                        $command .= ', '.implode(', ', $params);
+                $string = \App\Models\ScriptString::find($id);
+                if ($string) {
+                    $command = '';
+                    switch ($cmd) {
+                        case 1:
+                            $command = "play";
+                            break;
+                        case 2:
+                            $command = "speech";
+                            break;
                     }
-                    $command .= ');';
+                    if ($command) {
+                        $command .= "('".$string->data."'";
+                        if (count($params)) {
+                            $command .= ', '.implode(', ', $params);
+                        }
+                        $command .= ');';
 
-                    \App\Models\Execute::command($command);
+                        \App\Models\Execute::command($command);
+                    }
                 }
             }
+        } catch (\Exception $ex) {
+            $this->printLine('Bad server command data. ['.implode(', ', $this->_inServerCommands).']');
         }
     }
     
