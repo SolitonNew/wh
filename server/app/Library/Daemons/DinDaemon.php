@@ -400,7 +400,7 @@ class DinDaemon extends BaseDaemon
             $this->_inVariables = [];
             $this->_inServerCommands = [];
             // Waiting for a controller's response.
-            switch ($this->_readPacks(250)) {
+            switch ($this->_readPacks(350)) {
                 case 5: // Controller request of the initialization data
                     $stat = 'INIT';
                     $vars_out = [];
@@ -414,7 +414,7 @@ class DinDaemon extends BaseDaemon
                             $counter = 0;
                         }
                     }
-                    $this->_readPacks(250);        
+                    $this->_readPacks(350);        
                     break;
                 case 26: // The controller asked for the firmware
                     $stat = 'FIRMWARE QUERY';
@@ -430,7 +430,7 @@ class DinDaemon extends BaseDaemon
                     $this->_processingInVariables();
                     
                     // Confirm loading data for server commands
-                    $this->_readPacks(250);
+                    $this->_readPacks(350);
                     
                     // Processing server commands
                     $this->_processingInServerCommands();
