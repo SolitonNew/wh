@@ -56,7 +56,7 @@ void command_info(void) {
 }
 
 void command_play(char args, int id, ...) {
-    core_server_commands[core_server_commands_count++] = 1 | (int)args >> 8;
+    core_server_commands[core_server_commands_count++] = 1 | (int)args << 8;
     core_server_commands[core_server_commands_count++] = id;
     va_list a;
     va_start(a, id);
@@ -67,7 +67,7 @@ void command_play(char args, int id, ...) {
 }
 
 void command_speech(char args, int id, ...) {
-    core_server_commands[core_server_commands_count++] = 2 | (int)args >> 8;
+    core_server_commands[core_server_commands_count++] = 2 | (int)args << 8;
     core_server_commands[core_server_commands_count++] = id;
     va_list a;
     va_start(a, id);
