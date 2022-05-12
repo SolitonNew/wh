@@ -321,7 +321,7 @@ class DinDaemon extends BaseDaemon
             $this->_firmwareSpmPageSize = $firmware->spmPageSize();
         }
         
-        $PAGE_STORE_PAUSE = 100000;
+        $PAGE_STORE_PAUSE = 150000;
         
         $count = count($this->_hubs);
         $index = 0;
@@ -400,7 +400,7 @@ class DinDaemon extends BaseDaemon
             $this->_inVariables = [];
             $this->_inServerCommands = [];
             // Waiting for a controller's response.
-            switch ($this->_readPacks(150)) {
+            switch ($this->_readPacks(250)) {
                 case 5: // Controller request of the initialization data
                     $stat = 'INIT';
                     $vars_out = [];
@@ -427,15 +427,13 @@ class DinDaemon extends BaseDaemon
                     throw new \Exception('Controller did not respond');
                 default:
                     // Confirm loading data
-                    $this->_readPacks(150);
+                    $this->_readPacks(250);
                     
                     // Saving variables data
-                    foreach ($this->_inVariables as $variable) {
-                        Device::setValue($variable->id, $variable->value);
-                    }
+                    $this->_processingInVariables();
                     
                     // Processing server commands
-                    $this->_processingServerCommands();
+                    $this->_processingInServerCommands();
             }            
         } catch (\Exception $ex) {
             $stat = 'ERROR';
@@ -490,7 +488,17 @@ class DinDaemon extends BaseDaemon
     /**
      * 
      */
-    private function _processingServerCommands()
+    private function _processingInVariables()
+    {
+        foreach ($this->_inVariables as $variable) {
+            Device::setValue($variable->id, $variable->value);
+        }
+    }
+    
+    /**
+     * 
+     */
+    private function _processingInServerCommands()
     {
         foreach ($this->_inServerCommands as $val) {
             Log::info($val);
