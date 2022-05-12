@@ -388,7 +388,7 @@ class DinDaemon extends BaseDaemon
             // Send command "prepare to receive"
             $this->_transmitCMD($controller->rom, 2, count($this->_devicesLoopChanges));
 
-            // Send devace values
+            // Send device values
             foreach ($this->_devicesLoopChanges as $device) {
                 $this->_transmitVAR($controller->rom, $device->id, $device->value);
                 $vars_out[] = "$device->id: $device->value";
@@ -428,6 +428,8 @@ class DinDaemon extends BaseDaemon
                 default:
                     // Saving variables data
                     $this->_processingInVariables();
+                    
+                    $this->_readPacks(250);
                     
                     // Processing server commands
                     $this->_processingInServerCommands();
@@ -562,7 +564,7 @@ class DinDaemon extends BaseDaemon
                         $returnCmd = 0;
                     }
                     
-                    if ($this->_inPackCount <= 0) break; // Не будем ждать таймаут. Мы начитали все что нужно было.
+                    if ($this->_inPackCount <= 0) break; // Let's not wait for the timeout. We read everything we needed.
                 }
             } else {
                 usleep(self::SLEEP_TIME * 1000);
