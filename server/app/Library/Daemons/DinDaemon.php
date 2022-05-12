@@ -534,7 +534,7 @@ class DinDaemon extends BaseDaemon
                     }
                 }
             }
-            $this->printLine('Server command data. ['.implode(', ', $this->_inServerCommands).']');
+            $this->printLine('SERVER COMMAND: ['.implode(', ', $this->_inServerCommands).']');
         } catch (\Exception $ex) {
             $this->printLine('Bad server command data. ['.implode(', ', $this->_inServerCommands).']');
         }
