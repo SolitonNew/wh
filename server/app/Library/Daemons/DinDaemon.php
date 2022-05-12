@@ -502,7 +502,7 @@ class DinDaemon extends BaseDaemon
         if (count($this->_inServerCommands) == 0) return ;
         
         try {
-            for ($i = 0; $i < count($this->_inServerCommands); $i++) {
+            for ($i = 0; $i < count($this->_inServerCommands);) {
                 $w = $this->_inServerCommands[$i++];
                 $cmd = $w & 0xff;
                 $args = (($w & 0xff00) >> 8) - 1;
@@ -532,6 +532,7 @@ class DinDaemon extends BaseDaemon
                         \App\Models\Execute::command($command);
                     }
                 }
+                
             }
             $this->printLine('SERVER COMMAND: ['.implode(', ', $this->_inServerCommands).']');
         } catch (\Exception $ex) {
