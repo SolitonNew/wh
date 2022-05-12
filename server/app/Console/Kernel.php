@@ -64,7 +64,7 @@ class Kernel extends ConsoleKernel
                 
                 DB::delete('delete from core_events_mem m where m.id < '.$maxID);
             }
-        })->hourly();
+        })->everyMinute();
         
         // Clearing "core_execute"
         $schedule->call(function () {
