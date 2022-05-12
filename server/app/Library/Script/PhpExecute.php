@@ -23,7 +23,11 @@ class PhpExecute
         PhpFunctions\FunctionPrint,
         PhpFunctions\FunctionSet,
         PhpFunctions\FunctionSpeech,
-        PhpFunctions\FunctionToggle;
+        PhpFunctions\FunctionToggle,
+        PhpFunctions\FunctionAbs,
+        PhpFunctions\FunctionRound,
+        PhpFunctions\FunctionCeil,
+        PhpFunctions\FunctionFloor;
     
     /**
      *

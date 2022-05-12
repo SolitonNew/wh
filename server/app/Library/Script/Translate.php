@@ -31,10 +31,6 @@ class Translate
         'case',
         'default',
         'for',
-        'abs',
-        'round',
-        'ceil',
-        'floor',
     ];
     
     /**
@@ -100,7 +96,27 @@ class Translate
         'print_s' => [
             'helper' => 'function (text)',
             'args' => [1],
-        ]
+        ],
+        'abs_i' => [
+            'helper' => 'function (int)',
+            'args' => [1],
+        ],
+        'abs_f' => [
+            'helper' => 'function (float)',
+            'args' => [1],
+        ],
+        'round' => [
+            'helper' => 'function (float)',
+            'args' => [1],
+        ],
+        'ceil' => [
+            'helper' => 'function (float)',
+            'args' => [1],
+        ],
+        'floor' => [
+            'helper' => 'function (float)',
+            'args' => [1],
+        ],
     ];
     
     /**

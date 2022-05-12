@@ -6,7 +6,6 @@
 
 
 #include "../commands.h"
-#include <math.h>
 
 @foreach($scriptList as $row)
 void script_{{ $row->id }}(void) {

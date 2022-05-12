@@ -88,3 +88,23 @@ void command_print_f(float value) {
 void command_print_s(char *text) {
 
 }
+
+int command_abs_i(int value) {
+    return (int)abs(value);
+}
+
+float command_abs_f(float value) {
+    return (float)abs(value);
+}
+
+int command_round(float value) {
+    return (int)round(value);
+}
+
+int command_ceil(float value) {
+    return (int)ceil(value);
+}
+
+int command_floor(float value) {
+    return (int)floor(value);
+}

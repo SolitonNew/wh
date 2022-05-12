@@ -9,18 +9,28 @@ class TestController extends Controller
     public function test()
     {
         $data = [
-            17408,
-            17408,
-            16948,
+            514,
+            2,
+            12,
         ];
         
         $w = $data[0];
+        $cmd = $w & 0xff;
+        $args = (($w & 0xff00) >> 8) - 1;
+        $id = $data[1];
+        $params = [];
+        for ($i = 0; $i < $args; $i++) {
+            $params[] = $data[$i + 2];
+        }
         
-        $b1 = $w & 0xff;
-        $b2 = ($w & 0x00ff);
+        $res = [
+            'cmd' => $cmd,
+            'args' => $args,
+            'id' => $id,
+            'params' => $params,
+        ];
         
-        return $b1.' '.$b2;
-        
+        return print_r($res, true);
         
         return 'OK';
     }

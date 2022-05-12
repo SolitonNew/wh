@@ -56,7 +56,22 @@ class Php implements ITranslator
         ],
         'print_s' => [
             1 => '$this->function_print',
-        ]
+        ],
+        'abs_i' => [
+            1 => '$this->function_abs_i',
+        ],
+        'abs_f' => [
+            1 => '$this->function_abs_f',
+        ],
+        'round' => [
+            1 => '$this->function_round',
+        ],
+        'ceil' => [
+            1 => '$this->function_ceil',
+        ],
+        'floor' => [
+            1 => '$this->function_floor',
+        ],
     ];    
     
     /**

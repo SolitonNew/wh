@@ -17,3 +17,8 @@ void command_speech(char args, int id, ...);
 void command_print_i(int value);
 void command_print_f(float value);
 void command_print_s(char *text);
+int command_abs_i(int value);
+float command_abs_f(float value);
+int command_round(float value);
+int command_ceil(float value);
+int command_floor(float value);
