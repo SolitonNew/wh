@@ -6,6 +6,7 @@
 #include "schedule.h"
 #include <math.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 float command_get(int index) {
     return core_get_variable_value(index);
