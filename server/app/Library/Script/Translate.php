@@ -31,6 +31,10 @@ class Translate
         'case',
         'default',
         'for',
+        'abs',
+        'round',
+        'ceil',
+        'floor',
     ];
     
     /**
