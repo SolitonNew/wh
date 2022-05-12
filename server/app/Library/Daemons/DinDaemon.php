@@ -426,11 +426,11 @@ class DinDaemon extends BaseDaemon
                     $this->_inBuffer = '';
                     throw new \Exception('Controller did not respond');
                 default:
-                    // Confirm loading data
-                    $this->_readPacks(250);
-                    
                     // Saving variables data
                     $this->_processingInVariables();
+                    
+                    // Confirm loading data for server commands
+                    $this->_readPacks(250);
                     
                     // Processing server commands
                     $this->_processingInServerCommands();
