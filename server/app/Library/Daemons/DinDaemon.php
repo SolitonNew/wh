@@ -591,7 +591,7 @@ class DinDaemon extends BaseDaemon
                 if ($crc === 0) {
                     $returnCmd = 0;
                     $controller = unpack('C', $this->_inBuffer[3])[1];
-                    $data = unpack('s', $this->_inBuffer[5].$this->_inBuffer[6])[1];
+                    $data = unpack('s', $this->_inBuffer[4].$this->_inBuffer[5])[1];
                     $this->_inServerCommands[] = $data;
                     $this->_inPackCount--;                    
                 } else {
