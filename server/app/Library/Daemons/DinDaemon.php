@@ -523,7 +523,7 @@ class DinDaemon extends BaseDaemon
                 if ($command) {
                     $command .= "('".$string->data."'";
                     if (count($params)) {
-                        $command .= ', '.implode(', '.$params);
+                        $command .= ', '.implode(', ', $params);
                     }
                     $command .');';
 
