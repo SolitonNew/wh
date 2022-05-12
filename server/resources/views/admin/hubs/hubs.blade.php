@@ -76,6 +76,7 @@
     
     @if($hubID)
     function devicesAddAll() {
+        startGlobalWaiter();
         $.ajax({
             url: '{{ route("admin.hubs-add-devices-for-all-hosts", ["hubID" => $hubID]) }}',
             success: function (data) {
