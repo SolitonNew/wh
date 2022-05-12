@@ -500,8 +500,36 @@ class DinDaemon extends BaseDaemon
      */
     private function _processingInServerCommands()
     {
-        foreach ($this->_inServerCommands as $val) {
-            Log::info($val);
+        for ($i = 0; $i < count($this->_inServerCommands); $i++) {
+            $w = $this->_inServerCommands[$i++];
+            $cmd = $w & 0xff;
+            $args = (($w & 0xff00) >> 8) - 1;
+            $id = $this->_inServerCommands[$i++];
+            $params = [];
+            for ($p = 0; $p < $args; $p++) {
+                $params[] = $this->_inServerCommands[$i++];
+            }
+            $string = \App\Models\ScriptString::find($id);
+            if ($string) {
+                $command = '';
+                switch ($cmd) {
+                    case 1:
+                        $command = "play";
+                        break;
+                    case 2:
+                        $command = "speech";
+                        break;
+                }
+                if ($command) {
+                    $command .= "('".$string->data."'";
+                    if (count($params)) {
+                        $command .= ', '.implode(', '.$params);
+                    }
+                    $command .');';
+
+                    \App\Models\Execute::command($command);
+                }
+            }
         }
     }
     
