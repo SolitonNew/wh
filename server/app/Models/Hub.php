@@ -138,6 +138,12 @@ class Hub extends AffectsFirmwareModel
         try {
             $item = Hub::find($id);
             if (!$item) abort(404);
+            
+            // Clear relations
+            ExtApiHost::deleteByHubId($item->id);
+            OwHost::deleteByHubId($item->id);
+            I2cHost::deleteByHubId($item->id);
+            // -------------------------------------
 
             $item->delete();
             // Store event

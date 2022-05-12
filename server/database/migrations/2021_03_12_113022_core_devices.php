@@ -27,7 +27,7 @@ class CoreDevices extends Migration
             $table->bigInteger('room_id')->unsigned()->nullable();
             $table->string('position', 255)->nullable();
             
-            $table->foreign('hub_id')->references('id')->on('core_hubs')->onDelete('cascade');
+            $table->index('hub_id');
             $table->index('host_id');
             $table->index('room_id');
         });
