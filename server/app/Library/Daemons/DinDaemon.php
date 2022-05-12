@@ -525,7 +525,7 @@ class DinDaemon extends BaseDaemon
                     if (count($params)) {
                         $command .= ', '.implode(', ', $params);
                     }
-                    $command .');';
+                    $command .= ');';
 
                     \App\Models\Execute::command($command);
                 }
