@@ -58,8 +58,12 @@ class Kernel extends ConsoleKernel
         
         // Clearing "core_events_mem"
         $schedule->call(function () {
-            DB::delete('delete from core_events_mem m
-                         where m.created_at < CURRENT_TIMESTAMP - interval 1 day');
+            $maxID = DB::select('select max(m.id) mId from core_events_mem m')[0]->mId;
+            if ($maxID) {
+                $maxID -= config('settings.admin_log_lines_count');
+                
+                DB::delete('delete from core_events_mem m where m.id < '.$maxID);
+            }
         })->hourly();
         
         // Clearing "core_execute"
