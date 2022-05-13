@@ -589,11 +589,28 @@ class DinDaemon extends BaseDaemon
         
         start_loop:
         
-        if (strlen($this->_inBuffer) < 8) return $result;
+        if (strlen($this->_inBuffer) < 7) return $result;
         
         $sign = unpack('a*', $this->_inBuffer[0].$this->_inBuffer[1].$this->_inBuffer[2])[1];
         $size = 0;
         switch ($sign) {
+            case 'INT':
+                if (strlen($this->_inBuffer) < 7) return $result;
+                $size = 7;
+                $crc = 0;
+                for ($i = 0; $i < $size; $i++) {
+                    $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                }
+                if ($crc === 0) {
+                    $returnCmd = 0;
+                    $controller = unpack('C', $this->_inBuffer[3])[1];
+                    $data = unpack('s', $this->_inBuffer[4].$this->_inBuffer[5])[1];
+                    $this->_inServerCommands[] = $data;
+                    $this->_inPackCount--;                    
+                } else {
+                    $size = 0;
+                }
+                break;
             case 'CMD':
                 if (strlen($this->_inBuffer) < 8) return $result;
                 $size = 8;
@@ -612,24 +629,6 @@ class DinDaemon extends BaseDaemon
                     $returnCmd = $cmd;
                 } else {
                     $size = 0;
-                }
-                break;
-            case 'INT':
-                if (strlen($this->_inBuffer) < 7) return $result;
-                $size = 7;
-                $crc = 0;
-                for ($i = 0; $i < $size; $i++) {
-                    $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
-                }
-                if ($crc === 0) {
-                    $returnCmd = 0;
-                    $controller = unpack('C', $this->_inBuffer[3])[1];
-                    $data = unpack('s', $this->_inBuffer[4].$this->_inBuffer[5])[1];
-                    $this->_inServerCommands[] = $data;
-                    $this->_inPackCount--;                    
-                } else {
-                    $size = 0;
-                    Log::info('DIN CRC');
                 }
                 break;
             case 'VAR':
@@ -652,7 +651,6 @@ class DinDaemon extends BaseDaemon
                     $this->_inPackCount--;                    
                 } else {
                     $size = 0;
-                    Log::info('DIN CRC');
                 }
                 break;
             case 'ROM':
