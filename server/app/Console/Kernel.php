@@ -72,15 +72,6 @@ class Kernel extends ConsoleKernel
                                        from (select (IFNULL(MAX(id), 0) - 100) maxID 
                                                from core_execute) a)');
         })->dailyAt('4:00');
-        
-        // Clearing "web_queue"
-        $schedule->call(function () {
-            DB::delete('delete from web_queue_mem
-                         where id < (select a.maxID 
-                                       from (select (IFNULL(MAX(id), 0) - 100) maxID 
-                                               from web_queue_mem) a)');
-        })->hourly();
-        
     }
 
     /**

@@ -54,14 +54,14 @@
 </div>
 
 <script>
-    function variableOnChanged(varID, varValue, varTime) {
-        var v = $('#variable_' + varID);
+    function deviceOnChanged(devID, devValue, eventTime) {
+        var v = $('#variable_' + devID);
         switch (v.attr('app_control')) {
             case '1':
-                $('.main-item-value-text', v).text(varValue);
+                $('.main-item-value-text', v).text(devValue);
                 break;
             case '2':
-                v.prop('checked', parseInt(varValue) > 0);
+                v.prop('checked', parseInt(devValue) > 0);
                 break;
         }
     }

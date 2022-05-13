@@ -76,7 +76,7 @@
     }
     
     
-    function variableOnChanged(varID, varValue, varTime) {
+    function deviceOnChanged(devID, devValue, eventTime) {
         
     }
 </script>

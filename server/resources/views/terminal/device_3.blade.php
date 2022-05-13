@@ -54,10 +54,10 @@
         });
     });
     
-    function variableOnChanged(varID, varValue, varTime) {
-        if (varID == deviceID) {
-            $('#varValueText').text(varValue * deviceStep);
-            $('#varValueRange').val(varValue * deviceStep);
+    function deviceOnChanged(devID, devValue, eventTime) {
+        if (devID == deviceID) {
+            $('#varValueText').text(devValue * deviceStep);
+            $('#varValueRange').val(devValue * deviceStep);
         }
     }
 </script>

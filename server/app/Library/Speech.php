@@ -9,7 +9,8 @@
 namespace App\Library;
 
 use App\Models\SpeecheCache;
-use App\Models\WebQueueMem;
+use App\Models\EventMem;
+use Illuminate\Support\Facades\File;
 
 /**
  * Description of Speech
@@ -18,6 +19,10 @@ use App\Models\WebQueueMem;
  */
 class Speech 
 {
+    /**
+     * 
+     * @param type $phrase
+     */
     public function turn($phrase)
     {
         $item = SpeecheCache::wherePhrase($phrase)->first();
@@ -35,9 +40,19 @@ class Speech
         }
         
         // Append an record to the queue
-        WebQueueMem::appendRecord('speech', json_encode([
-            'id' => $item->id, 
+        EventMem::addEvent(EventMem::WEB_SPEECH, [
+            'mediaID' => $item->id, 
             'phrase' => $phrase,
-        ]));
+        ]);
+    }
+    
+    /**
+     * 
+     * @param type $mediaID
+     * @return type
+     */
+    static public function makeMediaFileName($mediaID)
+    {
+        return storage_path('app/speech').'/speech_'.$mediaID.'.wav';
     }
 }
