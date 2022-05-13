@@ -5,7 +5,7 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel; 
 use App\Library\DaemonManager;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -43,7 +43,7 @@ class Kernel extends ConsoleKernel
         
         // Reading "web_logs_mem"
         $schedule->call(function (DaemonManager $daemonManager) {
-            foreach($daemonManager->daemons() as $daemon) {
+            foreach ($daemonManager->daemons() as $daemon) {
                 $rows = DB::select('select id
                                       from web_logs_mem 
                                      where daemon = "'.$daemon.'"
@@ -61,10 +61,9 @@ class Kernel extends ConsoleKernel
             $maxID = DB::select('select max(m.id) mId from core_events_mem m')[0]->mId;
             if ($maxID) {
                 $maxID -= config('settings.admin_log_lines_count');
-                
                 DB::delete('delete from core_events_mem m where m.id < '.$maxID);
             }
-        })->everyMinute();
+        })->everyFiveMinutes();
         
         // Clearing "core_execute"
         $schedule->call(function () {
