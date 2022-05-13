@@ -169,7 +169,7 @@ class HubsController extends Controller
      */
     public function addDevicesForAllHosts(int $hubID)
     {
-        $this->_service->_generateDevsByHub($hubID);
+        $this->_service->generateDevsByHub($hubID);
         
         return 'OK';
     }

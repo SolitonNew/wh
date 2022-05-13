@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Models\Hub;
 use App\Models\Device;
 use App\Models\OwHost;
+use App\Models\I2cHost;
 use App\Models\ExtApiHost;
 use App\Models\Property;
 use App\Library\DaemonManager;
@@ -33,117 +34,105 @@ class HubsService
         return $text;
     }
     
-    
-    public function _generateDevsByHub(int $hubID)
+    /**
+     * 
+     * @param int $hubID
+     */
+    public function generateDevsByHub(int $hubID)
     {
         $hub = Hub::find($hubID);
         
+        switch ($hub->typ) {
+            case 'din':
+                $this->_generateDinDevsByHub($hubID);
+                break;
+            case 'orangepi':
+                $this->_generateOrangePiDevsByHub($hubID);
+                break;
+            case 'extapi':
+                $this->_generateExtApiDevsByHub($hubID);
+                break;
+        }
+    }
+    
+    /**
+     * 
+     * @param type $channel
+     * @return type
+     */
+    private function _decodeChannelTyp($channel)
+    {
         $channelControl = [
-            1 => ['R1', 'R2', 'R3', 'R4'],    // Light
-            2 => ['LEFT', 'RIGHT'],           // Switch
+            1 => ['R1', 'R2', 'R3', 'R4'],      // Light
+            2 => ['LEFT', 'RIGHT'],             // Switch
             //3 => [],                          // Socket
-            4 => ['T', 'TEMP'],               // Termometr
+            4 => ['T', 'TEMP', 'PROC_TEMP'],    // Termometr
             //5 => [],                          // Termostat
             //6 => [],                          // Videcam
-            7 => ['F1', 'F2', 'F3', 'F4'],    // Venting
-            8 => ['P1', 'P2', 'P3', 'P4'],    // Motion sensor
+            7 => ['F1', 'F2', 'F3', 'F4'],      // Venting
+            8 => ['P1', 'P2', 'P3', 'P4'],      // Motion sensor
             //9 => [],                          // Leakage sensor
-            10 => ['H'],                      // Humidity
-            11 => ['CO'],                     // Gas sensor
-            //12 => [],                       // Door sensor
-            13 => ['P'],                       // Atm. pressure
-            14 => ['AMP'],                    // Currency sensor
-            15 => ['G', 'WS'],                // Speed
-            16 => ['WD'],                     // Direction
-            17 => ['V', ''],                  // Distance
-            18 => ['H', 'CC'],                // Percents
-        ];     
+            10 => ['H'],                        // Humidity
+            11 => ['CO'],                       // Gas sensor
+            //12 => [],                         // Door sensor
+            13 => ['P'],                        // Atm. pressure
+            14 => ['AMP'],                      // Currency sensor
+            15 => ['G', 'WS'],                  // Speed
+            16 => ['WD'],                       // Direction
+            17 => ['V', ''],                    // Distance
+            18 => ['H', 'CC'],                  // Percents
+            19 => ['MP'],                       // Height
+        ];
         
-        $decodeChannel = function ($channel) use ($channelControl) {
-            foreach($channelControl as $key => $val) {
-                if (in_array($channel, $val)) {
-                    return $key;
-                }
-            }
-            return 0;
-        };
-        
-        if ($hub->typ == 'din') {
-            // Generation of devices by channel
-            $din_channels = config('din.'.Property::getDinSettings()->mmcu.'.channels');
-            $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "din"');
-            
-            try {
-                foreach($din_channels as $chan) {
-                    $find = false;
-                    foreach($devs as $dev) {
-                        if ($dev->hub_id == $hub->id && $dev->channel == $chan) {
-                            $find = true;
-                            break;
-                        }
-                    }
-                    if (!$find) {
-                        $app_control = 1; // Default Light
-
-                        $item = new Device();
-                        $item->hub_id = $hub->id;
-                        $item->typ = 'din';
-                        $item->name = 'temp for din';
-                        //$item->comm = Lang::get('admin/hubs.app_control.'.$app_control);
-                        $item->host_id = null;
-                        $item->channel = $chan;
-                        $item->app_control = $app_control;
-                        $item->save(['withoutevents']);
-                        $item->name = 'din_'.$item->id.'_'.$chan;
-                        $item->save();
-                    }
-                }
-            } catch (\Exception $ex) {
-                Log::info($ex);
-                return ;
+        foreach($channelControl as $key => $val) {
+            if (in_array($channel, $val)) {
+                return $key;
             }
         }
         
-        if ($hub->typ == 'orangepi') {
-            // Generation of devices by channel
-            $channels = config('orangepi.channels');
-            $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "orangepi"');
-            
-            try {
-                foreach($channels as $chan => $num) {
-                    $find = false;
-                    foreach($devs as $dev) {
-                        if ($dev->hub_id == $hub->id && $dev->channel == $chan) {
-                            $find = true;
-                            break;
-                        }
-                    }
-                    if (!$find) {
-                        $app_control = 1; // Default Light
+        return 0;
+    }
+    
+    /**
+     * 
+     * @param int $hubID
+     * @return type
+     */
+    private function _generateDinDevsByHub(int $hubID)
+    {
+        $din_channels = config('din.'.Property::getDinSettings()->mmcu.'.channels');
+        $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "din"');
 
-                        $item = new Device();
-                        $item->hub_id = $hub->id;
-                        $item->typ = 'orangepi';
-                        $item->name = 'temp for din';
-                        //$item->comm = Lang::get('admin/hubs.app_control.'.$app_control);
-                        $item->host_id = null;
-                        $item->channel = $chan;
-                        $item->app_control = $app_control;
-                        $item->save(['withoutevents']);
-                        $item->name = 'orangepi_'.$item->id.'_'.$chan;
-                        $item->save();
+        try {
+            foreach($din_channels as $chan) {
+                $find = false;
+                foreach($devs as $dev) {
+                    if ($dev->hub_id == $hubID && $dev->channel == $chan) {
+                        $find = true;
+                        break;
                     }
                 }
-            } catch (\Exception $ex) {
-                Log::info($ex);
-                return ;
+                if (!$find) {
+                    $item = new Device();
+                    $item->hub_id = $hubID;
+                    $item->typ = 'din';
+                    $item->name = 'temp for din';
+                    $item->host_id = null;
+                    $item->channel = $chan;
+                    $item->app_control = $this->_decodeChannelTyp($chan);
+                    $item->save(['withoutevents']);
+                    $item->name = 'din_'.$item->id.'_'.$chan;
+                    $item->save();
+                }
             }
+        } catch (\Exception $ex) {
+            Log::info($ex);
+            return ;
         }
         
         // Generation of devices for network hubs
         $hosts = OwHost::whereHubId($hubID)->get();
         $devs = Device::whereTyp('ow')->get();
-        
         try {
             foreach($hosts as $host) {
                 foreach ($host->channelsOfType() as $chan) {
@@ -156,15 +145,13 @@ class HubsService
                     }
 
                     if (!$find) {
-                        $appControl = $decodeChannel($chan);
-                        
                         $item = new Device();
                         $item->hub_id = $host->hub_id;
                         $item->typ = 'ow';
                         $item->name = 'temp for ow';
                         $item->host_id = $host->id;
                         $item->channel = $chan;
-                        $item->app_control = $appControl;
+                        $item->app_control = $this->_decodeChannelTyp($chan);
                         $item->save(['withoutevents']);
                         $item->name = 'ow_'.$item->id.'_'.$chan;
                         $item->save();
@@ -175,8 +162,87 @@ class HubsService
             Log::info($ex);
             return ;
         }
+    }
+    
+    /**
+     * 
+     * @param int $hubID
+     * @return type
+     */
+    private function _generateOrangePiDevsByHub(int $hubID)
+    {
+        $channels = config('orangepi.channels');
+        $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "orangepi"');
+
+        try {
+            foreach($channels as $chan => $num) {
+                $find = false;
+                foreach($devs as $dev) {
+                    if ($dev->hub_id == $hubID && $dev->channel == $chan) {
+                        $find = true;
+                        break;
+                    }
+                }
+                if (!$find) {
+                    $item = new Device();
+                    $item->hub_id = $hubID;
+                    $item->typ = 'orangepi';
+                    $item->name = 'temp for din';
+                    $item->host_id = null;
+                    $item->channel = $chan;
+                    $item->app_control = $this->_decodeChannelTyp($chan);
+                    $item->save(['withoutevents']);
+                    $item->name = 'orangepi_'.$item->id.'_'.$chan;
+                    $item->save();
+                }
+            }
+        } catch (\Exception $ex) {
+            Log::info($ex);
+            return ;
+        }
         
-        // Generation of devices for extapi hosts
+        // Generation of devices for network hubs
+        // Generation of devices for network hubs
+        $hosts = I2cHost::whereHubId($hubID)->get();
+        $devs = Device::whereTyp('i2c')->get();
+        try {
+            foreach($hosts as $host) {
+                foreach ($host->channelsOfType() as $chan) {
+                    $find = false;
+                    foreach($devs as $dev) {
+                        if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
+                            $find = true;
+                            break;
+                        }
+                    }
+
+                    if (!$find) {
+                        $item = new Device();
+                        $item->hub_id = $host->hub_id;
+                        $item->typ = 'i2c';
+                        $item->name = 'temp for i2c';
+                        $item->host_id = $host->id;
+                        $item->channel = $chan;
+                        $item->app_control = $this->_decodeChannelTyp($chan);
+                        $item->save(['withoutevents']);
+                        $item->name = 'i2c_'.$item->id.'_'.$chan;
+                        $item->save();
+                    }
+                }
+            }
+        } catch (\Exception $ex) {
+            Log::info($ex);
+            return ;
+        }
+    }
+    
+    /**
+     * 
+     * @param type $hubID
+     * @return type
+     */
+    private function _generateExtApiDevsByHub($hubID)
+    {
         $hosts = ExtApiHost::whereHubId($hubID)->get();
         $devs = Device::whereTyp('extapi')->get();
         
@@ -192,15 +258,13 @@ class HubsService
                     }
 
                     if (!$find) {
-                        $appControl = $decodeChannel($chan);
-                        
                         $item = new Device();
                         $item->hub_id = $host->hub_id;
                         $item->typ = 'extapi';
                         $item->name = 'temp for extapi';
                         $item->host_id = $host->id;
                         $item->channel = $chan;
-                        $item->app_control = $appControl;
+                        $item->app_control = $this->_decodeChannelTyp($chan);
                         $item->save(['withoutevents']);
                         $item->name = 'extapi_'.$item->id.'_'.$chan;
                         $item->save();
@@ -211,19 +275,17 @@ class HubsService
             Log::info($ex);
             return ;
         }
-        
     }
-    
     
     /**
      * This method creted devices entries on each channel if the channel 
      * does not exists.
      * 
      */
-    public function _generateDevs() 
+    public function generateDevs() 
     {
         foreach (Hub::get() as $hub) {
-            $this->_generateDevsByHub($hub->id);
+            $this->generateDevsByHub($hub->id);
         }
     }
     
