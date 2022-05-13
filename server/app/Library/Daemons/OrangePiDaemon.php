@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\I2cHost;
 use \Cron\CronExpression;
 use App\Models\Property;
-use App\Library\OrangePi\I2c;
+use App\Library\OrangePi\I2c\I2c;
 
 /**
  * Description of OrangePiDaemon
