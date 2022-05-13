@@ -260,11 +260,18 @@ class OrangePiDaemon extends BaseDaemon
         }
     }
     
+    /**
+     * 
+     */
     private function _scanNetworks()
     {
         Property::setOrangePiCommandInfo('', true);
         
         $addresses = I2c::scan();
+        
+        foreach ($addresses as &$addr) {
+            $addr = sprintf("x%'02X", $addr);
+        }
         
         Property::setOrangePiCommandInfo(implode("\n", $addresses));
         Property::setOrangePiCommandInfo('END_SCAN');
