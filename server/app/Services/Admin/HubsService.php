@@ -58,9 +58,10 @@ class HubsService
     /**
      * 
      * @param type $channel
-     * @return type
+     * @param type $default
+     * @return int
      */
-    private function _decodeChannelTyp($channel)
+    private function _decodeChannelTyp($channel, $default = 0)
     {
         $channelControl = [
             1 => ['R1', 'R2', 'R3', 'R4'],      // Light
@@ -90,7 +91,7 @@ class HubsService
             }
         }
         
-        return 0;
+        return $default;
     }
     
     /**
@@ -119,7 +120,7 @@ class HubsService
                     $item->name = 'temp for din';
                     $item->host_id = null;
                     $item->channel = $chan;
-                    $item->app_control = $this->_decodeChannelTyp($chan);
+                    $item->app_control = $this->_decodeChannelTyp($chan, 1);
                     $item->save(['withoutevents']);
                     $item->name = 'din_'.$item->id.'_'.$chan;
                     $item->save();
@@ -190,7 +191,7 @@ class HubsService
                     $item->name = 'temp for din';
                     $item->host_id = null;
                     $item->channel = $chan;
-                    $item->app_control = $this->_decodeChannelTyp($chan);
+                    $item->app_control = $this->_decodeChannelTyp($chan, 1);
                     $item->save(['withoutevents']);
                     $item->name = 'orangepi_'.$item->id.'_'.$chan;
                     $item->save();

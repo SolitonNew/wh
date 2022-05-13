@@ -143,6 +143,10 @@ class Hub extends AffectsFirmwareModel
             ExtApiHost::deleteByHubId($item->id);
             OwHost::deleteByHubId($item->id);
             I2cHost::deleteByHubId($item->id);
+            
+            foreach (Device::whereHubId($item->id)->get() as $device) {
+                Device::deleteById($device->id);
+            }
             // -------------------------------------
 
             $item->delete();

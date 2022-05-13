@@ -8,29 +8,17 @@ class TestController extends Controller
 {
     public function test()
     {
-        $data = [
-            514,
-            2,
-            12,
+        /*\App\Models\ExtApiHost::truncate();
+        \App\Models\OwHost::truncate();
+        \App\Models\I2cHost::truncate(); */
+        
+        $a = [
+            \App\Models\ExtApiHost::count(),
+            \App\Models\OwHost::count(),
+            \App\Models\I2cHost::count(),
         ];
         
-        $w = $data[0];
-        $cmd = $w & 0xff;
-        $args = (($w & 0xff00) >> 8) - 1;
-        $id = $data[1];
-        $params = [];
-        for ($i = 0; $i < $args; $i++) {
-            $params[] = $data[$i + 2];
-        }
-        
-        $res = [
-            'cmd' => $cmd,
-            'args' => $args,
-            'id' => $id,
-            'params' => $params,
-        ];
-        
-        return print_r($res, true);
+        return print_r($a, true);
         
         return 'OK';
     }

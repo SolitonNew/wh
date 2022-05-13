@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class I2cHost extends AffectsFirmwareModel
 {
@@ -212,6 +213,7 @@ class I2cHost extends AffectsFirmwareModel
             
             return 'OK';
         } catch (\Exception $ex) {
+            Log::error($ex->getMessage());
             return response()->json([
                 'errors' => [$ex->getMessage()],
             ]);
@@ -225,10 +227,11 @@ class I2cHost extends AffectsFirmwareModel
     static public function deleteByHubId(int $hubID)
     {
         $result = 'OK';
-        foreach (self::whereHubId($hubID) as $host) {
+        foreach (self::whereHubId($hubID)->get() as $host) {
             if (self::deleteById($host->id) != 'OK') {
                 $result = 'With Errors';
             }
         }
+        return $result;
     }
 }
