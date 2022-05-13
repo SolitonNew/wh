@@ -14,9 +14,27 @@ class I2c
      */
     static public function scan()
     {
-        $output = shell_exec('i2cdetect -y '.self::PORT);
+        $output = shell_exec('i2cdetect -y -a '.self::PORT);
         
-        return [$output];
+        $result = [];
+        $num = 0;
+        $y = 0;
+        foreach(explode("\n", $output) as $line) {
+            if ($y > 0) {
+                $x = 0;
+                foreach (explode(' ', $line) as $cell) {
+                    if ($x > 0) {
+                        if ($cell != '--') {
+                            $result[] = $cell;
+                        }
+                    }
+                    $x++;
+                }
+            }
+            $y++;
+        }
+        
+        return $result;
     }
     
     /**
