@@ -81,7 +81,6 @@
         });
         
         loadEvents();
-        //loadQueue();
         
         $(window).on('resize', () => {
             if (!isMobile) {
@@ -111,6 +110,8 @@
         }).scroll();
         
         $('.body-page-main > div').css('opacity', 1);
+        
+        checkNotifications();
     });
     
     let lastEventID = {{ \App\Models\EventMem::lastID() ?? -1 }};
@@ -170,6 +171,8 @@
             typ: 'speech',
             src: '{{ route("terminal.media-source", ["typ" => "speech", "id" => ""]) }}/' + data.mediaID,
         });
+        
+        showNotification('notify', data.phrase);
         
         if ($('#speech')[0].paused) {
             speechProcessed();
@@ -318,6 +321,50 @@
     function audioFirstPlay() {
         $('#speech').attr('src', 'audio/notify.wav');
         $('.audio-button').hide(150);
+    }
+    
+    function checkNotifications() {
+        if (!("Notification" in window)) {
+            console.log("This browser does not support desktop notification");
+            return ;
+        }
+        
+        if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+                //
+            });
+        }
+    }
+    
+    function showNotification(typ, text) {
+        if (!("Notification" in window)) {
+            console.log('Notification', text);
+            return ;
+        }
+        
+        if (Notification.permission === "granted") {
+            let title = '';
+            let icon = '/favicon.ico';
+            switch (typ) {
+                case 'notify':
+                    title = '@lang("terminal.notifications.notify")';
+                    break;
+                case 'alarm':
+                    title = '@lang("terminal.notifications.alarm")';
+                    break;
+                case 'play':
+                    title = '@lang("terminal.notifications.play")';
+                    break;
+            }
+            
+            var options = {
+                body: text,
+                icon: icon,
+                silent: true,
+            };
+            
+            var notification = new Notification(title, options);
+        }
     }
 </script>
 

@@ -44,4 +44,10 @@ return [
         'NIGHT',
         'DINING',
     ],
+    
+    'notifications' => [
+        'notify' => 'Information',
+        'alarm' => 'Alarm',
+        'play' => 'Play',
+    ],
 ];
