@@ -270,7 +270,7 @@ class OrangePiDaemon extends BaseDaemon
         $addresses = I2c::scan();
         
         foreach ($addresses as &$addr) {
-            $addr = sprintf("x%'02X", $addr);
+            $addr = 'x'.$addr;
         }
         
         Property::setOrangePiCommandInfo(implode("\n", $addresses));
