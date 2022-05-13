@@ -426,8 +426,6 @@ class DinDaemon extends BaseDaemon
                     $this->_inBuffer = '';
                     throw new \Exception('Controller did not respond');
                 default:
-                    $this->_readPacks(250);
-                    
                     // Saving variables data
                     $this->_processingInVariables();
                     

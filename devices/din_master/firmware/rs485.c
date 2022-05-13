@@ -202,18 +202,18 @@ void rs485_cmd_pack_handler(rs485_cmd_pack_t *pack) {
                 rs485_transmit_CMD(5, 0);
             } else {
                 // Transmit Variables
-                rs485_transmit_CMD(4, core_variable_changed_count);
+                rs485_transmit_CMD(4, core_variable_changed_count + core_server_commands_count);
                 for (i = 0; i < core_variable_changed_count; i++) {
                     index = devs_get_variable_index(core_variable_changed[i]);
                     rs485_transmit_VAR(core_variable_changed[i], variable_values[index]);
                 }
-                core_variable_changed_count = 0;
                 
                 // Transmit Server Commands
-                rs485_transmit_CMD(4, core_server_commands_count);
                 for (i = 0; i < core_server_commands_count; i++) {
                     rs485_transmit_INT(core_server_commands[i]);
                 }
+                
+                core_variable_changed_count = 0;
                 core_server_commands_count = 0;
             }
             break;
