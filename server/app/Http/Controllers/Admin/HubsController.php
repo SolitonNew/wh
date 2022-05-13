@@ -99,13 +99,25 @@ class HubsController extends Controller
      * This route scans child hosts.
      * Returns a view with scan dialog report.
      * 
+     * @param int $id
      * @return type
      */
-    public function hubsScan() 
+    public function hubNetworkScan(int $id) 
     {
-        $text = $this->_service->hubsScan();
+        $hub = Hub::find($id);
         
-        return view('admin.hubs.hubs-scan', [
+        switch ($hub->typ) {
+            case 'din':
+                $text = $this->_service->dinHubsScan();
+                break;
+            case 'orangepi':
+                $text = $this->_service->orangepiHubScan();
+                break;
+            default:
+                $text = 'It is impossible';
+        }
+        
+        return view('admin.hubs.hub-network-scan', [
             'data' => $text,
         ]);
     }

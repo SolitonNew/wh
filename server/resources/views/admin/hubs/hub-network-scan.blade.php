@@ -1,7 +1,7 @@
 @extends('dialog')
 
 @section('title')
-@lang('admin/hubs.hubs_scan_title')
+@lang('admin/hubs.hub_scan_title')
 @endsection
 
 @section('content')

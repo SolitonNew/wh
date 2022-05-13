@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
 use App\Models\I2cHost;
 use \Cron\CronExpression;
+use App\Models\Property;
+use App\Library\OrangePi\I2c;
 
 /**
  * Description of OrangePiDaemon
@@ -46,6 +48,14 @@ class OrangePiDaemon extends BaseDaemon
         try {
             while (1) {
                 if (!$this->checkEvents()) break;
+                
+                // Commands processing
+                $command = Property::getOrangePiCommand(true);
+                switch ($command) {
+                    case 'SCAN':
+                        $this->_scanNetworks();
+                        break;
+                }
                 
                 // I2c hosts
                 $this->_processingI2cHosts();
@@ -248,5 +258,15 @@ class OrangePiDaemon extends BaseDaemon
                 }
             }
         }
+    }
+    
+    private function _scanNetworks()
+    {
+        Property::setOrangePiCommandInfo('', true);
+        
+        $addresses = I2c::scan();
+        
+        Property::setOrangePiCommandInfo(implode("\n", $addresses));
+        Property::setOrangePiCommandInfo('END_SCAN');
     }
 }

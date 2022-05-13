@@ -10,6 +10,17 @@ class I2c
     
     /**
      * 
+     * @return type
+     */
+    static public function scan()
+    {
+        $output = shell_exec('i2cdetect -y '.self::PORT);
+        
+        return [$output];
+    }
+    
+    /**
+     * 
      * @param type $address
      */
     public function __construct($address)

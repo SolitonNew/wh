@@ -8,8 +8,8 @@ return [
     
     'hub_add' => 'Add hub...',
     'hub_edit' => 'Hub properties...',
-    'hubs_scan' => 'Scanning hubs networks...',
-    'hubs_scan_title' => 'Result hubs networks scanning',
+    'hub_scan' => 'Hub network scan...',
+    'hub_scan_title' => 'Hub network scan result',
     'firmware' => 'Update hubs...',
     'hubs_reset' => 'Reboot hubs',
     
