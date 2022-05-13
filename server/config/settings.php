@@ -14,7 +14,7 @@ return [
     /*
      * Number of lines in the system log
      */
-    'admin_log_lines_count' => 40,    
+    'admin_log_lines_count' => 50,    
     
     /*
      * ID of the device for info message

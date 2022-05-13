@@ -8,16 +8,28 @@
 
 namespace App\Library\Script\PhpFunctions;
 
-use Speech;
+use App\Models\ScriptString;
+use App\Library\Speech;
 
 trait FunctionSpeech 
 {
     /**
      * 
-     * @param type $phrase
+     * @param type $phraseID
+     * @param type $args
      */
-    public function function_speech($phrase)
+    public function function_speech($phraseID, ...$args)
     {          
-        Speech::turn($phrase);
+        $string = ScriptString::find($phraseID);
+        
+        if ($string) {
+            $phrase = vsprintf($string->data, $args);
+            
+            if ($this->_fake) {
+                $this->printLine('>>> '.$phrase);
+            } else {
+                (new Speech())->turn($phrase);
+            }
+        }
     }
 }

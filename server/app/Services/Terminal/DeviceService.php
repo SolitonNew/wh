@@ -13,7 +13,7 @@ class DeviceService
      * @param type $deviceID
      * @return string
      */
-    public function shOwHosticeView($deviceID)
+    public function showHosticeView($deviceID)
     {
         $sql = "select p.name group_title, v.comm device_title, v.app_control, v.room_id, v.value ".
                "  from core_devices v, plan_rooms p ".

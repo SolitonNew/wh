@@ -95,6 +95,7 @@ return [
         16 => 'Direction',
         17 => 'Distance',
         18 => 'Percents',
+        19 => 'Height',
     ],
     
     'log_app_control' => [
@@ -117,6 +118,7 @@ return [
         16 => 'DIRE.',
         17 => 'DIST',
         18 => 'PERC.',
+        19 => 'HIGH.',
     ],
     
     'log_app_control_dim' => [
@@ -139,6 +141,7 @@ return [
         15 => 'm/s',
         16 => '°',
         17 => 'km',
-        18 => '%'
+        18 => '%',
+        19 => 'mm',
     ],
 ];

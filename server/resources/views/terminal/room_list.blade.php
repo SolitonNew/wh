@@ -128,12 +128,12 @@
     
     chartAutoScroll();
     
-    function chartAppendChanges(varID, varValue, varTime) {
+    function chartAppendChanges(devID, devValue, eventTime) {
         for (let i = 0; i < chartList.length; i++) {
-            if (chartList[i].id == varID) {
+            if (chartList[i].id == devID) {
                 chartList[i].chart.data.datasets[0].data.push({
-                    x: varTime,
-                    y: varValue
+                    x: eventTime,
+                    y: devValue
                 });
                 chartList[i].chart.update();
             }
@@ -142,26 +142,26 @@
     
     var variableSteps = [{{ $varSteps }}];
     
-    function variableOnChanged(varID, varValue, varTime) {
+    function deviceOnChanged(devID, devValue, eventTime) {
         variableStep = 1;
         for (let i = 0; i < variableSteps.length; i++) {
-            if (variableSteps[i].id == varID) {
+            if (variableSteps[i].id == devID) {
                 variableStep = variableSteps[i].step;
                 break;
             }
         }
         
-        var v = $('#variable_' + varID);
+        var v = $('#variable_' + devID);
         switch (v.attr('app_control')) {
             case '1':
-                $('.room-item-variable-value', v).text(varValue);
-                chartAppendChanges(varID, varValue, varTime)
+                $('.room-item-variable-value', v).text(devValue);
+                chartAppendChanges(devID, devValue, eventTime)
                 break;
             case '2':
-                v.prop('checked', parseInt(varValue) > 0);
+                v.prop('checked', parseInt(devValue) > 0);
                 break;
             case '3':
-                $('.room-item-variable-value', v).text(parseFloat(varValue) * variableStep);
+                $('.room-item-variable-value', v).text(parseFloat(devValue) * variableStep);
                 break;
         }
     }

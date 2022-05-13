@@ -23,7 +23,11 @@ class PhpExecute
         PhpFunctions\FunctionPrint,
         PhpFunctions\FunctionSet,
         PhpFunctions\FunctionSpeech,
-        PhpFunctions\FunctionToggle;
+        PhpFunctions\FunctionToggle,
+        PhpFunctions\FunctionAbs,
+        PhpFunctions\FunctionRound,
+        PhpFunctions\FunctionCeil,
+        PhpFunctions\FunctionFloor;
     
     /**
      *
@@ -43,7 +47,7 @@ class PhpExecute
      */
     public function __construct($source) 
     {
-        $this->_translator = new Translate($source);
+        $this->_translator = new TranslateDB($source);
     }
     
     /**

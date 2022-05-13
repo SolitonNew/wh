@@ -10,7 +10,7 @@ namespace App\Library\Firmware;
 
 use App\Models\OwHost;
 use App\Models\Script;
-use App\Library\Script\Translate;
+use App\Library\Script\TranslateDB;
 use App\Library\Script\Translators\C as TranslateC;
 use App\Models\Property;
 use Illuminate\Support\Facades\View;
@@ -147,7 +147,7 @@ class Din
         }
         
         foreach($scriptList as &$row) {
-            $translator = new Translate($row->data);
+            $translator = new TranslateDB($row->data);
             $report = [];
             $row->data_to_c = $translator->run(new TranslateC($variableNames), $report);
         }

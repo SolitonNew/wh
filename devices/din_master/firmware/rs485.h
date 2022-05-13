@@ -47,6 +47,22 @@ typedef struct _rs485_cmd_pack {  // 8 bytes
 } rs485_cmd_pack_t;
 
 /*
+    Packet of transferring integer value.
+    
+    sign: "int"
+    controller_id: ID of the controller with which the exchange is performed.
+                   Other controllers seeing packets with someone else's ID ignore it.
+    data: the value of the integer number
+    crc: Checksum with algorithm similar to onewire.
+*/
+typedef struct _rs485_int_pack {  // 7 bytes
+    uint8_t sign[3];  // INT
+    uint8_t controller_id;
+    int data;
+    uint8_t crc;
+} rs485_int_pack_t;
+
+/*
     Packet of transferring the value of ONE variable.
     
     sign: "var"

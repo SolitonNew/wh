@@ -27,14 +27,15 @@ $router->get('/checked/edit/color', ['as' => 'terminal.checked-edit-color', 'use
 $router->post('/checked/edit/color-action/{action}', ['as' => 'terminal.checked-edit-color-action', 'uses' => 'CheckedController@editColor_ACTION']);
 
 
-/* Requesting variable changes  ----------------------------------------- */
-$router->get('/device-changes/{lastID}', ['as' => 'terminal.device-changes', 'uses' => 'DeviceController@changes']);
-
-
-/* Requesting queue changes  -------------------------------------------- */
-$router->get('/queue-changes/{lastID}', ['as' => 'terminal.queue-changes', 'uses' => 'QueueController@changes']);
-$router->get('/queue-speech-source/{id}', ['as' => 'terminal.queue-speech-source', 'uses' => 'QueueController@speechSource']);
-
-
 /* Setting device value  ------------------------------------------------ */
 $router->post('/device-set/{deviceID}/{value}', ['as' => 'terminal.device-set', 'uses' => 'DeviceController@set']);
+
+
+/* Requesting event list  ----------------------------------------------- */
+$router->get('/events/{lastID}', ['as' => 'terminal.events', 'uses' => 'EventsController@getEvents']);
+
+
+/* Requesting media data  ----------------------------------------------- */
+$router->get('/media-source/{typ}/{id}', ['as' => 'terminal.media-source', 'uses' => 'QueueController@getData']);
+
+

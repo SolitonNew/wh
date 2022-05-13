@@ -30,7 +30,7 @@ class DeviceController extends Controller
      */
     public function index($deviceID) 
     {
-        return $this->_deviceService->shOwHosticeView($deviceID);
+        return $this->_deviceService->showHosticeView($deviceID);
     }
     
     /**

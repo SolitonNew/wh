@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('address')->nullable();
             $table->integer('lost')->default(0);
             
-            $table->foreign('hub_id')->references('id')->on('core_hubs')->onDelete('cascade');
+            $table->index('hub_id');
             $table->index('address');
         });
     }

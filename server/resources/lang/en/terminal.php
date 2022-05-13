@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'menu_admin' => 'ADMIN',
     'menu_home' => 'ROOMS',
     'menu_checked' => 'FAVORITES',
     'menu_checked_edit' => 'SETTINGS',
@@ -42,5 +43,11 @@ return [
     'switches_second' => [
         'NIGHT',
         'DINING',
+    ],
+    
+    'notifications' => [
+        'notify' => 'Information',
+        'alarm' => 'Alarm',
+        'play' => 'Play',
     ],
 ];

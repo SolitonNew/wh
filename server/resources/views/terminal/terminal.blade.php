@@ -80,8 +80,7 @@
             });
         });
         
-        loadChanges();
-        loadQueue();
+        loadEvents();
         
         $(window).on('resize', () => {
             if (!isMobile) {
@@ -111,15 +110,17 @@
         }).scroll();
         
         $('.body-page-main > div').css('opacity', 1);
+        
+        checkNotifications();
     });
     
-    let lastDeviceChangeID = {{ \App\Models\EventMem::lastDeviceChangeID() ?? -1 }};
+    let lastEventID = {{ \App\Models\EventMem::lastID() ?? -1 }};
     
-    function loadChanges() {
+    function loadEvents() {
         $.ajax({
-            url: '{{ route("terminal.device-changes", ["lastID" => ""]) }}/' + lastDeviceChangeID, 
+            url: '{{ route("terminal.events", ["lastID" => ""]) }}/' + lastEventID,
             success: (data) => {
-                setTimeout(loadChanges, 500);
+                setTimeout(loadEvents, 500);
 
                 if (typeof(data) == 'string') {
                     if ((data.substr(0, 15) == '<!DOCTYPE HTML>')) {
@@ -127,79 +128,55 @@
                         return ;
                     } else
                     if (data.substr(0, 9) == 'LAST_ID: ') {
-                        lastDeviceChangeID = data.substr(9);
+                        lastEventID = data.substr(9);
                     }
                 } else {
-                    for (let i = 0; i < data.length; i++) {
-                        let rec = data[i];
-                        let varID = parseInt(rec.device_id);
-                        let varValue = parseFloat(rec.value);
-                        let varTime = parseInt(rec.created_at);
-                        lastDeviceChangeID = rec.id;
-
+                    data.forEach(function (item) {
+                        lastEventID = parseInt(item.id);
+                        let eventTyp = item.typ;
+                        let eventData = JSON.parse(item.data);
+                        let devID = parseInt(item.device_id);
+                        let devValue = parseFloat(item.value);
+                        let eventTime = parseInt(item.created_at);
+                        
                         /* Call Event */
-                        variableOnChanged(varID, varValue, varTime);
+                        switch (eventTyp) {
+                            case 'DEVICE_CHANGE_VALUE':
+                                deviceOnChanged(devID, devValue, eventTime);
+                                break;
+                            case 'WEB_SPEECH':
+                                eventSpeech(eventData);
+                                break;
+                            case 'WEB_PLAY':
+                                eventPlay(eventData);
+                                break;
+                        }
                         /* ---------- */
-                    }
+                    });
                 }
             }, 
             error: () => {
-                setTimeout(loadChanges, 5000);
+                setTimeout(loadEvents, 5000);
                 console.log('ERROR');
             },
         });
     }
     
-    let lastQueueID = {{ \App\Models\WebQueueMem::lastQueueID() ?? -1 }};
-    
-    function loadQueue() {
-        $.ajax({
-            url: '{{ route("terminal.queue-changes", ["lastID" => ""]) }}/' + lastQueueID,
-            success: (data) => {
-                if (typeof(data) == 'string') {
-                    if ((data.substr(0, 15) == '<!DOCTYPE HTML>')) {
-                        window.location.reload();
-                        return ;
-                    } else
-                    if (data.substr(0, 9) == 'LAST_ID: ') {
-                        lastQueueID = data.substr(9);             
-                    }
-                } else {
-                    let newSpeech = false;
-                    
-                    data.forEach(function (item) {
-                        lastQueueID = item.id;
-                        
-                        let data = JSON.parse(item.data);
-                        
-                        switch (item.action) {
-                            case 'speech':
-                                speechQueue.push({
-                                    typ: 'notify',
-                                    src: 'audio/notify.wav',
-                                });
-                                speechQueue.push({
-                                    typ: 'speech',
-                                    src: '{{ route("terminal.queue-speech-source", "") }}/' + data.id,
-                                });
-                                
-                                newSpeech = true;
-                                break;
-                        }
-                    });
-                    
-                    if (newSpeech && $('#speech')[0].paused) {
-                        speechProcessed();
-                    }
-                }
-                
-                setTimeout(loadQueue, 500);
-            },
-            error: () => {
-                setTimeout(loadQueue, 5000);
-                console.log('ERROR');
-            },
+    function eventSpeech(data) {
+        speechQueue.push({
+            typ: 'notify',
+            src: '/audio/notify.wav',
         });
+        speechQueue.push({
+            typ: 'speech',
+            src: '{{ route("terminal.media-source", ["typ" => "speech", "id" => ""]) }}/' + data.mediaID,
+        });
+        
+        showNotification('notify', data.phrase);
+        
+        if ($('#speech')[0].paused) {
+            speechProcessed();
+        }
     }
     
     let lastSpeechTime = false;
@@ -217,6 +194,10 @@
             $('#speech').attr('src', item.src);
         }        
         lastSpeechTime = now;
+    }
+    
+    function eventPlay(data) {
+        
     }
 
     var bodyItemW = 0;
@@ -340,6 +321,51 @@
     function audioFirstPlay() {
         $('#speech').attr('src', 'audio/notify.wav');
         $('.audio-button').hide(150);
+    }
+    
+    function checkNotifications() {
+        if (!("Notification" in window)) {
+            console.log("This browser does not support desktop notification");
+            return ;
+        }
+        
+        if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+                //
+            });
+        }
+    }
+    
+    function showNotification(typ, text) {
+        console.log('Notification', text);
+        
+        if (!("Notification" in window)) {
+            return ;
+        }
+        
+        if (Notification.permission === "granted") {
+            let title = '';
+            let icon = '/favicon.ico';
+            switch (typ) {
+                case 'notify':
+                    title = '@lang("terminal.notifications.notify")';
+                    break;
+                case 'alarm':
+                    title = '@lang("terminal.notifications.alarm")';
+                    break;
+                case 'play':
+                    title = '@lang("terminal.notifications.play")';
+                    break;
+            }
+            
+            var options = {
+                body: text,
+                icon: icon,
+                silent: true,
+            };
+            
+            var notification = new Notification(title, options);
+        }
     }
 </script>
 

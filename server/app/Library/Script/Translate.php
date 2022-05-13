@@ -9,6 +9,7 @@
 namespace App\Library\Script;
 
 use App\Library\Script\Translators\ITranslator;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Description of Translate
@@ -73,12 +74,12 @@ class Translate
             'args' => [1, 2],
         ],
         'speech' => [
-            'helper' => 'function (phrase)',
-            'args' => [1],
+            'helper' => 'function (phrase, args)',
+            'args' => ['1+'],
         ],
         'play' => [
-            'helper' => 'function (media)',
-            'args' => [1],
+            'helper' => 'function (media, args)',
+            'args' => ['1+'],
         ],
         'info' => [
             'helper' => 'function ()',
@@ -95,7 +96,27 @@ class Translate
         'print_s' => [
             'helper' => 'function (text)',
             'args' => [1],
-        ]
+        ],
+        'abs_i' => [
+            'helper' => 'function (int)',
+            'args' => [1],
+        ],
+        'abs_f' => [
+            'helper' => 'function (float)',
+            'args' => [1],
+        ],
+        'round' => [
+            'helper' => 'function (float)',
+            'args' => [1],
+        ],
+        'ceil' => [
+            'helper' => 'function (float)',
+            'args' => [1],
+        ],
+        'floor' => [
+            'helper' => 'function (float)',
+            'args' => [1],
+        ],
     ];
     
     /**
@@ -127,6 +148,7 @@ class Translate
     /**
      * 
      * @param type $source
+     * @param type $stringsHandler
      */
     public function __construct($source) 
     {
@@ -256,6 +278,12 @@ class Translate
                             $new_i = $this->_prepareBlock($k, $args);                            
                             if (isset($this->_functions[$part])) { // It is a function
                                 // Check the number of arguments
+                                if (strpos($this->_functions[$part]['args'][0], '+') !== false) {
+                                    $minArgs = substr($this->_functions[$part]['args'][0], 0, strlen($this->_functions[$part]['args'][0]) - 1) ?: 0;
+                                    if ($minArgs > $args) {
+                                        throw new \Exception('Invalid number of arguments "'.$args.'" for "'.$part.'"');
+                                    }
+                                } else
                                 if (!in_array($args, $this->_functions[$part]['args'])) {
                                     throw new \Exception('Invalid number of arguments "'.$args.'" for "'.$part.'"');
                                 }                                
@@ -364,6 +392,16 @@ class Translate
     }
     
     /**
+     * 
+     * @param type $parts
+     * @param type $strings
+     */
+    protected function _prepareStrings(&$parts, &$strings)
+    {
+        //
+    }
+    
+    /**
      * Builds source code from parts using the specified translator.
      * 
      * @param ITranslator $translator
@@ -378,6 +416,8 @@ class Translate
                 $parts[] = $part;
             }
         }
+        
+        $this->_prepareStrings($parts, $this->_prepared_strings);
         
         $prepareData = (object)[
             'parts' =>  $parts, 

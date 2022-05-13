@@ -5,6 +5,8 @@
 #include "core.h"
 #include "schedule.h"
 #include <math.h>
+#include <stdarg.h>
+#include <stdlib.h>
 
 float command_get(int index) {
     return core_get_variable_value(index);
@@ -39,7 +41,7 @@ void command_on(int index) {
 }
 
 void command_on_later(int index, int duration) {
-	command_set_later(index, 1, duration);
+    command_set_later(index, 1, duration);
 }
 
 void command_off(int index) {
@@ -47,19 +49,33 @@ void command_off(int index) {
 }
 
 void command_off_later(int index, int duration) {
-	command_set_later(index, 0, duration);
+    command_set_later(index, 0, duration);
 }
 
 void command_info(void) {
     
 }
 
-void command_play(char *file) {
-    
+void command_play(char args, int id, ...) {
+    core_server_commands[core_server_commands_count++] = 1 | (int)args << 8;
+    core_server_commands[core_server_commands_count++] = id;
+    va_list a;
+    va_start(a, id);
+    for (uint8_t i = 1; i < args; i++) {
+        core_server_commands[core_server_commands_count++] = va_arg(a, int);
+    }
+    va_end(a);
 }
 
-void command_speech(char *text) {
-    
+void command_speech(char args, int id, ...) {
+    core_server_commands[core_server_commands_count++] = 2 | (int)args << 8;
+    core_server_commands[core_server_commands_count++] = id;
+    va_list a;
+    va_start(a, id);
+    for (uint8_t i = 1; i < args; i++) {
+        core_server_commands[core_server_commands_count++] = va_arg(a, int);
+    }
+    va_end(a);
 }
 
 void command_print_i(int value) {
@@ -72,4 +88,24 @@ void command_print_f(float value) {
 
 void command_print_s(char *text) {
 
+}
+
+int command_abs_i(int value) {
+    return (int)abs(value);
+}
+
+float command_abs_f(float value) {
+    return (float)abs(value);
+}
+
+int command_round(float value) {
+    return (int)round(value);
+}
+
+int command_ceil(float value) {
+    return (int)ceil(value);
+}
+
+int command_floor(float value) {
+    return (int)floor(value);
 }

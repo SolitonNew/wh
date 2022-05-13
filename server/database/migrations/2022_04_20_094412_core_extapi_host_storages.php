@@ -19,7 +19,7 @@ class CoreExtapiHostStorages extends Migration
             $table->longText('data')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             
-            $table->foreign('extapi_host_id')->references('id')->on('core_extapi_hosts')->onDelete('cascade');
+            $table->index('extapi_host_id');
         });
     }
 

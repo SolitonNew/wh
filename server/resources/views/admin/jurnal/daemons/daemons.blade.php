@@ -176,6 +176,9 @@
             let div = $(element);
             let percent = div.text().split(':')[1];
             
+            if (percent > 97) percent = 100;
+            if (percent > 100) percent = 100;
+            
             let control = $('.progress', element);
             
             if (control.length == 0) { 

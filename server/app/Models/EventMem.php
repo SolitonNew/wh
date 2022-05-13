@@ -15,6 +15,8 @@ class EventMem extends Model
     const DEVICE_LIST_CHANGE = 'DEVICE_LIST_CHANGE';
     const DEVICE_CHANGE_VALUE = 'DEVICE_CHANGE_VALUE';
     const SCRIPT_LIST_CHANGE = 'SCRIPT_LIST_CHANGE';
+    const WEB_SPEECH = 'WEB_SPEECH';
+    const WEB_PLAY = 'WEB_PLAY';
     
     protected $table = 'core_events_mem';
     public $timestamps = false;
@@ -33,6 +35,15 @@ class EventMem extends Model
      * @return type
      */
     static public function lastDeviceChangeID()
+    {
+        return self::max('id');
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    static public function lastID()
     {
         return self::max('id');
     }

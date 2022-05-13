@@ -20,7 +20,7 @@ class CoreProperties extends Migration
             $table->string('value', 2000);
             $table->bigInteger('user_id')->unsigned()->nullable();
             
-            $table->foreign('user_id')->references('id')->on('web_users')->onDelete('cascade');
+            $table->index('user_id');
         });
     }
 

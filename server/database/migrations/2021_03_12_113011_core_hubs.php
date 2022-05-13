@@ -16,7 +16,7 @@ class CoreHubs extends Migration
         Schema::create('core_hubs', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
             $table->string('name');
-            $table->string('typ', 20)->default('virtual'); // virtual, din, onewire
+            $table->string('typ', 20)->default('virtual'); // virtual, orangepi, din 
             $table->integer('rom')->nullable();
             $table->string('comm', 1000)->nullable();
             $table->integer('status')->default(1);

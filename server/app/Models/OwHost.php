@@ -154,10 +154,13 @@ class OwHost extends AffectsFirmwareModel
     static public function deleteById(int $id)
     {
         try {
-            Device::whereTyp('ow')
-                    ->whereHostId($id)
-                    ->delete();
-            $item = OwHost::find($id);
+            // Clear relations
+            foreach (Device::whereTyp('ow')->whereHostId($id)->get() as $device) {
+                Device::deleteById($device->id);
+            }
+            // -------------------------
+            
+            $item = self::find($id);
             $item->delete();
             
             // Store event
@@ -172,6 +175,20 @@ class OwHost extends AffectsFirmwareModel
             return response()->json([
                 'errors' => [$ex->getMessage()],
             ]);
+        }
+    }
+    
+    /**
+     * 
+     * @param int $hubID
+     */
+    static public function deleteByHubId(int $hubID)
+    {
+        $result = 'OK';
+        foreach (self::whereHubId($hubID)->get() as $host) {
+            if (self::deleteById($host->id) != 'OK') {
+                $result = 'With Errors';
+            }
         }
     }
 }

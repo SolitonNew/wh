@@ -6,6 +6,9 @@
     <ol class="row breadcrumb">
         <li style="flex-grow: 1;">@lang('terminal.menu_home')</li>
         <li><a href="{{ route('terminal.checked') }}">@lang('terminal.menu_checked')</a></li>
+        @if(Auth::user()->access > 1)
+        <li style="margin: -0.5rem 0px; margin-right: -0.5rem;"><a href="{{ route('admin') }}" class="btn btn-danger" style="margin-left: 1rem;">@lang('terminal.menu_admin')</a></li>
+        @endif
     </ol>
 </nav>
 
@@ -51,14 +54,14 @@
 </div>
 
 <script>
-    function variableOnChanged(varID, varValue, varTime) {
-        var v = $('#variable_' + varID);
+    function deviceOnChanged(devID, devValue, eventTime) {
+        var v = $('#variable_' + devID);
         switch (v.attr('app_control')) {
             case '1':
-                $('.main-item-value-text', v).text(varValue);
+                $('.main-item-value-text', v).text(devValue);
                 break;
             case '2':
-                v.prop('checked', parseInt(varValue) > 0);
+                v.prop('checked', parseInt(devValue) > 0);
                 break;
         }
     }

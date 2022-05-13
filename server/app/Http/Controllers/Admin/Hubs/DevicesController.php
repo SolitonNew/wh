@@ -58,6 +58,11 @@ class DevicesController extends Controller
             }
         }
         
+        if (!Hub::find($hubID)) {
+            Property::setLastViewID('HUB', null);
+            return redirect(route('admin.hubs'));
+        }
+        
         Property::setLastViewID('HUB', $hubID);
         // ----------------------------------------
         

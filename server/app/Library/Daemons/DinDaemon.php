@@ -3,12 +3,11 @@
 namespace App\Library\Daemons;
 
 use App\Models\Property;
-use App\Models\EventMem;
 use App\Models\OwHost;
 use App\Models\Device;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Description of CommandDaemon
@@ -40,6 +39,12 @@ class DinDaemon extends BaseDaemon
      * @var type 
      */
     private $_inBuffer = '';
+    
+    /**
+     *
+     * @var type 
+     */
+    private $_inServerCommands = [];
     
     /**
      *
@@ -316,7 +321,7 @@ class DinDaemon extends BaseDaemon
             $this->_firmwareSpmPageSize = $firmware->spmPageSize();
         }
         
-        $PAGE_STORE_PAUSE = 100000;
+        $PAGE_STORE_PAUSE = 150000;
         
         $count = count($this->_hubs);
         $index = 0;
@@ -364,7 +369,7 @@ class DinDaemon extends BaseDaemon
         usleep($PAGE_STORE_PAUSE);
         
         $this->_transmitCMD($controller->rom, 25, count($this->_firmwareHex));
-        $this->_readPacks(250);
+        $this->_readPacks(750);
         
         return ($this->_inPackCount == count($this->_firmwareHex));
     }
@@ -383,7 +388,7 @@ class DinDaemon extends BaseDaemon
             // Send command "prepare to receive"
             $this->_transmitCMD($controller->rom, 2, count($this->_devicesLoopChanges));
 
-            // Send devace values
+            // Send device values
             foreach ($this->_devicesLoopChanges as $device) {
                 $this->_transmitVAR($controller->rom, $device->id, $device->value);
                 $vars_out[] = "$device->id: $device->value";
@@ -393,8 +398,9 @@ class DinDaemon extends BaseDaemon
             $this->_transmitCMD($controller->rom, 3, 0);
             
             $this->_inVariables = [];
+            $this->_inServerCommands = [];
             // Waiting for a controller's response.
-            switch ($this->_readPacks(150)) {
+            switch ($this->_readPacks(250)) {
                 case 5: // Controller request of the initialization data
                     $stat = 'INIT';
                     $vars_out = [];
@@ -420,16 +426,18 @@ class DinDaemon extends BaseDaemon
                     $this->_inBuffer = '';
                     throw new \Exception('Controller did not respond');
                 default:
-                    foreach ($this->_inVariables as $variable) {
-                        Device::setValue($variable->id, $variable->value);
-                    }
+                    // Saving variables data
+                    $this->_processingInVariables();
+                    
+                    // Processing server commands
+                    $this->_processingInServerCommands();
             }            
         } catch (\Exception $ex) {
             $stat = 'ERROR';
             $errorText = $ex->getMessage();
         }
         
-        $this->printLine("[".parse_datetime(now())."] SYNC. '$controller->name': $stat");
+        $this->printLine("[".parse_datetime(now())."] SYNC. '$controller->name': $stat [".strlen($this->_inBuffer)."]");
         if ($stat == 'OK') {
             foreach (array_chunk($vars_out, 15) as $key => $chunk) {
                 if ($key == 0) {
@@ -475,6 +483,62 @@ class DinDaemon extends BaseDaemon
     }
     
     /**
+     * 
+     */
+    private function _processingInVariables()
+    {
+        foreach ($this->_inVariables as $variable) {
+            Device::setValue($variable->id, $variable->value);
+        }
+    }
+    
+    /**
+     * 
+     */
+    private function _processingInServerCommands()
+    {
+        if (count($this->_inServerCommands) == 0) return ;
+        
+        try {
+            for ($i = 0; $i < count($this->_inServerCommands);) {
+                $w = $this->_inServerCommands[$i++];
+                $cmd = $w & 0xff;
+                $args = (($w & 0xff00) >> 8) - 1;
+                $id = $this->_inServerCommands[$i++];
+                $params = [];
+                for ($p = 0; $p < $args; $p++) {
+                    $params[] = $this->_inServerCommands[$i++];
+                }
+                $string = \App\Models\ScriptString::find($id);
+                if ($string) {
+                    $command = '';
+                    switch ($cmd) {
+                        case 1:
+                            $command = "play";
+                            break;
+                        case 2:
+                            $command = "speech";
+                            break;
+                    }
+                    if ($command) {
+                        $command .= "('".$string->data."'";
+                        if (count($params)) {
+                            $command .= ', '.implode(', ', $params);
+                        }
+                        $command .= ');';
+
+                        \App\Models\Execute::command($command);
+                    }
+                }
+                
+            }
+            $this->printLine('   SC   ['.implode(', ', $this->_inServerCommands).']');
+        } catch (\Exception $ex) {
+            $this->printLine('Bad server command data. ['.implode(', ', $this->_inServerCommands).']');
+        }
+    }
+    
+    /**
      * Reading the queue of the incoming packet.
      * An individual timeout value for receiving data is set.
      * 
@@ -499,7 +563,7 @@ class DinDaemon extends BaseDaemon
                         $returnCmd = 0;
                     }
                     
-                    if ($this->_inPackCount <= 0) break; // Не будем ждать таймаут. Мы начитали все что нужно было.
+                    if ($this->_inPackCount <= 0) break; // Let's not wait for the timeout. We read everything we needed.
                 }
             } else {
                 usleep(self::SLEEP_TIME * 1000);
@@ -525,11 +589,28 @@ class DinDaemon extends BaseDaemon
         
         start_loop:
         
-        if (strlen($this->_inBuffer) < 8) return $result;
+        if (strlen($this->_inBuffer) < 7) return $result;
         
         $sign = unpack('a*', $this->_inBuffer[0].$this->_inBuffer[1].$this->_inBuffer[2])[1];
         $size = 0;
         switch ($sign) {
+            case 'INT':
+                if (strlen($this->_inBuffer) < 7) return $result;
+                $size = 7;
+                $crc = 0;
+                for ($i = 0; $i < $size; $i++) {
+                    $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                }
+                if ($crc === 0) {
+                    $returnCmd = 0;
+                    $controller = unpack('C', $this->_inBuffer[3])[1];
+                    $data = unpack('s', $this->_inBuffer[4].$this->_inBuffer[5])[1];
+                    $this->_inServerCommands[] = $data;
+                    $this->_inPackCount--;                    
+                } else {
+                    $size = 0;
+                }
+                break;
             case 'CMD':
                 if (strlen($this->_inBuffer) < 8) return $result;
                 $size = 8;
@@ -570,7 +651,6 @@ class DinDaemon extends BaseDaemon
                     $this->_inPackCount--;                    
                 } else {
                     $size = 0;
-                    Log::info('DIN CRC');
                 }
                 break;
             case 'ROM':

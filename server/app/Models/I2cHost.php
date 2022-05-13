@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class I2cHost extends AffectsFirmwareModel
 {
@@ -194,10 +195,13 @@ class I2cHost extends AffectsFirmwareModel
     static public function deleteById(int $id)
     {
         try {
-            Device::whereTyp('i2c')
-                    ->whereHostId($id)
-                    ->delete();
-            $item = I2cHost::find($id);
+            // Clear relations
+            foreach (Device::whereTyp('i2c')->whereHostId($id)->get() as $device) {
+                Device::deleteById($device->id);
+            }
+            // -------------------------
+            
+            $item = self::find($id);
             $item->delete();
             
             // Store event
@@ -209,9 +213,25 @@ class I2cHost extends AffectsFirmwareModel
             
             return 'OK';
         } catch (\Exception $ex) {
+            Log::error($ex->getMessage());
             return response()->json([
                 'errors' => [$ex->getMessage()],
             ]);
         }
+    }
+    
+    /**
+     * 
+     * @param int $hubID
+     */
+    static public function deleteByHubId(int $hubID)
+    {
+        $result = 'OK';
+        foreach (self::whereHubId($hubID)->get() as $host) {
+            if (self::deleteById($host->id) != 'OK') {
+                $result = 'With Errors';
+            }
+        }
+        return $result;
     }
 }
