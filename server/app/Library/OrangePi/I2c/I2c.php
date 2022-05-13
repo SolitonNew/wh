@@ -22,7 +22,7 @@ class I2c
         foreach(explode("\n", $output) as $line) {
             if ($y > 0) {
                 $x = 0;
-                foreach (explode(' ', $line) as $cell) {
+                foreach (explode(' ', trim($line)) as $cell) {
                     if ($x > 0) {
                         if ($cell != '--') {
                             $result[] = $cell;
