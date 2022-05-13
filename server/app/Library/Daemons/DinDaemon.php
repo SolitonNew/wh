@@ -439,7 +439,7 @@ class DinDaemon extends BaseDaemon
             $errorText = $ex->getMessage();
         }
         
-        $this->printLine("[".parse_datetime(now())."] SYNC. '$controller->name': $stat");
+        $this->printLine("[".parse_datetime(now())."] SYNC. '$controller->name': $stat [".count($this->_inBuffer)."]");
         if ($stat == 'OK') {
             foreach (array_chunk($vars_out, 15) as $key => $chunk) {
                 if ($key == 0) {
