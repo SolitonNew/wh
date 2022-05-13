@@ -337,8 +337,9 @@
     }
     
     function showNotification(typ, text) {
+        console.log('Notification', text);
+        
         if (!("Notification" in window)) {
-            console.log('Notification', text);
             return ;
         }
         
