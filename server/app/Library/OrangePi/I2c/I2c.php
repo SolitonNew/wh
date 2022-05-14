@@ -25,7 +25,7 @@ class I2c
                 foreach (explode(' ', trim($line)) as $cell) {
                     if ($x > 0) {
                         if ($cell != '--') {
-                            $result[] = $cell;
+                            $result[] = hexdec($cell);
                         }
                     }
                     $x++;
