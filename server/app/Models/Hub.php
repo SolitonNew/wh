@@ -191,6 +191,35 @@ class Hub extends AffectsFirmwareModel
     
     /**
      *
+     * @var type 
+     */
+    static private $_withNetworks = null;
+    
+    /**
+     * 
+     * @param int $hubID
+     * @return type
+     */
+    static public function withNetworks(int $hubID)
+    {
+        if (self::$_withNetworks === null) {
+            self::$_withNetworks = false;
+            
+            $hub = Hub::find($hubID);
+            if ($hub) {
+                $hubsWithNetworks = [
+                    'din',
+                    'orangepi',
+                ];
+                
+                self::$_withNetworks = in_array($hub->typ, $hubsWithNetworks);
+            }            
+        }
+        return self::$_withNetworks;
+    }
+    
+    /**
+     *
      * @var boolean
      */
     static private $_existsFirmwareHubs = null;

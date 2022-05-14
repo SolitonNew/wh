@@ -34,7 +34,7 @@ $router->get('/hubs[/{hubID}]', ['as' => 'admin.hubs', 'uses' => 'HubsController
 $router->get('/hub-edit/{id}', ['as' => 'admin.hub-edit', 'uses' => 'HubsController@editShow']);
 $router->post('/hub-edit/{id}', ['as' => 'admin.hub-edit', 'uses' => 'HubsController@editPost']);
 $router->delete('/hub-delete/{id}', ['as' => 'admin.hub-delete', 'uses' => 'HubsController@delete']);
-$router->get('/hubs-scan', ['as' => 'admin.hubs-scan', 'uses' => 'HubsController@hubsScan']);
+$router->get('/hub-network-scan/{id}', ['as' => 'admin.hub-network-scan', 'uses' => 'HubsController@hubNetworkScan']);
 $router->get('/hubs-firmware', ['as' => 'admin.firmware', 'uses' => 'HubsController@firmware']);
 $router->get('/hubs-firmware-start', ['as' => 'admin.firmware-start', 'uses' => 'HubsController@firmwareStart']);
 $router->get('/hubs-firmware-status', ['as' => 'admin.firmware-status', 'uses' => 'HubsController@firmwareStatus']);

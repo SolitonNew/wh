@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
 use App\Models\I2cHost;
 use \Cron\CronExpression;
+use App\Models\Property;
+use App\Library\OrangePi\I2c\I2c;
 
 /**
  * Description of OrangePiDaemon
@@ -46,6 +48,14 @@ class OrangePiDaemon extends BaseDaemon
         try {
             while (1) {
                 if (!$this->checkEvents()) break;
+                
+                // Commands processing
+                $command = Property::getOrangePiCommand(true);
+                switch ($command) {
+                    case 'SCAN':
+                        $this->_scanNetworks();
+                        break;
+                }
                 
                 // I2c hosts
                 $this->_processingI2cHosts();
@@ -87,29 +97,39 @@ class OrangePiDaemon extends BaseDaemon
     {
         $channels = config('orangepi.channels');
         
+        $enabled = [];
+        $errors = [];
+        
         foreach ($channels as $chan => $num) {
             if ($num > -1) {
                 try {
-                    $res = [];
-
+                    $res = '';
                     foreach ($this->_devices as $device) {
                         if (in_array($device->hub_id, $this->_hubIds) && $device->channel == $chan) {
                             if ($device->value) {
-                                exec('gpioset 0 '.$num.'=1 2>&1', $res);
+                                $res = shell_exec('gpioset 0 '.$num.'=1 2>&1');
                             } else {
-                                exec('gpioset 0 '.$num.'=0 2>&1', $res);
+                                $res = shell_exec('gpioset 0 '.$num.'=0 2>&1');
                             }
                             break;
                         }
                     }
 
-                    if (count($res)) {
-                        throw new \Exception(implode('; ', $res));
+                    if ($res) {
+                        throw new \Exception($res);
                     }
-                    $this->printLine('GPIO ['.$chan.'] ENABLED');
+                    
+                    $enabled[] = $chan;
                 } catch (\Exception $ex) {
-                    $this->printLine('GPIO ['.$chan.'] ERROR: '.$ex->getMessage());
+                    $errors[$chan] = $ex->getMessage();
                 }
+            }
+        }
+        
+        $this->printLine('GPIO ['.implode(', ', $enabled).'] ENABLED');
+        if (count($errors)) {
+            foreach ($errors as $chan => $error) {
+                $this->printLine('GPIO ['.$chan.'] INIT ERROR: '.$error);
             }
         }
         
@@ -179,6 +199,7 @@ class OrangePiDaemon extends BaseDaemon
                     if (round($dev->value) != $temp) {
                         Device::setValue($dev->id, $temp);
                     }
+                    break;
                 }
             }    
         } catch (\Exception $ex) {
@@ -210,6 +231,8 @@ class OrangePiDaemon extends BaseDaemon
         // Storing the previous time value
         $this->_prevExecuteHostI2cTime = $now;
         
+        $outData = [];
+        
         foreach ($this->_i2cHosts as $host) {
             if (!isset($this->_i2cDrivers[$host->typ])) continue;
             
@@ -220,7 +243,6 @@ class OrangePiDaemon extends BaseDaemon
                     $driver = new $class($host->address);
                     $result = $driver->getData();
                     
-                    $isUpdated = false;
                     if ($result) {
                         foreach ($result as $chan => $val) {
                             foreach ($this->_devices as $dev) {
@@ -230,16 +252,11 @@ class OrangePiDaemon extends BaseDaemon
                                     $dev->value != $val)
                                 {
                                     Device::setValue($dev->id, $val);
-                                    $isUpdated = true;
+                                    $outData[] = $dev->id.': '.$val;
                                     break;
                                 }
                             }
                         }
-                    }
-                    
-                    if ($isUpdated) {
-                        $s = "[".parse_datetime(now())."] I2C HOST '".$host->typ."' RETURNED NEW DATA";
-                        $this->printLine($s); 
                     }
                 } catch (\Exception $ex) {
                     $s = "[".parse_datetime(now())."] ERROR\n";
@@ -248,5 +265,67 @@ class OrangePiDaemon extends BaseDaemon
                 }
             }
         }
+        
+        if (count($outData)) {
+            $s = "[".parse_datetime(now())."] I2C [".implode(", ", $outData)."]";
+            $this->printLine($s);
+        }
+    }
+    
+    /**
+     * 
+     */
+    private function _scanNetworks()
+    {
+        Property::setOrangePiCommandInfo('', true);
+        
+        $addresses = I2c::scan();
+        
+        $new = 0;
+        $lost = 0;
+        
+        $oldHosts = $this->_i2cHosts;
+        
+        // Finding a lost entries
+        foreach ($oldHosts as $oldHost) {
+            if (!in_array($oldHost->address, $addresses)) {
+                $lost++;
+                $oldHost->lost = 1;
+            } else {
+                $oldHost->lost = 0;
+            }
+            $oldHost->save();
+        }
+        
+        // Check found entries.
+        foreach ($addresses as $addr) {
+            $find = false;
+            foreach ($oldHosts as $oldHost) {
+                if ($addr == $oldHost->address) {
+                    $find = true;
+                    break;
+                }
+            }
+            
+            if (!$find) {
+                $new++;
+                // Add to the list immediately.
+                // ...
+            }
+        }
+        
+        $report = [];
+        $s = "I2C SEARCH. [TOTAL: ".count($addresses).", NEW: ".$new.", LOST: ".$lost."] ";
+        $this->printLine($s);
+        $report[] = $s;
+        $report[] = str_repeat('-', 35);
+        foreach ($addresses as &$addr) {
+            $report[] = sprintf("x%'02X", $addr);
+        }
+        $report[] = str_repeat('-', 35);
+        $report[] = '';
+        
+        Property::setOrangePiCommandInfo(implode("\n", $report));
+        Property::setOrangePiCommandInfo('END_SCAN');
     }
 }

@@ -12,9 +12,12 @@
 @yield('page-down-menu')
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="devicesAddAll(); return false;">@lang('admin/hubs.devices_add_all')</a>
+@if(\App\Models\Hub::withNetworks($hubID))
+<div class="dropdown-divider"></div>
+<a href="#" class="dropdown-item" onclick="hubScan(); return false;">@lang('admin/hubs.hub_scan')</a>
+@endif
 @if(\App\Models\Hub::existsFirmwareHubs())
 <div class="dropdown-divider"></div>
-<a href="#" class="dropdown-item" onclick="hubsScan(); return false;">@lang('admin/hubs.hubs_scan')</a>
 <a href="#" class="dropdown-item" onclick="firmware(); return false;">@lang('admin/hubs.firmware')</a>
 <a href="#" class="dropdown-item" onclick="hubsReset(); return false;">@lang('admin/hubs.hubs_reset')</a>
 @endif
@@ -89,8 +92,8 @@
         dialog("{{ route('admin.hub-edit', ['id' => $hubID]) }}");
     }
 
-    function hubsScan() {
-        dialog("{{ route('admin.hubs-scan') }}", null, function () {
+    function hubScan() {
+        dialog("{{ route('admin.hub-network-scan', ['id' => $hubID]) }}", null, function () {
             window.location.reload();
         });
     }

@@ -9,7 +9,7 @@
     <a class="nav-link {{ active_segment(3, 'daemons') }}" 
         href="{{ route('admin.jurnal-daemons') }}">@lang('admin/jurnal.daemons')</a>
     <a class="nav-link {{ active_segment(3, 'history') }}" 
-        href="{{ route('admin.jurnal-history') }}">@lang('admin/jurnal.history')</a>
+        href="{{ route('admin.jurnal-history') }}">@lang('admin/jurnal.history') ({{ App\Models\DeviceChange::getCount() }})</a>
     <a class="nav-link {{ active_segment(3, 'forecast') }}" 
         href="{{ route('admin.jurnal-forecast') }}">@lang('admin/jurnal.forecast')</a>
     <!-- <a class="nav-link {{ active_segment(3, 'power') }}" 

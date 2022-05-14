@@ -26,4 +26,27 @@ class DeviceChange extends Model
             ]), 422);
         }
     }
+    
+    /**
+     * 
+     * @return type
+     */
+    static public function getCount()
+    {
+        $count = self::count();
+        
+        $sizes = ['', 'k', 'M', 'G'];
+        
+        $s = 0;
+        for ($i = 0; $i < 4; $i++) {
+            if ($count > 1000) {
+                $count /= 1000;
+                $s++;
+            } else {
+                break;
+            }
+        }
+        
+        return round($count, 2).$sizes[$s];
+    }
 }

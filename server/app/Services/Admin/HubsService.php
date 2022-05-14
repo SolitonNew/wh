@@ -17,8 +17,9 @@ class HubsService
 {
     /**
      * 
+     * @return type
      */
-    public function hubsScan()
+    public function dinHubsScan()
     {
         Property::setDinCommand('OW SEARCH');
         usleep(500000);
@@ -27,6 +28,26 @@ class HubsService
             usleep(100000);
             $text = Property::getDinCommandInfo();
             if ($t = strpos($text, 'END_OW_SCAN')) {
+                $text = substr($text, 0, $t);
+                break;
+            }
+        }        
+        return $text;
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function orangepiHubScan()
+    {
+        Property::setOrangePiCommand('SCAN');
+        usleep(500000);
+        $i = 0;
+        while ($i++ < 50) { // 5 sec
+            usleep(100000);
+            $text = Property::getOrangePiCommandInfo();
+            if ($t = strpos($text, 'END_SCAN')) {
                 $text = substr($text, 0, $t);
                 break;
             }

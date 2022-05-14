@@ -44,6 +44,7 @@ class HistoryController extends Controller
         }
         
         Property::setLastViewID('HISTORY', $id);
+        Property::setLastViewID('JURNAL_PAGE', 'history');
         // ----------------------------------------
         
         $this->_service->storeFilterDataFromRequest($request);

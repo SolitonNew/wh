@@ -10,7 +10,7 @@ class Property extends Model
     protected $table = 'core_properties';
     public $timestamps = false;
     
-    const VERSION = '2.5.7 alpha';
+    const VERSION = '2.5.8 alpha';
     
     /**
      * 
@@ -507,5 +507,72 @@ class Property extends Model
         $item->save();
     }
     
+    /**
+     * 
+     * @param type $clear
+     * @return string
+     */
+    static public function getOrangePiCommand($clear = false) 
+    {
+        $item = self::whereName('ORANGEPI_COMMAND')->first();
+        if ($item) {
+            $value = $item->value;
+            if ($clear && $value != '') {
+                $item->value = '';
+                $item->save();
+            }
+            return $value;
+        }
+        return '';
+    }
     
+    /**
+     * 
+     * @param type $command
+     */
+    static public function setOrangePiCommand($command) 
+    {
+        $item = self::whereName('ORANGEPI_COMMAND')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'ORANGEPI_COMMAND';
+            $item->comm = '';
+        }
+        $item->value = $command;
+        $item->save();
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    static public function getOrangePiCommandInfo() 
+    {
+        $item = self::whereName('ORANGEPI_COMMAND_INFO')->first();
+        if ($item) {
+            return $item->value;
+        }
+        return '';
+    }
+    
+    /**
+     * 
+     * @param type $text
+     * @param type $new
+     */
+    static public function setOrangePiCommandInfo($text, $first = false) 
+    {
+        $item = self::whereName('ORANGEPI_COMMAND_INFO')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'ORANGEPI_COMMAND_INFO';
+            $item->comm = '';
+        }
+        if ($first) {
+            $item->value = $text;
+        } else {
+            $item->value .= $text;
+        }
+        $item->save();
+    }
 }

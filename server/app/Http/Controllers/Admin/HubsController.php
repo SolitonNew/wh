@@ -35,10 +35,11 @@ class HubsController extends Controller
     public function index(int $hubID = null) 
     {
         // Last view id  --------------------------
+        $page = Property::getLastViewID('HUB_PAGE') ?: 'hosts';
         if (!$hubID) {
             $hubID = Property::getLastViewID('HUB');
             if ($hubID && Hub::find($hubID)) {
-                return redirect(route('admin.hub-hosts', ['hubID' => $hubID]));
+                return redirect(route('admin.hub-'.$page, ['hubID' => $hubID]));
             }
             $hubID = null;
         }
@@ -46,11 +47,12 @@ class HubsController extends Controller
         if (!$hubID) {
             $item = Hub::orderBy('name', 'asc')->first();
             if ($item) {
-                return redirect(route('admin.hub-hosts', ['hubID' => $item->id]));
+                return redirect(route('admin.hub-'.$page, ['hubID' => $item->id]));
             }
         }
         
         Property::setLastViewID('HUB', $hubID);
+        Property::setLastViewID('HUB_PAGE', 'hosts');
         // ----------------------------------------
         
         return view('admin/hubs/hubs', [
@@ -99,13 +101,25 @@ class HubsController extends Controller
      * This route scans child hosts.
      * Returns a view with scan dialog report.
      * 
+     * @param int $id
      * @return type
      */
-    public function hubsScan() 
+    public function hubNetworkScan(int $id) 
     {
-        $text = $this->_service->hubsScan();
+        $hub = Hub::find($id);
         
-        return view('admin.hubs.hubs-scan', [
+        switch ($hub->typ) {
+            case 'din':
+                $text = $this->_service->dinHubsScan();
+                break;
+            case 'orangepi':
+                $text = $this->_service->orangepiHubScan();
+                break;
+            default:
+                $text = 'It is impossible';
+        }
+        
+        return view('admin.hubs.hub-network-scan', [
             'data' => $text,
         ]);
     }
