@@ -220,6 +220,8 @@ class OrangePiDaemon extends BaseDaemon
         // Storing the previous time value
         $this->_prevExecuteHostI2cTime = $now;
         
+        $outData = [];
+        
         foreach ($this->_i2cHosts as $host) {
             if (!isset($this->_i2cDrivers[$host->typ])) continue;
             
@@ -230,7 +232,6 @@ class OrangePiDaemon extends BaseDaemon
                     $driver = new $class($host->address);
                     $result = $driver->getData();
                     
-                    $isUpdated = false;
                     if ($result) {
                         foreach ($result as $chan => $val) {
                             foreach ($this->_devices as $dev) {
@@ -240,16 +241,11 @@ class OrangePiDaemon extends BaseDaemon
                                     $dev->value != $val)
                                 {
                                     Device::setValue($dev->id, $val);
-                                    $isUpdated = true;
+                                    $outData[] = $dev->id.': '.$val;
                                     break;
                                 }
                             }
                         }
-                    }
-                    
-                    if ($isUpdated) {
-                        $s = "[".parse_datetime(now())."] I2C HOST '".$host->typ."' RETURNED NEW DATA";
-                        $this->printLine($s); 
                     }
                 } catch (\Exception $ex) {
                     $s = "[".parse_datetime(now())."] ERROR\n";
@@ -257,6 +253,11 @@ class OrangePiDaemon extends BaseDaemon
                     $this->printLine($s); 
                 }
             }
+        }
+        
+        if (count($outData)) {
+            $s = "[".parse_datetime(now())."] I2C [".implode(", ", $outData)."]";
+            $this->printLine($s);
         }
     }
     
