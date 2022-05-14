@@ -47,6 +47,6 @@ class DeviceChange extends Model
             }
         }
         
-        return round($count).$sizes[$s];
+        return round($count, 2).$sizes[$s];
     }
 }
