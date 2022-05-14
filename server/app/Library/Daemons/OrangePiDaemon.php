@@ -288,7 +288,7 @@ class OrangePiDaemon extends BaseDaemon
         
         // Finding a lost entries
         foreach ($oldHosts as $oldHost) {
-            if (!in_array($addresses, $oldHost->address)) {
+            if (!in_array($oldHost->address, $addresses)) {
                 $lost++;
                 $oldHost->lost = 1;
             } else {
