@@ -48,6 +48,7 @@ class DaemonsController extends Controller
         }
         
         Property::setLastViewID('DAEMON', $id);
+        Property::setLastViewID('JURNAL_PAGE', 'daemons');
         // ----------------------------------------
         
         return view('admin.jurnal.daemons.daemons', [

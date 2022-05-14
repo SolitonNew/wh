@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Admin\Jurnal;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\ForecastService;
 use App\Models\ExtApiHostStorage;
+use App\Models\Property;
 
 /**
  * Description of ForecastController
@@ -32,6 +33,10 @@ class ForecastController extends Controller
      */
     public function index()
     {
+        // Store last page
+        Property::setLastViewID('JURNAL_PAGE', 'forecast');
+        // ----------------------------------------
+        
         return view('admin.jurnal.forecast.forecast', [
             'data' => $this->_service->getData(),
         ]);

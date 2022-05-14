@@ -45,7 +45,7 @@ class DevicesController extends Controller
         if (!$hubID) {
             $hubID = Property::getLastViewID('HUB');
             if ($hubID) {
-                return redirect(route('admin.hub-hosts', ['hubID' => $hubID]));
+                return redirect(route('admin.hub-devices', ['hubID' => $hubID]));
             } else {
                 $hubID = null;
             }
@@ -54,7 +54,7 @@ class DevicesController extends Controller
         if (!$hubID) {
             $item = Hub::orderBy('name', 'asc')->first();
             if ($item) {
-                return redirect(route('admin.hub-hosts', ['hubID' => $item->id]));
+                return redirect(route('admin.hub-devices', ['hubID' => $item->id]));
             }
         }
         
@@ -64,6 +64,7 @@ class DevicesController extends Controller
         }
         
         Property::setLastViewID('HUB', $hubID);
+        Property::setLastViewID('HUB_PAGE', 'devices');
         // ----------------------------------------
         
         

@@ -60,6 +60,7 @@ class HostsController extends Controller
         }
         
         Property::setLastViewID('HUB', $hubID);
+        Property::setLastViewID('HUB_PAGE', 'hosts');
         // ----------------------------------------
         
         

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Property;
 
 class JurnalController extends Controller
 {
@@ -13,6 +14,8 @@ class JurnalController extends Controller
      */
     public function index()
     {
-        return redirect(route('admin.jurnal-daemons'));
+        $page = Property::getLastViewID('JURNAL_PAGE') ?: 'daemons';
+        
+        return redirect(route('admin.jurnal-'.$page));
     }
 }
