@@ -40,13 +40,13 @@ class DeviceChange extends Model
         $s = 0;
         for ($i = 0; $i < 4; $i++) {
             if ($count > 1000) {
-                $count = round($count / 1000);
+                $count /= 1000;
                 $s++;
             } else {
                 break;
             }
         }
         
-        return $count.$sizes[$s];
+        return round($count).$sizes[$s];
     }
 }
