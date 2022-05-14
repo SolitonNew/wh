@@ -300,7 +300,7 @@ class OrangePiDaemon extends BaseDaemon
         // Check found entries.
         foreach ($addresses as $addr) {
             $find = false;
-            foreach ($oldHost as $oldHost) {
+            foreach ($oldHosts as $oldHost) {
                 if ($addr == $oldHost->address) {
                     $find = true;
                     break;
