@@ -39,6 +39,10 @@ sudo systemctl restart apache2
 ```
 sudo apt install mysql-server
 sudo apt install php8.1-mysql
+sudo nano /etc/mysql/conf.d/mysql.cnf
+```
+```
+expire_logs_days = 1
 ```
 ```
 sudo mysql
