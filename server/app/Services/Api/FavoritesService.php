@@ -67,7 +67,7 @@ class FavoritesService
             $varSteps[] = "{id: ".$device->data->id.", step: ".$device->control->varStep."}";
             
             if ($device->control->typ == 1) {
-                $sql = "select UNIX_TIMESTAMP(v.created_at) * 1000 v_date, v.value ".
+                $sql = "select v.created_at, v.value ".
                        "  from core_events_mem v ".
                        " where v.device_id = ".$device->data->id.
                        "   and v.value <> 85 ".
@@ -78,10 +78,10 @@ class FavoritesService
                 
                 $chartData = [];
                 foreach(DB::select($sql) as $v_row) {
-                    $x = $v_row->v_date;
+                    $x = \Carbon\Carbon::parse($v_row->created_at)->toRfc2822String();
                     $y = $v_row->value;
                     $chartData[] = (object)[
-                        'x' => (int)$x,
+                        'x' => $x,
                         'y' => $y,
                     ];
                 }
