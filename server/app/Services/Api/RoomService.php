@@ -74,7 +74,7 @@ class RoomService
                 
                 $chartData = [];
                 foreach(DB::select($sql) as $v_row) {
-                    $x = \Carbon\Carbon::parse($v_row->created_at)->toRfc2822String();
+                    $x = \Carbon\Carbon::parse($v_row->created_at, 'UTC')->toRfc2822String();
                     $y = $v_row->value;
                     $chartData[] = (object)[
                         'x' => $x,
