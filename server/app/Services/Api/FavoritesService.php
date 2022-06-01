@@ -64,11 +64,10 @@ class FavoritesService
             
             if ($device->control->typ == 1) {
                 $sql = "select v.created_at, v.value ".
-                       "  from core_events_mem v ".
+                       "  from core_device_changes v ".
                        " where v.device_id = ".$device->data->id.
-                       "   and v.value <> 85 ".
                        "   and v.created_at > (select max(zz.created_at) ".
-                       "                          from core_events_mem zz ".
+                       "                          from core_device_changes zz ".
                        "                         where zz.device_id = ".$device->data->id.") - interval 3 hour ".
                        " order by v.id ";
                 
