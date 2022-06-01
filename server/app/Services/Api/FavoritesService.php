@@ -81,7 +81,7 @@ class FavoritesService
                     $x = $v_row->v_date;
                     $y = $v_row->value;
                     $chartData[] = (object)[
-                        'x' => $x,
+                        'x' => (int)$x,
                         'y' => $y,
                     ];
                 }
