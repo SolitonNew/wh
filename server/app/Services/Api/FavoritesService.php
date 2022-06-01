@@ -48,8 +48,6 @@ class FavoritesService
             }
         }
         
-        $varSteps = [];
-        
         foreach ($result as &$device) {
             $itemLabel = $device->control->title;
 
@@ -63,8 +61,6 @@ class FavoritesService
                     break;
                 }
             }
-
-            $varSteps[] = "{id: ".$device->data->id.", step: ".$device->control->varStep."}";
             
             if ($device->control->typ == 1) {
                 $sql = "select v.created_at, v.value ".
@@ -78,7 +74,7 @@ class FavoritesService
                 
                 $chartData = [];
                 foreach(DB::select($sql) as $v_row) {
-                    $x = \Carbon\Carbon::parse($v_row->created_at)->toRfc2822String();
+                    $x = \Carbon\Carbon::parse($v_row->created_at, 'UTC')->toRfc2822String();
                     $y = $v_row->value;
                     $chartData[] = (object)[
                         'x' => $x,
