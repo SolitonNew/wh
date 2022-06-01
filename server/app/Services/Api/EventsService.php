@@ -24,7 +24,7 @@ class EventsService
      */
     public function getEvents(int $lastID)
     {
-        $res = DB::select("select c.id, c.device_id, c.value, UNIX_TIMESTAMP(c.created_at) * 1000 created_at ".
+        $res = DB::select("select c.id, c.device_id, c.value, UNIX_TIMESTAMP(c.created_at) created_at ".
                           "  from core_events_mem c ".
                           " where c.id > $lastID ".
                           " order by c.id");
