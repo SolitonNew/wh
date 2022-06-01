@@ -8,6 +8,8 @@ use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -49,6 +51,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception::class == NotFoundHttpException::class) {
+            $p = ['admin', 'img', 'js', 'css', 'audio'];
+            if (!in_array($request->segment(1), $p)) return redirect('/');
+        }
+        
         if (env('APP_DEBUG')) {
             dd($exception);
         }

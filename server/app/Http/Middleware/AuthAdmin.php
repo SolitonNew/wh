@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 
-class Authenticate
+class AuthAdmin
 {
     /**
      * The authentication guard factory instance.
@@ -35,27 +35,8 @@ class Authenticate
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if ($this->auth->guard($guard)->guest()) {
-            if ($request->segment(1) == 'api') {
-                return response('401 Unauthorized', 401);
-            } else {
-                return redirect(route('login'));
-            }
-        }
-        
-        $access = $this->auth->user()->access;
-        $prefix = $request->segment(1);
-        
-        switch ($access) {
-            case 1:
-                if ($prefix != 'terminal') {
-                    return redirect(route('login'));
-                }
-                break;
-            case 2:
-                break;
-            default:
-                return redirect(route('login'));
+        if ($this->auth->guard($guard)->guest() || $this->auth->user()->access < 2) {
+            return redirect(route('login'));
         }
 
         return $next($request);

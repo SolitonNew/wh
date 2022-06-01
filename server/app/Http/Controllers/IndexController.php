@@ -12,10 +12,12 @@ class IndexController extends Controller
      */
     public function index(Request $request) 
     {
-        if ($request->api_token) {
+        return file_get_contents(base_path().'/public/index.html');
+        
+        /*if ($request->api_token) {
             return redirect(route('home', ['api_token' => $request->api_token]));
         } else {
             return redirect(route('home'));
-        }
+        }*/
     }
 }

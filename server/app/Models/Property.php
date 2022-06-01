@@ -28,6 +28,24 @@ class Property extends Model
     
     /**
      * 
+     * @param array $colors
+     */
+    static public function setWebColors(array $colors)
+    {
+        $item = self::whereName('WEB_COLOR')->first();
+        
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'WEB_COLOR';
+            $item->comm = '';
+        }
+        
+        $item->value = json_encode($colors);
+        $item->save();
+    }
+    
+    /**
+     * 
      * @return type
      */
     static public function getWebChecks() 
@@ -38,6 +56,23 @@ class Property extends Model
         } else {
             return '';
         }
+    }
+    
+    /**
+     * 
+     * @param string $checks
+     */
+    static public function setWebChecks(string $checks)
+    {
+        $item = self::whereName('WEB_CHECKED')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'WEB_CHECKED';
+            $item->comm = '';
+        }
+        
+        $item->value = $checks;
+        $item->save();
     }
     
     /**

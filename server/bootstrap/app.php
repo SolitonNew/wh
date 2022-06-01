@@ -59,7 +59,6 @@ $app->singleton(
 |
 */
 
-//$app->configure('app');
 collect(scandir(__DIR__ . '/../config'))->each(function ($item) use ($app) {
     $app->configure(basename($item, '.php')); 
 });
@@ -75,12 +74,14 @@ collect(scandir(__DIR__ . '/../config'))->each(function ($item) use ($app) {
 |
 */
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
+$app->middleware([
+    //App\Http\Middleware\ExampleMiddleware::class
+    Fruitcake\Cors\HandleCors::class,
+]);
 
 $app->routeMiddleware([
-     'auth' => App\Http\Middleware\Authenticate::class,
+    'auth.terminal' => App\Http\Middleware\AuthTerminal::class,
+    'auth.admin' => App\Http\Middleware\AuthAdmin::class,
 ]);
 
 /*
@@ -97,6 +98,7 @@ $app->routeMiddleware([
 //$app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
+$app->register(Fruitcake\Cors\CorsServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -116,19 +118,17 @@ $app->router->group([
 });
 
 $app->router->group([
-    'namespace' => 'App\Http\Controllers\Terminal',
-    'prefix' => 'terminal',
-    'middleware' => 'auth',
+    'namespace' => 'App\Http\Controllers\Admin',
+    'prefix' => 'admin',
 ], function ($router) {
-    require __DIR__.'/../routes/terminal.php';
+    require __DIR__.'/../routes/admin.php';
 });
 
 $app->router->group([
-    'namespace' => 'App\Http\Controllers\Admin',
-    'prefix' => 'admin',
-    'middleware' => 'auth',
+    'namespace' => 'App\Http\Controllers\Api',
+    'prefix' => 'api',
 ], function ($router) {
-    require __DIR__.'/../routes/admin.php';
+    require __DIR__.'/../routes/api.php';
 });
 
 return $app;
