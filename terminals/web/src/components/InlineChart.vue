@@ -4,8 +4,7 @@
         :id="id"
         :chart-data="chartData"
         :chart-options="options"
-        :height="137" 
-        />
+        :height="137" />
 </template>
 
 <script>
@@ -83,22 +82,23 @@
                 if (!this.chartData.datasets[0].data) {
                     this.chartData.datasets[0].data = [];
                 }
+
                 this.chartData.datasets[0].data.push({
-                    x: time,
+                    x: moment.unix(time).toISOString(),
                     y: value
                 });
                 this.updateRange();
             },
             updateRange: function () {
-                this.options.scales.xAxis.min = moment().add(-this.hours, 'hours').utc();
-                this.options.scales.xAxis.max = moment().utc();
+                this.options.scales.xAxis.min = moment().add(-this.hours, 'hours').toISOString();
+                this.options.scales.xAxis.max = moment().add(2, 'minutes').toISOString();
 
-                let start = moment().add(-this.hours, 'hours').utc().unix() * 1000;
+                let start = moment().add(-this.hours, 'hours').utc();
 
                 if (this.chartData.datasets[0].data) {
                     let prevVal = false;
                     for (let i = 0; i < this.chartData.datasets[0].data.length; i++) {
-                        if (this.chartData.datasets[0].data[0].x < start) {
+                        if (start.diff(this.chartData.datasets[0].data[0].x, 'minutes') > 1) {
                             prevVal = this.chartData.datasets[0].data.shift(0);
                         } else {
                             break;
