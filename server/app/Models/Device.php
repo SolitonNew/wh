@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Lang;
 use Log;
 use DB;
 
@@ -43,82 +42,16 @@ class Device extends AffectsFirmwareModel
      * @return object
      */
     static public function decodeAppControl($app_control) 
-    {
-        $control = '';
-        $typ = -1; // 1-label; 2-switch; 3-track;
-        $resolution = '';
-        $varMin = 0;
-        $varMax = 10;
-        $varStep = 1;    
-        switch ($app_control) {
-            case 1: // Light
-                $control = Lang::get('admin/hubs.log_app_control.1');
-                $typ = 2;
-                break;
-            case 3: // Socket
-                $control = '';
-                $typ = 2;
-                break;
-            case 4: // Termometr
-                $control = Lang::get('admin/hubs.log_app_control.4');
-                $typ = 1;
-                $resolution = '°C';
-                break;
-            case 5: // Termostat
-                $control = Lang::get('admin/hubs.log_app_control.5');
-                $typ = 3;
-                $resolution = '°C';
-                $varMin = 15;
-                $varMax = 30;
-                $varStep = 1;
-                break;
-            case 7: // Fan
-                $control = Lang::get('admin/hubs.log_app_control.7');
-                $typ = 3;
-                $resolution = '%';
-                $varMin = 0;
-                $varMax = 100;
-                $varStep = 10;
-                break;
-            case 10: // Humidity sensor
-                $control = Lang::get('admin/hubs.log_app_control.10');
-                $typ = 1;
-                $resolution = '%';
-                break;
-            case 11: // Gas sensor
-                $control = Lang::get('admin/hubs.log_app_control.11');
-                $typ = 1;
-                $resolution = 'ppm';
-                break;
-            case 13: // Atm. pressure
-                $control = '';
-                $typ = 1;
-                $resolution = 'mm';
-                break;
-            case 14: // Current sensor
-                $control = Lang::get('admin/hubs.log_app_control.14');
-                $typ = 1;
-                $resolution = 'A';
-                break;
-            case 15: // Speed
-                $control = Lang::get('admin/hubs.log_app_control.15');
-                $typ = 1;
-                $resolution = 'm/s';
-                break;
-            case 16: // Direction
-                $control = Lang::get('admin/hubs.log_app_control.16');
-                $typ = 1;
-                $resolution = '°';
-                break;
-        }
+    {        
+        $info = config('devices.app_controls.'.$app_control);
 
         return (object)[
-            'label' => $control,
-            'typ' => $typ,
-            'resolution' => $resolution,
-            'varMin' => $varMin,
-            'varMax' => $varMax,
-            'varStep' => $varStep
+            'label' => $info['log'],
+            'typ' => $info['typ'],
+            'resolution' => $info['unit'],
+            'varMin' => $info['min'],
+            'varMax' => $info['max'],
+            'varStep' => $info['step']
         ];
     }
     

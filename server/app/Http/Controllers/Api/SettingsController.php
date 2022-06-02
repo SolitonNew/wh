@@ -66,9 +66,7 @@ class SettingsController extends Controller
      */
     public function getAppControlList()
     {
-        $data = Lang::get('admin/hubs.log_app_control');
-        
-        return response()->json($data);
+        return response()->json(config('devices.app_controls'));
     }
     
     /**

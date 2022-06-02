@@ -5,7 +5,7 @@
 <template>
     <div class="toolbar">
         <select ref="filter" class="form-control" v-on:change="changeFilterValue">
-            <option v-for="(item, key) in types" :value="key" :selected="key == filterValue">{{ item }}</option>
+            <option v-for="(item, key) in types" :value="key" :selected="key == filterValue">{{ item['title'] }}</option>
         </select>
     </div>
     <div v-for="item in devices" class="checked-item" v-show="filterValue == 0 || item.data.app_control == filterValue">

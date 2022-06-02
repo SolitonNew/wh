@@ -63,7 +63,7 @@
                     <td class="nowrap">
                         @if($row->room && $row->room->name){{ $row->room->name }}@else -- @lang('admin/hubs.device_group_empty') -- @endif
                     </td>
-                    <td>@lang('admin/hubs.app_control.'.$row->app_control)</td>
+                    <td>{{ config('devices.app_controls.'.$row->app_control)['title'] }}</td>
                     <td class="device-value" data-time="{{ \Carbon\Carbon::parse($row->last_update)->timestamp }}">{{ $row->value }}</td>
                     <td>{{ $row->channel ?: '' }}</td>
                 </tr>

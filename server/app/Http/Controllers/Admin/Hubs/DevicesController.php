@@ -91,12 +91,11 @@ class DevicesController extends Controller
     {
         $item = Device::findOrCreate($id, $hubID);
         $groupPath = Room::getPath($item->room_id, ' / ');
-        $appControls = Lang::get('admin/hubs.app_control');
 
         return view('admin.hubs.devices.device-edit', [
             'item' => $item,
             'groupPath' => $groupPath,
-            'appControls' => $appControls,
+            'appControls' => config('devices.app_controls'),
         ]);
     }
     

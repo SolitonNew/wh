@@ -41,7 +41,7 @@ class ScriptEditor
         
         $strings = [];
         foreach (Device::orderBy('name', 'asc')->get() as $row) {
-            $strings[$row->name] = $row->comm.' '.Lang::get('admin/hubs.app_control.'.$row->app_control);
+            $strings[$row->name] = $row->comm.' '.config('devices.app_controls.'.$row->app_control)['title'];
         }
         
         return (object)[
