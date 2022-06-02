@@ -66,9 +66,7 @@ class FavoritesService
                 $sql = "select v.created_at, v.value ".
                        "  from core_device_changes v ".
                        " where v.device_id = ".$device->data->id.
-                       "   and v.created_at > (select max(zz.created_at) ".
-                       "                          from core_device_changes zz ".
-                       "                         where zz.device_id = ".$device->data->id.") - interval 3 hour ".
+                       "   and v.created_at > CURRENT_TIMESTAMP() - interval 3 hour".
                        " order by v.id ";
                 
                 $chartData = [];
