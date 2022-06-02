@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Videcam;
 
 class CamsController extends Controller
 {
@@ -12,6 +13,8 @@ class CamsController extends Controller
      */
     public function getData()
     {
-        return response()->json([]);
+        $data = Videcam::orderBy('name')->get();
+        
+        return response()->json($data);
     }
 }
