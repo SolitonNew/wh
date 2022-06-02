@@ -83,15 +83,16 @@ class EventMem extends Model
      */
     static public function decodeLogValue($app_control, $value) 
     {
-        $dim = Lang::get('admin/hubs.log_app_control_dim.'.$app_control);
-        if (is_array($dim)) {
-            if (isset($dim[$value])) {
-                return $dim[$value];
+        $info = config('devices.app_controls.'.$app_control);
+        
+        if (count($info['values'])) {
+            if (isset($info['values'][$value])) {
+                return $info['values'][$value];
             } else {
                 return $value;
             }
         } else {
-            return $value.$dim;
+            return $value.$info['unit'];
         }
     }
     

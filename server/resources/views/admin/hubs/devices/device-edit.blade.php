@@ -29,7 +29,7 @@
         <div class="col-sm-8">
             <select class="custom-select" name="app_control">
                 @foreach($appControls as $key => $val)
-                <option value="{{ $key }}" {{ $key == $item->app_control ? 'selected' : '' }}>{{ $val }}</option>
+                <option value="{{ $key }}" {{ $key == $item->app_control ? 'selected' : '' }}>{{ $val['title'] }}</option>
                 @endforeach
             </select>
             <div class="invalid-feedback"></div>

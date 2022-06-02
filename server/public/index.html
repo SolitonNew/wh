@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WISE HOUSE</title>
+        <link rel="stylesheet" href="/web-terminal.css">
+      <script type="module" crossorigin src="/js/terminal-index.js"></script>
+      <link rel="stylesheet" href="/css/terminal-index.css">
+    </head>
+    <body>
+        <div id="app">
+            <router-view v-if="logined"></router-view>
+            <Login v-if="!logined" ref="login" v-on:login-success="loginSuccess()"/>
+        </div>
+        <script>
+            if (global === undefined) {
+                var global = window;
+            }
+        </script>
+        
+    </body>
+</html>

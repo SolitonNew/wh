@@ -36,7 +36,11 @@ class Authenticate
     public function handle($request, Closure $next, $guard = null)
     {
         if ($this->auth->guard($guard)->guest()) {
-            return redirect(route('login'));
+            if ($request->segment(1) == 'api') {
+                return response('401 Unauthorized', 401);
+            } else {
+                return redirect(route('login'));
+            }
         }
         
         $access = $this->auth->user()->access;

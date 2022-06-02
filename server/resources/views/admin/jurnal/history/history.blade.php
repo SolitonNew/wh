@@ -33,7 +33,7 @@
                     <div class="text-muted" style="display: flex;justify-content: space-between;flex-wrap: wrap;margin-right: 0.5rem;">
                         <small class="nowrap">{{ $row->comm ?? ($row->room ? $row->room->name : '') }}</small>
                         @if($row->app_control > 0)
-                        <small class="nowrap">@lang('admin/hubs.app_control.'.$row->app_control)</small>
+                        <small class="nowrap">{{ config('devices.app_controls.'.$row->app_control)['title'] }}</small>
                         @endif
                     </div>
                 </a>
