@@ -68,8 +68,6 @@ const app = createApp({
                 setTimeout(() => {
                     this.onResizeWindow();
                 }, 1);
-            } else {
-                this.$refs.login.showBadCredentials();
             }
         },
         apiLogoutCallback: function () {

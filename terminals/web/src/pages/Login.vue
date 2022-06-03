@@ -48,13 +48,13 @@
             onSubmit: function (e) {
                 e.preventDefault();
                 this.error = false;
-                api.login(this.$refs.login.value, this.$refs.password.value, (finished) => {
+                api.login(this.$refs.login.value, this.$refs.password.value, (success) => {
                     this.loading = false;
-                    if (!finished) {
+                    if (!success) {
                         this.error = true;
                     }
                 });
-            },
+            }
         }
     }
 </script>
