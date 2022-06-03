@@ -5,13 +5,13 @@
 <template>
     <div class="container center">
         <form id="login" class="modal-box box-sm border" v-on:submit="onSubmit">
-            <div class="row" v-if="error">
-                <div class="error">Bad credentials</div>
-            </div>
             <div class="modal-header">
                 <h3>Login - Web Terminal</h3>
             </div>
             <div class="modal-body">
+                <div class="row" v-if="error">
+                    <div class="error">Bad credentials</div>
+                </div>
                 <div class="row">
                     <label>Login:</label>
                     <div class="login-input">
@@ -49,12 +49,12 @@
                 e.preventDefault();
                 this.error = false;
                 api.login(this.$refs.login.value, this.$refs.password.value, (finished) => {
-                    this.loading = !finished;
+                    this.loading = false;
+                    if (!finished) {
+                        this.error = true;
+                    }
                 });
             },
-            showBadCredentials: function () {
-                this.error = true;
-            }
         }
     }
 </script>
