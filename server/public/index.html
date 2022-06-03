@@ -11,7 +11,24 @@
     </head>
     <body>
         <div id="app">
-            <router-view v-if="logined"></router-view>
+            <div v-if="logined" v-bind:class="{show: logined}"
+                 class="page-navigator-scroller"
+                 ref="pageScroller"
+                 v-on:scroll="onPageScroll"
+                 v-on:touchstart="onPageTouchStart" 
+                 v-on:touchend="onPageTouchEnd">
+                <div class="page-navigator">
+                    <div class="page-navigator-left" v-bind:class="{white: checkPageScrollLeft}">
+                        LEFT
+                    </div>
+                    <div class="page-navigator-center">
+                        <router-view></router-view>
+                    </div>
+                    <div class="page-navigator-right" v-bind:class="{white: checkPageScrollRight}">
+                        RIGHT
+                    </div>
+                </div>
+            </div>
             <Login v-if="!logined" ref="login" v-on:login-success="loginSuccess()"/>
         </div>
         <script>

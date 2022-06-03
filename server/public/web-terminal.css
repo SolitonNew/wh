@@ -129,7 +129,7 @@ body {
     margin: 0px;
     padding: 0px;
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 0px;
 }
 
 a {
@@ -143,6 +143,53 @@ a:hover {
     text-decoration: underline;
 }
 
+.page-navigator-scroller {
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: auto;
+    display: none;
+}
+
+.page-navigator-scroller.show {
+    display: block;
+}
+
+.page-navigator-scroller::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.page-navigator {
+    display: flex;
+    flex-direction: row;
+}
+
+.page-navigator-left {
+    display: none;
+    min-width: calc(100vw - 1px);
+    border-right: 1px solid #cccccc;
+    background-color: #aaaaaa;
+}
+
+.page-navigator-center {
+    min-width: 100vw;
+}
+
+.page-navigator-right {
+    display: none;
+    min-width: calc(100vw - 1px);
+    border-left: 1px solid #cccccc;
+    background-color: #aaaaaa;
+}
+
+.page-navigator-left.white, 
+.page-navigator-right.white {
+    background-color: #ffffff;
+}
+
 nav {
     position: fixed;
     display: flex;
@@ -154,6 +201,7 @@ nav {
     padding: 0.75rem 1rem;
     background-color: #e9ecef;
     z-index: 100;
+    line-height: 1.5!important;
 }
 
 body.nav-offset nav {
@@ -197,6 +245,7 @@ nav li.right::before {
     flex-direction: column;
     padding: 4rem 0px 0px 0px;
     min-height: calc(100vh - 4rem);
+    line-height: 1.5!important;
 }
 
 .container.center {
@@ -464,6 +513,11 @@ nav li.right::before {
 }
 
 @media(max-width: 668px) {
+    .page-navigator-left, 
+    .page-navigator-right {
+        display: inline-block;
+    }
+    
     .container {
         
     }

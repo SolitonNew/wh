@@ -51,6 +51,7 @@
 <style scoped>
     .order-list {
         cursor: default;
+        touch-action: none;
     }
 
     .order-item {
@@ -76,6 +77,7 @@
         color: #fff;
         background-color: #007bff;
         border-color: #007bff;
+        line-height: 1.5rem;
     }
 
     .gu-hide {

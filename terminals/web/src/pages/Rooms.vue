@@ -40,7 +40,7 @@
             </div>
         </div>
     </div>
-    <Cams/>
+    <Cams v-show="data !== null" />
 </div>
 </template>
 
