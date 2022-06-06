@@ -15,6 +15,12 @@ class CamsController extends Controller
     {
         $data = Videcam::orderBy('name')->get();
         
+        $i = 0;
+        foreach ($data as &$row) {
+            $row->stream_port = (10000 + $i);
+            $i++;
+        }
+        
         return response()->json($data);
     }
 }
