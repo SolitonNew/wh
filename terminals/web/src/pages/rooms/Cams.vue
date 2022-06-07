@@ -1,5 +1,5 @@
 <script setup>
-    import {api} from '@/api.js'
+    import InlineCam from '@/components/InlineCam.vue';
 </script>
 
 <template>
@@ -10,30 +10,21 @@
         v-on:touchstart="onTouchStart" 
         v-on:touchend="onTouchEnd">
         <div class="video-cameras-list">
-            <div v-for="(item, index) in data" class="video-camera">
-                <video 
-                    :data-src="host + ':' + item.stream_port" 
-                    preload="none" 
-                    :poster="'/img/cams/cam' + (index + 1) + '.png'"
-                    v-on:play="onVideoPlay"
-                    v-on:ended="onVideoEnd" 
-                    v-on:abort="onVideoEnd" 
-                    v-on:error="onVideoEnd"></video>
-                <div class="video-camera-play" v-on:click="toogleVideo"></div>
-            </div>
+            <InlineCam v-for="(item, index) in data" :port="item.stream_port"/>
         </div>
     </div>
 </div>
 </template>
 
 <script>
+    import {api} from '@/api.js'
+
     export default {
         data() {
             return {
                 data: null,
                 loading: true,
                 errored: false,
-                host: 'http://' + window.location.hostname,
             }
         },
         scrollTimer: false,
@@ -56,24 +47,6 @@
             clearInterval(this.scrollAnimate);
         },
         methods: {
-            toogleVideo: function (e) {
-                let video = e.target.previousSibling;
-                if (!video.getAttribute('src')) {
-                    let url = video.getAttribute('data-src');
-                    video.setAttribute('src', url + '?rnd=' + Math.random());
-                    video.play();
-                } else {
-                    video.setAttribute('src', '');
-                }
-            },
-            onVideoPlay: function (e) {
-                e.target.parentElement.classList.add('play');
-            },
-            onVideoEnd: function (e) {
-                e.target.parentElement.classList.remove('play');
-                e.target.setAttribute('src', '');
-            },
-
             onScroll: function (event) {
                 this.scrollComplette();
             },
@@ -154,59 +127,7 @@
         flex-wrap: nowrap;
     }
 
-    .video-camera {
-        position: relative;
-        display: inline-block;
-        min-width: 420px;
-        height: calc(420px / 16 * 9);
-        background-color: #ffffff;
-    }
-
-    .video-camera video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .video-camera-title {
-        position: absolute; 
-        left: 10px;
-        top: 10px;
-    }
-
-    .video-camera-play {
-        position: absolute;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        left: 0px;
-        top: 0px;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0);
-        cursor: pointer;
-        background-image: url('/img/play-circle-8x.png');
-        background-repeat: no-repeat;
-        background-position: center;
-        filter: invert(100%);
-        opacity: 0.5;
-    }
-
-    .video-camera-play:hover {
-        opacity: 0.75;
-    }
-
-    .video-camera.play .video-camera-play {
-        opacity: 0;
-    }
-
     @media(max-width: 668px) {
-        .video-camera {
-            min-width: 100vw;
-            width: 100vw;
-            height: calc(100vw / 16 * 9);
-        }
-
         .video-cameras-scroller {
             justify-content: flex-start;
         }
