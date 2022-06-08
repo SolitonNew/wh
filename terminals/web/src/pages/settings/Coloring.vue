@@ -1,30 +1,32 @@
 <script setup>
+    import Spinner from '@/components/Spinner.vue'
     import ColorDialog from '@/pages/settings/ColorDialog.vue';
     import ColorDelete from '@/pages/settings/ColorDelete.vue';
 </script>
 
 <template>
-<div class="toolbar">
-    <button class="btn btn-primary" v-on:click="dialogEdit(-1)">ADD</button>
-</div>
-<div>
-    <div v-for="(item, index) in colors" class="item-row">
-        <div class="item-value">
-            <div class="item-keyword">{{ item.keyword }}</div>
-            <div class="item-color">{{ item.color }}</div>
-        </div>
-        <div class="item-actions">
-            <button class="icon" v-on:click="dialogEdit(index)">
-                <img src="/img/pencil-2x.png">
-            </button>
-            <button class="icon" v-on:click="deleteShow(index)">
-                <img src="/img/x-2x.png">
-            </button>
+    <div class="toolbar">
+        <button class="btn btn-primary" v-on:click="dialogEdit(-1)">ADD</button>
+    </div>
+    <div>
+        <div v-for="(item, index) in colors" class="item-row">
+            <div class="item-value">
+                <div class="item-keyword">{{ item.keyword }}</div>
+                <div class="item-color">{{ item.color }}</div>
+            </div>
+            <div class="item-actions">
+                <button class="icon" v-on:click="dialogEdit(index)">
+                    <img src="/img/pencil-2x.png">
+                </button>
+                <button class="icon" v-on:click="deleteShow(index)">
+                    <img src="/img/x-2x.png">
+                </button>
+            </div>
         </div>
     </div>
-</div>
-<ColorDialog ref="dialog" v-on:success="dialogSuccess" />
-<ColorDelete ref="delete" v-on:success="deleteSuccess" text="Are you sure?" />
+    <ColorDialog ref="dialog" v-on:success="dialogSuccess" />
+    <ColorDelete ref="delete" v-on:success="deleteSuccess" text="Are you sure?" />
+    <Spinner v-if="loading" />
 </template>
 
 <script>
@@ -33,12 +35,17 @@
     export default {
         data() {
             return {
+                loading: false,
                 colors: null,
             }
         },
         mounted() {
+            this.loading = true;
             api.get('device-color-list', null, (data) => {
                 this.colors = data;
+                this.loading = false;
+            }, (error) => {
+                this.loading = false;
             });
         },
         methods: {

@@ -1,4 +1,5 @@
 <script setup>
+    import Spinner from '@/components/Spinner.vue'
     import InlineSwitch from '@/components/InlineSwitch.vue';
 </script>
 
@@ -15,6 +16,7 @@
             :value="isChecked(item.data.id)"
             v-on:changeValue="checkDevice" />
     </div>
+    <Spinner v-if="loading" />
 </template>
 
 <script>
@@ -24,6 +26,7 @@
     export default {
         data() {
             return {
+                loading: false,
                 devices: null,
                 checkeds: [],
                 types: null,
@@ -35,13 +38,17 @@
 
             api.get('app-control-list', null, (data) => {
                 this.types = data;
+            }, (error) => {
+                //
             });
 
+            this.loading = true;
             api.get('favorites-device-list', null, (data) => {
                 this.checkeds = data.checkeds;
                 this.devices = data.devices;
+                this.loading = false;
             }, (error) => {
-                
+                this.loading = false;
             });
         },
         methods: {

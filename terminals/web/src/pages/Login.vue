@@ -48,6 +48,7 @@
             onSubmit: function (e) {
                 e.preventDefault();
                 this.error = false;
+                this.loading = true;
                 api.login(this.$refs.login.value, this.$refs.password.value, (success) => {
                     this.loading = false;
                     if (!success) {

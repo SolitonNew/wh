@@ -1,4 +1,5 @@
 <script setup>
+    import Spinner from '@/components/Spinner.vue'
 </script>
 
 <template>
@@ -7,6 +8,7 @@
             <div class="order-item-title">{{ item.control.title }}</div>
         </div>
     </div>
+    <Spinner v-if="loading" />
 </template>
 
 <script>
@@ -16,14 +18,20 @@
     export default {
         data() {
             return {
+                loading: false,
                 devices: null,
             }
         },
         mounted() {
+            this.loading = true;
             api.get('favorites-order-list', null, (data) => {
                 this.devices = data;
 
                 this.initDragula();
+
+                this.loading = false;
+            }, (error) => {
+                this.loading = false;
             });
         },
         methods: {
