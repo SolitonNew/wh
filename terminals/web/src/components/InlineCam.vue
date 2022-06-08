@@ -1,15 +1,19 @@
 
 <template>
-<div class="video-camera" v-bind:class="{play: isPlaying}">
+<div class="video-camera" v-bind:class="{play: playing, loading: loading}" v-on:click="onClickPlay">
     <video 
         ref="video"
         preload="none" 
         :poster="posterUrl"
         v-on:loadstart="onLoadstart"
+        v-on:loadeddata="onLoadedData"
         v-on:error="onError"
         v-on:abort="onAbort"
         v-on:ended="onEnded"></video>
-    <div class="video-camera-play" v-on:click="onClickPlay"></div>
+    <div class="video-camera-loading">
+        <div class="spinner"></div>
+    </div>
+    <div class="video-camera-play"></div>
 </div>
 </template>
 
@@ -17,7 +21,8 @@
     export default {
         data() {
             return {
-                isPlaying: false,
+                playing: false,
+                loading: false,
             }
         },
         props: {
@@ -38,39 +43,54 @@
             start: function () {
                 let video = this.$refs.video;
                 video.setAttribute('src', 'http://' + window.location.hostname + ':' + this.port);
-                video.play();
+                let play = video.play();
+                if (play !== undefined) {
+                    play.then(function() {
+                        //
+                    }).catch(function(error) {
+                        //
+                    });
+                }
             },
             stop: function () {
+                let video = this.$refs.video;
                 video.pause();
-                this.isPlaying = false;
+                this.playing = false;
                 this.removeSrc();
             },
             removeSrc: function () {
                 let video = this.$refs.video;
                 if (video.getAttribute('src') != '' && video.getAttribute('src') !== undefined) {
-                    video.removeAttribute('src');
+                    video.setAttribute('src', '');
                 }
             },
             onClickPlay: function () {
-                if (this.isPlaing) {
+                if (this.playing) {
                     this.stop();
                 } else {
                     this.start();
                 }
             },
             onLoadstart: function () {
-                this.isPlaying = true;
+                this.playing = true;
+                this.loading = true;
+            },
+            onLoadedData: function () {
+                this.loading = false;
             },
             onError: function () {
-                this.isPlaying = false;
+                this.playing = false;
+                this.loading = false;
                 this.removeSrc();
             },
             onAbort: function () {
-                this.isPlaying = false;
+                this.playing = false;
+                this.loading = false;
                 this.removeSrc();
             },
             onEnded: function () {
-                this.isPlaying = false;
+                this.playing = false;
+                this.loading = false;
                 this.removeSrc();
             }
         }
@@ -122,6 +142,48 @@
 
     .video-camera.play .video-camera-play {
         opacity: 0;
+    }
+
+    .video-camera-loading {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0,0,0,0);
+        opacity: 0;
+    }
+
+    .video-camera.loading .video-camera-loading {
+        opacity: 0.5;
+    }
+
+    @-webkit-keyframes spinner {
+        to {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spinner {
+        to {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    .video-camera .spinner {
+        display: inline-block;
+        width: 4rem;
+        height: 4rem;
+        vertical-align: text-bottom;
+        border: 0.25em solid #ffffff;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spinner .75s linear infinite;
     }
 
     @media(max-width: 668px) {
