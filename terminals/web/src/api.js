@@ -65,6 +65,8 @@ export const api = {
             }
         })
         .catch(error => {
+            console.log(error);
+            
             if (error.response.status == 401) {
                 this.logout();
             } else {
@@ -96,9 +98,9 @@ export const api = {
         });
     },
     login(login, password, stateCallback) {
-        const doStateCallback = (finished) => {
+        const doStateCallback = (success) => {
             if (typeof(stateCallback) === 'function') {
-                stateCallback(finished);
+                stateCallback(success);
             }
         }
         
@@ -107,10 +109,8 @@ export const api = {
                 this.loginCallback(success);
             }
             
-            doStateCallback(true);
+            doStateCallback(success);
         }
-        
-        doStateCallback(false);
         
         this.stopEventTimer();
         

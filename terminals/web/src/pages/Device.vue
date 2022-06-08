@@ -1,4 +1,5 @@
 <script setup>
+    import Spinner from '@/components/Spinner.vue'
     import DeviceTrack from '@/pages/device/DeviceTrack.vue';
 </script>
 
@@ -21,6 +22,7 @@
             :unitValue="unitValue" 
             v-on:changeValue="deviceChangeValue"/>
     </div>
+    <Spinner v-if="loading" />
 </div>
 </template>
 
@@ -30,7 +32,7 @@
     export default {
         data() {
             return {
-                loading: true,
+                loading: false,
                 roomID: null,
                 roomTitle: '',
                 deviceID: null,
@@ -47,6 +49,7 @@
         mounted() {
             this.deviceID = this.$route.params.id;
 
+            this.loading = true;
             api.get('device/' + this.$route.params.id, null, (data) => {
                 this.roomID = data.room.id;
                 this.roomTitle = data.room.title;
@@ -61,7 +64,7 @@
                 
                 this.loading = false;
             }, (error) => {
-                //
+                this.loading = false;
             });
         },
         methods: {

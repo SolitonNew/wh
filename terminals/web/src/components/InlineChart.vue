@@ -90,24 +90,25 @@
                 this.updateRange();
             },
             updateRange: function () {
-                this.options.scales.xAxis.min = moment().add(-this.hours, 'hours').toISOString();
-                this.options.scales.xAxis.max = moment().add(2, 'minutes').toISOString();
-
                 let start = moment().add(-this.hours, 'hours').utc();
 
                 if (this.chartData.datasets[0].data) {
-                    let prevVal = false;
+                    let delI = -1;
                     for (let i = 0; i < this.chartData.datasets[0].data.length; i++) {
                         if (start.diff(this.chartData.datasets[0].data[0].x, 'minutes') > 1) {
-                            prevVal = this.chartData.datasets[0].data.shift(0);
+                            delI = i;
                         } else {
                             break;
                         }
                     }
-                    if (prevVal !== false) {
-                        this.chartData.datasets[0].data.unshift(prevVal);
+
+                    if (delI > 1) { 
+                        this.chartData.datasets[0].data.shift(0, delI - 1);
                     }
                 }
+
+                this.options.scales.xAxis.min = moment().add(-this.hours, 'hours').toISOString();
+                this.options.scales.xAxis.max = moment().add(2, 'minutes').toISOString();
             }
         }
     }

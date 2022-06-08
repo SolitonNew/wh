@@ -1,5 +1,6 @@
 <script setup>
     import Cams from '@/pages/rooms/Cams.vue'
+    import Spinner from '@/components/Spinner.vue'
     import InlineValue from '@/components/InlineValue.vue'
     import InlineSwitch from '@/components/InlineSwitch.vue'
 </script>
@@ -40,7 +41,8 @@
             </div>
         </div>
     </div>
-    <Cams/>
+    <Cams v-show="data !== null" />
+    <Spinner v-if="loading" />
 </div>
 </template>
 
@@ -52,18 +54,21 @@
             return {
                 columns: 3,
                 data: null,
+                loading: false,
             }
         },
         mounted() {
             this.emitter.on('deviceChangeValue', this.deviceChangeValue);
         
+            this.loading = true;
             api.get('rooms', null, (data) => {
                 this.columns = data.length;
                 if (this.columns < 1) this.columns = 1;
                 if (this.columns > 4) this.columns = 4;
                 this.data = data;
+                this.loading = false;
             }, (error) => {
-                //
+                this.loading = false;
             });
         },
         unmounted() {

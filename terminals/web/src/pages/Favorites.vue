@@ -1,4 +1,5 @@
 <script setup>
+    import Spinner from '@/components/Spinner.vue'
     import InlineSwitch from '@/components/InlineSwitch.vue'
     import InlineValue from '@/components/InlineValue.vue'
     import InlineChart from '@/components/InlineChart.vue'
@@ -45,6 +46,7 @@
             </div>
         </div>
     </div>
+    <Spinner v-if="loading" />
 </div>
 </template>
 
@@ -55,15 +57,18 @@
         data() {
             return {
                 devices: null,
+                loading: false,
             }
         },
         mounted() {
             this.emitter.on('deviceChangeValue', this.deviceChangeValue);
 
+            this.loading = true;
             api.get('favorites', null, (data) => {
                 this.devices = data;
+                this.loading = false;
             }, (error) => {
-                //
+                this.loading = false;
             });
         },
         unmounted() {
