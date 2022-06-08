@@ -1,4 +1,5 @@
 <script setup>
+    import { lang } from '@/lang.js';
     import Spinner from '@/components/Spinner.vue'
     import DeviceTrack from '@/pages/device/DeviceTrack.vue';
 </script>
@@ -6,7 +7,7 @@
 <template>
 <nav>
     <ol>
-        <li><router-link to="/">HOME</router-link></li>
+        <li><router-link to="/">{{ lang('Home') }}</router-link></li>
         <li><router-link :to="'/room/' + roomID">{{ roomTitle }}</router-link></li>
         <li style="flex-grow: 1;">{{ deviceTitle }}</li>
     </ol>

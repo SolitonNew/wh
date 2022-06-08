@@ -1,9 +1,11 @@
 <script setup>
+    import { lang } from '@/lang.js'
     import Spinner from '@/components/Spinner.vue'
     import InlineSwitch from '@/components/InlineSwitch.vue';
 </script>
 
 <template>
+    <small class="info">{{ lang('choosing_info') }}</small>
     <div class="toolbar">
         <select ref="filter" class="form-control" v-on:change="changeFilterValue">
             <option v-for="(item, key) in types" :value="key" :selected="key == filterValue">{{ item['title'] }}</option>
@@ -35,12 +37,7 @@
         },
         mounted() {
             this.filterValue = storage.settings.checking.filter;
-
-            api.get('app-control-list', null, (data) => {
-                this.types = data;
-            }, (error) => {
-                //
-            });
+            this.types = storage.app_controls;
 
             this.loading = true;
             api.get('favorites-device-list', null, (data) => {
@@ -75,6 +72,11 @@
 </script>
 
 <style scoped>
+    .info {
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
     .toolbar {
         padding-bottom: 2rem;
     }

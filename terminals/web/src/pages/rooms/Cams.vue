@@ -1,10 +1,11 @@
 <script setup>
+    import { lang } from '@/lang.js';
     import InlineCam from '@/components/InlineCam.vue';
 </script>
 
 <template>
 <div class="video-cameras-block" v-if="data && data.length > 0">
-    <div class="video-cameras-title">VIDEO CAMERAS</div>
+    <div class="video-cameras-title">{{ lang('Video Cameras') }}</div>
     <div ref="scroller" class="video-cameras-scroller" 
         v-on:scroll="onScroll" 
         v-on:touchstart="onTouchStart" 

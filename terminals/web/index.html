@@ -27,7 +27,8 @@
                     </div>
                 </div>
             </div>
-            <Login v-if="!logined" v-on:login-success="loginSuccess()"/>
+            <Spinner v-if="!started"></Spinner>
+            <Login v-if="!logined && started" v-on:login-success="loginSuccess()"></Login>
         </div>
         <script>
             if (global === undefined) {

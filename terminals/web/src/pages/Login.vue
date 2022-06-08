@@ -1,32 +1,33 @@
 <script setup>
-    import Spinner from '@/components/Spinner.vue'
+    import Spinner from '@/components/Spinner.vue';
+    import { lang } from '@/lang.js';
 </script>
 
 <template>
     <div class="container center">
         <form id="login" class="modal-box box-sm border" v-on:submit="onSubmit">
             <div class="modal-header">
-                <h3>Login - Web Terminal</h3>
+                <h3>{{ lang('Login - Web Terminal') }}</h3>
             </div>
             <div class="modal-body">
                 <div class="row" v-if="error">
                     <div class="error">Bad credentials</div>
                 </div>
                 <div class="row">
-                    <label>Login:</label>
+                    <label>{{ lang('Login') }}:</label>
                     <div class="login-input">
                         <input ref="login" class="form-control">
                     </div>
                 </div>
                 <div class="row">
-                    <label>Password:</label>
+                    <label>{{ lang('Password') }}:</label>
                     <div class="login-input">
                         <input ref="password" class="form-control" type="password">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary">{{ lang('Login Button') }}</button>
             </div>
         </form>
     </div>

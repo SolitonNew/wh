@@ -1,15 +1,16 @@
 <script setup>
-    import Cams from '@/pages/rooms/Cams.vue'
-    import Spinner from '@/components/Spinner.vue'
-    import InlineValue from '@/components/InlineValue.vue'
-    import InlineSwitch from '@/components/InlineSwitch.vue'
+    import { lang } from '@/lang.js';
+    import Cams from '@/pages/rooms/Cams.vue';
+    import Spinner from '@/components/Spinner.vue';
+    import InlineValue from '@/components/InlineValue.vue';
+    import InlineSwitch from '@/components/InlineSwitch.vue';
 </script>
 
 <template>
 <nav>
     <ol>
-        <li style="flex-grow: 1;">HOME</li>
-        <li class="right"><router-link to="/favorites">FAVORITES</router-link></li>
+        <li style="flex-grow: 1;">{{ lang('Home') }}</li>
+        <li class="right"><router-link to="/favorites">{{ lang('Favorites') }}</router-link></li>
     </ol>
 </nav>
 <div class="container">

@@ -1,26 +1,27 @@
 <script setup>
+    
 </script>
 
 <template>
-<Transition name="fade">
-    <div ref="modalBG" class="modal-bg" v-if="showing">
-        <div class="modal-box box-sm border">
-            <div class="modal-header">
-                <h3>Confirmation</h3>
-                <button class="icon" title="Close" v-on:click="hide">
-                    <img src="/img/x-2x.png">
-                </button>
-            </div>
-            <div class="modal-body">
-                {{ text }}
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" v-on:click="success">YES</button>
-                <button class="btn btn-primary" v-on:click="hide">NO</button>
+    <Transition name="fade">
+        <div ref="modalBG" class="modal-bg" v-if="showing">
+            <div class="modal-box box-sm border">
+                <div class="modal-header">
+                    <h3>{{ title }}</h3>
+                    <button class="icon" v-on:click="hide">
+                        <img src="/img/x-2x.png">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ text }}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" v-on:click="success">{{ btnYes }}</button>
+                    <button class="btn btn-primary" v-on:click="hide">{{ btnNo }}</button>
+                </div>
             </div>
         </div>
-    </div>
-</Transition>
+    </Transition>
 </template>
 
 <script>
@@ -32,7 +33,10 @@
             }
         },
         props: {
+            title: String,
             text: String,
+            btnYes: String,
+            btnNo: String
         },
         emits: ['success'],
         methods: {

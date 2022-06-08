@@ -1,4 +1,5 @@
 <script setup>
+    import { lang } from '@/lang.js';
     import Spinner from '@/components/Spinner.vue'
     import InlineSwitch from '@/components/InlineSwitch.vue'
     import InlineValue from '@/components/InlineValue.vue'
@@ -8,7 +9,7 @@
 <template>
 <nav>
     <ol>
-        <li><router-link to="/">HOME</router-link></li>
+        <li><router-link to="/">{{ lang('Home') }}</router-link></li>
         <li style="flex-grow: 1;">{{ title }}</li>
     </ol>
 </nav>

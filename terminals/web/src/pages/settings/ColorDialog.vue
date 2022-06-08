@@ -1,4 +1,5 @@
 <script setup>
+    
 </script>
 
 <template>
@@ -6,24 +7,24 @@
     <div ref="modalBG" class="modal-bg" v-if="showing">
         <div class="modal-box box-sm border">
             <div class="modal-header">
-                <h3>Edit Color</h3>
-                <button class="icon" title="Close" v-on:click="hide">
+                <h3>{{ title }}</h3>
+                <button class="icon" v-on:click="hide">
                     <img src="/img/x-2x.png">
                 </button>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <label>Keyword:</label>
+                    <label>{{ keywordLabel }}:</label>
                     <input ref="keyword" class="form-control" :value="keyword">
                 </div>
                 <div class="row">
-                    <label>Color:</label>
+                    <label>{{ colorLabel }}:</label>
                     <input ref="color" class="form-control" :value="color">
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" v-on:click="success">SAVE</button>
-                <button class="btn btn-primary" v-on:click="hide">CLOSE</button>
+                <button class="btn btn-primary" v-on:click="success">{{ btnSave }}</button>
+                <button class="btn btn-primary" v-on:click="hide">{{ btnCancel }}</button>
             </div>
         </div>
     </div>
@@ -31,6 +32,8 @@
 </template>
 
 <script>
+    import { lang } from '@/lang.js';
+
     export default {
         data() {
             return {
@@ -38,6 +41,12 @@
                 keyword: '',
                 color: '',
                 index: -1,
+
+                title: lang('Edit Color'),
+                keywordLabel: lang('Keyword Label'),
+                colorLabel: lang('Color Label'),
+                btnSave: lang('Save'),
+                btnCancel: lang('Cancel'),
             }
         },
         emits: ['success'],

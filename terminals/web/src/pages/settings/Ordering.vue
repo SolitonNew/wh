@@ -1,8 +1,10 @@
 <script setup>
+    import { lang } from '@/lang.js'
     import Spinner from '@/components/Spinner.vue'
 </script>
 
 <template>
+    <small class="info">{{ lang('ordering_info') }}</small>
     <div class="order-list" ref="orderingItems">
         <div v-for="item in devices" class="order-item" :data-id="item.data.id">
             <div class="order-item-title">{{ item.control.title }}</div>
@@ -57,6 +59,11 @@
 </script>
 
 <style scoped>
+    .info {
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
     .order-list {
         cursor: default;
         touch-action: none;

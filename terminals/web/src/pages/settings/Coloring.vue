@@ -1,4 +1,5 @@
 <script setup>
+    import { lang } from '@/lang.js';
     import Spinner from '@/components/Spinner.vue'
     import ColorDialog from '@/pages/settings/ColorDialog.vue';
     import ColorDelete from '@/pages/settings/ColorDelete.vue';
@@ -6,7 +7,8 @@
 
 <template>
     <div class="toolbar">
-        <button class="btn btn-primary" v-on:click="dialogEdit(-1)">ADD</button>
+        <small class="info">{{ lang('coloring_info') }}</small>
+        <button class="btn btn-primary" v-on:click="dialogEdit(-1)">{{ lang('Add Button') }}</button>
     </div>
     <div>
         <div v-for="(item, index) in colors" class="item-row">
@@ -25,7 +27,11 @@
         </div>
     </div>
     <ColorDialog ref="dialog" v-on:success="dialogSuccess" />
-    <ColorDelete ref="delete" v-on:success="deleteSuccess" text="Are you sure?" />
+    <ColorDelete ref="delete" v-on:success="deleteSuccess"
+        :title="lang('Confirmation')"
+        :text="lang('Are you sure?')"
+        :btnYes="lang('Yes')"
+        :btnNo="lang('No')" />
     <Spinner v-if="loading" />
 </template>
 
@@ -95,7 +101,21 @@
 
 <style scoped>
     .toolbar {
+        display: flex;
+        width: 100%;
         padding-bottom: 2rem;
+        align-items: flex-start;
+    }
+
+    .toolbar .info {
+        flex-grow: 1;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        margin-right: 2rem;
+    }
+
+    .toolbar .btn {
+        height: auto;
     }
 
     .item-row {
