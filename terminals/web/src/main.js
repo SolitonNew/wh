@@ -2,7 +2,10 @@ import { createApp } from 'vue/dist/vue.esm-bundler.js'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import mitt from 'mitt'
 import { api } from '@/api.js'
+import { setLangData } from '@/lang.js'
+import storage from '@/storage.js'
 
+import Spinner from '@/components/Spinner.vue'
 import Login from '@/pages/Login.vue'
 import Rooms from '@/pages/Rooms.vue'
 import Room from '@/pages/Room.vue'
@@ -34,6 +37,7 @@ const app = createApp({
     pageScrollAnimateTo: false,
     data() {
         return {
+            started: false,
             logined: false,
         }
     },
@@ -54,6 +58,13 @@ const app = createApp({
     },
     mounted() {
         api.init(this.apiLoginCallback, this.apiLogoutCallback, this.apiEventCallback);
+        api.get('start', null, (data) => {
+            setLangData(data.lang);
+            storage.app_controls = data.app_controls;
+            this.started = true;
+        }, (error) => {
+            
+        });
     },
     destroyed() {
         clearInterval(this.pageScrollAnimate);
@@ -180,5 +191,6 @@ const app = createApp({
 .use(router);
 
 app.config.globalProperties.emitter = emitter;
+app.component('Spinner', Spinner);
 app.component('Login', Login);
 app.mount('#app');

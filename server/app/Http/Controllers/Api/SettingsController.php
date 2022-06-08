@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Services\Api\SettingsService;
 use Illuminate\Http\Request;
 use App\Models\Property;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
 {
@@ -58,15 +56,6 @@ class SettingsController extends Controller
         } catch (\Exception $ex) {
             return 'ERROR';
         }
-    }
-    
-    /**
-     * 
-     * @return type
-     */
-    public function getAppControlList()
-    {
-        return response()->json(config('devices.app_controls'));
     }
     
     /**

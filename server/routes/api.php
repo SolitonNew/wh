@@ -1,5 +1,6 @@
 <?php
 
+$router->get('/start', 'StartController@getData');
 $router->post('/login', 'AuthController@login');
 
 $router->group(['middleware' => 'auth.terminal'], function ($router) {
@@ -17,7 +18,6 @@ $router->group(['middleware' => 'auth.terminal'], function ($router) {
     $router->get('/favorites-device-list', 'SettingsController@getFavoritesDeviceList');
     $router->post('/favorites-device-add/{deviceID}', 'SettingsController@addDeviceToFavorites');
     $router->post('/favorites-device-del/{deviceID}', 'SettingsController@delDeviceFromFavorites');
-    $router->get('/app-control-list', 'SettingsController@getAppControlList');
     $router->get('/favorites-order-list', 'SettingsController@getFavoritesOrderList');
     $router->post('/favorites-order-set', 'SettingsController@setFavoritesOrders');
     $router->get('/device-color-list', 'SettingsController@getDeviceColors');

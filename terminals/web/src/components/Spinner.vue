@@ -1,7 +1,3 @@
-<script setup>
-    
-</script>
-
 <template>
 <div class="spinner-bg">
     <div class="spinner"></div>
