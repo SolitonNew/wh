@@ -6,12 +6,16 @@
 <template>
 <div class="video-cameras-block" v-if="data && data.length > 0">
     <div class="video-cameras-title">{{ lang('Video Cameras') }}</div>
-    <div ref="scroller" class="video-cameras-scroller" 
-        v-on:scroll="onScroll" 
-        v-on:touchstart="onTouchStart" 
-        v-on:touchend="onTouchEnd">
-        <div class="video-cameras-list">
-            <InlineCam v-for="(item, index) in data" :port="item.stream_port"/>
+    <div class="video-cameras-center">
+        <div ref="scroller" class="video-cameras-scroller" 
+            v-on:scroll="onScroll" 
+            v-on:touchstart="onTouchStart" 
+            v-on:touchend="onTouchEnd">
+            <div class="video-cameras-list">
+                <InlineCam :port="0"/>
+                <InlineCam v-for="(item, index) in data" :port="item.stream_port"/>
+                <InlineCam :port="0"/>
+            </div>
         </div>
     </div>
 </div>
@@ -40,6 +44,7 @@
                 this.data = data;
             });
             window.addEventListener("resize", this.onResizeWindow);
+            setTimeout(this.onResizeWindow, 500); // !!!!!!!!!!!!!
         },
         unmounted() {
             window.removeEventListener("resize", this.onResizeWindow);
@@ -66,8 +71,15 @@
                 clearTimeout(this.scrollTimer);
                 this.scrollTimer = setTimeout(() => {
                     let scroller = this.$refs.scroller;
+                    if (!scroller) return ;
                     let w = scroller.offsetWidth;
                     let x = scroller.scrollLeft;
+                    if (x < w) {
+                        x = w;
+                    }
+                    if (x > w * (this.data.length)) {
+                        x = w * (this.data.length);
+                    }
                     this.scrollAnimateTo = w * Math.round(x / w);
                 }, 50);
             },
@@ -76,8 +88,12 @@
 
                 this.scrollAnimateTo = false;
                 let scroller = this.$refs.scroller;
+                if (!scroller) return ;
                 let w = scroller.offsetWidth;
                 let x = scroller.scrollLeft;
+                if (x < w) {
+                    x = w;
+                }
                 scroller.scrollLeft = w * Math.round(x / w);
             },
             onScrollAnimate: function () {
@@ -114,12 +130,17 @@
         padding: 0.75rem 1.25rem;
     }
 
-    .video-cameras-scroller {
+    .video-cameras-center {
         display: flex;
+        justify-content: center;
         width: 100%;
+    }
+
+    .video-cameras-scroller {
+        display: inline-block;
+        max-width: 100%;
         overflow-x: auto;
         overflow-y: hidden;
-        justify-content: center;
     }
 
     .video-cameras-list {
