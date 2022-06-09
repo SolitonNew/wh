@@ -1,20 +1,22 @@
-
 <template>
-<div class="video-camera" v-bind:class="{play: playing, loading: loading}" v-on:click="onClickPlay">
-    <video 
-        ref="video"
-        preload="none" 
-        :poster="posterUrl"
-        v-on:loadstart="onLoadstart"
-        v-on:loadeddata="onLoadedData"
-        v-on:error="onError"
-        v-on:abort="onAbort"
-        v-on:ended="onEnded"></video>
-    <div class="video-camera-loading">
-        <div class="spinner"></div>
+    <div class="video-camera" 
+        v-bind:class="{play: playing, loading: loading, dummy: port == 0}" 
+        v-on:click="onClickPlay">
+        <video 
+            v-if="port > 0"
+            ref="video"
+            preload="none" 
+            :poster="posterUrl"
+            v-on:loadstart="onLoadstart"
+            v-on:loadeddata="onLoadedData"
+            v-on:error="onError"
+            v-on:abort="onAbort"
+            v-on:ended="onEnded"></video>
+        <div class="video-camera-loading">
+            <div class="spinner"></div>
+        </div>
+        <div class="video-camera-play"></div>
     </div>
-    <div class="video-camera-play"></div>
-</div>
 </template>
 
 <script>
@@ -65,10 +67,12 @@
                 }
             },
             onClickPlay: function () {
-                if (this.playing) {
-                    this.stop();
-                } else {
-                    this.start();
+                if (this.port > 0) {
+                    if (this.playing) {
+                        this.stop();
+                    } else {
+                        this.start();
+                    }
                 }
             },
             onLoadstart: function () {
@@ -161,6 +165,15 @@
         opacity: 0.5;
     }
 
+    .video-camera.dummy {
+                
+    }
+
+    .video-camera.dummy .video-camera-loading,
+    .video-camera.dummy .video-camera-play {
+        display: none!important;
+    }
+
     @-webkit-keyframes spinner {
         to {
             -webkit-transform: rotate(360deg);
@@ -191,6 +204,16 @@
             min-width: 100vw;
             width: 100vw;
             height: calc(100vw / 16 * 9);
+        }
+
+        .video-camera.dummy {
+            background-color: #cccccc;
+        }
+    }
+
+    @media(min-width: 669px) {
+        .video-camera.dummy {
+            display: none;
         }
     }
 </style>
