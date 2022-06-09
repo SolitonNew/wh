@@ -88,6 +88,7 @@
 
                 this.scrollAnimateTo = false;
                 let scroller = this.$refs.scroller;
+                if (!scroller) return ;
                 let w = scroller.offsetWidth;
                 let x = scroller.scrollLeft;
                 if (x < w) {
