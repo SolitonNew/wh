@@ -57,6 +57,22 @@ class Device extends AffectsFirmwareModel
     
     /**
      * 
+     * @return type
+     */
+    static public function getVisibleAppControlList()
+    {
+        $result = [];
+        foreach (config('devices.app_controls') as $key => $item) {
+            if ($item['visible']) {
+                $result[] = $key;
+            }
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * 
      * 
      * @param type $groupName
      * @param type $variableName

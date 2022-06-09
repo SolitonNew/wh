@@ -16,6 +16,8 @@ class RoomService
      */
     public function getData(int $roomID)
     {
+        $app_controls = Device::getVisibleAppControlList();
+        
         $room = Room::find($roomID);
         
         $roomTitle = mb_strtoupper($room->name);
@@ -29,7 +31,7 @@ class RoomService
                        (select p.name from plan_rooms p where p.id = v.room_id) group_name
                   from core_devices v 
                  where v.room_id in ($groupIDs) 
-                   and app_control in (1, 3, 4, 5, 7, 10, 11, 13, 14) 
+                   and app_control in (".implode(', ', $app_controls).") 
                 order by v.id";    
        
         $devices = [];

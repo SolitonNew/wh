@@ -11,6 +11,7 @@ return [
             'min' => 0,
             'max' => 100,
             'step' => 1,
+            'visible' => false,
         ],
         1 => [
             'typ' => 2,
@@ -21,6 +22,7 @@ return [
             'min' => 0,
             'max' => 1,
             'step' => 1,
+            'visible' => true,
         ],
         2 => [
             'typ' => 2,
@@ -31,6 +33,7 @@ return [
             'min' => 0,
             'max' => 1,
             'step' => 1,
+            'visible' => false,
         ],
         3 => [
             'typ' => 2,
@@ -41,6 +44,7 @@ return [
             'min' => 0,
             'max' => 1,
             'step' => 1,
+            'visible' => true,
         ],
         4 => [
             'typ' => 1,
@@ -51,6 +55,7 @@ return [
             'min' => -45,
             'max' => 125,
             'step' => 1,
+            'visible' => true,
         ],
         5 => [
             'typ' => 3,
@@ -61,6 +66,7 @@ return [
             'min' => 15,
             'max' => 30,
             'step' => 1,
+            'visible' => true,
         ],
         6 => [
             'typ' => 2,
@@ -71,6 +77,7 @@ return [
             'min' => 0,
             'max' => 1,
             'step' => 1,
+            'visible' => false,
         ],
         7 => [
             'typ' => 3,
@@ -81,6 +88,7 @@ return [
             'min' => 0,
             'max' => 100,
             'step' => 10,
+            'visible' => true,
         ],
         8 => [
             'typ' => 2,
@@ -91,6 +99,7 @@ return [
             'min' => 0,
             'max' => 1,
             'step' => 1,
+            'visible' => false,
         ],
         9 => [
             'typ' => 2,
@@ -101,6 +110,7 @@ return [
             'min' => 0,
             'max' => 1,
             'step' => 1,
+            'visible' => false,
         ],
         10 => [
             'typ' => 1,
@@ -111,6 +121,7 @@ return [
             'min' => 0,
             'max' => 100,
             'step' => 1,
+            'visible' => true,
         ],
         11 => [
             'typ' => 1,
@@ -121,6 +132,7 @@ return [
             'min' => 0,
             'max' => 10000,
             'step' => 1,
+            'visible' => true,
         ],
         12 => [
             'typ' => 2,
@@ -131,6 +143,7 @@ return [
             'min' => 0,
             'max' => 1,
             'step' => 1,
+            'visible' => false,
         ],
         13 => [
             'typ' => 1,
@@ -141,6 +154,7 @@ return [
             'min' => 500,
             'max' => 800,
             'step' => 1,
+            'visible' => true,
         ],
         14 => [
             'typ' => 1,
@@ -151,6 +165,7 @@ return [
             'min' => 0,
             'max' => 1000,
             'step' => 1,
+            'visible' => true,
         ],
         15 => [
             'typ' => 1,
@@ -161,6 +176,7 @@ return [
             'min' => 0,
             'max' => 50,
             'step' => 1,
+            'visible' => true,
         ],
         16 => [
             'typ' => 1,
@@ -171,6 +187,7 @@ return [
             'min' => 0,
             'max' => 359,
             'step' => 1,
+            'visible' => true,
         ],
         17 => [
             'typ' => 1,
@@ -181,6 +198,7 @@ return [
             'min' => 0,
             'max' => 20,
             'step' => 1,
+            'visible' => true,
         ],
         18 => [
             'typ' => 1,
@@ -191,6 +209,7 @@ return [
             'min' => 0,
             'max' => 100,
             'step' => 1,
+            'visible' => true,
         ],
         19 => [
             'typ' => 1,
@@ -201,6 +220,7 @@ return [
             'min' => 0,
             'max' => 100,
             'step' => 1,
+            'visible' => true,
         ],
     ],
 ];
