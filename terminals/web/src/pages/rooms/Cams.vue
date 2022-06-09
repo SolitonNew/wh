@@ -44,7 +44,7 @@
                 this.data = data;
             });
             window.addEventListener("resize", this.onResizeWindow);
-            setTimeout(this.onResizeWindow, 250); // !!!!!!!!!!!!!
+            setTimeout(this.onResizeWindow, 500); // !!!!!!!!!!!!!
         },
         unmounted() {
             window.removeEventListener("resize", this.onResizeWindow);
