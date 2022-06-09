@@ -158,10 +158,8 @@ class Stormglass extends ExtApiHostDriverBase
         foreach ($devices as $device) {
             if (isset($values[$device->channel])) {
                 $value = $values[$device->channel];
-                if (!eq_floats($device->value, $value)) {
-                    Device::setValue($device->id, $value);
-                    $resultLog[] = $value; 
-                }
+                Device::setValue($device->id, $value);
+                $resultLog[] = $value;
             }
         }
         
