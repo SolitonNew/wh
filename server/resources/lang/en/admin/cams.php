@@ -12,6 +12,7 @@ return [
     'table_URL_LOW' => 'URL LOW',
     'table_URL_HIGH' => 'URL HIGH',
     'table_ALERT_VAR_ID' => 'Device',
+    'table_POSTER' => 'Video',
     
     'cam_add' => 'Add new videcam item...',
     'cam_add_title' => 'New videcam',

@@ -92,6 +92,9 @@ sudo nano /etc/udev/rules.d/20-gpio.rules
 KERNEL=="gpio*", GROUP="gpio"
 SUBSYSTEM=="i2c-dev", GROUP="i2c"
 ```
+```
+sudo apt install ffmpeg
+```
 
 Admin Login/Password: wh/wh
 

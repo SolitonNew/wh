@@ -1,17 +1,18 @@
 <template>
     <div class="video-camera" 
-        v-bind:class="{play: playing, loading: loading, dummy: port == 0}" 
+        v-bind:class="{play: playing, loading: loading, empty: poster == '', dummy: video == undefined}" 
         v-on:click="onClickPlay">
         <video 
-            v-if="port > 0"
+            v-if="video != ''"
             ref="video"
             preload="none" 
-            :poster="posterUrl"
+            :poster="poster ? (poster + '&rnd=' + rnd) : ''"
             v-on:loadstart="onLoadstart"
             v-on:loadeddata="onLoadedData"
             v-on:error="onError"
             v-on:abort="onAbort"
             v-on:ended="onEnded"></video>
+        <div class="video-camera-empty"></div>
         <div class="video-camera-loading">
             <div class="spinner"></div>
         </div>
@@ -25,26 +26,26 @@
             return {
                 playing: false,
                 loading: false,
+                rnd: Math.random(),
             }
         },
         props: {
-            port: Number,
+            poster: String,
+            video: String,
         },
-        computed: {
-            posterUrl() {
-                return '/img/cams/cam' + (this.port - 9999) + '.png';
-            },
-        },
+        posterTimer: false,
         mounted() {
-            //
+            this.posterTimer = setInterval(() => {
+                this.rnd = Math.random();
+            }, 60000);
         },
         unmounted() {
-            //
+            clearInterval(this.posterTimer);
         },
         methods: {
             start: function () {
                 let video = this.$refs.video;
-                video.setAttribute('src', 'http://' + window.location.hostname + ':' + this.port);
+                video.setAttribute('src', this.video);
                 let play = video.play();
                 if (play !== undefined) {
                     play.then(function() {
@@ -67,7 +68,7 @@
                 }
             },
             onClickPlay: function () {
-                if (this.port > 0) {
+                if (this.video) {
                     if (this.playing) {
                         this.stop();
                     } else {
@@ -199,6 +200,18 @@
         animation: spinner .75s linear infinite;
     }
 
+    .video-camera.empty .video-camera-empty {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0,0,0,0.35);
+    }
+
     @media(max-width: 668px) {
         .video-camera {
             min-width: 100vw;
@@ -212,6 +225,16 @@
     }
 
     @media(min-width: 669px) {
+        .video-camera {
+            padding-left: 1rem;
+        }
+
+        .video-camera-loading,
+        .video-camera-play,
+        .video-camera-empty {
+            margin-left: 1rem;
+        }
+
         .video-camera.dummy {
             display: none;
         }

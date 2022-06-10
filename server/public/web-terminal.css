@@ -1,18 +1,19 @@
 ::-webkit-scrollbar {
     width: 6px;
-    height: 5px;
+    height: 6px;
     border: 1px solid #ffffff;
 }
  
 ::-webkit-scrollbar-track {
-    background-color: rgba(0, 0, 0, 0.075);
-    border-left: 1px solid #ffffff;
-    border-right: 1px solid #ffffff;
+    background-color: transparent;
+    border: 1px solid transparent;
 }
  
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(0,0,0,0.75);
-    border-radius: 3px;
+    background-color: #aaaaaa;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    background-clip: content-box;
 }
 
 .form-control {

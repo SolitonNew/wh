@@ -37,16 +37,6 @@
         <div class="invalid-feedback"></div>
     </div>
     <div class="form-group">
-        <label class="strong">@lang('admin/cams.table_URL_LOW'):</label>
-        <textarea class="form-control" name="url_low" rows="3">{!! $item->url_low !!}</textarea>
-        <div class="invalid-feedback"></div>
-    </div>
-    <div class="form-group">
-        <label class="strong">@lang('admin/cams.table_URL_HIGH'):</label>
-        <textarea class="form-control" name="url_high" rows="3">{!! $item->url_high !!}</textarea>
-        <div class="invalid-feedback"></div>
-    </div>
-    <div class="form-group">
         <label>@lang('admin/cams.table_ALERT_VAR_ID'):</label>
         <select class="custom-select" name="alert_var_id">
         <option value="">-//-</option>

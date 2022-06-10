@@ -54,8 +54,6 @@ class Videcam extends Model
         $rules = [
             'name' => 'required|string|unique:plan_videcams,name,'.($id > 0 ? $id : ''),
             'url' => 'required|string',
-            'url_low' => 'required|string',
-            'url_high' => 'required|string',
         ];
         
         $validator = \Validator::make($request->all(), $rules);
@@ -72,8 +70,8 @@ class Videcam extends Model
             }
             $item->name = $request->name;
             $item->url = $request->url;
-            $item->url_low = $request->url_low;
-            $item->url_high = $request->url_high;
+            $item->url_low = '';
+            $item->url_high = '';
             $item->alert_var_id = $request->alert_var_id ?: null;
             $item->save();
 
