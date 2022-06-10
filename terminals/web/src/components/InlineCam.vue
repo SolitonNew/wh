@@ -6,7 +6,7 @@
             v-if="video != ''"
             ref="video"
             preload="none" 
-            :poster="poster"
+            :poster="poster ? (poster + '&rnd=' + rnd) : ''"
             v-on:loadstart="onLoadstart"
             v-on:loadeddata="onLoadedData"
             v-on:error="onError"
@@ -26,17 +26,21 @@
             return {
                 playing: false,
                 loading: false,
+                rnd: Math.random(),
             }
         },
         props: {
             poster: String,
             video: String,
         },
+        posterTimer: false,
         mounted() {
-            //
+            this.posterTimer = setInterval(() => {
+                this.rnd = Math.random();
+            }, 60000);
         },
         unmounted() {
-            //
+            clearInterval(this.posterTimer);
         },
         methods: {
             start: function () {
