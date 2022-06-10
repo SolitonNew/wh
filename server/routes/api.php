@@ -6,6 +6,7 @@ $router->post('/login', 'AuthController@login');
 $router->group(['middleware' => 'auth.terminal'], function ($router) {
     $router->get('/rooms', 'RoomsController@getData');
     $router->get('/cams', 'CamsController@getData');
+    $router->get('/cam-poster/{id}', ['as' => 'cam-posters', 'uses' => 'CamsController@getPoster']);
     
     $router->get('/room/{roomID}', 'RoomController@getData');
     
