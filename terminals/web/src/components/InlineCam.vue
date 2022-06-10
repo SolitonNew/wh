@@ -212,6 +212,10 @@
     }
 
     @media(min-width: 669px) {
+        .video-camera {
+            padding-left: 1rem;
+        }
+
         .video-camera.dummy {
             display: none;
         }

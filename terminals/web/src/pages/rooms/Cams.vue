@@ -44,7 +44,9 @@
                 this.data = data;
             });
             window.addEventListener("resize", this.onResizeWindow);
-            setTimeout(this.onResizeWindow, 500); // !!!!!!!!!!!!!
+            if (window.innerWidth <= 668) {
+                this.scrollAnimateTo = window.innerWidth;
+            }
         },
         unmounted() {
             window.removeEventListener("resize", this.onResizeWindow);
@@ -103,7 +105,7 @@
 
                 const step = 25;
                 let scroller = this.$refs.scroller;
-                if (scroller === undefined) return ;
+                if (!scroller) return ;
                 let x = scroller.scrollLeft;
                 if (Math.abs(x - this.scrollAnimateTo) > step) {
                     if (x > this.scrollAnimateTo) {
@@ -158,6 +160,16 @@
             width: 0px;
             height: 0px;
             border: none;
+        }
+    }
+
+    @media(min-width: 669px) {
+        .video-cameras-scroller {
+            margin: 0px 1rem;
+        }
+
+        .video-cameras-list {
+            margin-left: -1rem;
         }
     }
 </style>
