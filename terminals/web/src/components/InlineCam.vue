@@ -202,13 +202,11 @@
 
     .video-camera.empty .video-camera-empty {
         position: absolute;
+        display: inline-block;
         left: 0px;
         top: 0px;
-        width: 100%;
+        width: calc(100% - 1rem);
         height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         background-color: rgba(0,0,0,0.35);
     }
 
@@ -222,17 +220,15 @@
         .video-camera.dummy {
             background-color: #cccccc;
         }
+
+        .video-camera-empty {
+            width: 100%!important;
+        }
     }
 
     @media(min-width: 669px) {
         .video-camera {
             padding-left: 1rem;
-        }
-
-        .video-camera-loading,
-        .video-camera-play,
-        .video-camera-empty {
-            margin-left: 1rem;
         }
 
         .video-camera.dummy {
