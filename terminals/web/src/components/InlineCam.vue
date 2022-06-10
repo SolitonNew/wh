@@ -17,6 +17,7 @@
             <div class="spinner"></div>
         </div>
         <div class="video-camera-play"></div>
+        <div class="video-camera-fullscreen" v-on:click="fullscreen"></div>
     </div>
 </template>
 
@@ -97,6 +98,10 @@
                 this.playing = false;
                 this.loading = false;
                 this.removeSrc();
+            },
+            fullscreen: function (e) {
+                e.stopPropagation();
+                this.$refs.video.requestFullscreen();
             }
         }
     }
@@ -210,6 +215,32 @@
         background-color: rgba(0,0,0,0.35);
     }
 
+    .video-camera-fullscreen {
+        position: absolute;
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        right: 1rem;
+        bottom: 1rem;
+        border-radius: 25px;
+        margin-right: 1rem;
+        cursor: pointer;
+        background-color: rgba(110,110,110,0.65);
+        background-image: url('/img/zoom-in-3x.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        filter: invert(100%);
+        opacity: 0.65;
+    }
+
+    .video-camera-fullscreen:hover {
+        opacity: 1;
+    }
+
+    .video-camera.dummy .video-camera-fullscreen {
+        display: none;
+    }
+
     @media(max-width: 668px) {
         .video-camera {
             min-width: 100vw;
@@ -223,6 +254,10 @@
 
         .video-camera-empty {
             width: 100%!important;
+        }
+
+        .video-camera-fullscreen {
+            right: 0px;
         }
     }
 
