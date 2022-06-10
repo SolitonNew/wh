@@ -5,3 +5,4 @@ Release
 devices/din_master/firmware/config
 *.atsuo
 *.atsln
+server/public/img/cams
