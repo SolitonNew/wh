@@ -12,9 +12,9 @@
             v-on:touchstart="onTouchStart" 
             v-on:touchend="onTouchEnd">
             <div class="video-cameras-list">
-                <InlineCam :port="0"/>
-                <InlineCam v-for="(item, index) in data" :port="item.stream_port"/>
-                <InlineCam :port="0"/>
+                <InlineCam />
+                <InlineCam v-for="(item, index) in data" :poster="item.poster" :video="item.video"/>
+                <InlineCam />
             </div>
         </div>
     </div>
