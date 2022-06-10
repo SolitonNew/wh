@@ -14,6 +14,7 @@
         <thead>
             <tr>
                 <th scope="col" style="width: 60px;"><span>@lang('admin/cams.table_ID')</span></th>
+                <th scope="col" style="width: 240px;"><span>@lang('admin/cams.table_POSTER')</span></th>
                 <th scope="col" style="width: 100px;"><span>@lang('admin/cams.table_NAME')</span></th>
                 <th scope="col" style="width: 800px;"><span>@lang('admin/cams.table_URL')</span></th>
                 <th scope="col" style="width: 200px;"><span>@lang('admin/cams.table_ALERT_VAR_ID')</span></th>
@@ -23,6 +24,9 @@
             @forelse($data as $row)
             <tr data-id="{{ $row->id }}">
                 <td>{{ $row->id }}</td>
+                <td>
+                    <img src="{{ route('cam-posters', ['id' => $row->id]) }}" data-src="{{ route('cam-posters', ['id' => $row->id]) }}" width="240">
+                </td>
                 <td>{{ $row->name }}</td>
                 <td>{{ $row->url }}</td>
                 <td><a class="var-link" href="#" data-id="{{ $row->device ? $row->device->id : '' }}">{{ $row->device ? $row->device->name : '' }}</a></td>
@@ -65,6 +69,14 @@
             
             return false;
         });
+        
+        setInterval(function () {
+            $('#cams_list tbody tr').each(function () {
+                let img = $('img', this);
+                let new_src = img.data('src') + '?rnd=' + Math.random();
+                img.attr('src', new_src);
+            });
+        }, 60000);
     });
 
     function camAdd() {
