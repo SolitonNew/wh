@@ -5,6 +5,7 @@ namespace App\Library\Daemons;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use App\Models\Videcam;
+use \Cron\CronExpression;
 
 /**
  * Description of MediaDaemon
@@ -57,6 +58,8 @@ class MediaDaemon extends BaseDaemon
         
         // Storing the previous time value
         $this->_prevExecutePostersTime = $now;
+        
+        if (!CronExpression::factory('*/5 * * * *')->isDue()) return ;
         
         $cams = Videcam::orderBy('id')->get();
         foreach ($cams as $cam) {
