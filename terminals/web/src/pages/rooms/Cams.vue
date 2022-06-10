@@ -168,7 +168,7 @@
             margin: 0px 1rem;
         }
 
-        .video-cameras-list {
+        .video-cameras-list :first-child {
             margin-left: -1rem;
         }
     }
