@@ -63,20 +63,42 @@ class FavoritesService
             }
             
             if ($device->control->typ == 1) {
-                $sql = "select v.created_at, v.value ".
+                $sql = "select v.id, v.created_at, v.value ".
                        "  from core_device_changes v ".
                        " where v.device_id = ".$device->data->id.
                        "   and v.created_at > CURRENT_TIMESTAMP() - interval 3 hour".
                        " order by v.id ";
                 
                 $chartData = [];
+                $firstID = false;
                 foreach(DB::select($sql) as $v_row) {
+                    if ($firstID === false) $firstID = $v_row->id;
                     $x = \Carbon\Carbon::parse($v_row->created_at, 'UTC')->toISOString();
                     $y = $v_row->value;
                     $chartData[] = (object)[
                         'x' => $x,
                         'y' => $y,
                     ];
+                }
+                
+                if (count($chartData) && count($chartData) < 20) {
+                    $sql = "select v.created_at, v.value ".
+                           "  from core_device_changes v ".
+                           " where v.device_id = ".$device->data->id.
+                           "   and v.created_at > CURRENT_TIMESTAMP() - interval 1 day".
+                           "   and v.id < ".$firstID.
+                           " order by v.id desc ".
+                           " limit 1" ;
+                    $firsts = DB::select($sql);
+                        
+                    if (count($firsts)) {
+                        $x = \Carbon\Carbon::parse($firsts[0]->created_at, 'UTC')->toISOString();
+                        $y = $firsts[0]->value;
+                        array_unshift($chartData, (object)[
+                            'x' => $x,
+                            'y' => $y,
+                        ]);
+                    }
                 }
                 
                 $device->chartColor = $color;
