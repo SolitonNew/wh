@@ -95,15 +95,15 @@
                 if (this.chartData.datasets[0].data) {
                     let delI = -1;
                     for (let i = 0; i < this.chartData.datasets[0].data.length; i++) {
-                        if (start.diff(this.chartData.datasets[0].data[0].x, 'minutes') > 1) {
+                        if (start.diff(this.chartData.datasets[0].data[i].x, 'minutes') > 1) {
                             delI = i;
                         } else {
                             break;
                         }
                     }
 
-                    if (delI > 1) { 
-                        this.chartData.datasets[0].data.shift(0, delI - 1);
+                    for (let i = 0; i < delI; i++) {
+                        this.chartData.datasets[0].data.shift();
                     }
                 }
 
