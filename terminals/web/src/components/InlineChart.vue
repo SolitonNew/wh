@@ -115,4 +115,7 @@
 </script>
 
 <style scoped>
+    .chart {
+        position: relative;
+    }
 </style>
