@@ -81,11 +81,10 @@ class FavoritesService
                     ];
                 }
                 
-                if (count($chartData) && count($chartData) < 20) {
+                if ($firstID && count($chartData) < 25) {
                     $sql = "select v.created_at, v.value ".
                            "  from core_device_changes v ".
                            " where v.device_id = ".$device->data->id.
-                           "   and v.created_at > CURRENT_TIMESTAMP() - interval 1 day".
                            "   and v.id < ".$firstID.
                            " order by v.id desc ".
                            " limit 1" ;
