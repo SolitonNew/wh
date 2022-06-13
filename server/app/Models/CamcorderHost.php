@@ -31,6 +31,29 @@ class CamcorderHost extends AffectsFirmwareModel
                     ->orderBy('name', 'asc');
     }
     
+    private $_driver = false;
+    
+    /**
+     * 
+     * @return type
+     */
+    public function driver()
+    {
+        if ($this->_driver === false) {
+            foreach (config('camcorder.drivers') as $class) {
+                $instance = new $class();
+                if ($instance->name == $this->typ) {
+                    $instance->assignKey($this->id);
+                    $instance->assignData($this->data);
+                    $this->_driver = $instance;
+                    break;
+                }
+            }
+        }
+        
+        return $this->_driver;        
+    }
+    
     /**
      *
      * @var type 
@@ -44,20 +67,24 @@ class CamcorderHost extends AffectsFirmwareModel
     public function type()
     {
         if ($this->type === null) {
-            $types = config('camcorder.types');
-            $type = [];
-            if (isset($types[$this->typ])) {
-                $type = $types[$this->typ];
-                $type['title'] = Lang::get('admin/camcorders/'.$this->typ.'.title');
-                $type['description'] = Lang::get('admin/camcorders/'.$this->typ.'.description');
-                $type['properties'] = $this->_makePropertiesWithTitle($this->typ, $type['properties']);
+            if ($this->driver()) {
+                $type = [
+                    'title' => $this->driver()->title,
+                    'description' => $this->driver()->description,
+                    'channels' => $this->driver()->channels,
+                    'consuming' => 0,
+                    'properties' => $this->driver()->propertiesWithTitles(),
+                ];
             } else {
-                $type['title'] = '';
-                $type['description'] = '';
-                $type['properties'] = [];
-                $type['channels'] = [];
+                $type = [
+                    'title' => '',
+                    'description' => '',
+                    'channels' => [],
+                    'consuming' => 0,
+                    'properties' => [],
+                ];
             }
-
+            
             $this->type = (object)$type;
         }
         
@@ -77,18 +104,6 @@ class CamcorderHost extends AffectsFirmwareModel
         return [];
     }
     
-    private function _makePropertiesWithTitle($typ, $properies)
-    {
-        $result = [];
-        foreach ($properies as $key => $size) {
-            $result[$key] = (object)[
-                'title' => Lang::get('admin/camcorders/'.$typ.'.'.$key),
-                'size' => $size,
-            ];
-        }
-        return $result;
-    }
-    
     /**
      * 
      * @return type
@@ -96,14 +111,8 @@ class CamcorderHost extends AffectsFirmwareModel
     public function typeList()
     {
         $result = [];
-        foreach (config('camcorder.types') as $type => $details) {
-            $result[] = (object)[
-                'name' => $type,
-                'title' => Lang::get('admin/camcorders/'.$type.'.title'),
-                'description' => Lang::get('admin/camcorders/'.$type.'.description'),
-                'channels' => implode(';', $details['channels']),
-                'properties' => $this->_makePropertiesWithTitle($type, $details['properties']),
-            ];
+        foreach (config('camcorder.drivers') as $class) {
+            $result[] = new $class();
         }
         return $result;
     }

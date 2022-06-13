@@ -39,7 +39,7 @@
                 @foreach($item->typeList() as $type)
                 <option value="{{ $type->name }}" 
                         data-description="{{ $type->description }}"
-                        data-properties="{{ json_encode($type->properties) }}">{{ $type->title }}</option>
+                        data-properties="{{ json_encode($type->propertiesWithTitles()) }}">{{ $type->title }}</option>
                 @endforeach
             </select>
             <div class="invalid-feedback"></div>

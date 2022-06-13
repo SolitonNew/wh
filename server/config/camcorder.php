@@ -1,23 +1,8 @@
 <?php
 
 return [
-    'types' => [
-        'rtsp' => [
-            'channels' => [
-                'REC'
-            ],
-            'properties' => [
-                'url' => 'large',
-            ],
-        ],
-        'tecsar' => [
-            'channels' => [
-                'REC', 
-                'MOTION'
-            ],
-            'properties' => [
-                'url' => 'large',
-            ],
-        ],
+    'drivers' => [
+        \App\Library\CamcorderHostDrivers\Rtsp::class,
+        \App\Library\CamcorderHostDrivers\Tecsar::class,
     ],
 ];

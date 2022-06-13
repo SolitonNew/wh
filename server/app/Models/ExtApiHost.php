@@ -125,7 +125,7 @@ class ExtApiHost extends AffectsFirmwareModel
      */
     static public function listForIndex(int $hubID)
     {
-        return ExtApiHost::whereHubId($hubID)
+        return self::whereHubId($hubID)
             ->orderBy('name', 'asc')
             ->get();
     }
@@ -138,7 +138,9 @@ class ExtApiHost extends AffectsFirmwareModel
      */
     static public function findOrCreate(int $hubID, int $id)
     {
-        $item = self::whereHubId($hubID)->whereId($id)->first();
+        $item = self::whereHubId($hubID)
+            ->whereId($id)
+            ->first();
         if (!$item) {
             $item = new ExtApiHost();
             $item->id = $id;
