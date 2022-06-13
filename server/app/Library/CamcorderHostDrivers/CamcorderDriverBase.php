@@ -42,6 +42,12 @@ class CamcorderDriverBase
      *
      * @var type 
      */
+    protected $caption;
+    
+    /**
+     *
+     * @var type 
+     */
     protected $thumbnailCronExpression = '* * * * *';
     
     public function __get($name) {
@@ -49,6 +55,8 @@ class CamcorderDriverBase
             case 'title':
             case 'description':
                 return Lang::get('admin/camcorderhosts/'.$this->name.'.'.$name);
+            case 'caption':
+                return $this->caption;
         }
     }
     
@@ -59,6 +67,15 @@ class CamcorderDriverBase
     public function assignKey($key)
     {
         $this->key = $key;
+    }
+    
+    /**
+     * 
+     * @param type $caption
+     */
+    public function assignCaption($caption)
+    {
+        $this->caption = $caption;
     }
     
     /**

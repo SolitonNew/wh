@@ -12,10 +12,18 @@ class Rtsp extends CamcorderDriverBase
         'url' => 'large',
     ];
     
-    protected $thumbnailCronExpression = '*/5 * * * *';
+    protected $thumbnailCronExpression = '*/10 * * * *';
     
     public function requestThumbnail() 
     {
+        $url = $this->getDataValue('url');
         
+        if ($url) {
+            try {
+                shell_exec('ffmpeg -i "'.$url.'" -frames:v 1 /var/www/server/storage/app/camcorder/thumbnails/'.$this->key.'.jpg -y');
+            } catch (\Exception $ex) {
+                $this->printLine($ex->getMessage());
+            }
+        }
     }
 }

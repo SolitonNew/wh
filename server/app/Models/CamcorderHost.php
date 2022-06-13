@@ -44,6 +44,7 @@ class CamcorderHost extends AffectsFirmwareModel
                 $instance = new $class();
                 if ($instance->name == $this->typ) {
                     $instance->assignKey($this->id);
+                    $instance->assignCaption($this->name);
                     $instance->assignData($this->data);
                     $this->_driver = $instance;
                     break;

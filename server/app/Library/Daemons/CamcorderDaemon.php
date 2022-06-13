@@ -78,10 +78,10 @@ class CamcorderDaemon extends BaseDaemon
         foreach ($hosts as $host) {
             $driver = $host->driver();
             $this->_providers[$host->id] = $driver;
-            $list[] = $driver->title;
+            $list[] = $host->name.' ('.$driver->title.')';
         }
         
-        $this->printLine('PROVIDERS USED: ['.implode(', ', $list).']');
+        $this->printLine('CAMCORDERS USED: ['.implode(', ', $list).']');
     }
     
     /**
@@ -108,10 +108,10 @@ class CamcorderDaemon extends BaseDaemon
         
         foreach ($this->_providers as $id => $provider) {
             try {
-                // Request
+                // Request Thumbnail
                 if ($provider->canThumbnailRequest()) {
                     $result = $provider->requestThumbnail();
-                    $s = "[".parse_datetime(now())."] PROVIDER '".$provider->title."' HAS BEEN REQUESTED \n";
+                    $s = "[".parse_datetime(now())."] PROVIDER '".$provider->caption." (".$provider->title.")' HAS BEEN REQUEST THUMBNAIL \n";
                     $this->printLine($s); 
                     if ($result) {
                         $this->printLine($result);
