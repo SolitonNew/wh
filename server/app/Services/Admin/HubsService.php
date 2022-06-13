@@ -362,6 +362,7 @@ class HubsService
             'din-daemon', 
             'extapi-daemon',
             'orangepi-daemon',
+            'camcorder-daemon',
         ];
         
         $daemonManager = new DaemonManager();

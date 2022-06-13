@@ -52,6 +52,7 @@ class AddedEventMemListener
             'extapi' => 'extapi-daemon',
             'orangepi' => 'orangepi-daemon',
             'din' => 'din-daemon',
+            'camcorder' => 'camcorder-daemon',
         ];
         
         if (isset($cross[$typ])) {
