@@ -20,6 +20,11 @@ class Hub extends AffectsFirmwareModel
         return $this->hasMany(ExtApiHost::class);
     }
     
+    public function camcorderHosts()
+    {
+        return $this->hasMany(CamcorderHost::class);
+    }
+    
     public function owHosts()
     {
         return $this->hasMany(OwHost::class);
@@ -44,10 +49,12 @@ class Hub extends AffectsFirmwareModel
         switch ($this->typ) {
             case 'extapi':
                 return $this->extapiHosts->count();
-            case 'din':
-                return $this->owHosts->count();
             case 'orangepi':
                 return $this->i2cHosts->count();
+            case 'camcorder':
+                return $this->camcorderHosts->count();
+            case 'din':
+                return $this->owHosts->count();
         }
         return 0;
     }
@@ -178,6 +185,10 @@ class Hub extends AffectsFirmwareModel
             'variable',
             'orangepi',
             'i2c',
+        ],
+        'camcorder' => [
+            'variable',
+            'cam',
         ],
         'din' => [
             'variable',

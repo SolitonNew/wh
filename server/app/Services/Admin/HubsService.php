@@ -7,6 +7,7 @@ use App\Models\Device;
 use App\Models\OwHost;
 use App\Models\I2cHost;
 use App\Models\ExtApiHost;
+use App\Models\CamcorderHost;
 use App\Models\Property;
 use App\Library\DaemonManager;
 use App\Library\Firmware\Din;
@@ -69,6 +70,9 @@ class HubsService
                 break;
             case 'orangepi':
                 $this->_generateOrangePiDevsByHub($hubID);
+                break;
+            case 'camcorder':
+                $this->_generateCamcorderDevsByHub($hubID);
                 break;
             case 'extapi':
                 $this->_generateExtApiDevsByHub($hubID);
@@ -289,6 +293,42 @@ class HubsService
                         $item->app_control = $this->_decodeChannelTyp($chan);
                         $item->save(['withoutevents']);
                         $item->name = 'extapi_'.$item->id.'_'.$chan;
+                        $item->save();
+                    }
+                }
+            }
+        } catch (\Exception $ex) {
+            Log::info($ex);
+            return ;
+        }
+    }
+    
+    private function _generateCamcorderDevsByHub($hubID)
+    {
+        $hosts = CamcorderHost::whereHubId($hubID)->get();
+        $devs = Device::whereTyp('camcorder')->get();
+        
+        try {
+            foreach($hosts as $host) {
+                foreach ($host->channelsOfType() as $chan) {
+                    $find = false;
+                    foreach($devs as $dev) {
+                        if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
+                            $find = true;
+                            break;
+                        }
+                    }
+
+                    if (!$find) {
+                        $item = new Device();
+                        $item->hub_id = $host->hub_id;
+                        $item->typ = 'camcorder';
+                        $item->name = 'temp for camcorder';
+                        $item->host_id = $host->id;
+                        $item->channel = $chan;
+                        $item->app_control = $this->_decodeChannelTyp($chan);
+                        $item->save(['withoutevents']);
+                        $item->name = 'cam_'.$item->id.'_'.$chan;
                         $item->save();
                     }
                 }

@@ -53,6 +53,10 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->get('/hub-extapihost-edit/{hubID}/{id}', ['as' => 'admin.hub-extapihost-edit', 'uses' => 'Hubs\HostsController@editExtApiShow']);
     $router->post('/hub-extapihost-edit/{hubID}/{id}', ['as' => 'admin.hub-extapihost-edit', 'uses' => 'Hubs\HostsController@editExtApiPost']);
     $router->delete('/hub-extapihost-delete/{hubID}/{id}', ['as' => 'admin.hub-extapihost-delete', 'uses' => 'Hubs\HostsController@deleteExtApi']);
+    // Camcorder hosts
+    $router->get('/hub-camcorderhost-edit/{hubID}/{id}', ['as' => 'admin.hub-camcorderhost-edit', 'uses' => 'Hubs\HostsController@editCamcorderShow']);
+    $router->post('/hub-camcorderhost-edit/{hubID}/{id}', ['as' => 'admin.hub-camcorderhost-edit', 'uses' => 'Hubs\HostsController@editCamcorderPost']);
+    $router->delete('/hub-camcorderhost-delete/{hubID}/{id}', ['as' => 'admin.hub-camcorderhost-delete', 'uses' => 'Hubs\HostsController@deleteCamcorder']);
     // Orange Pi hosts
     $router->get('/hub-orangehost-edit/{hubID}/{id}', ['as' => 'admin.hub-orangehost-edit', 'uses' => 'Hubs\HostsController@editOrangeShow']);
     $router->post('/hub-orangehost-edit/{hubID}/{id}', ['as' => 'admin.hub-orangehost-edit', 'uses' => 'Hubs\HostsController@editOrangePost']);

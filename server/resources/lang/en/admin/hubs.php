@@ -24,6 +24,7 @@ return [
     'hub_types' => [
         'extapi' => 'External Api hub',
         'orangepi' => 'Orange Pi hub',
+        'camcorder' => 'Video Cameras Hub',
         'din' => 'Din hub',
         'onewire' => 'OneWire hub',
         'zigbeeone' => 'Zeegbe switch',
@@ -61,15 +62,18 @@ return [
     'host_ID' => 'ID',
     'host_CONTROLLER' => 'Hub',
     'host_ROM' => 'ROM',
-    'host_ADDRESS' => 'ADDRESS',
+    'host_ADDRESS' => 'Address',
     'host_TYP' => 'Type',
     'host_CHANNELS' => 'Channels',
     'host_DEVICES' => 'Devices',
+    'host_NAME' => 'Name',
     
     'host_add' => 'Add new host...',
     'extapi_host_add' => 'Add External Api host...',
     'orange_host_add' => 'Add Orange Pi host...',
+    'camcorder_host_add' => 'Add Camcorder host...',
     'zigbee_host_add' => 'Add Zigbee One host...',
+    
     'host_add_title' => 'New host',
     'host_edit_title' => 'Host properties',
     'host_delete_confirm' => 'Delete this host?',

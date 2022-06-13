@@ -4,16 +4,12 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Lang;
 
-class I2cHost extends AffectsFirmwareModel
+class CamcorderHost extends AffectsFirmwareModel
 {
-    protected $table = 'core_i2c_hosts';
+    protected $table = 'core_camcorder_hosts';
     public $timestamps = false;
-    
-    protected $_affectFirmwareFields = [
-        'id',
-    ];
     
     /**
      * 
@@ -31,9 +27,11 @@ class I2cHost extends AffectsFirmwareModel
     public function devices()
     {
         return $this->hasMany(Device::class, 'host_id')
-                    ->whereTyp('i2c')
+                    ->whereTyp('camcorder')
                     ->orderBy('name', 'asc');
     }
+    
+
     
     /**
      *
@@ -48,24 +46,12 @@ class I2cHost extends AffectsFirmwareModel
     public function type()
     {
         if ($this->type === null) {
-            $types = config('i2c.types');
+            $types = config('camcorder.types');
             $type = isset($types[$this->typ]) ? $types[$this->typ] : [];
-
-            if (!isset($type['description'])) {
-                $type['description'] = '';
-            }
             
-            if (!isset($type['address'])) {
-                $type['address'] = [];
-            }
-
-            if (!isset($type['channels'])) {
-                $type['channels'] = [];
-            }
-
-            if (!isset($type['consuming'])) {
-                $type['consuming'] = 0;
-            }
+            $type['title'] = Lang::get('admin/camcorders/'.$this->typ.'.title');
+            $type['description'] = Lang::get('admin/camcorders/'.$this->typ.'.description');
+            $type['properties'] = $this->_makePropertiesWithTitle($this->typ, $type['properties']);
 
             $this->type = (object)$type;
         }
@@ -86,19 +72,32 @@ class I2cHost extends AffectsFirmwareModel
         return [];
     }
     
+    private function _makePropertiesWithTitle($typ, $properies)
+    {
+        $result = [];
+        foreach ($properies as $key => $size) {
+            $result[$key] = (object)[
+                'title' => Lang::get('admin/camcorders/'.$typ.'.'.$key),
+                'size' => $size,
+            ];
+        }
+        return $result;
+    }
+    
     /**
      * 
-     * @return \App\Models\class
+     * @return type
      */
     public function typeList()
     {
         $result = [];
-        foreach (config('i2c.types') as $type => $details) {
+        foreach (config('camcorder.types') as $type => $details) {
             $result[] = (object)[
                 'name' => $type,
-                'description' => $details['description'],
-                'address' => implode(';', $details['address']),
+                'title' => Lang::get('admin/camcorders/'.$type.'.title'),
+                'description' => Lang::get('admin/camcorders/'.$type.'.description'),
                 'channels' => implode(';', $details['channels']),
+                'properties' => $this->_makePropertiesWithTitle($type, $details['properties']),
             ];
         }
         return $result;
@@ -112,8 +111,7 @@ class I2cHost extends AffectsFirmwareModel
     static public function listForIndex(int $hubID)
     {
         return self::whereHubId($hubID)
-            ->orderBy('typ', 'asc')
-            ->orderBy('address', 'asc')
+            ->orderBy('name', 'asc')
             ->get();
     }
     
@@ -121,7 +119,7 @@ class I2cHost extends AffectsFirmwareModel
      * 
      * @param int $hubID
      * @param int $id
-     * @return \App\Models\I2cHost
+     * @return \App\Models\CamcorderHost
      */
     static public function findOrCreate(int $hubID, int $id)
     {
@@ -130,7 +128,7 @@ class I2cHost extends AffectsFirmwareModel
             ->first();
         
         if (!$item) {
-            $item = new I2cHost();
+            $item = new CamcorderHost();
             $item->id = $id;
             $item->hub_id = $hubID;
         }
@@ -143,15 +141,13 @@ class I2cHost extends AffectsFirmwareModel
      * @param Request $request
      * @param int $hubID
      * @param int $id
-     * @return string
      */
     static public function storeFromRequest(Request $request, int $hubID, int $id)
     {
         // Validation  ----------------------
         $rules = [
-            'typ' => 'string|required',
-            'address' => 'numeric|required|unique:core_i2c_hosts,address,'.($id > 0 ? $id : ''),
-            'comm' => 'string|nullable',
+            'typ' => ($id == -1) ? 'required' : 'nullable',
+            'name' => 'required',
         ];
         
         $validator = \Validator::make($request->all(), $rules);
@@ -160,17 +156,27 @@ class I2cHost extends AffectsFirmwareModel
         }
         
         // Saving -----------------------
+        
         try {
-            $item = I2cHost::find($id);
-            
+            $item = self::find($id);
             if (!$item) {
-                $item = new I2cHost();
+                $item = new CamcorderHost();
                 $item->hub_id = $hubID;
+                $item->typ = $request->typ;
             }
-            $item->name = $request->typ;
-            $item->comm = $request->comm;
-            $item->typ = $request->typ;
-            $item->address = $request->address;
+            
+            $item->name = $request->name;
+            
+            // Store properties data
+            $propertiesData = [];
+            $properties = $item->type()->properties;
+            $i = 0;
+            foreach ($properties as $key => $val) {
+                $propertiesData[$key] = $request->get($key);
+            }
+            $item->data = json_encode($propertiesData);
+            // ---------------------
+            
             $item->save();
             
             // Store event
@@ -191,16 +197,15 @@ class I2cHost extends AffectsFirmwareModel
     /**
      * 
      * @param int $id
-     * @return string
      */
     static public function deleteById(int $id)
-    {
+    {        
         try {
             // Clear relations
-            foreach (Device::whereTyp('i2c')->whereHostId($id)->get() as $device) {
+            foreach (Device::whereTyp('camcorder')->whereHostId($id)->get() as $device) {
                 Device::deleteById($device->id);
             }
-            // -------------------------
+            // ------------------------
             
             $item = self::find($id);
             $item->delete();
@@ -214,7 +219,6 @@ class I2cHost extends AffectsFirmwareModel
             
             return 'OK';
         } catch (\Exception $ex) {
-            Log::error($ex->getMessage());
             return response()->json([
                 'errors' => [$ex->getMessage()],
             ]);
@@ -233,6 +237,5 @@ class I2cHost extends AffectsFirmwareModel
                 $result = 'With Errors';
             }
         }
-        return $result;
     }
 }

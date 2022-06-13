@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Admin\HostsService;
 use Illuminate\Http\Request;
 use App\Models\ExtApiHost;
+use App\Models\CamcorderHost;
 use App\Models\OwHost;
 use App\Models\I2cHost;
 use App\Models\Property;
@@ -76,6 +77,12 @@ class HostsController extends Controller
                     'hubID' => $hubID,
                     'page' => 'hosts',
                     'data' => I2cHost::listForIndex($hubID),
+                ]);
+            case 'camcorder':
+                return view('admin.hubs.hosts.camcorder.camcorder-hosts', [
+                    'hubID' => $hubID,
+                    'page' => 'hosts',
+                    'data' => CamcorderHost::listForIndex($hubID),
                 ]);
             case 'din':
                 return view('admin.hubs.hosts.din.din-hosts', [
@@ -176,6 +183,47 @@ class HostsController extends Controller
     public function deleteOrange(int $hubID, int $id)
     {
         return I2cHost::deleteById($id);
+    }
+    
+    /**
+     * Route to show camcorder host properties.
+     * 
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editCamcorderShow(int $hubID, int $id)
+    {
+        $item = CamcorderHost::findOrCreate($hubID, $id);
+        
+        return view('admin.hubs.hosts.camcorder.camcorder-host-edit', [
+            'item' => $item,
+        ]);
+    }
+    
+    
+    /**
+     * Route to create or update camcorder host properties.
+     * 
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editCamcorderPost(Request $request, int $hubID, int $id)
+    {
+        return CamcorderHost::storeFromRequest($request, $hubID, $id);
+    }
+    
+    /**
+     * Route to delete camcorder host by id.
+     * 
+     * @param int $hubID
+     * @param int $id
+     * @return string
+     */
+    public function deleteCamcorder(int $hubID, int $id)
+    {
+        return CamcorderHost::deleteById($id);
     }
     
     /**
