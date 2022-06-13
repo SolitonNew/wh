@@ -40,7 +40,6 @@
             initDragula: function () {
                 dragula([this.$refs.orderingItems], {
                     direction: 'horizontal',
-                    mirrorContainer: this.$refs.orderingItems,
                 }).on('drop', () => {
                     let ls = this.$refs.orderingItems.children;
                     let ids = new Array();
