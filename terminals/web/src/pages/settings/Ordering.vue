@@ -38,10 +38,9 @@
         },
         methods: {
             initDragula: function () {
-                dragula([this.$refs.orderingItems, this.$refs.orderingItems], {
-                    accepts: () => {
-                        return true;
-                    },
+                dragula([this.$refs.orderingItems], {
+                    direction: 'horizontal',
+                    mirrorContainer: this.$refs.orderingItems,
                 }).on('drop', () => {
                     let ls = this.$refs.orderingItems.children;
                     let ids = new Array();
@@ -65,16 +64,21 @@
     }
 
     .order-list {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
         cursor: default;
         touch-action: none;
     }
 
     .order-item {
+        display: inline-block;
         padding: 0px;
-        border: 1px solid rgba(0,0,0,.125);
         background-color: rgba(0,0,0,0.025);
+        border: 1px solid rgba(0,0,0,.125);
         border-radius: 5px;
-        margin-bottom: 4px;
+        margin-bottom: 5px;
     }
 
     .order-item-title {
@@ -86,8 +90,6 @@
         margin: 0 !important;
         z-index: 9999 !important;
         opacity: 0.8;
-        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-        filter: alpha(opacity=80);
         cursor: default;
         color: #fff;
         background-color: #007bff;
@@ -107,8 +109,23 @@
     }
 
     .gu-transit {
-        opacity: 0.2;
+        opacity: 0;
         -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
         filter: alpha(opacity=20);
+    }
+
+    @media(min-width: 669px) {
+        .order-list {
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .order-item {
+            position: relative;
+            display: inline-block;
+            width: 193px;
+            height: 80px;
+            margin-right: 5px;
+        }
     }
 </style>
