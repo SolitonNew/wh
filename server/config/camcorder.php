@@ -10,7 +10,7 @@ return [
                 'url' => 'large',
             ],
         ],
-        'tescar' => [
+        'tecsar' => [
             'channels' => [
                 'REC', 
                 'MOTION'

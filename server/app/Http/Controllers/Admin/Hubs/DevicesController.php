@@ -11,8 +11,8 @@ use App\Models\Hub;
 use App\Models\OwHost;
 use App\Models\I2cHost;
 use App\Models\ExtApiHost;
+use App\Models\CamcorderHost;
 use App\Models\Property;
-use Illuminate\Support\Facades\Lang;
 
 class DevicesController extends Controller
 {
@@ -151,6 +151,15 @@ class DevicesController extends Controller
                     ];
                 }
                 break;
+            case 'camcorder':
+                foreach ($hub->camcorderHosts as $host) {
+                    $data[] = (object)[
+                        'id' => $host->id,
+                        'rom' => $host->type()->title,
+                        'count' => $host->devices->count(),
+                    ];
+                }
+                break;
             case 'din':
                 foreach ($hub->owHosts as $host) {
                     $data[] = (object)[
@@ -197,6 +206,12 @@ class DevicesController extends Controller
                 break;
             case 'i2c':
                 $host = I2cHost::find($hostID);
+                if ($host) {
+                    $data = $host->channelsOfType();
+                }
+                break;
+            case 'camcorder':
+                $host = CamcorderHost::find($hostID);
                 if ($host) {
                     $data = $host->channelsOfType();
                 }

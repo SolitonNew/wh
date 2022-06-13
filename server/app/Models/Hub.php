@@ -188,7 +188,7 @@ class Hub extends AffectsFirmwareModel
         ],
         'camcorder' => [
             'variable',
-            'cam',
+            'camcorder',
         ],
         'din' => [
             'variable',

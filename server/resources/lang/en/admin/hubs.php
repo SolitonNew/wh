@@ -42,7 +42,7 @@ return [
     'device_TYP' => 'Host type',
     'device_OW' => 'Host',
     'device_NAME' => 'Identifier',
-    'device_COMM' => 'Descrption',
+    'device_COMM' => 'Title',
     'device_GROUP' => 'Room',
     'device_APP_CONTROL' => 'Device type',
     'device_VALUE' => 'Value',

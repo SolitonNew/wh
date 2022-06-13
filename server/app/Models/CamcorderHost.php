@@ -31,8 +31,6 @@ class CamcorderHost extends AffectsFirmwareModel
                     ->orderBy('name', 'asc');
     }
     
-
-    
     /**
      *
      * @var type 
@@ -47,11 +45,18 @@ class CamcorderHost extends AffectsFirmwareModel
     {
         if ($this->type === null) {
             $types = config('camcorder.types');
-            $type = isset($types[$this->typ]) ? $types[$this->typ] : [];
-            
-            $type['title'] = Lang::get('admin/camcorders/'.$this->typ.'.title');
-            $type['description'] = Lang::get('admin/camcorders/'.$this->typ.'.description');
-            $type['properties'] = $this->_makePropertiesWithTitle($this->typ, $type['properties']);
+            $type = [];
+            if (isset($types[$this->typ])) {
+                $type = $types[$this->typ];
+                $type['title'] = Lang::get('admin/camcorders/'.$this->typ.'.title');
+                $type['description'] = Lang::get('admin/camcorders/'.$this->typ.'.description');
+                $type['properties'] = $this->_makePropertiesWithTitle($this->typ, $type['properties']);
+            } else {
+                $type['title'] = '';
+                $type['description'] = '';
+                $type['properties'] = [];
+                $type['channels'] = [];
+            }
 
             $this->type = (object)$type;
         }

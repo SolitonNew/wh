@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Tescar',
+    'title' => 'Tecsar',
     'description' => 'Easy video camera driver for rtsp connection',
     'url' => 'URL',
 ];
