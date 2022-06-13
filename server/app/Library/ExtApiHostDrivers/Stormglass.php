@@ -96,6 +96,7 @@ class Stormglass extends ExtApiHostDriverBase
         if ($result->getStatusCode() == 200) {
             try {
                 $body = $result->getBody();
+                json_decode($body);
                 $this->putStorageData($body);
             } catch (\Exception $ex) {
                 throw new \Exception('REQUEST ERROR: '.$ex->getMessage());
