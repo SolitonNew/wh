@@ -85,11 +85,6 @@
                             <span class="label">@lang('admin/schedule.menu')</span>
                             <span class="badge badge-primary badge-pill">{{ \App\Models\Schedule::count() }}</span>
                         </a>
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'cams') }}" href="{{ route('admin.cams') }}">
-                            <img src="/img/menus/video-2x.png">
-                            <span class="label">@lang('admin/cams.menu')</span>
-                            <span class="badge badge-primary badge-pill">{{ \App\Models\Videcam::count() }}</span>
-                        </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'jurnal') }}" href="{{ route('admin.jurnal') }}">
                             <img src="/img/menus/bar-chart-2x.png">
                             <span class="label">@lang('admin/jurnal.menu')</span>

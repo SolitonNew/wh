@@ -7,6 +7,7 @@ use App\Models\Device;
 use App\Models\OwHost;
 use App\Models\I2cHost;
 use App\Models\ExtApiHost;
+use App\Models\CamcorderHost;
 use App\Models\Property;
 use App\Library\DaemonManager;
 use App\Library\Firmware\Din;
@@ -70,6 +71,9 @@ class HubsService
             case 'orangepi':
                 $this->_generateOrangePiDevsByHub($hubID);
                 break;
+            case 'camcorder':
+                $this->_generateCamcorderDevsByHub($hubID);
+                break;
             case 'extapi':
                 $this->_generateExtApiDevsByHub($hubID);
                 break;
@@ -90,9 +94,9 @@ class HubsService
             //3 => [],                          // Socket
             4 => ['T', 'TEMP', 'PROC_TEMP'],    // Termometr
             //5 => [],                          // Termostat
-            //6 => [],                          // Videcam
+            6 => ['REC'],                       // Camcorder
             7 => ['F1', 'F2', 'F3', 'F4'],      // Venting
-            8 => ['P1', 'P2', 'P3', 'P4'],      // Motion sensor
+            8 => ['P1', 'P2', 'P3', 'P4', 'MOTION'],  // Motion sensor
             //9 => [],                          // Leakage sensor
             10 => ['H'],                        // Humidity
             11 => ['CO'],                       // Gas sensor
@@ -299,6 +303,42 @@ class HubsService
         }
     }
     
+    private function _generateCamcorderDevsByHub($hubID)
+    {
+        $hosts = CamcorderHost::whereHubId($hubID)->get();
+        $devs = Device::whereTyp('camcorder')->get();
+        
+        try {
+            foreach($hosts as $host) {
+                foreach ($host->channelsOfType() as $chan) {
+                    $find = false;
+                    foreach($devs as $dev) {
+                        if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
+                            $find = true;
+                            break;
+                        }
+                    }
+
+                    if (!$find) {
+                        $item = new Device();
+                        $item->hub_id = $host->hub_id;
+                        $item->typ = 'camcorder';
+                        $item->name = 'temp for camcorder';
+                        $item->host_id = $host->id;
+                        $item->channel = $chan;
+                        $item->app_control = $this->_decodeChannelTyp($chan);
+                        $item->save(['withoutevents']);
+                        $item->name = 'cam_'.$item->id.'_'.$chan;
+                        $item->save();
+                    }
+                }
+            }
+        } catch (\Exception $ex) {
+            Log::info($ex);
+            return ;
+        }
+    }
+    
     /**
      * This method creted devices entries on each channel if the channel 
      * does not exists.
@@ -322,6 +362,7 @@ class HubsService
             'din-daemon', 
             'extapi-daemon',
             'orangepi-daemon',
+            'camcorder-daemon',
         ];
         
         $daemonManager = new DaemonManager();

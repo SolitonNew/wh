@@ -1,25 +1,36 @@
 <?php
 
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 namespace App\Console\Commands;
 
 use \Illuminate\Console\Command;
 
-class MediaDaemon extends Command
-{    
+/**
+ * Description of CamcorderDaemon
+ *
+ * @author soliton
+ */
+class CamcorderDaemon extends Command
+{
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'media-daemon';
+    protected $signature = 'camcorder-daemon';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Media observer';
-    
+    protected $description = 'Processing Camcorder Hubs';
+
     /**
      * Create a new command instance.
      *
@@ -37,7 +48,7 @@ class MediaDaemon extends Command
      */
     public function handle()
     {
-        $demon = new \App\Library\Daemons\MediaDaemon($this->signature);
+        $demon = new \App\Library\Daemons\CamcorderDaemon($this->signature);
         $demon->execute();
     }
 }

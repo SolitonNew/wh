@@ -70,14 +70,14 @@ return [
         ],
         6 => [
             'typ' => 2,
-            'title' => 'Videcam',
+            'title' => 'Camcorder',
             'log' => 'CAM',
             'values' => [],
             'unit' => '',
             'min' => 0,
             'max' => 1,
             'step' => 1,
-            'visible' => false,
+            'visible' => true,
         ],
         7 => [
             'typ' => 3,

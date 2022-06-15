@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\Api\FavoritesService;
+use Illuminate\Http\Request;
 
 class FavoritesController extends Controller
 {
@@ -18,9 +19,9 @@ class FavoritesController extends Controller
      * 
      * @return type
      */
-    public function getData()
+    public function getData(Request $request)
     {
-        $data = $this->_service->getData();
+        $data = $this->_service->getData($request->getHttpHost(), $request->api_token);
         return response()->json($data);
     }
 }

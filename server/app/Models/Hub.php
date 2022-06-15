@@ -4,7 +4,6 @@ namespace App\Models;
 
 use \App\Library\AffectsFirmwareModel;
 use \Illuminate\Http\Request;
-use Log;
 
 class Hub extends AffectsFirmwareModel
 {
@@ -18,6 +17,11 @@ class Hub extends AffectsFirmwareModel
     public function extapiHosts()
     {
         return $this->hasMany(ExtApiHost::class);
+    }
+    
+    public function camcorderHosts()
+    {
+        return $this->hasMany(CamcorderHost::class);
     }
     
     public function owHosts()
@@ -44,10 +48,12 @@ class Hub extends AffectsFirmwareModel
         switch ($this->typ) {
             case 'extapi':
                 return $this->extapiHosts->count();
-            case 'din':
-                return $this->owHosts->count();
             case 'orangepi':
                 return $this->i2cHosts->count();
+            case 'camcorder':
+                return $this->camcorderHosts->count();
+            case 'din':
+                return $this->owHosts->count();
         }
         return 0;
     }
@@ -143,6 +149,7 @@ class Hub extends AffectsFirmwareModel
             ExtApiHost::deleteByHubId($item->id);
             OwHost::deleteByHubId($item->id);
             I2cHost::deleteByHubId($item->id);
+            CamcorderHost::deleteByHubId($item->id);
             
             foreach (Device::whereHubId($item->id)->get() as $device) {
                 Device::deleteById($device->id);
@@ -178,6 +185,10 @@ class Hub extends AffectsFirmwareModel
             'variable',
             'orangepi',
             'i2c',
+        ],
+        'camcorder' => [
+            'variable',
+            'camcorder',
         ],
         'din' => [
             'variable',

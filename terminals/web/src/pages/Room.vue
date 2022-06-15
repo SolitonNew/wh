@@ -4,6 +4,7 @@
     import InlineSwitch from '@/components/InlineSwitch.vue'
     import InlineValue from '@/components/InlineValue.vue'
     import InlineChart from '@/components/InlineChart.vue'
+    import InlineCam from '@/components/InlineCam.vue'
 </script>
 
 <template>
@@ -15,7 +16,21 @@
 </nav>
 <div class="container">
     <div class="device-list">
-        <div class="item columns-3" v-for="device in devices">
+        <div class="item columns-3" 
+            v-bind:class="{large: device.control.typ == 1 || device.data.app_control == 6}"
+            v-for="device in devices">
+            <InlineCam class="item-camcorder"
+                v-if="device.data.app_control == 6" 
+                :poster="device.camcorderData.thumbnail" 
+                :video="device.camcorderData.video"/>
+            <InlineChart class="item-chart"
+                v-if="device.control.typ == 1"
+                :ref="'chart_' + device.data.id"
+                :id="device.data.id"
+                :color="device.chartColor"
+                :values="device.chartData"
+                :hours="3"
+                />
             <div class="item-header">
                 <router-link 
                     class="title"
@@ -23,7 +38,7 @@
                     :to="{ path: '/device/' + device.data.id }">{{ device.control.title }}</router-link>
                 <div v-if="device.control.typ != 3" class="title">{{ device.control.title }}</div>
                 <InlineSwitch
-                    v-if="device.data.app_control == 1 || device.data.app_control == 3"
+                    v-if="device.control.typ == 2"
                     :ref="'device_' + device.data.id"
                     :id="device.data.id"
                     :value="device.data.value"
@@ -34,16 +49,6 @@
                     :id="device.data.id"
                     :value="device.data.value * device.control.varStep"
                     :unit="device.control.resolution" />
-            </div>
-            <div class="item-footer">
-                <InlineChart 
-                    v-if="device.control.typ == 1"
-                    :ref="'chart_' + device.data.id"
-                    :id="device.data.id"
-                    :color="device.chartColor"
-                    :values="device.chartData"
-                    :hours="3"
-                    />
             </div>
         </div>
     </div>
@@ -97,5 +102,24 @@
 </script>
 
 <style scoped>
+    .item.large {
+        height: 249px;
+        overflow: hidden;
+    }
 
+    .item-camcorder {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    .item-camcorder .video {
+        margin-left: -1rem;
+    }
+
+    .item-chart {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
 </style>

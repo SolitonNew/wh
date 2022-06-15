@@ -1,10 +1,11 @@
 <template>
-    <Line class="chart"
-        ref="chart"
-        :id="id"
-        :chart-data="chartData"
-        :chart-options="options"
-        :height="137" />
+    <div>
+        <Line class="chart"
+            ref="chart"
+            :id="id"
+            :chart-data="chartData"
+            :chart-options="options" />
+    </div>
 </template>
 
 <script>
@@ -32,6 +33,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         xAxis: {
                             type: 'time',
@@ -95,15 +97,15 @@
                 if (this.chartData.datasets[0].data) {
                     let delI = -1;
                     for (let i = 0; i < this.chartData.datasets[0].data.length; i++) {
-                        if (start.diff(this.chartData.datasets[0].data[0].x, 'minutes') > 1) {
+                        if (start.diff(this.chartData.datasets[0].data[i].x, 'minutes') > 1) {
                             delI = i;
                         } else {
                             break;
                         }
                     }
 
-                    if (delI > 1) { 
-                        this.chartData.datasets[0].data.shift(0, delI - 1);
+                    for (let i = 0; i < delI; i++) {
+                        this.chartData.datasets[0].data.shift();
                     }
                 }
 
@@ -115,4 +117,10 @@
 </script>
 
 <style scoped>
+    .chart {
+        position: relative;
+        width: calc(100% - 1rem);
+        height: calc(100% - 2.75rem);
+        padding: 2.5rem 0.5rem 0.25rem 0.5rem;
+    }
 </style>

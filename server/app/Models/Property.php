@@ -10,7 +10,7 @@ class Property extends Model
     protected $table = 'core_properties';
     public $timestamps = false;
     
-    const VERSION = '2.8.1 alpha';
+    const VERSION = '2.9.1 alpha';
     
     /**
      * 
@@ -18,7 +18,9 @@ class Property extends Model
      */
     static public function getWebColors() 
     {
-        $item = self::whereName('WEB_COLOR')->first();
+        $item = self::whereName('WEB_COLOR')
+            ->whereUserId(Auth::user()->id)
+            ->first();
         if ($item && $item->value) {
             return json_decode($item->value, true);
         } else {
@@ -32,10 +34,15 @@ class Property extends Model
      */
     static public function setWebColors(array $colors)
     {
-        $item = self::whereName('WEB_COLOR')->first();
+        $userID = Auth::user()->id;
+        
+        $item = self::whereName('WEB_COLOR')
+            ->whereUserId($userID)
+            ->first();
         
         if (!$item) {
             $item = new Property();
+            $item->user_id = $userID;
             $item->name = 'WEB_COLOR';
             $item->comm = '';
         }
@@ -50,7 +57,9 @@ class Property extends Model
      */
     static public function getWebChecks() 
     {
-        $item = self::whereName('WEB_CHECKED')->first();
+        $item = self::whereName('WEB_CHECKED')
+            ->whereUserId(Auth::user()->id)
+            ->first();
         if ($item && $item->value) {
             return $item->value;
         } else {
@@ -64,9 +73,14 @@ class Property extends Model
      */
     static public function setWebChecks(string $checks)
     {
-        $item = self::whereName('WEB_CHECKED')->first();
+        $userID = Auth::user()->id;
+        
+        $item = self::whereName('WEB_CHECKED')
+            ->whereUserId($userID)
+            ->first();
         if (!$item) {
             $item = new Property();
+            $item->user_id = $userID;
             $item->name = 'WEB_CHECKED';
             $item->comm = '';
         }

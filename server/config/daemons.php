@@ -17,6 +17,6 @@ return [
         'schedule-daemon',
         'command-daemon',
         'observer-daemon',
-        'media-daemon',
+        'camcorder-daemon',
     ],
 ];
