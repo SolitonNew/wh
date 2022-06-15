@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Lang;
 
 class CamcorderHost extends AffectsFirmwareModel
 {

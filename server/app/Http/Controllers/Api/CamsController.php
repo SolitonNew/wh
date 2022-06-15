@@ -16,16 +16,17 @@ class CamsController extends Controller
     {
         $data = CamcorderHost::orderBy('name')->get();
         
-        $i = 0;
         foreach ($data as $row) {
             $host = 'http://'.$request->getHttpHost();
             $poster = '';
             if (file_exists($row->getThumbnailFileName())) {
-                $poster = route('cam-thumbnail', ['id' => $row->id, 'api_token' => $request->get('api_token')]);
+                $poster = route('cam-thumbnail', [
+                    'id' => $row->id, 
+                    'api_token' => $request->get('api_token')
+                ]);
             }
             $row->poster = $poster;
-            $row->video = $host.':'.(10000 + $i);
-            $i++;
+            $row->video = $host.':'.(10000 + $row->id);
         }
         
         return response()->json($data);

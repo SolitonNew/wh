@@ -5,6 +5,7 @@ namespace App\Services\Api;
 use App\Models\Property;
 use App\Models\Device;
 use Illuminate\Support\Facades\DB;
+use App\Models\CamcorderHost;
 
 class FavoritesService 
 {
@@ -62,6 +63,7 @@ class FavoritesService
                 }
             }
             
+            // Chart data
             if ($device->control->typ == 1) {
                 $sql = "select v.id, v.created_at, v.value ".
                        "  from core_device_changes v ".
@@ -103,6 +105,16 @@ class FavoritesService
                 
                 $device->chartColor = $color;
                 $device->chartData = $chartData;
+            }
+            
+            // Camcorder data
+            if ($device->data->app_control == 6) {
+                $cam = CamcorderHost::find($device->data->host_id);
+                if ($cam && file_exists($cam->getThumbnailFileName())) {
+                    $device->camcorderData = (object)[
+                        'id' => $cam->id,
+                    ];
+                }
             }
         }
         
