@@ -7,7 +7,6 @@ use App\Models\Property;
 use App\Models\Device;
 use App\Models\CamcorderHost;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 class RoomService 
 {   
@@ -16,10 +15,8 @@ class RoomService
      * @param int $roomID
      * @return type
      */
-    public function getData(int $roomID)
+    public function getData(int $roomID, $host, $apiToken)
     {
-        $api_token = Auth::user()->api_token;
-        
         $app_controls = Device::getVisibleAppControlList();
         
         $room = Room::find($roomID);
@@ -115,10 +112,11 @@ class RoomService
             
             // Camcorder data
             if ($device->data->app_control == 6) {
-                $cam = CamcorderHost::find($device->data->host_id);
-                if ($cam && file_exists($cam->getThumbnailFileName())) {
+                if ($cam = CamcorderHost::find($device->data->host_id)) {
                     $device->camcorderData = (object)[
                         'id' => $cam->id,
+                        'thumbnail' => $cam->getThumbnailUrl($apiToken),
+                        'video' => $cam->getVideoUrl($host),
                     ];
                 }
             }

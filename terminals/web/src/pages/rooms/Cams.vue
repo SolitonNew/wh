@@ -168,12 +168,14 @@
             margin: 0px 1rem;
         }
 
-        .video-cameras-list :first-child {
-            margin-left: -1rem;
-        }
-
         .video-camera {
             width: 360px;
+            min-width: 360px;
+            margin: 0px 0.5rem;
+        }
+
+        .video-cameras-list {
+            margin: 0px -0.5rem;
         }
     }
 </style>

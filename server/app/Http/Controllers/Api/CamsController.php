@@ -15,18 +15,9 @@ class CamsController extends Controller
     public function getData(Request $request)
     {
         $data = CamcorderHost::orderBy('name')->get();
-        
         foreach ($data as $row) {
-            $host = 'http://'.$request->getHttpHost();
-            $poster = '';
-            if (file_exists($row->getThumbnailFileName())) {
-                $poster = route('cam-thumbnail', [
-                    'id' => $row->id, 
-                    'api_token' => $request->get('api_token')
-                ]);
-            }
-            $row->poster = $poster;
-            $row->video = $host.':'.(10000 + $row->id);
+            $row->poster = $row->getThumbnailUrl($request->api_token);
+            $row->video = $row->getVideoUrl($request->getHttpHost());
         }
         
         return response()->json($data);
@@ -40,7 +31,6 @@ class CamsController extends Controller
     public function getThumbnail(int $id)
     {
         $cam = CamcorderHost::findOrFail($id);
-        
         return response()->download($cam->getThumbnailFileName());
     }
 }

@@ -20,7 +20,7 @@
             v-bind:class="{large: device.control.typ == 1 || device.data.app_control == 6}" 
             v-for="device in devices">
             <InlineCam class="item-camcorder"
-                v-if="device.data.app_control == 6 && device.camcorderData" 
+                v-if="device.data.app_control == 6" 
                 :poster="device.camcorderData.thumbnail" 
                 :video="device.camcorderData.video"/>
             <InlineChart class="item-chart"

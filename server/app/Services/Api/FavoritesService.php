@@ -13,7 +13,7 @@ class FavoritesService
      * 
      * @return type
      */
-    public function getData()
+    public function getData($host, $apiToken)
     {
         $ids = explode(',', Property::getWebChecks());
         
@@ -109,10 +109,11 @@ class FavoritesService
             
             // Camcorder data
             if ($device->data->app_control == 6) {
-                $cam = CamcorderHost::find($device->data->host_id);
-                if ($cam && file_exists($cam->getThumbnailFileName())) {
+                if ($cam = CamcorderHost::find($device->data->host_id)) {
                     $device->camcorderData = (object)[
                         'id' => $cam->id,
+                        'thumbnail' => $cam->getThumbnailUrl($apiToken),
+                        'video' => $cam->getVideoUrl($host),
                     ];
                 }
             }

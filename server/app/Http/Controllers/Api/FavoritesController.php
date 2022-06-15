@@ -21,19 +21,7 @@ class FavoritesController extends Controller
      */
     public function getData(Request $request)
     {
-        $data = $this->_service->getData();
-        
-        foreach ($data as $device) {
-            if (isset($device->camcorderData)) {
-                $device->camcorderData->thumbnail = route('cam-thumbnail', [
-                    'id' => $device->camcorderData->id, 
-                    'api_token' => $request->get('api_token')
-                ]);
-                $host = 'http://'.$request->getHttpHost();
-                $device->camcorderData->video = $host.':'.(10000 + $device->camcorderData->id);
-            }
-        }
-        
+        $data = $this->_service->getData($request->getHttpHost(), $request->api_token);
         return response()->json($data);
     }
 }

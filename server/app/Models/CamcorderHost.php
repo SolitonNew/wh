@@ -261,4 +261,28 @@ class CamcorderHost extends AffectsFirmwareModel
     {
         return base_path('storage/app/camcorder/thumbnails/'.$this->id.'.jpg');
     }
+    
+    /**
+     * 
+     * @param type $apiToken
+     * @return type
+     */
+    public function getThumbnailUrl($apiToken)
+    {
+        if (file_exists($this->getThumbnailFileName())) {
+            return route('cam-thumbnail', ['id' => $this->id, 'api_token' => $apiToken]);
+        } else {
+            return '';
+        }
+    }
+    
+    /**
+     * 
+     * @param type $host
+     * @return type
+     */
+    public function getVideoUrl($host)
+    {
+        return 'http://'.$host.':'.(10000 + $this->id);
+    }
 }

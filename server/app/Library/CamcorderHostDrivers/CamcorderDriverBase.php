@@ -140,5 +140,5 @@ class CamcorderDriverBase
      */
     public function thumbnailRequest() {
         return '';
-    }    
+    }
 }

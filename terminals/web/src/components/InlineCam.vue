@@ -208,7 +208,7 @@
         display: inline-block;
         left: 0px;
         top: 0px;
-        width: calc(100% - 1rem);
+        width: calc(100%);
         height: 100%;
         background-color: rgba(0,0,0,0.35);
     }
@@ -221,7 +221,6 @@
         right: 1rem;
         bottom: 1rem;
         border-radius: 25px;
-        margin-right: 1rem;
         cursor: pointer;
         background-color: rgba(110,110,110,0.65);
         background-image: url('/img/zoom-in-3x.png');
@@ -241,8 +240,8 @@
 
     @media(max-width: 668px) {
         .video-camera {
-            min-width: 100vw;
-            width: 100vw;
+            min-width: 100%;
+            width: 100%;
             height: calc(100vw / 16 * 9);
         }
 
@@ -255,15 +254,11 @@
         }
 
         .video-camera-fullscreen {
-            right: 0px;
+            right: 1rem;
         }
     }
 
     @media(min-width: 669px) {
-        .video-camera {
-            padding-left: 1rem;
-        }
-
         .video-camera.dummy {
             display: none;
         }
