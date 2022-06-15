@@ -86,6 +86,21 @@ class SettingsController extends Controller
     
     /**
      * 
+     * @param Request $request
+     * @return string
+     */
+    public function setFavoritesColumns(Request $request)
+    {
+        try {
+            Property::setWebColumns($request->columns);
+            return 'OK';
+        } catch (\Exception $ex) {
+            return 'ERROR';
+        }
+    }
+    
+    /**
+     * 
      * @return type
      */
     public function getDeviceColors()

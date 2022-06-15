@@ -58,7 +58,7 @@ const app = createApp({
     },
     mounted() {
         api.init(this.apiLoginCallback, this.apiLogoutCallback, this.apiEventCallback);
-        api.get('start', null, (data) => {
+        api.get('start-before-login', null, (data) => {
             setLangData(data.lang);
             storage.app_controls = data.app_controls;
             this.started = true;

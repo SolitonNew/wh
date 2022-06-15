@@ -17,7 +17,7 @@
 <div class="container">
     <div class="device-list">
         <div class="item columns-3" 
-            v-bind:class="{large: device.control.typ == 1 || device.data.app_control == 6}"
+            v-bind:class="{large: device.control.typ == 1 || device.data.app_control == 6, 'columns-4': columns == 4}"
             v-for="device in devices">
             <InlineCam class="item-camcorder"
                 v-if="device.data.app_control == 6" 
@@ -57,7 +57,8 @@
 </template>
 
 <script>
-    import {api} from '@/api.js'
+    import {api} from '@/api.js';
+    import storage from '@/storage.js';
 
     export default {
         data() {
@@ -65,11 +66,13 @@
                 title: '',
                 devices: null,
                 loading: false,
+                columns: 3,
             }
         },
         mounted() {
             this.emitter.on('deviceChangeValue', this.deviceChangeValue);
 
+            this.columns = storage.columns;
             this.loading = true;
             api.get('room/' + this.$route.params.id, null, (data) => {
                 this.title = data.title;

@@ -10,7 +10,7 @@ class Property extends Model
     protected $table = 'core_properties';
     public $timestamps = false;
     
-    const VERSION = '2.9.1 alpha';
+    const VERSION = '2.9.2 alpha';
     
     /**
      * 
@@ -86,6 +86,44 @@ class Property extends Model
         }
         
         $item->value = $checks;
+        $item->save();
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    static public function getWebColumns() 
+    {
+        $item = self::whereName('WEB_COLUMNS')
+            ->whereUserId(Auth::user()->id)
+            ->first();
+        if ($item && $item->value) {
+            return $item->value;
+        } else {
+            return '3';
+        }
+    }
+    
+    /**
+     * 
+     * @param string $columns
+     */
+    static public function setWebColumns(string $columns)
+    {
+        $userID = Auth::user()->id;
+        
+        $item = self::whereName('WEB_COLUMNS')
+            ->whereUserId($userID)
+            ->first();
+        if (!$item) {
+            $item = new Property();
+            $item->user_id = $userID;
+            $item->name = 'WEB_COLUMNS';
+            $item->comm = '';
+        }
+        
+        $item->value = $columns;
         $item->save();
     }
     
