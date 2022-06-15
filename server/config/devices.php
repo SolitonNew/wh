@@ -70,7 +70,7 @@ return [
         ],
         6 => [
             'typ' => 2,
-            'title' => 'Videcam',
+            'title' => 'Camcorder',
             'log' => 'CAM',
             'values' => [],
             'unit' => '',

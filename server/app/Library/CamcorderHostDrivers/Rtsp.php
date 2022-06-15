@@ -17,10 +17,11 @@ class Rtsp extends CamcorderDriverBase
     public function requestThumbnail() 
     {
         $url = $this->getDataValue('url');
+        $thumbnailPath = base_path('storage/app/camcorder/thumbnails/'.$this->key.'.jpg');
         
         if ($url) {
             try {
-                shell_exec('ffmpeg -i "'.$url.'" -frames:v 1 /var/www/server/storage/app/camcorder/thumbnails/'.$this->key.'.jpg -y');
+                shell_exec('ffmpeg -i "'.$url.'" -frames:v 1 '.$thumbnailPath.' -y');
             } catch (\Exception $ex) {
                 $this->printLine($ex->getMessage());
             }

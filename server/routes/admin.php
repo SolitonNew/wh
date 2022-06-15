@@ -104,13 +104,6 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->delete('/schedule-delete/{id}', ['as' => 'admin.schedule-delete', 'uses' => 'ScheduleController@delete']);
 
 
-    /* Videcam management routes  ------------------------------------------- */
-    $router->get('/cams', ['as' => 'admin.cams', 'uses' => 'CamsController@index']);
-    $router->get('/cam-edit/{id}', ['as' => 'admin.cam-edit', 'uses' => 'CamsController@editShow']);
-    $router->post('/cam-edit/{id}', ['as' => 'admin.cam-edit', 'uses' => 'CamsController@editPost']);
-    $router->delete('/cam-delete/{id}', ['as' => 'admin.cam-delete', 'uses' => 'CamsController@delete']);
-
-
     /* System jurnal  ------------------------------------------------------- */
     /* Jurnal management routes */
     $router->get('/jurnal', ['as' => 'admin.jurnal', 'uses' => 'JurnalController@index']);

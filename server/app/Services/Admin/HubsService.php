@@ -94,7 +94,7 @@ class HubsService
             //3 => [],                          // Socket
             4 => ['T', 'TEMP', 'PROC_TEMP'],    // Termometr
             //5 => [],                          // Termostat
-            6 => ['REC'],                       // Videcam
+            6 => ['REC'],                       // Camcorder
             7 => ['F1', 'F2', 'F3', 'F4'],      // Venting
             8 => ['P1', 'P2', 'P3', 'P4', 'MOTION'],  // Motion sensor
             //9 => [],                          // Leakage sensor

@@ -253,4 +253,13 @@ class CamcorderHost extends AffectsFirmwareModel
             }
         }
     }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getThumbnailFileName()
+    {
+        return base_path('storage/app/camcorder/thumbnails/'.$this->id.'.jpg');
+    }
 }

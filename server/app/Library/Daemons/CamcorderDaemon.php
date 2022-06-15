@@ -82,6 +82,24 @@ class CamcorderDaemon extends BaseDaemon
         }
         
         $this->printLine('CAMCORDERS USED: ['.implode(', ', $list).']');
+        
+        // Camcorder folder
+        $folder = base_path('storage/app/camcorder');
+        if (!file_exists($folder)) {
+            mkdir($folder);
+        }
+        
+        // Thumbnails folder
+        $folder = base_path('storage/app/camcorder/thumbnails');
+        if (!file_exists($folder)) {
+            mkdir($folder);
+        }
+        
+        // Videos folder
+        $folder = base_path('storage/app/camcorder/videos');
+        if (!file_exists($folder)) {
+            mkdir($folder);
+        }
     }
     
     /**
