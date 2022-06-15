@@ -175,7 +175,7 @@
         }
 
         .video-cameras-list {
-            margin: 0px -0.5rem;
+            margin-left: -0.5rem;
         }
     }
 </style>
