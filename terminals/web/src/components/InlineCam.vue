@@ -111,8 +111,6 @@
     .video-camera {
         position: relative;
         display: inline-block;
-        min-width: 420px;
-        height: calc(420px / 16 * 9);
         background-color: #ffffff;
     }
 

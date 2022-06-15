@@ -77,7 +77,7 @@ return [
             'min' => 0,
             'max' => 1,
             'step' => 1,
-            'visible' => false,
+            'visible' => true,
         ],
         7 => [
             'typ' => 3,

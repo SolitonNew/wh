@@ -171,5 +171,9 @@
         .video-cameras-list :first-child {
             margin-left: -1rem;
         }
+
+        .video-camera {
+            width: 360px;
+        }
     }
 </style>
