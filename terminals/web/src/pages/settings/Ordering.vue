@@ -1,11 +1,17 @@
 <script setup>
     import { lang } from '@/lang.js'
     import Spinner from '@/components/Spinner.vue'
+    import storage from '@/storage.js';
 </script>
 
 <template>
-    <small class="info">{{ lang('ordering_info') }}</small>
-    <div class="order-list" ref="orderingItems">
+    <div class="toolbar">
+        <small class="info">{{ lang('ordering_info') }}</small>
+        <select class="form-control" style="width: 65px;margin-right: 5px;" v-on:change="setColumns">
+            <option v-for="item in columnList" :value="item.id" :selected="item.id == storage.columns">{{ item.title }}</option>
+        </select>
+    </div>
+    <div class="order-list" v-bind:class="{'fixed-columns-4': columns == 4}" ref="orderingItems">
         <div v-for="item in devices" class="order-item" :data-id="item.data.id">
             <div class="order-item-title">{{ item.control.title }}</div>
         </div>
@@ -22,15 +28,19 @@
             return {
                 loading: false,
                 devices: null,
+                columnList: [
+                    {id: 3, title: 'x3'},
+                    {id: 4, title: 'x4'},
+                ],
+                columns: 3,
             }
         },
         mounted() {
             this.loading = true;
+            this.columns = storage.columns;
             api.get('favorites-order-list', null, (data) => {
                 this.devices = data;
-
                 this.initDragula();
-
                 this.loading = false;
             }, (error) => {
                 this.loading = false;
@@ -52,14 +62,36 @@
                     });
                 });
             },
+            setColumns: function (event) {
+                let columns = event.target.value;
+                api.post('favorites-columns-set', {columns: columns}, (data) => {
+                    if (data == 'OK') {
+                        storage.columns = columns;
+                        this.columns = storage.columns;
+                    }
+                });
+            }
         }
     }
 </script>
 
 <style scoped>
-    .info {
+    .toolbar {
+        display: flex;
+        width: 100%;
+        padding-bottom: 0rem;
+        align-items: flex-start;
+    }
+
+    .toolbar .info {
+        flex-grow: 1;
         display: inline-block;
         margin-bottom: 1.5rem;
+        margin-right: 2rem;
+    }
+
+    .toolbar .btn {
+        height: auto;
     }
 
     .order-list {
@@ -125,6 +157,10 @@
             width: 193px;
             height: 80px;
             margin-right: 5px;
+        }
+
+        .fixed-columns-4 .order-item {
+            width: 143px;
         }
     }
 </style>

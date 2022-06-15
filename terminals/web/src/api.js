@@ -1,4 +1,5 @@
 import axios from 'axios'
+import storage from '@/storage.js'
 
 export const api = {
     apiHost: 'http://localhost',
@@ -120,8 +121,15 @@ export const api = {
         }, (data) => {
             if (data.token) {
                 this.token = data.token;
-                doLoginCallback(true);
-                this.runEventTimer();
+                
+                this.get('start-after-login', null, (data) => {
+                    storage.app_controls = data.app_controls;
+                    storage.columns = data.columns;
+                    doLoginCallback(true);
+                    this.runEventTimer();
+                }, (error) => {
+                    this.token = null;
+                });
             } else {
                 doLoginCallback(false);
             }
