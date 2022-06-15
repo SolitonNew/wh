@@ -105,10 +105,10 @@
         });
         
         @if($item->id > -1)
-        let properties = '{{ json_encode($item->type()->properties) }}';
+        let properties = '{!! json_encode($item->type()->properties) !!}';
         buildProperties(JSON.parse(properties.replace(/&quot;/g,'"')));
         @foreach(json_decode($item->data) as $key => $val)
-        $('#host_edit_form [name="{{ $key }}"]').val('{{ str_replace("\n", '\n', $val) }}');
+        $('#host_edit_form [name="{{ $key }}"]').val('{!! str_replace("\n", '\n', $val) !!}');
         @endforeach
         @else
         $('#hostTyp').on('change', function () {
