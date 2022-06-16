@@ -1,5 +1,5 @@
 <template>
-    <div class="video-camera" 
+    <div class="video-camera" ref="videoCamera"
         v-bind:class="{play: playing, loading: loading, empty: poster == '', dummy: video == undefined}" 
         v-on:click="onClickPlay">
         <video 
