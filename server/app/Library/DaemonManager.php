@@ -2,8 +2,6 @@
 
 namespace App\Library;
 
-use Illuminate\Support\Facades\Log;
-
 /**
  * DemonManager Process Manager.
  *
@@ -62,10 +60,7 @@ class DaemonManager
      */
     public function start(string $id) 
     {
-        Log::info($id);
-        
         if ($this->exists($id)) {
-            Log::info($id);
             exec('php '.base_path().'/artisan '.$id.'>/dev/null &');
         } else {
             throw new \Exception('Non-existent process ID');
