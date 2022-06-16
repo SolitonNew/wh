@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel; 
 use App\Library\DaemonManager;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -37,7 +38,11 @@ class Kernel extends ConsoleKernel
         $schedule->call(function (DaemonManager $daemonManager) {
             foreach(\App\Models\Property::runningDaemons() as $daemon) {
                 if (count($daemonManager->findDaemonPID($daemon)) == 0) {
-                    $daemonManager->start($daemon);
+                    try {
+                        $daemonManager->start($daemon);
+                    } catch (\Exception $ex) {
+                        Log::error($ex->getMessage());
+                    }
                 }
             }
         })->everyMinute();
