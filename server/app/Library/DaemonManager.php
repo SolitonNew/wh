@@ -65,6 +65,7 @@ class DaemonManager
         Log::info($id);
         
         if ($this->exists($id)) {
+            Log::info($id);
             exec('php '.base_path().'/artisan '.$id.'>/dev/null &');
         } else {
             throw new \Exception('Non-existent process ID');
