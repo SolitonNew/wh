@@ -138,7 +138,34 @@ class CamcorderDriverBase
      * 
      * @return string
      */
-    public function thumbnailRequest() {
+    public function thumbnailRequest() 
+    {
+        return '';
+    }
+    
+    /**
+     * 
+     */
+    public function checkRecording()
+    {
+        return false;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function startRecording()
+    {
+        return '';
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function stopRecording()
+    {
         return '';
     }
 }
