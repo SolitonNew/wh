@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\AddedEventMem;
 use App\Models\EventMem;
+use App\Models\Property;
 
 class AddedEventMemListener 
 {
@@ -58,6 +59,7 @@ class AddedEventMemListener
         if (isset($cross[$typ])) {
             $manager = new \App\Library\DaemonManager();
             if (!$manager->isStarted($cross[$typ])) {
+                Property::setAsRunningDaemon($cross[$typ]);
                 $manager->start($cross[$typ]);
             }
         }
