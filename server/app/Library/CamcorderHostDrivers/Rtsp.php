@@ -57,12 +57,13 @@ class Rtsp extends CamcorderDriverBase
             return $result.': Bad source path.';
         }
         
-        $file = base_path('storage/app/camcorder/videos/'.$key.'.mp4');
-        if (file_exists($file)) {
-            return $result.': Bad out file.';
+        $folder = base_path('storage/app/camcorder/videos/'.$key);
+        if (file_exists($folder)) {
+            return $result.': Bad out folder.';
         }
         
-        exec('ffmpeg -i "'.$url.'&camcorder" -vf fps=1 -to 15 '.$file.' >/dev/null &');
+        mkdir($folder);
+        exec('ffmpeg -i "'.$url.'&camcorder" -vf fps=1 -to 15 '.$folder.'/%03d.jpg >/dev/null &');
         
         return $result;
     }
