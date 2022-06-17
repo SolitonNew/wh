@@ -182,7 +182,7 @@ class CamcorderDaemon extends BaseDaemon
             switch ($device->channel) {
                 case 'REC':
                     if ($device->value > 0) {
-                        $result = $driver->startRecording();
+                        $result = $driver->startRecording($device->lastDeviceChangesID);
                     } else {
                         $result = $driver->stopRecording();
                     }

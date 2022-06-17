@@ -153,9 +153,10 @@ class CamcorderDriverBase
     
     /**
      * 
+     * @param int $key
      * @return string
      */
-    public function startRecording()
+    public function startRecording(int $key)
     {
         return '';
     }
