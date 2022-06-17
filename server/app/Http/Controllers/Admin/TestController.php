@@ -8,7 +8,10 @@ class TestController extends Controller
 {
     public function test()
     {
-        $data = \App\Models\ExtApiHostStorage::orderBy('id')->get();
+        $data = [];
+        foreach (\App\Models\ExtApiHostStorage::orderBy('id')->get() as $item) {
+            $data[] = json_decode($item->data);
+        }
         dd($data);
     }
 }
