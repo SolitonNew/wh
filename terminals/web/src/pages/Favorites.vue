@@ -35,7 +35,7 @@
                     class="title"
                     v-if="device.control.typ == 3"
                     :to="{ path: '/device/' + device.data.id }">{{ device.control.title }}</router-link>
-                <div v-if="device.control.typ != 3" class="title">{{ device.control.title }}</div>
+                <div v-if="device.control.typ != 3" class="title"><span>{{ device.control.title }}</span></div>
                 <InlineSwitch
                     v-if="device.control.typ == 2"
                     :ref="'device_' + device.data.id"

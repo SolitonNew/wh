@@ -110,6 +110,10 @@ class ExtApiHostDriverBase
      */
     protected function putStorageData($data)
     {
+        if (!json_decode($data)) {
+            throw new \Exception('Bad request content.');
+        }
+        
         ExtApiHostStorage::create([
             'extapi_host_id' => $this->key, 
             'data' => $data,

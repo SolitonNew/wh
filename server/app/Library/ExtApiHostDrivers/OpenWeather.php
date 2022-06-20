@@ -84,10 +84,10 @@ class OpenWeather extends ExtApiHostDriverBase
                 $body = $result->getBody();
                 $this->putStorageData($body);
             } catch (\Exception $ex) {
-                throw new \Exception('REQUEST ERROR: '.$ex->getMessage());
+                throw new \Exception($ex->getMessage());
             }
         } else {
-            throw new \Exception('REQUEST ERROR: '.$result->getStatusCode().' MESSAGE: '.$result->getBody());
+            throw new \Exception('REQUEST STATUS: '.$result->getStatusCode().' MESSAGE: '.$result->getBody());
         }
         
         return '';

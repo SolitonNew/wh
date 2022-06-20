@@ -15,8 +15,4 @@ class Tecsar extends CamcorderDriverBase
     
     protected $thumbnailCronExpression = '*/5 * * * *';
     
-    public function requestThumbnail() 
-    {
-        
-    }
 }

@@ -96,13 +96,12 @@ class Stormglass extends ExtApiHostDriverBase
         if ($result->getStatusCode() == 200) {
             try {
                 $body = $result->getBody();
-                json_decode($body);
                 $this->putStorageData($body);
             } catch (\Exception $ex) {
-                throw new \Exception('REQUEST ERROR: '.$ex->getMessage());
+                throw new \Exception($ex->getMessage());
             }
         } else {
-            throw new \Exception('REQUEST ERROR: '.$result->getStatusCode().' MESSAGE: '.$result->getBody());
+            throw new \Exception('REQUEST STATUS: '.$result->getStatusCode().' MESSAGE: '.$result->getBody());
         }
         
         return '';
@@ -153,7 +152,6 @@ class Stormglass extends ExtApiHostDriverBase
         }
         
         $resultLog = [];
-        
         
         $devices = $this->getAssociatedDevices();
         foreach ($devices as $device) {

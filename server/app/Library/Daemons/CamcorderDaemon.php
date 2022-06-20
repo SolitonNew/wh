@@ -11,6 +11,7 @@ namespace App\Library\Daemons;
 use App\Models\CamcorderHost;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use App\Models\Device;
 
 /**
  * Description of CamcorderDaemon
@@ -47,6 +48,9 @@ class CamcorderDaemon extends BaseDaemon
             while (1) {
                 // ExtApi Host Providers Execute
                 $this->_executeHostProviders();
+                
+                // Check recording
+                $this->_checkRecording();
                 
                 // Check event log
                 if (!$this->checkEvents()) break;
@@ -143,8 +147,50 @@ class CamcorderDaemon extends BaseDaemon
         }
     }
     
+    /**
+     * 
+     */
+    private function _checkRecording()
+    {
+        foreach ($this->_devices as $device) {
+            if ($device->value > 0 &&
+                in_array($device->hub_id, $this->_hubIds) && 
+                $device->typ == 'camcorder' && 
+                isset($this->_providers[$device->host_id])) 
+            {
+                $driver = $this->_providers[$device->host_id];
+                
+                if (!$driver->checkRecording()) {
+                    Device::setValue($device->id, 0);
+                }
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param type $device
+     */
     protected function deviceChangeValue($device)
     {
-        
+        if (in_array($device->hub_id, $this->_hubIds) && 
+            $device->typ == 'camcorder' && 
+            isset($this->_providers[$device->host_id])) 
+        {
+            $driver = $this->_providers[$device->host_id];
+            
+            switch ($device->channel) {
+                case 'REC':
+                    if ($device->value > 0) {
+                        $result = $driver->startRecording($device->lastDeviceChangesID);
+                    } else {
+                        $result = $driver->stopRecording();
+                    }
+                    if ($result) {
+                        $this->printLine('['.parse_datetime(now()).'] '.$result);
+                    }
+                    break;
+            }
+        }
     }
 }
