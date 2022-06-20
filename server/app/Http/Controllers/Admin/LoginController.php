@@ -16,7 +16,9 @@ class LoginController extends Controller
      */
     public function showLogin()
     {
-        if (Auth::user()) {
+        $user = Auth::user();
+        
+        if ($user && $user->access == 2) {
             return redirect('/');
         }
         
@@ -29,8 +31,10 @@ class LoginController extends Controller
      * @return string
      */
     public function postLogin(Request $request) {
-        if (Auth::user()) {
-            abort();
+        $user = Auth::user();
+        
+        if ($user && $user->access == 2) {
+            abort(401);
         }
         
         $user = User::whereLogin($request->login)

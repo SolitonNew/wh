@@ -1,4 +1,4 @@
-# WISE HOUSE
+# WATCH HOUSE
 <p>
 <img src="logo.png" width="30%">
 <img src="logo_2.png" width="30%">
@@ -48,9 +48,9 @@ skip-log-bin
 sudo mysql
 ```
 ```
-CREATE USER 'wisehouse'@'localhost' IDENTIFIED BY 'wisehousepass';
-CREATE DATABASE wisehouse;
-GRANT ALL PRIVILEGES ON wisehouse.* TO 'wisehouse'@'localhost';
+CREATE USER 'watchhouse'@'localhost' IDENTIFIED BY 'watchhousepass';
+CREATE DATABASE watchhouse;
+GRANT ALL PRIVILEGES ON watchhouse.* TO 'watchhouse'@'localhost';
 FLUSH PRIVILEGES;
 exit
 ```
@@ -64,9 +64,9 @@ sudo -u www-data nano .env
 ```
 ```
 APP_KEY=
-DB_DATABASE=wisehouse
-DB_USERNAME=wisehouse
-DB_PASSWORD=wisehousepass
+DB_DATABASE=watchhouse
+DB_USERNAME=watchhouse
+DB_PASSWORD=watchhousepass
 ```
 ```
 sudo -u www-data php artisan migrate --force --seed
@@ -100,5 +100,5 @@ Admin Login/Password: wh/wh
 
 ## License
 
-The WiseHouse system is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The WatchHouse system is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 

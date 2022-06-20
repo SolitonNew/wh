@@ -48,7 +48,7 @@ class Authenticate
         
         switch ($access) {
             case 1:
-                if ($prefix != 'terminal') {
+                if ($prefix == 'admin') {
                     return redirect(route('login'));
                 }
                 break;

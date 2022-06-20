@@ -1,9 +1,0 @@
-#AuthType Basic
-#AuthName "Доступ ограничен"
-#AuthUserFile /home/admin/wh/app/.htpasswd
-#Require valid-user
-
-<Files .htaccess>
-    Order Deny,Allow
-    Deny From All
-</Files>

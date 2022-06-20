@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="{{ app('translator')->getLocale() }}">
     <head>
-        <title>WISEHOUSE</title>
+        <title>WATCH HOUSE</title>
         <link rel="shortcut icon" href="/favicon.ico"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="/css/bootstrap.min.css">
