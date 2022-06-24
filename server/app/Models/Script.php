@@ -73,7 +73,7 @@ class Script extends AffectsFirmwareModel
             $item = Script::find($id);
             if (!$item) {
                 $item = new Script();
-                $item->data = '/* NEW SCRIPT */';
+                $item->data = $request->templateSource ?: '/* NEW SCRIPT */';
             }
             $item->comm = $request->comm;
             $item->save();

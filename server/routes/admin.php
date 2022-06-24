@@ -84,6 +84,7 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->get('/script-edit/{id}', ['as' => 'admin.script-edit', 'uses' => 'ScriptsController@editShow']);
     $router->post('/script-edit/{id}', ['as' => 'admin.script-edit', 'uses' => 'ScriptsController@editPost']);
     $router->delete('/script-delete/{id}', ['as' => 'admin.script-delete', 'uses' => 'ScriptsController@delete']);
+    $router->get('/script-template', ['as' => 'admin.script-template', 'uses' => 'ScriptsController@scriptTemplate']);
     $router->get('/script-events/{id}', ['as' => 'admin.script-events', 'uses' => 'ScriptsController@attacheEventsShow']);
     $router->post('/script-events/{id}', ['as' => 'admin.script-events', 'uses' => 'ScriptsController@attacheEventsPost']);
     $router->post('/script-save/{id}', ['as' => 'admin.script-save', 'uses' => 'ScriptsController@saveScript']);

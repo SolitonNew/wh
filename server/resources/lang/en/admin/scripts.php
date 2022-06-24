@@ -14,6 +14,7 @@ return [
     
     'table_ID' => 'ID',
     'table_COMM' => 'Name',
+    'table_TEMPLATE' => 'Template',
     
     'script_add_title' => 'New script',
     'script_edit_title' => 'Script properties',
