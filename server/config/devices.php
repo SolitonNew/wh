@@ -222,5 +222,16 @@ return [
             'step' => 1,
             'visible' => true,
         ],
+        20 => [
+            'typ' => 2,
+            'title' => 'Heater',
+            'log' => 'HEATER',
+            'values' => [0 => 'OFF', 1 => 'ON'],
+            'unit' => '',
+            'min' => 0,
+            'max' => 1,
+            'step' => 1,
+            'visible' => true,
+        ],
     ],
 ];

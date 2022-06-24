@@ -37,7 +37,7 @@ return [
                 'title' => 'Heater',
                 'typ' => 'device',
                 'event' => false,
-                'app_control' => [3],
+                'app_control' => [20],
             ],
             'CONTROL' => [
                 'title' => 'Control',

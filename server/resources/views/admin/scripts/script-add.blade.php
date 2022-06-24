@@ -34,6 +34,7 @@
             <div id="scriptTemplateEditor" class="border" style="height: 11rem;"></div>
         </div>
     </div>
+    <input name="attachDevices" vlaue="" type="hidden">
 </form>
 @endsection
 
@@ -135,6 +136,15 @@
             }
         }
         $('#script_add_form input[name="comm"]').val(name.replaceAll('@ROOM@', room));
+        
+        // --------------------------------------------
+        let events = new Array();
+        $('#script_add_form [data-event] select').each(function () {
+            let id = $('option[value="' + $(this).val() + '"]', this).data('id');
+            events.push(id);
+        });
+        $('#script_add_form input[name="attachDevices"]').val(events.join(','));
+        // --------------------------------------------
         
         let source = $('#scriptTemplateSource').val();
         
