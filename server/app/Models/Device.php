@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
-use Log;
-use DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class Device extends AffectsFirmwareModel
 {    
@@ -308,6 +308,19 @@ class Device extends AffectsFirmwareModel
     static public function getForecastSortList()
     {
         return self::whereTyp('extapi')
+            ->orderBy('name')
+            ->get();
+    }
+    
+    /**
+     * 
+     * @param array $app_control
+     * @return type
+     */
+    static public function getDeviceListByAppControl(array $app_control)
+    {
+        return self::with('room')
+            ->whereIn('app_control', $app_control)
             ->orderBy('name')
             ->get();
     }

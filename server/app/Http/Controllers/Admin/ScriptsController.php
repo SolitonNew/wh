@@ -52,7 +52,6 @@ class ScriptsController extends Controller
         Property::setLastViewID('SCRIPT', $id);
         // ----------------------------------------
         
-        
         $list = Script::listAll();
         $item = Script::find($id);
         
@@ -73,9 +72,16 @@ class ScriptsController extends Controller
     {
         $item = Script::findOrCreate($id);
         
-        return view('admin.scripts.script-edit', [
-            'item' => $item,
-        ]);
+        if ($item->id == -1) {
+            return view('admin.scripts.script-add', [
+                'item' => $item,
+                'templates' => require base_path('app/Library/ScriptTemplates.php'),
+            ]);
+        } else {
+            return view('admin.scripts.script-edit', [
+                'item' => $item,
+            ]);
+        }
     }
     
     /**
@@ -100,6 +106,22 @@ class ScriptsController extends Controller
         Script::deleteById($id);
         
         return 'OK';
+    }
+    
+    /**
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function scriptTemplate(Request $request)
+    {
+        $templates = require base_path('app/Library/ScriptTemplates.php');
+        
+        if (!isset($templates[$request->template])) return '';
+        
+        return view('admin.scripts.script-template', [
+            'template' => $templates[$request->template],
+        ]);
     }
     
     /**
