@@ -78,6 +78,12 @@ class Script extends AffectsFirmwareModel
             $item->comm = $request->comm;
             $item->save();
             
+            // -------------------------------
+            if ($request->attachDevices) {
+                DeviceEvent::createFromIds($item->id, explode(',', $request->attachDevices));
+            }
+            // -------------------------------
+            
             // Store event
             EventMem::addEvent(EventMem::SCRIPT_LIST_CHANGE, [
                 'id' => $item->id,
