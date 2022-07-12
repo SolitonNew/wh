@@ -941,6 +941,11 @@ select.select-tree option {
         display: none;
     }
     
+    #hubsListCompact {
+        display: inline-block!important;
+        width: 100%;
+    }
+    
     /* Scripts */
     #scriptList {
         width: 100%!important;

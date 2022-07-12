@@ -25,7 +25,7 @@
         font-style: italic;
     }
     
-    @media(max-width: 576px) {
+    @media(max-width: 768px) {
         .only-large {
             display: none;
         }
