@@ -34,6 +34,11 @@
     .plan-part-toolbar .btn {
         margin: 0.25rem;
     }
+    
+    .main-content {
+        display: flex;
+        flex-direction: column;
+    }
 </style>
 
 <div id="planToolbar" style="margin: -0.5rem 0px;display: flex;justify-content: center;width: 100%;">

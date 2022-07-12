@@ -14,6 +14,24 @@
     #plan_link_device_form .not-roof {
         display: none;
     }
+
+    .ext-control-column {
+        position: absolute;
+        top: 7.75rem;
+        right: 30px;
+        width: 10rem;
+        height: 10rem;
+    }
+    
+    @media(max-width: 574px) {
+        .ext-control-column {
+            position: relative;
+            top: 1rem;
+            display: flex;
+            margin-left: calc(50% - 5rem + 30px);
+            margin-bottom: 1rem;
+        }
+    }
 </style>
 
 <form id="plan_link_device_form" class="container" method="POST" action="{{ route('admin.plan-link-device', ['planID' => $planID, 'deviceID' => $deviceID]) }}">
@@ -56,18 +74,6 @@
             @endforeach
             </select>
         </div>
-        <div class="col-sm-5">
-            <div class="form-control" style="margin-bottom: -10rem; height:calc(9rem + 2px); padding: 1rem; overflow: hidden;">
-                <div id="deviceLinkView" 
-                     style="position: relative; display: inline-block; overflow: hiddend;
-                            border: 1px solid #000000; width: 100%; height: 100%;">
-                    <div style="position: absolute; left: 0px; top: 0px; display: flex; width: 100%;height: 100%;align-items: center;justify-content: center;">
-                        <small class="text-muted">{{ $partBounds->W }}x{{ $partBounds->H }}</small>
-                    </div>
-                    <div class="plan-device" style="cursor: default;"></div>
-                </div>                
-            </div>
-        </div>
     </div>
     <div class="row">
         <div class="col-sm-3">
@@ -85,6 +91,18 @@
         </div>
         <div class="col-sm-4">
             <input type="number" class="form-control" name="cross" value="{{ $position->cross }}" step="0.01">
+        </div>
+    </div>
+    <div class="ext-control-column">
+        <div class="form-control" style="margin-bottom: -10rem; height:calc(9rem + 2px); padding: 1rem; overflow: hidden;">
+            <div id="deviceLinkView" 
+                 style="position: relative; display: inline-block; overflow: hiddend;
+                        border: 1px solid #000000; width: 100%; height: 100%;">
+                <div style="position: absolute; left: 0px; top: 0px; display: flex; width: 100%;height: 100%;align-items: center;justify-content: center;">
+                    <small class="text-muted">{{ $partBounds->W }}x{{ $partBounds->H }}</small>
+                </div>
+                <div class="plan-device" style="cursor: default;"></div>
+            </div>                
         </div>
     </div>
 </form>

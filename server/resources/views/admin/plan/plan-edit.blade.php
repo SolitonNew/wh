@@ -49,46 +49,46 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
-    <div class="row" style="margin-bottom: 0;">
+    <div class="row mb-0">
         <div class="col-sm-3">
             <label class="form-label">@lang('admin/plan.table_BOUNDS_XY')</label>
         </div>
         <div class="col-sm-9">
-            <div class="row">
+            <div class="row mb-0">
                 <div class="col-sm-2">
                     <label class="form-label strong">@lang('admin/plan.table_X')</label>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 mb-3">
                     <input class="form-control" type="number" name="X" step="0.01" value="{{ $itemBounds->X }}" required="">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="col-sm-2">
                     <label class="form-label strong">@lang('admin/plan.table_Y')</label>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 mb-3">
                     <input class="form-control" type="number" name="Y" step="0.01" value="{{ $itemBounds->Y }}" required="">
                     <div class="invalid-feedback"></div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-3">
+    <div class="row mb-0">
+        <div class="col-sm-3 mb-0">
             <label class="form-label">@lang('admin/plan.table_BOUNDS_WH')</label>
         </div>
         <div class="col-sm-9">
-            <div class="row" style="margin-bottom: 0;">
+            <div class="row mb-0">
                 <div class="col-sm-2">
                     <label class="form-label strong">@lang('admin/plan.table_W')</label>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 mb-3">
                     <input class="form-control" type="number" name="W" step="0.01" value="{{ $itemBounds->W }}" required="">
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="col-sm-2">
                     <label class="form-label strong">@lang('admin/plan.table_H')</label>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 mb-3">
                     <input class="form-control" type="number" name="H" step="0.01" value="{{ $itemBounds->H }}" required="">
                     <div class="invalid-feedback"></div>
                 </div>
@@ -99,15 +99,17 @@
         <div class="col-sm-3">
             <label class="form-label">@lang('admin/plan.table_STYLE_PEN')</label>
         </div>
-        <div class="col-sm-3">
-            <select class="custom-select" name="pen_style" style="width: 100px;">
-            @foreach(['none', 'solid', 'dotted', 'dashed', 'double', 'groove', 'ridge', 'insert', 'outset'] as $val)
-            <option {{ $itemStyle->pen_style == $val ? 'selected' : '' }}>{{ $val }}</option>
-            @endforeach
-            </select>
-        </div>
-        <div class="col-sm-3">
-            <input type="number" class="form-control" style="width: 70px;" name="pen_width" value="{{ $itemStyle->pen_width }}">
+        <div class="col-sm-6" style="display: flex;">
+            <div class="mr-3" style="flex-grow: 1;">
+                <select class="custom-select" name="pen_style">
+                @foreach(['none', 'solid', 'dotted', 'dashed', 'double', 'groove', 'ridge', 'insert', 'outset'] as $val)
+                <option {{ $itemStyle->pen_style == $val ? 'selected' : '' }}>{{ $val }}</option>
+                @endforeach
+                </select>
+            </div>
+            <div>
+                <input type="number" class="form-control" style="width: 70px;" name="pen_width" value="{{ $itemStyle->pen_width }}">
+            </div>
         </div>
     </div>
     <div class="row">
@@ -131,7 +133,7 @@
                 <div class="col-sm-2">
                     <label class="form-label">@lang('admin/plan.table_NAME_POSITION_DX')</label>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 mb-3">
                     <input class="form-control" name="name_dx" value="{{ $itemStyle->name_dx }}">
                 </div>
                 <div class="col-sm-2">

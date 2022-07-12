@@ -24,11 +24,27 @@
         color: rgba(0,0,0,0.4);
         font-style: italic;
     }
+    
+    @media(max-width: 576px) {
+        .only-large {
+            display: none;
+        }
+        
+        .navbar-page-group {
+            padding: 0px;
+            width: 100%;
+        }
+        
+        #deviceFilter {
+            width: 100%!important;
+            margin: 0px;
+        }
+    }
 </style>
 <div style="display: flex; flex-direction: column; height: 100%;">
     <div class="navbar navbar-page">
         <div class="navbar-page-group">
-            <span class="strong">@lang('admin/hubs.device_filter'):</span>
+            <span class="strong only-large">@lang('admin/hubs.device_filter'):</span>
             <select id="deviceFilter" class="custom-select select-tree" style="width: 300px;">
                 <option value="none" class="italic">-- @lang('admin/hubs.device_filter_null') --</option>
                 <option value="empty" class="italic" {{ $groupID == 'empty' ? 'selected' : '' }}>-- @lang('admin/hubs.device_group_empty') --</option>
