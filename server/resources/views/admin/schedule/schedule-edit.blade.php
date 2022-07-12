@@ -38,11 +38,11 @@
             <div class="invalid-feedback" data-formfield="action"></div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-0">
         <div class="col-sm-3">
             <label class="form-label">@lang('admin/schedule.table_ENABLE')</label>
         </div>
-        <div class="col-sm-5">
+        <div class="col-sm-5 mb-3">
             <select class="custom-select" name="enable">
             @foreach($enableList as $key => $val)
             <option value="{{ $key }}" {{ $key == $item->enable ? 'selected' : '' }}>{{ $val }}</option>
@@ -71,7 +71,7 @@
     </div>
     <div class="row" id="day_of_type">
         <div class="col-sm-3">
-            <label class="form-label strong nowrap">@lang('admin/schedule.table_INTERVAL_DAY_OF_TYPE')</label>
+            <label class="form-label strong">@lang('admin/schedule.table_INTERVAL_DAY_OF_TYPE')</label>
         </div>
         <div class="col-sm-9">
             <textarea class="form-control" name="interval_day_of_type">{{ $item->interval_day_of_type }}</textarea>
@@ -80,7 +80,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <label class="form-label strong nowrap">@lang('admin/schedule.table_INTERVAL_TIME_OF_DAY')</label>
+            <label class="form-label strong">@lang('admin/schedule.table_INTERVAL_TIME_OF_DAY')</label>
         </div>
         <div class="col-sm-9">
             <textarea class="form-control" name="interval_time_of_day">{{ $item->interval_time_of_day }}</textarea>

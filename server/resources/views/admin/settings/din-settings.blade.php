@@ -2,21 +2,29 @@
     <div id="dinSettings" class="card-body">
         <h5 class="card-title">@lang('admin/settings.din_settings_title')</h5>
         <div class="row mb-3">
-            <div class="col-sm-2">
-                <label class="form-label">@lang('admin/settings.din_settings_port')</label>
+            <div class="col-lg-6 mb-3">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label class="form-label">@lang('admin/settings.din_settings_port')</label>
+                    </div>
+                    <div class=" col-sm-8">
+                        <input id="dinSettingsPort" class="form-control" value="{{ App\Models\Property::getDinSettings()->port }}">
+                    </div>
+                </div>
             </div>
-            <div class=" col-sm-4">
-                <input id="dinSettingsPort" class="form-control" value="{{ App\Models\Property::getDinSettings()->port }}">
-            </div>
-            <div class="col-sm-2">
-                <label class="form-label">@lang('admin/settings.din_settings_mmcu')</label>
-            </div>
-            <div class="col-sm-4">
-                <select id="dinSettingsMmcu" class="custom-select">
-                    @foreach(config('din') as $key => $val)
-                    <option value="{{ $key }}" {{ App\Models\Property::getDinSettings()->mmcu == $key ? 'selected' : '' }}>{{ $key }}</option>
-                    @endforeach
-                </select>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label class="form-label">@lang('admin/settings.din_settings_mmcu')</label>
+                    </div>
+                    <div class="col-sm-8">
+                        <select id="dinSettingsMmcu" class="custom-select">
+                            @foreach(config('din') as $key => $val)
+                            <option value="{{ $key }}" {{ App\Models\Property::getDinSettings()->mmcu == $key ? 'selected' : '' }}>{{ $key }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="d-flex justify-content-end">

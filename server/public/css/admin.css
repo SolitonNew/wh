@@ -878,6 +878,13 @@ select.select-tree option {
     display: none;
 }
 
+
+@media(max-width: 576px) {
+    .form-label {
+        margin-bottom: 0px;
+    }
+}
+
 @media(max-width: 768px) {
     .page-jumbotron {
         margin: 1rem;
