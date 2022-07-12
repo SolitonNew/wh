@@ -81,11 +81,13 @@
 .navbar-top-menu-tab {
     margin-bottom: -1.5rem; 
     border-bottom: 1px solid #ffffff;
+    flex-wrap: nowrap;
 }
 
 .navbar-top-menu-tab .nav-link {
     background-color: #f2f2f2;
     border: 1px solid rgba(0, 0, 0, 0.125);
+    white-space: nowrap;
 }
 
 .navbar-top-menu-tab .nav-link:hover {

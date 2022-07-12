@@ -9,6 +9,24 @@
 @endsection
 
 @section('content')
+<style>
+    .ext-control-column {
+        position: absolute;
+        top: 1rem;
+        right: 20px;
+        width: 10rem;
+        height: 10rem;
+    }
+    
+    @media(max-width: 574px) {
+        .ext-control-column {
+            position: relative;
+            display: flex;
+            margin-left: calc(50% - 5rem + 20px);
+            margin-bottom: 1rem;
+        }
+    }
+</style>
 <form id="plan_port_form" class="container" method="POST" action="{{ route('admin.plan-port-edit', ['planID' => $planID, 'portIndex' => $portIndex]) }}">
     <button type="submit" style="display: none;"></button>
     <input type="hidden" name="add_device_id">
@@ -22,18 +40,6 @@
             <option {{ $position->surface == $row ? 'selected' : '' }}>{{ $row }}</option>
             @endforeach
             </select>
-        </div>
-        <div class="col-sm-5">
-            <div class="form-control" style="margin-bottom: -10rem; height:calc(9rem + 2px); padding: 1rem; overflow: hidden;">
-                <div id="portView" 
-                     style="position: relative; display: inline-block; overflow: hiddend;
-                            border: 1px solid #000000; width: 100%; height: 100%;">
-                    <div style="position: absolute; left: 0px; top: 0px; display: flex; width: 100%;height: 100%;align-items: center;justify-content: center;">
-                        <small class="text-muted">{{ $partBounds->W }}x{{ $partBounds->H }}</small>
-                    </div>
-                    <div class="plan-port" style="cursor: default;"></div>
-                </div>                
-            </div>
         </div>
     </div>
     <div class="row">
@@ -58,6 +64,18 @@
         </div>
         <div class="col-sm-4">
             <input type="number" class="form-control" name="depth" value="{{ $position->depth }}" step="0.01">
+        </div>
+    </div>
+    <div class="ext-control-column">
+        <div class="form-control" style="margin-bottom: -10rem; height:calc(9rem + 2px); padding: 1rem; overflow: hidden;">
+            <div id="portView" 
+                 style="position: relative; display: inline-block; overflow: hiddend;
+                        border: 1px solid #000000; width: 100%; height: 100%;">
+                <div style="position: absolute; left: 0px; top: 0px; display: flex; width: 100%;height: 100%;align-items: center;justify-content: center;">
+                    <small class="text-muted">{{ $partBounds->W }}x{{ $partBounds->H }}</small>
+                </div>
+                <div class="plan-port" style="cursor: default;"></div>
+            </div>                
         </div>
     </div>
 </form>
