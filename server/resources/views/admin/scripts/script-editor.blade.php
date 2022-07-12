@@ -15,13 +15,23 @@
     $(document).ready(function () {
         $(window).on('resize', () => {
             let scriptViewer = $('#scriptViewer')[0];
-            let bounds = scriptViewer.getBoundingClientRect();
-            $('#scriptEditorWindow').css({
-                left: bounds.left + 'px',
-                top: bounds.top + 'px',
-                width: scriptViewer.offsetWidth,
-                height: scriptViewer.offsetHeight,
-            });
+            
+            if ($(window).width() > 768) {
+                let bounds = scriptViewer.getBoundingClientRect();
+                $('#scriptEditorWindow').css({
+                    left: bounds.left + 'px',
+                    top: bounds.top + 'px',
+                    width: scriptViewer.offsetWidth,
+                    height: scriptViewer.offsetHeight,
+                });
+            } else {
+                $('#scriptEditorWindow').css({
+                    left: '0px',
+                    top: '0px',
+                    width: '100vw',
+                    height: '100vh',
+                });
+            }
         });
         
         let ctx = document.getElementById('scriptEditor');

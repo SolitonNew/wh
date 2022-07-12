@@ -64,7 +64,7 @@
 
 .navbar-down-menu {
     margin-left: 1rem;
-    margin-right: 1.5rem;
+    margin-right: 0rem;
     white-space: nowrap;
 }
 
@@ -939,6 +939,11 @@ select.select-tree option {
     /* Hubs */
     #hubsList {
         display: none;
+    }
+    
+    #hubsListCompact {
+        display: inline-block!important;
+        width: 100%;
     }
     
     /* Scripts */
