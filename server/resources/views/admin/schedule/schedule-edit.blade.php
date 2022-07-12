@@ -142,7 +142,7 @@
 
         $('#schedule_edit_form select[name="interval_type"]').on('change', function () {
             let row = $('#day_of_type');
-            let label = $('.form-label', row);
+            let label = $('label', row);
             switch ($(this).val()) {
                 case '0':
                     row.hide(250);
