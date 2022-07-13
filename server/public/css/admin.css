@@ -12,6 +12,10 @@
     border-radius: 3px;
 }
 
+.modal {
+    overflow-y: auto!important;
+}
+
 .btn {
     white-space: nowrap;
 }
@@ -883,9 +887,14 @@ select.select-tree option {
     .form-label {
         margin-bottom: 0px;
     }
+    
 }
 
 @media(max-width: 768px) {
+    .only-large {
+        display: none;
+    }
+    
     .page-jumbotron {
         margin: 1rem;
     }
@@ -976,11 +985,16 @@ select.select-tree option {
     
     /* Daemons */
     #daemonsList {
-        width: 100%!important;
+        display: none!important;
+    }
+    
+    #daemonListCompact {
+        display: inline-block!important;
+        width: 100%;
     }
     
     #daemonViewer {
-        display: none!important;
+        
     }
     
     .show-log #hideLogMobile {
