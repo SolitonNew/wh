@@ -87,6 +87,7 @@
         
         let a = window.location.href.split('?');
         if (a.length > 1 && a[a.length - 1] == 'editor=show') {
+            history.pushState({}, '', a[0]);
             scriptEditSource();
         }
     });
