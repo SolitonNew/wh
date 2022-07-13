@@ -23,9 +23,12 @@
         <a href="{{ route('admin.scripts', ['id' => $row->id]) }}"
            class="tree-item {{ $row->id == $scriptID ? 'active' : '' }}" style="white-space: normal; justify-content: space-between;">
             {{ $row->comm }}
-            @if($row->var_count > 0)
-            <div class="badge badge-pill badge-warning">{{ $row->var_count }}</div>
-            @endif
+            <div class="d-flex align-items-center">
+                @if($row->var_count > 0)
+                <div class="badge badge-pill badge-warning">{{ $row->var_count }}</div>
+                @endif
+                <button class="only-small btn btn-primary btn-sm ml-2" onclick="scriptEditSource({{ $row->id }}); return false;">Edit</button>
+            </div>
         </a>
         @endforeach
     </div>
@@ -81,6 +84,11 @@
             editorShow(sel.start, sel.end, scriptViewer.getData());
         });
         @endif
+        
+        let a = window.location.href.split('?');
+        if (a.length > 1 && a[a.length - 1] == 'editor=show') {
+            scriptEditSource();
+        }
     });
 
     function scriptAdd() {
@@ -92,7 +100,11 @@
         dialog('{{ route("admin.script-edit", ["id" => $scriptID]) }}');
     }
 
-    function scriptEditSource() {
+    function scriptEditSource(id) {
+        if (id && id != {{ $scriptID }}) {
+            window.location.href = "{{ route('admin.scripts', ['id' => '']) }}/" + id + '?editor=show';
+            return ;
+        }
         editorShow(0, 0, scriptViewer.getData());
     }
 

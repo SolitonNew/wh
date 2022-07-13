@@ -29,7 +29,7 @@
                     left: '0px',
                     top: '0px',
                     width: '100vw',
-                    height: '100vh',
+                    height: '100%',
                 });
             }
         });
