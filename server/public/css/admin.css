@@ -976,11 +976,16 @@ select.select-tree option {
     
     /* Daemons */
     #daemonsList {
-        width: 100%!important;
+        display: none!important;
+    }
+    
+    #daemonListCompact {
+        display: inline-block!important;
+        width: 100%;
     }
     
     #daemonViewer {
-        display: none!important;
+        
     }
     
     .show-log #hideLogMobile {

@@ -1,7 +1,7 @@
 @extends('index')
 
 @section('head')
-<link rel="stylesheet" href="/css/admin.css">
+<link rel="stylesheet" href="/css/admin.css?v={{ str_replace(' ', '_', App\Models\Property::VERSION) }}">
 <link rel="stylesheet" href="/css/script-editor.css">
 @endsection
 
@@ -458,12 +458,13 @@
                 for (let i = 0; i < count; i++) {
                     if (data[i].stat) {
                         enabled++;
-                        $('#daemonsList .tree-item[data-id="' + data[i].id + '"]').addClass('started');
-                    } else {
-                        $('#daemonsList .tree-item[data-id="' + data[i].id + '"]').removeClass('started');
                     }
                 }
                 $('#daemonsState').text(enabled + ' / ' + count);
+                
+                if (window.daemonListChangeState) {
+                    daemonListChangeState(data);
+                }
             }
 
             setTimeout(requestDaemonsState, {{ config("settings.admin_daemins_status_update_interval") }});

@@ -21,7 +21,24 @@
     #daemonsList .started .start {
         display: inline;
     }
+    
+    .main-content {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .bold {
+        font-weight: bold;
+    }
 </style>
+<div id="daemonListCompact" class="navbar navbar-page" style="display: none;">
+    <select id="daemonListCombobox" class="nav-link custom-select select-tree" style="width: 100%;">
+        @foreach($daemons as $row)
+        <option value="{{ $row->id }}" 
+                {{ $row->id == $id ? 'selected' : '' }}></option>
+        @endforeach
+    </select>
+</div>
 <div style="position:relative; display: flex; flex-direction: row; height: 100%;">
     <div id="daemonsList" class="tree" 
          style="width: 250px; min-width:250px; border-right: 1px solid rgba(0,0,0,0.125); justify-content: space-between;" 
@@ -64,7 +81,39 @@
                 $('.daemon-log-btn-top').fadeIn(250);
             }
         });
+        
+        // Compact Navigate
+        $('#daemonListCombobox').on('change', function () {
+            window.location.href = '{{ route("admin.jurnal-daemons", ["id" => ""]) }}/' + $(this).val();
+        });
+        
+        daemonCompactListUpdate();
     });
+    
+    function daemonListChangeState(data) {
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].stat) {
+                $('#daemonsList .tree-item[data-id="' + data[i].id + '"]').addClass('started');
+            } else {
+                $('#daemonsList .tree-item[data-id="' + data[i].id + '"]').removeClass('started');
+            }
+        }
+        
+        daemonCompactListUpdate();
+    }
+    
+    function daemonCompactListUpdate() {
+        $('#daemonListCombobox option').each(function () {
+            let row = $('#daemonsList .tree-item[data-id="' + $(this).val() + '"]');
+            let text = $('small', row).text();
+            if (row.hasClass('started')) {
+                text = '[R] ' + text;
+            } else {
+                text = '[ ] ' + text;
+            }
+            $(this).html(text);
+        });
+    }
 
     function daemonStart() {
         confirmYesNo("@lang('admin/jurnal.daemon_run_confirm')", () => {
