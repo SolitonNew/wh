@@ -111,7 +111,9 @@
             } else {
                 text = '[ ] ' + text;
             }
-            $(this).html(text);
+            if ($(this).text() != text) {
+                $(this).text(text);
+            }
         });
     }
 
