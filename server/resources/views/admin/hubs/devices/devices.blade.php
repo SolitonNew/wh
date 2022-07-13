@@ -26,10 +26,6 @@
     }
     
     @media(max-width: 768px) {
-        .only-large {
-            display: none;
-        }
-        
         .navbar-page-group {
             padding: 0px;
             width: 100%;

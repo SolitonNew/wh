@@ -887,9 +887,14 @@ select.select-tree option {
     .form-label {
         margin-bottom: 0px;
     }
+    
 }
 
 @media(max-width: 768px) {
+    .only-large {
+        display: none;
+    }
+    
     .page-jumbotron {
         margin: 1rem;
     }
