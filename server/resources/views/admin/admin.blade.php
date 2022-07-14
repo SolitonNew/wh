@@ -411,10 +411,18 @@
         header.insertAfter(table);
 
         let parent = $(table.parent());
+        let ticking = false;
         parent.on('scroll', (e) => {
-            header.css({
-                top: parent.scrollTop() + 'px',
-            });
+            if (!ticking) {
+                window.requestAnimationFrame(function() {
+                    header.css({
+                        top: parent.scrollTop() + 'px',
+                    });
+                    ticking = false;
+                });
+                
+                ticking = true;
+            }
         })
 
         $(window).on('resize', () => {
