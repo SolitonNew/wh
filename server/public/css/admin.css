@@ -120,10 +120,12 @@
 }
 
 .body-container {
+    position: absolute;
     display: flex;
     flex-direction: row;
-    height: 100vh;
-    min-height: 100vh;
+    left: 0px;
+    top: 0px;
+    height: 100%;
     width: 100vw;
     max-width: 100vw;
     overflow: hidden;
@@ -285,6 +287,9 @@
 }
 
 .main-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
     width: 100%;
     overflow: hidden;

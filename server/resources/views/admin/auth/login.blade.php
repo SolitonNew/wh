@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">@lang('dialogs.btn_ok')</button>
+                <button type="submit" class="btn btn-primary">@lang('auth.login_ok')</button>
             </div>
         </form>
     </div>
