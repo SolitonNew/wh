@@ -408,22 +408,24 @@
     function convertTableToScrollGrid(table) {
         let header = $('<table><thead>' + $('thead', table).html() + '</thead></table>');
         header.attr('class', table.attr('class') + ' table-scroll-header');
-        header.insertAfter(table);
+        headerContainer = $('<div class="table-scroll-header-container"></div>');
+        headerContainer.append(header);
+        headerContainer.insertAfter(table);
 
         let parent = $(table.parent());
-        let ticking = false;
+        
         parent.on('scroll', (e) => {
-            if (!ticking) {
-                window.requestAnimationFrame(function() {
-                    header.css({
-                        top: parent.scrollTop() + 'px',
-                    });
-                    ticking = false;
-                });
-                
-                ticking = true;
-            }
-        })
+            let offsetParent = parent.offset();
+            headerContainer.css({
+                left: offsetParent.left + 'px',
+                top: offsetParent.top + 'px',
+                width: parent.innerWidth() - 6 + 'px',
+            });
+            
+            header.css({
+                left: -parent.scrollLeft() + 'px',
+            });
+        });
 
         $(window).on('resize', () => {
             header.width(table.width());
@@ -437,6 +439,8 @@
                     'width': w,
                 });
             }
+            
+            parent.trigger('scroll');
         }).trigger('resize');
     }
 

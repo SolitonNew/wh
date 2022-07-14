@@ -308,13 +308,20 @@
     width: auto;
 }
 
-.table.table-scroll-header {
-    position: absolute;
+.table-scroll-header-container {
+    position: fixed;
     top: 0px;
     left: 0px;
-    right: 0px;
+    overflow: hidden;
+    height: 100px;
+}
+
+.table.table-scroll-header {
+    position: absolute;
     border-top: 1rem solid #ffffff;
     margin-top: 0px;
+    top: 0px;
+    left: 0px;
 }
 
 .table thead {
