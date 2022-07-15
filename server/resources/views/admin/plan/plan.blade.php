@@ -69,6 +69,12 @@
     #planContentOff {
         opacity: 0.65;
     }
+    
+    .btn-zoom {
+        padding: 12px 12px; 
+        border-radius: 2rem;
+        border: 1px solid #ffffff;
+    }
 </style>
 
 @if($partID)
@@ -152,6 +158,16 @@
         <div class="plan-port-context">
             <a class="dropdown-item strong" href="#" onclick="planMenuPortEdit(); return false;">@lang('admin/plan.menu_port_edit')</a>
         </div>
+    </div>
+</div>
+<div class="only-small" style="position: absolute; right: 1rem; bottom: 1rem;">
+    <div style="display: flex; flex-direction: column;">
+        <a href="#" class="btn btn-dark btn-zoom" id="planZoomInBtn" style="margin-bottom: 0.5rem;">
+            <img src="/img/zoom-in-3x.png">
+        </a>
+        <a href="#" class="btn btn-dark btn-zoom" id="planZoomOutBtn">
+            <img src="/img/zoom-out-3x.png">
+        </a>
     </div>
 </div>
 @else
@@ -290,6 +306,13 @@
             $('#planContent .plan-part[data-id="' + $(this).data('id') + '"]').removeClass('hover');
         });
         
+        $('#planZoomInBtn').on('click', function () {
+            planZoomIn(2);
+        });
+        
+        $('#planZoomOutBtn').on('click', function () {
+            planZoomOut(2);
+        });
         
         // Compact Navigate
         $('#planPartsCombobox').on('change', function () {
@@ -598,8 +621,8 @@
         });
     }
 
-    function planZoomIn() {
-        let z = planZoom * planZoomStep;
+    function planZoomIn(step) {
+        let z = planZoom * (step ? step : planZoomStep);
         if (z > planZoomMax) z = planZoomMax;
         
         let z_off = z / planZoom;
@@ -619,8 +642,8 @@
         setCookie('planZoom', planZoom);
     }
 
-    function planZoomOut() {
-        let z = planZoom / planZoomStep;
+    function planZoomOut(step) {
+        let z = planZoom / (step ? step : planZoomStep);
         if (z < planZoomMin) z = planZoomMin;
         
         let z_off = z / planZoom;
