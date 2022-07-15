@@ -347,10 +347,10 @@
         let pageW = $('#planContentScroll').width();
         let pageH = $('#planContentScroll').height();
         if (x + w > pageW + scrollOffset.left - parentOffset.left) {
-            x = x - w;
+            x = pageW + scrollOffset.left - parentOffset.left - w;
         }
         if (y + h > pageH + scrollOffset.top - parentOffset.top) {
-           y = y - h;
+            y = pageH + scrollOffset.top - parentOffset.top - h - 22;
         }
         $('#planPartMenu').css({
             left: x + 'px',
