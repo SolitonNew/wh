@@ -434,17 +434,15 @@
             }
             
             let offset = parent.offset();
-            if (!offset) {
-                offset = {left: 0, top: 0}
+            if (offset) {
+                let r = header[0].getBoundingClientRect();
+                headerContainer.css({
+                    left: offset.left + 'px',
+                    top: offset.top + 'px',
+                    width: parent[0].clientWidth + 'px',
+                    height: r.height + 'px',
+                });
             }
-            
-            let r = header[0].getBoundingClientRect();
-            headerContainer.css({
-                left: offset.left + 'px',
-                top: offset.top + 'px',
-                width: parent[0].clientWidth + 'px',
-                height: r.height + 'px',
-            });
             
             parent.trigger('scroll');
         }).trigger('resize');
