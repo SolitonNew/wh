@@ -318,6 +318,14 @@
         $('#planPartsCombobox').on('change', function () {
             window.location.href = '{{ route("admin.plan", ["id" => ""]) }}/' + $(this).val();
         });
+        
+        $('.dropdown-menu-sub').on('mousedown', function (e) {
+            e.stopPropagation();
+        });
+        
+        $('.dropdown-menu-sub').on('mouseup', function (e) {
+            e.stopPropagation();
+        });
     });
     
     function planShowContextMenu(e, typ) {

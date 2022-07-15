@@ -863,8 +863,9 @@ tr.schedule-exec-today td {
 
 .dropdown-menu-sub .dropdown-menu {
     position: absolute;
-    top: -0.5rem;
-    left: calc(100% - 0.5rem);
+    top: 1.75rem;
+    left: auto;
+    right: -0.5rem;
     display: none;
     transition-duration: 0.5s;
 }
