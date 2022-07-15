@@ -415,13 +415,6 @@
         let parent = $(table.parent());
         
         parent.on('scroll', (e) => {
-            let offsetParent = parent.offset();
-            headerContainer.css({
-                left: offsetParent.left + 'px',
-                top: offsetParent.top + 'px',
-                width: parent.innerWidth() - 6 + 'px',
-            });
-            
             header.css({
                 left: -parent.scrollLeft() + 'px',
             });
@@ -439,6 +432,17 @@
                     'width': w,
                 });
             }
+            
+            let offset = parent.offset();
+            if (!offset) {
+                offset = {left: 0, top: 0}
+            }
+            
+            headerContainer.css({
+                left: offset.left + 'px',
+                top: offset.top + 'px',
+                width: parent.innerWidth() - 6 + 'px',
+            });
             
             parent.trigger('scroll');
         }).trigger('resize');
