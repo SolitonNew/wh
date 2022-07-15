@@ -310,10 +310,11 @@
 
 .table-scroll-header-container {
     position: fixed;
+    display: inline-block;
     top: 0px;
     left: 0px;
     overflow: hidden;
-    height: 100px;
+    background-color: #ffffff;
 }
 
 .table.table-scroll-header {

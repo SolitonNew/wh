@@ -438,10 +438,12 @@
                 offset = {left: 0, top: 0}
             }
             
+            let r = header[0].getBoundingClientRect();
             headerContainer.css({
                 left: offset.left + 'px',
                 top: offset.top + 'px',
-                width: parent.innerWidth() - 6 + 'px',
+                width: parent[0].clientWidth + 'px',
+                height: r.height + 'px',
             });
             
             parent.trigger('scroll');
