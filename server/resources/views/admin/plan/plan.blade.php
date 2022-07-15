@@ -16,14 +16,29 @@
 @endsection
 
 @section('top-menu')
+@endsection
+
+@section('content')
 <style>
     .plan-part-toolbar {
+        position: absolute;
         display:flex;
         align-items: center; 
         background-color: #ffffff;
         padding: 0.375rem 1.5rem;
         border: 1px solid #ced4da;
         border-radius: .25rem;
+        z-index: 1;
+        margin-left: 250px;
+    }
+    
+    @media(max-width: 768px) {
+        .plan-part-toolbar {
+            position: relative;
+            margin: 0px;
+            width: 100%;
+            max-width: 100%;
+        }
     }
     
     .plan-part-toolbar > * {
@@ -39,29 +54,7 @@
         display: flex;
         flex-direction: column;
     }
-</style>
-
-<div id="planToolbar" style="margin: -0.5rem 0px;display: flex;justify-content: center;width: 100%;">
-    <div class="plan-part-toolbar">
-        <label id="toolbarPartName" class="strong">Room</label>
-        
-        <label id="toolbarOperation" class="">operation</label>
-
-        <label id="toolbarLabel1" class="strong">X</label>
-        <input id="toolbarValue1" class="form-control" type="number" step="0.01" style="width: 80px;" oninput="planToolbarValue1(event);">
-        
-        <label id="toolbarLabel2" class="strong">Y</label>
-        <input id="toolbarValue2" class="form-control" type="number" step="0.01" style="width: 80px;" oninput="planToolbarValue2(event)">
-
-        <button class="btn btn-primary" onclick="planToolbarOk()">@lang('dialogs.btn_ok')</button>
-        <button class="btn btn-secondary" onclick="planToolbarCancel()">@lang('dialogs.btn_cancel')</button>
-    </div>
-</div>
-
-@endsection
-
-@section('content')
-<style>
+    
     .content-body {
         background-image: url('/img/plan/grid.svg');
     }
@@ -84,6 +77,22 @@
         <option value="{{ $row->id }}" {{ $row->id == $partID ? 'selected' : '' }}>{!! $row->treePath !!} {{ $row->name }}</option>
         @endforeach
     </select>
+</div>
+<div id="planToolbar" style="display: flex;justify-content: center;width: 100%;">
+    <div class="plan-part-toolbar">
+        <label id="toolbarPartName" class="strong">Room</label>
+        
+        <label id="toolbarOperation" class="">operation</label>
+
+        <label id="toolbarLabel1" class="strong">X</label>
+        <input id="toolbarValue1" class="form-control" type="number" step="0.01" style="width: 80px;" oninput="planToolbarValue1(event);">
+        
+        <label id="toolbarLabel2" class="strong">Y</label>
+        <input id="toolbarValue2" class="form-control" type="number" step="0.01" style="width: 80px;" oninput="planToolbarValue2(event)">
+
+        <button class="btn btn-primary" onclick="planToolbarOk()">@lang('dialogs.btn_ok')</button>
+        <button class="btn btn-secondary" onclick="planToolbarCancel()">@lang('dialogs.btn_cancel')</button>
+    </div>
 </div>
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div id="planParts" class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
