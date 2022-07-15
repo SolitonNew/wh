@@ -127,38 +127,6 @@
             </div>
         </div>
     </div>
-    <div id="planPartMenu" class="dropdown-menu">
-        <div class="plan-part-context">
-            <a class="dropdown-item strong" href="#" onclick="planMenuPlanEdit(); return false;">@lang('admin/plan.menu_plan_edit')</a>
-            <a class="dropdown-item" href="#" onclick="planSelInTree(); return false;">@lang('admin/plan.menu_sel_in_tree')</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" onclick="planMenuToolbar('move'); return false;">@lang('admin/plan.menu_toolbar_move')</a>
-            <a class="dropdown-item" href="#" onclick="planMenuToolbar('size'); return false;">@lang('admin/plan.menu_toolbar_size')</a>
-            <div class="dropdown-divider"></div>
-            <div class="dropdown-item dropdown-menu-sub">
-                <div><span>@lang('admin/plan.menu_clone_part')</span></div>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('top'); return false;">@lang('admin/plan.menu_clone_part_top')</a>
-                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('right'); return false;">@lang('admin/plan.menu_clone_part_right')</a>
-                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('bottom'); return false;">@lang('admin/plan.menu_clone_part_bottom')</a>
-                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('left'); return false;">@lang('admin/plan.menu_clone_part_left')</a>
-                </div>
-            </div>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" onclick="planMenuAddPart(); return false;">@lang('admin/plan.menu_add_part')</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" onclick="planMenuAddPort(); return false;">@lang('admin/plan.menu_add_port')</a>
-            <a class="dropdown-item" href="#" onclick="planMenuAddDevice(); return false;">@lang('admin/plan.menu_add_device')</a>
-        </div>
-        <div class="plan-device-context">
-            <a class="dropdown-item strong" href="#" onclick="planMenuDeviceLink(); return false;">@lang('admin/plan.menu_device_link')</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" onclick="planMenuDeviceEdit(); return false;">@lang('admin/plan.menu_device_edit')</a>
-        </div>
-        <div class="plan-port-context">
-            <a class="dropdown-item strong" href="#" onclick="planMenuPortEdit(); return false;">@lang('admin/plan.menu_port_edit')</a>
-        </div>
-    </div>
 </div>
 <div class="only-small" style="position: absolute; right: 1rem; bottom: 1rem;">
     <div style="display: flex; flex-direction: column;">
@@ -168,6 +136,38 @@
         <a href="#" class="btn btn-dark btn-zoom" id="planZoomOutBtn">
             <img src="/img/zoom-out-3x.png">
         </a>
+    </div>
+</div>
+<div id="planPartMenu" class="dropdown-menu">
+    <div class="plan-part-context">
+        <a class="dropdown-item strong" href="#" onclick="planMenuPlanEdit(); return false;">@lang('admin/plan.menu_plan_edit')</a>
+        <a class="dropdown-item" href="#" onclick="planSelInTree(); return false;">@lang('admin/plan.menu_sel_in_tree')</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" onclick="planMenuToolbar('move'); return false;">@lang('admin/plan.menu_toolbar_move')</a>
+        <a class="dropdown-item" href="#" onclick="planMenuToolbar('size'); return false;">@lang('admin/plan.menu_toolbar_size')</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item dropdown-menu-sub">
+            <div><span>@lang('admin/plan.menu_clone_part')</span></div>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('top'); return false;">@lang('admin/plan.menu_clone_part_top')</a>
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('right'); return false;">@lang('admin/plan.menu_clone_part_right')</a>
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('bottom'); return false;">@lang('admin/plan.menu_clone_part_bottom')</a>
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('left'); return false;">@lang('admin/plan.menu_clone_part_left')</a>
+            </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" onclick="planMenuAddPart(); return false;">@lang('admin/plan.menu_add_part')</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" onclick="planMenuAddPort(); return false;">@lang('admin/plan.menu_add_port')</a>
+        <a class="dropdown-item" href="#" onclick="planMenuAddDevice(); return false;">@lang('admin/plan.menu_add_device')</a>
+    </div>
+    <div class="plan-device-context">
+        <a class="dropdown-item strong" href="#" onclick="planMenuDeviceLink(); return false;">@lang('admin/plan.menu_device_link')</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" onclick="planMenuDeviceEdit(); return false;">@lang('admin/plan.menu_device_edit')</a>
+    </div>
+    <div class="plan-port-context">
+        <a class="dropdown-item strong" href="#" onclick="planMenuPortEdit(); return false;">@lang('admin/plan.menu_port_edit')</a>
     </div>
 </div>
 @else
@@ -335,12 +335,22 @@
                 break;
         }
         
+        let scrollOffset = $('#planContentScroll').offset();
+        let parentOffset = $('#planPartMenu').parent().position();
+        
+        let w = $('#planPartMenu').width();
         let h = $('#planPartMenu').height();
-        let x = e.pageX;
-        let y = e.pageY;
-        let pageH = window.innerHeight - 40; /* 40 - это заглушка */
-        if (y + h > pageH) {
-            y = pageH - h;
+        
+        let x = e.pageX - parentOffset.left;
+        let y = e.pageY - parentOffset.top;
+        
+        let pageW = $('#planContentScroll').width();
+        let pageH = $('#planContentScroll').height();
+        if (x + w > pageW + scrollOffset.left - parentOffset.left) {
+            x = x - w;
+        }
+        if (y + h > pageH + scrollOffset.top - parentOffset.top) {
+           y = y - h;
         }
         $('#planPartMenu').css({
             left: x + 'px',
