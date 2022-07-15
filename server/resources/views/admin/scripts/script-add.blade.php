@@ -9,7 +9,7 @@
     <button type="submit" style="display: none;"></button>
     <div class="row">
         <div class="col-sm-3">
-            <label class="form-label strong">@lang('admin/scripts.table_TEMPLATE')</label>
+            <label class="form-label">@lang('admin/scripts.table_TEMPLATE')</label>
         </div>
         <div class="col-sm-9">
             <select class="custom-select" name="template">
@@ -150,6 +150,7 @@
         
         if (!source) {
             $('#scriptTemplateEditorRow').hide();
+            scriptTemplateEditor.setData('');
             return ;
         }
         

@@ -6,7 +6,8 @@ use App\Library\AffectsFirmwareModel;
 use Illuminate\Http\Request;
 use App\Models\DeviceEvent;
 use App\Events\FirmwareChangedEvent;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Script extends AffectsFirmwareModel
 {    
@@ -62,6 +63,13 @@ class Script extends AffectsFirmwareModel
         $rules = [
             'comm' => 'required|string|unique:core_scripts,comm,'.($id > 0 ? $id : ''),
         ];
+        
+        $templates = require base_path('app/Library/ScriptTemplates.php');
+        if (isset($templates[$request->template])) {
+            foreach ($templates[$request->template]['params'] as $key => $val) {
+                $rules['param_'.$key] = 'required';
+            }
+        }
         
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
