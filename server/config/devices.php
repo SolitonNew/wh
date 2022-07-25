@@ -72,7 +72,7 @@ return [
             'typ' => 2,
             'title' => 'Camcorder',
             'log' => 'CAM',
-            'values' => [],
+            'values' => [0 => 'REC. OFF', 1 => 'REC. ON'],
             'unit' => '',
             'min' => 0,
             'max' => 1,
