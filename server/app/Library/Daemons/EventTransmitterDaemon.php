@@ -38,7 +38,7 @@ class EventTransmitterDaemon extends BaseDaemon
         while(1) {
             if (!$this->checkEvents()) break;
                         
-            usleep(10000);
+            usleep(50000);
         }
     }
     
