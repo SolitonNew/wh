@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Str;
+use App\Events\LogoutEvent;
 
 class AuthController extends Controller
 {
@@ -24,6 +25,9 @@ class AuthController extends Controller
                     'errors' => ['ERROR'],
                 ]);
             }
+            // ----------------------------------------
+            event(new LogoutEvent($user->api_token));
+            // ----------------------------------------
             $user->api_token = Str::random(60);
             $user->save();
             

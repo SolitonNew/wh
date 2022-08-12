@@ -26,6 +26,7 @@ class DaemonsService
             $daemons[] = (object)[
                 'id' => $dem,
                 'stat' => $stat,
+                'idName' => $this->makeDaemonName($dem),
             ];
         }
         
@@ -101,5 +102,16 @@ class DaemonsService
                 'errors' => [$ex->getMessage()],
             ]), 422);
         }
+    }
+    
+    /**
+     * 
+     * @param type $id
+     * @return type
+     */
+    public function makeDaemonName($id)
+    {
+        $a = explode(':', $id);
+        return $a[0];
     }
 }

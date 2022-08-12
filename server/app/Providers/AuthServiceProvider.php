@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\User;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -37,6 +36,10 @@ class AuthServiceProvider extends ServiceProvider
             
             if (isset($_COOKIE['api_token'])) {
                 return User::where('api_token', $_COOKIE['api_token'])->first();
+            }
+            
+            if ($request->header('token')) {
+                return User::where('api_token', $request->header('token'))->first();
             }
         });
     }

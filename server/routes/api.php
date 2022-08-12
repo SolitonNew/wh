@@ -3,7 +3,7 @@
 $router->get('/start-before-login', 'StartController@getDataBeforeLogin');
 $router->post('/login', 'AuthController@login');
 
-$router->group(['middleware' => 'auth.terminal'], function ($router) {
+$router->group(['middleware' => 'auth.terminal'], function ($router) {        
     $router->get('/start-after-login', 'StartController@getDataAfterLogin');
     
     $router->get('/rooms', 'RoomsController@getData');
@@ -14,7 +14,6 @@ $router->group(['middleware' => 'auth.terminal'], function ($router) {
     
     $router->get('/device/{deviceID}', 'DeviceController@getData');
     
-    $router->get('/events/{lastID}', 'EventsController@getData');
     $router->post('/set-device-value/{deviceID}', 'DeviceController@setData');
     
     $router->get('/favorites', 'FavoritesController@getData');

@@ -11,9 +11,11 @@
     "chart.js": "^3.7.1",
     "chartjs-adapter-moment": "^1.0.0",
     "dragula": "^3.7.3",
+    "laravel-echo": "^1.13.1",
     "mitt": "^3.0.0",
     "moment": "^2.29.3",
     "pinia": "^2.0.14",
+    "pusher-js": "^7.3.0",
     "vue": "^3.2.33",
     "vue-chartjs": "^4.1.0",
     "vue-router": "^4.0.15"

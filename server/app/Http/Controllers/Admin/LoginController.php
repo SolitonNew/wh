@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use App\Events\LogoutEvent;
 
 class LoginController extends Controller
 {
@@ -44,6 +45,9 @@ class LoginController extends Controller
             if (!app('hash')->check($request->password, $user->password)) {
                 return redirect(route('login'));
             }
+            // ----------------------------------------
+            event(new LogoutEvent($user->api_token));
+            // ----------------------------------------
             $user->api_token = Str::random(60);
             $user->save();
             

@@ -1,19 +1,14 @@
 import axios from 'axios'
 import storage from '@/storage.js'
+import Echo from "laravel-echo"
 
 export const api = {
     apiHost: 'http://localhost',
     token: null,
-    timer: null,
-    timerLastID: -1,
-    timerGlobalHandler: null,
     loginCallback: null,
     logoutCallback: null,
     eventCallback: null,
-    config: {
-        timerSuccessTimeout: 500,
-        timerErrorTimeout: 2500,
-    },
+
     init(loginCallback, logoutCallback, eventCallback) {
         this.apiHost = 'http://' + window.location.hostname;
         this.loginCallback = loginCallback;
@@ -21,7 +16,7 @@ export const api = {
         this.eventCallback = eventCallback;
     },
     destroy() {
-        this.stopEventTimer();
+        
     },
     get(path, data, callbackSuccess, callbackError) {
         if (!data) data = {};
@@ -113,8 +108,6 @@ export const api = {
             doStateCallback(success);
         }
         
-        this.stopEventTimer();
-        
         this.post('login', {
             login: login, 
             password: password
@@ -126,7 +119,7 @@ export const api = {
                     storage.app_controls = data.app_controls;
                     storage.columns = data.columns;
                     doLoginCallback(true);
-                    this.runEventTimer();
+                    this.runEcho();
                 }, (error) => {
                     this.token = null;
                 });
@@ -139,40 +132,43 @@ export const api = {
         });
     },
     logout() {
-        this.stopEventTimer();
         this.token = null;
         if (typeof(this.logoutCallback) === 'function') {
             this.logoutCallback();
         }
     },
-    runEventTimer() {
-        clearTimeout(this.timer);
-        
-        this.timer = setTimeout(() => {
-            this.get('events/' + this.timerLastID, null, (data) => {
-                this.handleEvents(data);
-                this.runEventTimer(this.config.timerSuccessTimeout);
-            }, (error) => {
-                this.runEventTimer(this.config.timerErrorTimeout);
-            });
-        }, this.config.timerSuccessTimeout);
-    },
-    handleEvents(data) {
-        if (data.lastID !== undefined) {
-            this.timerLastID = data.lastID;
-        } else {
-            data.forEach((event) => {
-                this.timerLastID = event.id;
-                
-                if (typeof(this.eventCallback) === 'function') {
-                    this.eventCallback(event);
+    runEcho: function () {
+        window.Echo = new Echo({
+            broadcaster: 'pusher',
+            key: 'web-terminal',
+            wsHost: window.location.hostname,
+            wsPort: 6001,
+            forceTLS: false,
+            disableStats: true,
+            enabledTransports: ['ws', 'wss'],
+            authEndpoint: 'http://' + window.location.hostname + '/broadcasting/auth',
+            auth: {
+                headers: {
+                    token: api.token,
+                }
+            }
+        });
+
+        window.Echo.private('logout')
+            .listen('LogoutEvent', (e) => {
+                if (e.token == api.token) {
+                    window.location.reload();
                 }
             });
-        }
+
+        window.Echo.private('device-changes')
+            .listen('DeviceChangeEvent', (e) => {
+                if (typeof(this.eventCallback) === 'function') {
+                    this.eventCallback(e.data);
+                }
+            });
     },
-    stopEventTimer() {
-        clearTimeout(this.timer);
-    },
+    
     setDeviceValue(deviceID, value) {
         this.post('set-device-value/' + deviceID, {value: value});
     }
