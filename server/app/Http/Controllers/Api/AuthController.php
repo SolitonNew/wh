@@ -26,7 +26,11 @@ class AuthController extends Controller
                 ]);
             }
             // ----------------------------------------
-            event(new LogoutEvent($user->api_token));
+            try {
+                event(new LogoutEvent($user->api_token));
+            } catch (\Exception $ex) { 
+                
+            }
             // ----------------------------------------
             $user->api_token = Str::random(60);
             $user->save();

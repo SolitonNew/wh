@@ -46,7 +46,11 @@ class LoginController extends Controller
                 return redirect(route('login'));
             }
             // ----------------------------------------
-            event(new LogoutEvent($user->api_token));
+            try {
+                event(new LogoutEvent($user->api_token));
+            } catch (\Exception $ex) { 
+                
+            }
             // ----------------------------------------
             $user->api_token = Str::random(60);
             $user->save();
