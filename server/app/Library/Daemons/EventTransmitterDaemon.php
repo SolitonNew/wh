@@ -48,11 +48,15 @@ class EventTransmitterDaemon extends BaseDaemon
      */
     protected function deviceChangeValue($device)
     {
-        event(new DeviceChangeEvent([
-            'device_id' => $device->id,
-            'value' => $device->value,
-        ]));
-        
-        $this->printLine('Device: '.$device->id.'  Value: '.$device->value);
+        try {
+            event(new DeviceChangeEvent([
+                'device_id' => $device->id,
+                'value' => $device->value,
+            ]));
+
+            $this->printLine('Device: '.$device->id.'  Value: '.$device->value);
+        } catch (\Exception $ex) {
+            $this->printLine('Transmit Error: '.$ex->getMessage());
+        }
     }
 }
