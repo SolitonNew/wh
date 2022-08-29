@@ -23,7 +23,6 @@ class Kernel extends ConsoleKernel
         Commands\ObserverDaemon::class,
         Commands\OrangePiDaemon::class,
         Commands\CamcorderDaemon::class,
-        Commands\EventTransmitterDaemon::class,
     ];
 
     /**

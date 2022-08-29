@@ -18,7 +18,5 @@ return [
         'command-daemon',
         'observer-daemon',
         'camcorder-daemon',
-        'eventtransmitter-daemon',
-        'websockets:serve',
     ],
 ];

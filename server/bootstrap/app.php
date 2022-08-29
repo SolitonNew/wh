@@ -99,8 +99,6 @@ $app->routeMiddleware([
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Fruitcake\Cors\CorsServiceProvider::class);
-$app->register(App\Providers\WebSocketsServiceProvider::class);
-$app->register(App\Providers\BroadcastServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

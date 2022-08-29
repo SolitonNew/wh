@@ -5,8 +5,6 @@ import { api } from '@/api.js'
 import { setLangData } from '@/lang.js'
 import storage from '@/storage.js'
 
-import pusherjs from 'pusher-js'
-
 import Spinner from '@/components/Spinner.vue'
 import Login from '@/pages/Login.vue'
 import Rooms from '@/pages/Rooms.vue'
@@ -56,7 +54,6 @@ const app = createApp({
     created() {
         window.addEventListener('scroll', this.onBodyScroll);
         window.addEventListener("resize", this.onResizeWindow);
-        window.Pusher = pusherjs;
         this.pageScrollAnimate = setInterval(this.onPageScrollAnimate, 10);
     },
     mounted() {
@@ -86,8 +83,6 @@ const app = createApp({
         },
         apiLogoutCallback: function () {
             this.logined = false;
-            this.echoStop();
-            window.location.reload();
         },
         apiEventCallback: function (event) {
             this.emitter.emit('deviceChangeValue', event);
