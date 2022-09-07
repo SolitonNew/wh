@@ -3,6 +3,10 @@
  */ 
 
 #define HS_CODE 0xf0
+#define HS_BUTTON_LEFT 8
+#define HS_BUTTON_RIGHT 16
+#define HS_BUTTON_LONG_LEFT 32
+#define HS_BUTTON_LONG_RIGHT 64
 
 typedef struct _hs_data {
     uint8_t left;
