@@ -35,10 +35,10 @@ int main(void)
         rs485_processing();
         
         // Handling onewire alarm flags
-        //if (alarm_loop_space++ > ALARM_LOOP_SPACE_MAX) {
-        //    alarm_loop_space = 0;
-            //core_onewire_alarm_processing();
-        //}
+        if (alarm_loop_space++ > ALARM_LOOP_SPACE_MAX) {
+            alarm_loop_space = 0;
+            core_onewire_alarm_processing();
+        }
         
         // Calling the periodic action handler
         periodic_processing();
