@@ -20,6 +20,7 @@ class CoreEventsMem extends Migration
             $table->bigInteger('device_id')->unsigned()->nullable();
             $table->float('value')->nullable();
             $table->string('data', 255)->nullable();
+            $table->bigInteger('from_id')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
         

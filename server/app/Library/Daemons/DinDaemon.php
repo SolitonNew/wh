@@ -7,7 +7,6 @@ use App\Models\OwHost;
 use App\Models\Device;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Description of CommandDaemon
@@ -390,8 +389,10 @@ class DinDaemon extends BaseDaemon
 
             // Send device values
             foreach ($this->_devicesLoopChanges as $device) {
-                $this->_transmitVAR($controller->rom, $device->id, $device->value);
-                $vars_out[] = "$device->id: $device->value";
+                if ($device->valueFromID != $controller->id) {
+                    $this->_transmitVAR($controller->rom, $device->id, $device->value);
+                    $vars_out[] = "$device->id: $device->value";
+                }
             }
 
             // Send command "prepare to give your changes"
@@ -427,7 +428,7 @@ class DinDaemon extends BaseDaemon
                     throw new \Exception('Controller did not respond');
                 default:
                     // Saving variables data
-                    $this->_processingInVariables();
+                    $this->_processingInVariables($controller);
                     
                     // Processing server commands
                     $this->_processingInServerCommands();
@@ -485,10 +486,10 @@ class DinDaemon extends BaseDaemon
     /**
      * 
      */
-    private function _processingInVariables()
+    private function _processingInVariables($controller)
     {
         foreach ($this->_inVariables as $variable) {
-            Device::setValue($variable->id, $variable->value);
+            Device::setValue($variable->id, $variable->value, $controller->id);
         }
     }
     

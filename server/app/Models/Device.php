@@ -93,11 +93,12 @@ class Device extends AffectsFirmwareModel
      * 
      * @param int $deviceID
      * @param float $value
+     * @param type $fromID
      */
-    static public function setValue(int $deviceID, float $value)
+    static public function setValue(int $deviceID, float $value, int $fromID = 0)
     {
         try {
-            DB::select("CALL CORE_SET_DEVICE($deviceID, $value)");
+            DB::select("CALL CORE_SET_DEVICE($deviceID, $value, $fromID)");
         } catch (\Exception $e) {
             Log::error($e);
         }
