@@ -16,7 +16,7 @@ uint8_t ds18b20_get_data(uint8_t *rom, ds18b20_data_t *data) {
     if (!onewire_reset()) return 0;
     
     onewire_match_rom(rom);
-    onewire_write_byte(ONEWIRE_RSCRATCHPAD);	
+    onewire_write_byte(ONEWIRE_RSCRATCHPAD);
     
     uint8_t d[9];	
     for (uint8_t i = 0; i < 9; i++) {
