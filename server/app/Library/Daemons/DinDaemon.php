@@ -389,7 +389,7 @@ class DinDaemon extends BaseDaemon
 
             // Send device values
             foreach ($this->_devicesLoopChanges as $device) {
-                if ($device->valueFromID != $controller->id) {
+                if ($device->valueFromID !== $controller->id) {
                     $this->_transmitVAR($controller->rom, $device->id, $device->value);
                     $vars_out[] = "$device->id: $device->value";
                 }
