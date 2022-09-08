@@ -16,14 +16,29 @@
 @endsection
 
 @section('top-menu')
+@endsection
+
+@section('content')
 <style>
     .plan-part-toolbar {
+        position: absolute;
         display:flex;
         align-items: center; 
         background-color: #ffffff;
         padding: 0.375rem 1.5rem;
         border: 1px solid #ced4da;
         border-radius: .25rem;
+        z-index: 1;
+        margin-left: 250px;
+    }
+    
+    @media(max-width: 768px) {
+        .plan-part-toolbar {
+            position: relative;
+            margin: 0px;
+            width: 100%;
+            max-width: 100%;
+        }
     }
     
     .plan-part-toolbar > * {
@@ -39,9 +54,31 @@
         display: flex;
         flex-direction: column;
     }
+    
+    .content-body {
+        background-image: url('/img/plan/grid.svg');
+    }
+    
+    #planContentOff {
+        opacity: 0.65;
+    }
+    
+    .btn-zoom {
+        padding: 12px 12px; 
+        border-radius: 2rem;
+        border: 1px solid #ffffff;
+    }
 </style>
 
-<div id="planToolbar" style="margin: -0.5rem 0px;display: flex;justify-content: center;width: 100%;">
+@if($partID)
+<div id="planPartsCompact" class="navbar navbar-page" style="display: none;">
+    <select id="planPartsCombobox" class="nav-link custom-select select-tree" style="width: 100%;">
+        @foreach(\App\Models\Room::generateTree() as $row)
+        <option value="{{ $row->id }}" {{ $row->id == $partID ? 'selected' : '' }}>{!! $row->treePath !!} {{ $row->name }}</option>
+        @endforeach
+    </select>
+</div>
+<div id="planToolbar" style="display: flex;justify-content: center;width: 100%;">
     <div class="plan-part-toolbar">
         <label id="toolbarPartName" class="strong">Room</label>
         
@@ -56,28 +93,6 @@
         <button class="btn btn-primary" onclick="planToolbarOk()">@lang('dialogs.btn_ok')</button>
         <button class="btn btn-secondary" onclick="planToolbarCancel()">@lang('dialogs.btn_cancel')</button>
     </div>
-</div>
-
-@endsection
-
-@section('content')
-<style>
-    .content-body {
-        background-image: url('/img/plan/grid.svg');
-    }
-    
-    #planContentOff {
-        opacity: 0.65;
-    }
-</style>
-
-@if($partID)
-<div id="planPartsCompact" class="navbar navbar-page" style="display: none;">
-    <select id="planPartsCombobox" class="nav-link custom-select select-tree" style="width: 100%;">
-        @foreach(\App\Models\Room::generateTree() as $row)
-        <option value="{{ $row->id }}" {{ $row->id == $partID ? 'selected' : '' }}>{!! $row->treePath !!} {{ $row->name }}</option>
-        @endforeach
-    </select>
 </div>
 <div style="display: flex; flex-direction: row; flex-grow: 1;height: 100%;">
     <div id="planParts" class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="partPlanList">
@@ -121,37 +136,47 @@
             </div>
         </div>
     </div>
-    <div id="planPartMenu" class="dropdown-menu">
-        <div class="plan-part-context">
-            <a class="dropdown-item strong" href="#" onclick="planMenuPlanEdit(); return false;">@lang('admin/plan.menu_plan_edit')</a>
-            <a class="dropdown-item" href="#" onclick="planSelInTree(); return false;">@lang('admin/plan.menu_sel_in_tree')</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" onclick="planMenuToolbar('move'); return false;">@lang('admin/plan.menu_toolbar_move')</a>
-            <a class="dropdown-item" href="#" onclick="planMenuToolbar('size'); return false;">@lang('admin/plan.menu_toolbar_size')</a>
-            <div class="dropdown-divider"></div>
-            <div class="dropdown-item dropdown-menu-sub">
-                <div><span>@lang('admin/plan.menu_clone_part')</span></div>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('top'); return false;">@lang('admin/plan.menu_clone_part_top')</a>
-                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('right'); return false;">@lang('admin/plan.menu_clone_part_right')</a>
-                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('bottom'); return false;">@lang('admin/plan.menu_clone_part_bottom')</a>
-                    <a class="dropdown-item" href="#" onclick="planMenuClonePart('left'); return false;">@lang('admin/plan.menu_clone_part_left')</a>
-                </div>
+</div>
+<div class="only-small" style="position: absolute; right: 1rem; bottom: 1rem;">
+    <div style="display: flex; flex-direction: column;">
+        <a href="#" class="btn btn-dark btn-zoom" id="planZoomInBtn" style="margin-bottom: 0.5rem;">
+            <img src="/img/zoom-in-3x.png">
+        </a>
+        <a href="#" class="btn btn-dark btn-zoom" id="planZoomOutBtn">
+            <img src="/img/zoom-out-3x.png">
+        </a>
+    </div>
+</div>
+<div id="planPartMenu" class="dropdown-menu">
+    <div class="plan-part-context">
+        <a class="dropdown-item strong" href="#" onclick="planMenuPlanEdit(); return false;">@lang('admin/plan.menu_plan_edit')</a>
+        <a class="dropdown-item" href="#" onclick="planSelInTree(); return false;">@lang('admin/plan.menu_sel_in_tree')</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" onclick="planMenuToolbar('move'); return false;">@lang('admin/plan.menu_toolbar_move')</a>
+        <a class="dropdown-item" href="#" onclick="planMenuToolbar('size'); return false;">@lang('admin/plan.menu_toolbar_size')</a>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item dropdown-menu-sub">
+            <div><span>@lang('admin/plan.menu_clone_part')</span></div>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('top'); return false;">@lang('admin/plan.menu_clone_part_top')</a>
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('right'); return false;">@lang('admin/plan.menu_clone_part_right')</a>
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('bottom'); return false;">@lang('admin/plan.menu_clone_part_bottom')</a>
+                <a class="dropdown-item" href="#" onclick="planMenuClonePart('left'); return false;">@lang('admin/plan.menu_clone_part_left')</a>
             </div>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" onclick="planMenuAddPart(); return false;">@lang('admin/plan.menu_add_part')</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" onclick="planMenuAddPort(); return false;">@lang('admin/plan.menu_add_port')</a>
-            <a class="dropdown-item" href="#" onclick="planMenuAddDevice(); return false;">@lang('admin/plan.menu_add_device')</a>
         </div>
-        <div class="plan-device-context">
-            <a class="dropdown-item strong" href="#" onclick="planMenuDeviceLink(); return false;">@lang('admin/plan.menu_device_link')</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" onclick="planMenuDeviceEdit(); return false;">@lang('admin/plan.menu_device_edit')</a>
-        </div>
-        <div class="plan-port-context">
-            <a class="dropdown-item strong" href="#" onclick="planMenuPortEdit(); return false;">@lang('admin/plan.menu_port_edit')</a>
-        </div>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" onclick="planMenuAddPart(); return false;">@lang('admin/plan.menu_add_part')</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" onclick="planMenuAddPort(); return false;">@lang('admin/plan.menu_add_port')</a>
+        <a class="dropdown-item" href="#" onclick="planMenuAddDevice(); return false;">@lang('admin/plan.menu_add_device')</a>
+    </div>
+    <div class="plan-device-context">
+        <a class="dropdown-item strong" href="#" onclick="planMenuDeviceLink(); return false;">@lang('admin/plan.menu_device_link')</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" onclick="planMenuDeviceEdit(); return false;">@lang('admin/plan.menu_device_edit')</a>
+    </div>
+    <div class="plan-port-context">
+        <a class="dropdown-item strong" href="#" onclick="planMenuPortEdit(); return false;">@lang('admin/plan.menu_port_edit')</a>
     </div>
 </div>
 @else
@@ -290,10 +315,25 @@
             $('#planContent .plan-part[data-id="' + $(this).data('id') + '"]').removeClass('hover');
         });
         
+        $('#planZoomInBtn').on('click', function () {
+            planZoomIn(2);
+        });
+        
+        $('#planZoomOutBtn').on('click', function () {
+            planZoomOut(2);
+        });
         
         // Compact Navigate
         $('#planPartsCombobox').on('change', function () {
             window.location.href = '{{ route("admin.plan", ["id" => ""]) }}/' + $(this).val();
+        });
+        
+        $('.dropdown-menu-sub').on('mousedown', function (e) {
+            e.stopPropagation();
+        });
+        
+        $('.dropdown-menu-sub').on('mouseup', function (e) {
+            e.stopPropagation();
         });
     });
     
@@ -312,12 +352,22 @@
                 break;
         }
         
+        let scrollOffset = $('#planContentScroll').offset();
+        let parentOffset = $('#planPartMenu').parent().position();
+        
+        let w = $('#planPartMenu').width();
         let h = $('#planPartMenu').height();
-        let x = e.pageX;
-        let y = e.pageY;
-        let pageH = window.innerHeight - 40; /* 40 - это заглушка */
-        if (y + h > pageH) {
-            y = pageH - h;
+        
+        let x = e.pageX - parentOffset.left;
+        let y = e.pageY - parentOffset.top;
+        
+        let pageW = $('#planContentScroll').width();
+        let pageH = $('#planContentScroll').height();
+        if (x + w > pageW + scrollOffset.left - parentOffset.left) {
+            x = pageW + scrollOffset.left - parentOffset.left - w;
+        }
+        if (y + h > pageH + scrollOffset.top - parentOffset.top) {
+            y = pageH + scrollOffset.top - parentOffset.top - h - 22;
         }
         $('#planPartMenu').css({
             left: x + 'px',
@@ -598,8 +648,8 @@
         });
     }
 
-    function planZoomIn() {
-        let z = planZoom * planZoomStep;
+    function planZoomIn(step) {
+        let z = planZoom * (step ? step : planZoomStep);
         if (z > planZoomMax) z = planZoomMax;
         
         let z_off = z / planZoom;
@@ -619,8 +669,8 @@
         setCookie('planZoom', planZoom);
     }
 
-    function planZoomOut() {
-        let z = planZoom / planZoomStep;
+    function planZoomOut(step) {
+        let z = planZoom / (step ? step : planZoomStep);
         if (z < planZoomMin) z = planZoomMin;
         
         let z_off = z / planZoom;

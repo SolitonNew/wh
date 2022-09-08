@@ -42,7 +42,7 @@ void schedule_processing(void) {
         schedule_t *rec = &schedule_list[i];
         if (rec->duration > 0) {
             rec->duration--;
-            if (rec->duration == 0) { // ��������� ��������
+            if (rec->duration == 0) {
                 core_set_variable_value_int(rec->index, 3, rec->value_int);
             }
         }

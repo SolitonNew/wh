@@ -49,11 +49,11 @@
             data-id="{{ $row->id }}"
             style="display: block;">
             <div style="display: flex;">
-                <div style="flex-grow: 1;">{{ $row->id }}</div>
+                <div style="flex-grow: 1; overflow: hidden;">{{ $row->idName }}</div>
                 <div class="badge badge-pill badge-success start" style="margin-top: 0; margin-bottom: 0px;">RUN</div>
                 <div class="badge badge-pill badge-warning stop" style="margin-top: 0; margin-bottom: 0px;">STOP</div>
             </div>
-            <small class="text-muted" style="white-space: normal;">@lang('admin/daemons/'.$row->id.'.title')</small>
+            <small class="text-muted" style="white-space: normal;">@lang('admin/daemons/'.$row->idName.'.title')</small>
         </a>
         @endforeach
     </div>

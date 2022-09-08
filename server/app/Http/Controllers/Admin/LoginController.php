@@ -44,6 +44,7 @@ class LoginController extends Controller
             if (!app('hash')->check($request->password, $user->password)) {
                 return redirect(route('login'));
             }
+            // ----------------------------------------
             $user->api_token = Str::random(60);
             $user->save();
             

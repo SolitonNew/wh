@@ -18,7 +18,8 @@ class CoreSetDevice extends Migration
         DB::unprepared("
 CREATE PROCEDURE `CORE_SET_DEVICE` (
     IN DEV_ID int,
-    IN DEV_VALUE float
+    IN DEV_VALUE float,
+    IN SOURCE_FROM_ID int
 )
 BEGIN
     update core_devices
@@ -31,9 +32,9 @@ BEGIN
        (DEV_ID, DEV_VALUE);
      
     insert into core_events_mem
-       (TYP, DEVICE_CHANGES_ID, DEVICE_ID, VALUE)
+       (TYP, DEVICE_CHANGES_ID, DEVICE_ID, VALUE, FROM_ID)
     values
-       ('DEVICE_CHANGE_VALUE', LAST_INSERT_ID(), DEV_ID, DEV_VALUE);
+       ('DEVICE_CHANGE_VALUE', LAST_INSERT_ID(), DEV_ID, DEV_VALUE, SOURCE_FROM_ID);
 END
         ");
     }

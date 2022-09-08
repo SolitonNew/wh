@@ -24,6 +24,7 @@ class AuthController extends Controller
                     'errors' => ['ERROR'],
                 ]);
             }
+            // ----------------------------------------
             $user->api_token = Str::random(60);
             $user->save();
             

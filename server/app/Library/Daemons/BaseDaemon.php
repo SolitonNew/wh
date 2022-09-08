@@ -151,6 +151,7 @@ class BaseDaemon
                         if ($noCheckValue || $device->value != $change->value) {
                             // Store new device value
                             $device->value = $change->value;
+                            $device->valueFromID = $change->from_id;
                             $device->lastDeviceChangesID = $change->device_changes_id;
                             
                             // Call change value handler
