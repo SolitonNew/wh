@@ -2,7 +2,6 @@
  *  Author: Moklyak Alexandr
  */ 
 
-#include <avr/io.h>
 #include "../onewire.h"
 #include "hs.h"
 
@@ -10,7 +9,7 @@ uint8_t hs_get_data(uint8_t *rom, hs_data_t *data) {
     if (!onewire_reset()) return 0;
     
     onewire_match_rom(rom);
-    onewire_write_byte(HS_READ_DATA);
+    onewire_write_byte(ONEWIRE_READ_DATA);
     
     uint8_t d[2];	
     for (uint8_t i = 0; i < 2; i++) {
