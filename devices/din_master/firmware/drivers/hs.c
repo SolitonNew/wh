@@ -34,6 +34,18 @@ uint8_t hs_get_data(uint8_t *rom, hs_data_t *data) {
             data->right = 0;
         }
         
+        if (d[0] & HS_BUTTON_LEFT_LONG) {
+            data->left_long = 1;
+        } else {
+            data->left_long = 0;
+        }
+        
+        if (d[0] & HS_BUTTON_RIGHT_LONG) {
+            data->right_long = 1;
+        } else {
+            data->right_long = 0;
+        }
+        
         return 1;
     }
     

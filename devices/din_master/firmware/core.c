@@ -246,6 +246,12 @@ void core_request_ow_values(uint8_t *rom) {
                             case 1: // right
                                 core_set_variable_value(vars[i], 2, hs_data.right);
                                 break;
+                            case 2: // left long
+                                core_set_variable_value(vars[i], 2, hs_data.left_long);
+                                break;
+                            case 3: // right long
+                                core_set_variable_value(vars[i], 2, hs_data.right_long);
+                                break;
                             default: ;
                         }
                     }
