@@ -90,7 +90,7 @@ class HubsService
     {
         $channelControl = [
             1 => ['R1', 'R2', 'R3', 'R4'],      // Light
-            2 => ['LEFT', 'RIGHT'],             // Switch
+            2 => ['LEFT', 'RIGHT', 'LEFT_LONG', 'RIGHT_LONG'], // Switch
             //3 => [],                          // Socket
             4 => ['T', 'TEMP', 'PROC_TEMP'],    // Termometr
             //5 => [],                          // Termostat
