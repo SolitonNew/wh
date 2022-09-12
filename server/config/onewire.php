@@ -9,7 +9,7 @@ return [
         ],
         0xF0 => [
             'description' => 'Two buttons switch',
-            'channels' => ['LEFT', 'RIGHT'],
+            'channels' => ['LEFT', 'RIGHT', 'LEFT_LONG', 'RIGHT_LONG'],
             'consuming' => 100,
         ],
         0xF1 => [
