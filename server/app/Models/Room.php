@@ -146,7 +146,7 @@ class Room extends Model
                 }
             }
 
-            $item->parent_id = $request->parent_id;
+            $item->parent_id = $request->parent_id ?: null;
             $item->name = $request->name;
 
             $item->bounds = json_encode([
