@@ -97,6 +97,7 @@ sudo apt install ffmpeg
 ```
 
 Admin Login/Password: wh/wh
+Terminal Login/Password: terminal/terminal
 
 ## License
 
