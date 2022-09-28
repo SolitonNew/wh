@@ -95,10 +95,8 @@ SUBSYSTEM=="i2c-dev", GROUP="i2c"
 ```
 sudo apt install ffmpeg
 ```
-```
-Admin Login/Password: wh/wh
+Admin Login/Password: wh/wh<br>
 Terminal Login/Password: terminal/terminal
-```
 ## License
 
 The WatchHouse system is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
