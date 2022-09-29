@@ -54,7 +54,7 @@ class DinDaemon extends BaseDaemon
     /**
      * @var array|bool
      */
-    private array!bool $firmwareHex = [];
+    private array|bool $firmwareHex = [];
 
     /**
      * @var int
