@@ -28,9 +28,9 @@ class DeviceChange extends Model
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public static function getCount(): int
+    public static function getCount(): string
     {
         $count = self::count();
 
