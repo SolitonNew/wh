@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Lang;
 class DinDaemon extends BaseDaemon
 {
     /**
-     * @var string
+     * @var mixed
      */
-    private string $port = '';
+    private mixed $portHandle;
 
     /**
      * @var int
@@ -96,9 +96,9 @@ class DinDaemon extends BaseDaemon
             $port = $settings->port;
             $baud = config('din.'.$settings->mmcu.'.baud');
             exec("stty -F $port $baud cs8 cstopb -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
-            $this->port = fopen($port, 'r+b');
-            stream_set_blocking($this->port, false);
-            while (!feof($this->port)) {
+            $this->portHandle = fopen($port, 'r+b');
+            stream_set_blocking($this->portHandle, false);
+            while (!feof($this->portHandle)) {
                 $loopErrors = false;
                 $command = Property::getDinCommand(true);
 
@@ -166,8 +166,8 @@ class DinDaemon extends BaseDaemon
             $s .= $ex->getMessage();
             $this->printLine($s);
         } finally {
-            if ($this->port) {
-                fclose($this->port);
+            if ($this->portHandle) {
+                fclose($this->portHandle);
             }
         }
     }
@@ -547,7 +547,7 @@ class DinDaemon extends BaseDaemon
         $returnCmd = -1;
         $this->waitCount = 0;
         while ($this->waitCount < ($utimeout / self::SLEEP_TIME)) {
-            $c = fgetc($this->port);
+            $c = fgetc($this->portHandle);
             if ($c !== false) {
                 $this->waitCount = 0;
                 $this->inBuffer .= $c;
@@ -738,8 +738,8 @@ class DinDaemon extends BaseDaemon
             $crc = $this->crc_table($crc ^ ord($pack[$i]));
         }
         $pack .= pack('C', $crc);
-        fwrite($this->port, $pack);
-        fflush($this->port);
+        fwrite($this->portHandle, $pack);
+        fflush($this->portHandle);
     }
 
     /**
@@ -758,8 +758,8 @@ class DinDaemon extends BaseDaemon
             $crc = $this->crc_table($crc ^ ord($pack[$i]));
         }
         $pack .= pack('C', $crc);
-        fwrite($this->port, $pack);
-        fflush($this->port);
+        fwrite($this->portHandle, $pack);
+        fflush($this->portHandle);
     }
 
     /**
@@ -778,8 +778,8 @@ class DinDaemon extends BaseDaemon
             $crc = $this->crc_table($crc ^ ord($pack[$i]));
         }
         $pack .= pack('C', $crc);
-        fwrite($this->port, $pack);
-        fflush($this->port);
+        fwrite($this->portHandle, $pack);
+        fflush($this->portHandle);
 
         usleep(10000); // Otherwise, the controller does not have time to process.
     }
