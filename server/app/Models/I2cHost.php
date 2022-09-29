@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -10,42 +11,36 @@ class I2cHost extends AffectsFirmwareModel
 {
     protected $table = 'core_i2c_hosts';
     public $timestamps = false;
-    
-    protected $_affectFirmwareFields = [
+
+    protected array $affectFirmwareFields = [
         'id',
     ];
-    
-    /**
-     * 
-     * @return type
-     */
+
     public function hub()
     {
         return $this->belongsTo(Hub::class, 'hub_id');
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return Collection
      */
-    public function devices()
+    public function devices(): Collection
     {
         return $this->hasMany(Device::class, 'host_id')
                     ->whereTyp('i2c')
                     ->orderBy('name', 'asc');
     }
-    
+
     /**
      *
-     * @var type 
+     * @var type
      */
     public $type = null;
-    
+
     /**
-     * 
-     * @return type
+     * @return object|null
      */
-    public function type()
+    public function type(): object|null
     {
         if ($this->type === null) {
             $types = config('i2c.types');
@@ -54,7 +49,7 @@ class I2cHost extends AffectsFirmwareModel
             if (!isset($type['description'])) {
                 $type['description'] = '';
             }
-            
+
             if (!isset($type['address'])) {
                 $type['address'] = [];
             }
@@ -69,28 +64,26 @@ class I2cHost extends AffectsFirmwareModel
 
             $this->type = (object)$type;
         }
-        
+
         return $this->type;
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return array
      */
-    public function channelsOfType()
+    public function channelsOfType(): array
     {
         if ($this->type()) {
             return $this->type()->channels;
         }
-        
+
         return [];
     }
-    
+
     /**
-     * 
-     * @return \App\Models\class
+     * @return array
      */
-    public function typeList()
+    public function typeList(): array
     {
         $result = [];
         foreach (config('i2c.types') as $type => $details) {
@@ -103,49 +96,46 @@ class I2cHost extends AffectsFirmwareModel
         }
         return $result;
     }
-    
+
     /**
-     * 
      * @param int $hubID
-     * @return type
+     * @return Collection
      */
-    static public function listForIndex(int $hubID)
+    public static function listForIndex(int $hubID): Collection
     {
         return self::whereHubId($hubID)
             ->orderBy('typ', 'asc')
             ->orderBy('address', 'asc')
             ->get();
     }
-    
+
     /**
-     * 
      * @param int $hubID
      * @param int $id
-     * @return \App\Models\I2cHost
+     * @return I2cHost
      */
-    static public function findOrCreate(int $hubID, int $id)
+    public static function findOrCreate(int $hubID, int $id): I2cHost
     {
         $item = self::whereHubId($hubID)
             ->whereId($id)
             ->first();
-        
+
         if (!$item) {
             $item = new I2cHost();
             $item->id = $id;
             $item->hub_id = $hubID;
         }
-        
+
         return $item;
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $hubID
      * @param int $id
-     * @return string
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function storeFromRequest(Request $request, int $hubID, int $id)
+    public static function storeFromRequest(Request $request, int $hubID, int $id)
     {
         // Validation  ----------------------
         $rules = [
@@ -153,16 +143,16 @@ class I2cHost extends AffectsFirmwareModel
             'address' => 'numeric|required|unique:core_i2c_hosts,address,'.($id > 0 ? $id : ''),
             'comm' => 'string|nullable',
         ];
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
         try {
             $item = I2cHost::find($id);
-            
+
             if (!$item) {
                 $item = new I2cHost();
                 $item->hub_id = $hubID;
@@ -172,14 +162,14 @@ class I2cHost extends AffectsFirmwareModel
             $item->typ = $request->typ;
             $item->address = $request->address;
             $item->save();
-            
+
             // Store event
             EventMem::addEvent(EventMem::HOST_LIST_CHANGE, [
                 'id' => $item->id,
                 'hubID' => $item->hub_id,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -187,13 +177,12 @@ class I2cHost extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
-     * @return string
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function deleteById(int $id)
+    public static function deleteById(int $id)
     {
         try {
             // Clear relations
@@ -201,17 +190,17 @@ class I2cHost extends AffectsFirmwareModel
                 Device::deleteById($device->id);
             }
             // -------------------------
-            
+
             $item = self::find($id);
             $item->delete();
-            
+
             // Store event
             EventMem::addEvent(EventMem::HOST_LIST_CHANGE, [
                 'id' => $item->id,
                 'hubID' => $item->hub_id,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             Log::error($ex->getMessage());
@@ -220,12 +209,12 @@ class I2cHost extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $hubID
+     * @return string
      */
-    static public function deleteByHubId(int $hubID)
+    public static function deleteByHubId(int $hubID): string
     {
         $result = 'OK';
         foreach (self::whereHubId($hubID)->get() as $host) {

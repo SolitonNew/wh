@@ -13,31 +13,31 @@ use App\Models\Property;
 use App\Models\Hub;
 
 class HostsController extends Controller
-{    
+{
     /**
      *
-     * @var type 
+     * @var type
      */
     private $_service;
-    
+
     /**
-     * 
+     *
      * @param HostsService $service
      */
     public function __construct(HostsService $service)
     {
         $this->_service = $service;
     }
-    
+
     /**
      * This is an index route for displaying a list of host.
      * If the hub id does not exists, redirect to the owner route.
-     * 
+     *
      * @param int $hubID
      * @return type
      */
-    public function index(int $hubID = null) 
-    {        
+    public function index(int $hubID = null)
+    {
         // Last view id  --------------------------
         if (!$hubID) {
             $hubID = Property::getLastViewID('HUB');
@@ -47,24 +47,24 @@ class HostsController extends Controller
                 $hubID = null;
             }
         }
-        
+
         if (!$hubID) {
             $item = Hub::orderBy('name', 'asc')->first();
             if ($item) {
                 return redirect(route('admin.hub-hosts', ['hubID' => $item->id]));
             }
         }
-        
+
         if (!Hub::find($hubID)) {
             Property::setLastViewID('HUB', null);
             return redirect(route('admin.hubs'));
         }
-        
+
         Property::setLastViewID('HUB', $hubID);
         Property::setLastViewID('HUB_PAGE', 'hosts');
         // ----------------------------------------
-        
-        
+
+
         switch ($this->_service->getHostType($hubID)) {
             case 'extapi':
                 return view('admin.hubs.hosts.extapi.extapi-hosts', [
@@ -99,13 +99,13 @@ class HostsController extends Controller
             default:
                 return redirect(route('admin.hubs'));
         }
-        
+
         abort(404);
     }
-    
+
     /**
      * Route to show extapi host properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return type
@@ -113,16 +113,16 @@ class HostsController extends Controller
     public function editExtApiShow(int $hubID, int $id)
     {
         $item = ExtApiHost::findOrCreate($hubID, $id);
-        
+
         return view('admin.hubs.hosts.extapi.extapi-host-edit', [
             'item' => $item,
         ]);
     }
-    
-    
+
+
     /**
      * Route to create or update extapi host properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return type
@@ -131,10 +131,10 @@ class HostsController extends Controller
     {
         return ExtApiHost::storeFromRequest($request, $hubID, $id);
     }
-    
+
     /**
      * Route to delete extapi host by id.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return string
@@ -143,10 +143,10 @@ class HostsController extends Controller
     {
         return ExtApiHost::deleteById($id);
     }
-    
+
     /**
      * Route to show orange pi host properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return type
@@ -154,16 +154,16 @@ class HostsController extends Controller
     public function editOrangeShow(int $hubID, int $id)
     {
         $item = I2cHost::findOrCreate($hubID, $id);
-        
+
         return view('admin.hubs.hosts.orange.orange-host-edit', [
             'item' => $item,
         ]);
     }
-    
-    
+
+
     /**
      * Route to create or update orange pi host properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return type
@@ -172,10 +172,10 @@ class HostsController extends Controller
     {
         return I2cHost::storeFromRequest($request, $hubID, $id);
     }
-    
+
     /**
      * Route to delete orange pi host by id.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return string
@@ -184,10 +184,10 @@ class HostsController extends Controller
     {
         return I2cHost::deleteById($id);
     }
-    
+
     /**
      * Route to show camcorder host properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return type
@@ -195,16 +195,16 @@ class HostsController extends Controller
     public function editCamcorderShow(int $hubID, int $id)
     {
         $item = CamcorderHost::findOrCreate($hubID, $id);
-        
+
         return view('admin.hubs.hosts.camcorder.camcorder-host-edit', [
             'item' => $item,
         ]);
     }
-    
-    
+
+
     /**
      * Route to create or update camcorder host properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return type
@@ -213,10 +213,10 @@ class HostsController extends Controller
     {
         return CamcorderHost::storeFromRequest($request, $hubID, $id);
     }
-    
+
     /**
      * Route to delete camcorder host by id.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return string
@@ -225,10 +225,10 @@ class HostsController extends Controller
     {
         return CamcorderHost::deleteById($id);
     }
-    
+
     /**
      * Route to show din host properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return type
@@ -236,15 +236,15 @@ class HostsController extends Controller
     public function editDinShow(int $hubID, int $id)
     {
         $item = OwHost::findOrCreate($hubID, $id);
-        
+
         return view('admin.hubs.hosts.din.din-host-edit', [
             'item' => $item,
         ]);
     }
-    
+
     /**
      * Route to create or update din host properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return type
@@ -253,10 +253,10 @@ class HostsController extends Controller
     {
         return OwHost::storeFromRequest($request, $hubID, $id);
     }
-    
+
     /**
      * Route to delete Din host by id.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return string
@@ -265,10 +265,10 @@ class HostsController extends Controller
     {
         return OwHost::deleteById($id);
     }
-    
+
     /**
      * Route to show Zigbee One host properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return type
@@ -277,10 +277,10 @@ class HostsController extends Controller
     {
         return 'DEMO';
     }
-    
+
     /**
      * Route to create or update Zigbee One host properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return type
@@ -289,16 +289,16 @@ class HostsController extends Controller
     {
         return 'DEMO';
     }
-    
+
     /**
      * Route to delete Zigbee One host by id.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return string
      */
     public function deleteZigbee(int $hubID, int $id)
-    {        
+    {
         return 'DEMO';
     }
 }

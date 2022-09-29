@@ -8,15 +8,18 @@ use Illuminate\Http\Request;
 
 class FavoritesController extends Controller
 {
+    /**
+     * @var FavoritesService
+     */
     private $_service;
-    
-    public function __construct(FavoritesService $service) 
+
+    public function __construct(FavoritesService $service)
     {
         $this->_service = $service;
     }
-    
+
     /**
-     * 
+     *
      * @return type
      */
     public function getData(Request $request)

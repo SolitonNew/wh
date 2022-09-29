@@ -7,25 +7,25 @@ use Carbon\Carbon;
 class SunTime
 {
     /**
-     * Calculates the time of sunrise or sunset on a specified date with 
+     * Calculates the time of sunrise or sunset on a specified date with
      * location parameters.
-     * 
+     *
      * @param Carbon $date
      * @param float $latitude
      * @param float $longitude
      * @param float $zenith
      * @param string $sunTime
-     * @return type
+     * @return Carbon|null
      */
-    static public function get(Carbon $date, float $latitude, float $longitude, float $zenith, string $sunTime) 
+    public static function get(Carbon $date, float $latitude, float $longitude, float $zenith, string $sunTime): Carbon|null
     {
         // 1. first calculate the day of the year
         $N = $date->copy()->dayOfYear();
-    
+
         // 2. convert the longitude to hour value and calculate an approximate time
 
         $lngHour = $longitude / 15;
-    
+
         if ($sunTime == 'SUNRISE') {
             $t = $N + ((6 - $lngHour) / 24);
         } else {
@@ -37,21 +37,21 @@ class SunTime
         $M = (0.9856 * $t) - 3.289;
 
         //4. calculate the Sun's true longitude
-    
+
         $L = $M + (1.916 * sin(deg2rad($M))) + (0.020 * sin(deg2rad(2 * $M))) + 282.634;
-        
+
         // NOTE: L potentially needs to be adjusted into the range [0,360) by adding/subtracting 360
-        $L = self::_adjust($L, 360);
- 
+        $L = self::adjust($L, 360);
+
         // 5a. calculate the Sun's right ascension
-    
+
         $RA = rad2deg(atan(0.91764 * tan(deg2rad($L))));
-        
+
         // NOTE: RA potentially needs to be adjusted into the range [0,360) by adding/subtracting 360
-        $RA = self::_adjust($RA, 360);
-    
+        $RA = self::adjust($RA, 360);
+
         // 5b. right ascension value needs to be in the same quadrant as L
-    
+
         $Lquadrant = floor($L / 90) * 90;
         $RAquadrant = floor($RA / 90) * 90;
         $RA = $RA + ($Lquadrant - $RAquadrant);
@@ -59,7 +59,7 @@ class SunTime
         // 5c. right ascension value needs to be converted into hours
 
         $RA = $RA / 15;
-    
+
         // 6. calculate the Sun's declination
 
         $sinDec = 0.39782 * sin(deg2rad($L));
@@ -79,28 +79,27 @@ class SunTime
         } else {
             $H = rad2deg(acos($HCos));
         }
-        
+
         $H = $H / 15;
-        
+
         // 8. calculate local mean time of rising/setting
         $LocalT = $H + $RA - (0.06571 * $t) - 6.622;
 
         // 9. adjust back to UTC
         $UT = $LocalT - $lngHour;
-        
+
         # NOTE: UT potentially needs to be adjusted into the range [0,24) by adding/subtracting 24
-        $st = self::_adjust($UT, 24);
-        
+        $st = self::adjust($UT, 24);
+
         return Carbon::create($date->year, $date->month, $date->day, 0, 0, 0, 'UTC')->addSecond($st * 3600);
     }
-    
+
     /**
-     * 
-     * @param type $value
-     * @param type $bounds
-     * @return type
+     * @param float $value
+     * @param int $bounds
+     * @return float
      */
-    static private function _adjust($value, $bounds) 
+    private static function adjust(float $value, int $bounds): float
     {
         while ($value >= $bounds) {
             $value = $value - $bounds;
@@ -108,7 +107,7 @@ class SunTime
         while ($value < 0) {
             $value = $value + $bounds;
         }
-        
+
         return $value;
-    }    
+    }
 }

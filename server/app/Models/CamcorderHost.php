@@ -3,24 +3,25 @@
 namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class CamcorderHost extends AffectsFirmwareModel
 {
     protected $table = 'core_camcorder_hosts';
     public $timestamps = false;
-    
+
     /**
-     * 
+     *
      * @return type
      */
     public function hub()
     {
         return $this->belongsTo(Hub::class, 'hub_id');
     }
-    
+
     /**
-     * 
+     *
      * @return type
      */
     public function devices()
@@ -29,42 +30,42 @@ class CamcorderHost extends AffectsFirmwareModel
                     ->whereTyp('camcorder')
                     ->orderBy('name', 'asc');
     }
-    
-    private $_driver = false;
-    
+
     /**
-     * 
-     * @return type
+     * @var object|bool
      */
-    public function driver()
+    private object|bool $driver = false;
+
+    /**
+     * @return object|bool
+     */
+    public function driver(): object|bool
     {
-        if ($this->_driver === false) {
+        if ($this->driver === false) {
             foreach (config('camcorder.drivers') as $class) {
                 $instance = new $class();
                 if ($instance->name == $this->typ) {
                     $instance->assignKey($this->id);
                     $instance->assignCaption($this->name);
                     $instance->assignData($this->data);
-                    $this->_driver = $instance;
+                    $this->driver = $instance;
                     break;
                 }
             }
         }
-        
-        return $this->_driver;        
+
+        return $this->driver;
     }
-    
+
     /**
-     *
-     * @var type 
+     * @var object|null
      */
-    public $type = null;
-    
+    public object|null $type = null;
+
     /**
-     * 
-     * @return type
+     * @return object|null
      */
-    public function type()
+    public function type(): object|null
     {
         if ($this->type === null) {
             if ($this->driver()) {
@@ -84,31 +85,29 @@ class CamcorderHost extends AffectsFirmwareModel
                     'properties' => [],
                 ];
             }
-            
+
             $this->type = (object)$type;
         }
-        
+
         return $this->type;
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return array
      */
-    public function channelsOfType()
+    public function channelsOfType(): array
     {
         if ($this->type()) {
             return $this->type()->channels;
         }
-        
+
         return [];
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return array
      */
-    public function typeList()
+    public function typeList(): array
     {
         $result = [];
         foreach (config('camcorder.drivers') as $class) {
@@ -116,61 +115,58 @@ class CamcorderHost extends AffectsFirmwareModel
         }
         return $result;
     }
-    
+
     /**
-     * 
      * @param int $hubID
-     * @return type
+     * @return Collection
      */
-    static public function listForIndex(int $hubID)
+    public static function listForIndex(int $hubID): Collection
     {
         return self::whereHubId($hubID)
             ->orderBy('name', 'asc')
             ->get();
     }
-    
+
     /**
-     * 
      * @param int $hubID
      * @param int $id
-     * @return \App\Models\CamcorderHost
+     * @return CamcorderHost
      */
-    static public function findOrCreate(int $hubID, int $id)
+    public static function findOrCreate(int $hubID, int $id): CamcorderHost
     {
         $item = self::whereHubId($hubID)
             ->whereId($id)
             ->first();
-        
+
         if (!$item) {
             $item = new CamcorderHost();
             $item->id = $id;
             $item->hub_id = $hubID;
         }
-        
+
         return $item;
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $hubID
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function storeFromRequest(Request $request, int $hubID, int $id)
+    public static function storeFromRequest(Request $request, int $hubID, int $id)
     {
         // Validation  ----------------------
         $rules = [
             'typ' => ($id == -1) ? 'required' : 'nullable',
             'name' => 'required',
         ];
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
-        
         try {
             $item = self::find($id);
             if (!$item) {
@@ -178,9 +174,9 @@ class CamcorderHost extends AffectsFirmwareModel
                 $item->hub_id = $hubID;
                 $item->typ = $request->typ;
             }
-            
+
             $item->name = $request->name;
-            
+
             // Store properties data
             $propertiesData = [];
             $properties = $item->type()->properties;
@@ -190,16 +186,16 @@ class CamcorderHost extends AffectsFirmwareModel
             }
             $item->data = json_encode($propertiesData);
             // ---------------------
-            
+
             $item->save();
-            
+
             // Store event
             EventMem::addEvent(EventMem::HOST_LIST_CHANGE, [
                 'id' => $item->id,
                 'hubID' => $item->hub_id,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -207,30 +203,30 @@ class CamcorderHost extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function deleteById(int $id)
-    {        
+    public static function deleteById(int $id)
+    {
         try {
             // Clear relations
             foreach (Device::whereTyp('camcorder')->whereHostId($id)->get() as $device) {
                 Device::deleteById($device->id);
             }
             // ------------------------
-            
+
             $item = self::find($id);
             $item->delete();
-            
+
             // Store event
             EventMem::addEvent(EventMem::HOST_LIST_CHANGE, [
                 'id' => $item->id,
                 'hubID' => $item->hub_id,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -238,12 +234,12 @@ class CamcorderHost extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $hubID
+     * @return string
      */
-    static public function deleteByHubId(int $hubID)
+    public static function deleteByHubId(int $hubID): string
     {
         $result = 'OK';
         foreach (self::whereHubId($hubID)->get() as $host) {
@@ -251,23 +247,22 @@ class CamcorderHost extends AffectsFirmwareModel
                 $result = 'With Errors';
             }
         }
+        return $result;
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return string
      */
-    public function getThumbnailFileName()
+    public function getThumbnailFileName(): string
     {
         return base_path('storage/app/camcorder/thumbnails/'.$this->id.'.jpg');
     }
-    
+
     /**
-     * 
-     * @param type $apiToken
-     * @return type
+     * @param string $apiToken
+     * @return string
      */
-    public function getThumbnailUrl($apiToken)
+    public function getThumbnailUrl(string $apiToken): string
     {
         if (file_exists($this->getThumbnailFileName())) {
             return route('cam-thumbnail', ['id' => $this->id, 'api_token' => $apiToken]);
@@ -275,13 +270,12 @@ class CamcorderHost extends AffectsFirmwareModel
             return '';
         }
     }
-    
+
     /**
-     * 
-     * @param type $host
-     * @return type
+     * @param string $host
+     * @return string
      */
-    public function getVideoUrl($host)
+    public function getVideoUrl(string $host): string
     {
         return 'http://'.$host.':'.(10000 + $this->id);
     }

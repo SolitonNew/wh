@@ -1,20 +1,14 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Script\PhpFunctions;
 
-trait FunctionPrint 
+trait FunctionPrint
 {
     /**
-     * 
-     * @param type $text
+     * @param string $text
+     * @return void
      */
-    public function function_print($text) 
+    public function function_print(string $text): void
     {
         $this->printLine('>>> '.$text);
     }

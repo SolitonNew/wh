@@ -4,15 +4,28 @@ namespace App\Library\CamcorderHostDrivers;
 
 class Tecsar extends CamcorderDriverBase
 {
-    public $name = 'tecsar';
-    public $channels = [
+    /**
+     * @var string
+     */
+    public string $name = 'tecsar';
+
+    /**
+     * @var array|string[]
+     */
+    public array $channels = [
         'REC',    // Recording channel
         'MOTION', // Alarm channel
     ];
-    public $properties = [
+
+    /**
+     * @var array|string[]
+     */
+    public array $properties = [
         'url' => 'large',
     ];
-    
-    protected $thumbnailCronExpression = '*/5 * * * *';
-    
+
+    /**
+     * @var string
+     */
+    protected string $thumbnailCronExpression = '*/5 * * * *';
 }

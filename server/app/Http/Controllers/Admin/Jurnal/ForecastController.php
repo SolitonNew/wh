@@ -21,14 +21,14 @@ use App\Models\Property;
 class ForecastController extends Controller
 {
     private $_service;
-    
-    public function __construct(ForecastService $service) 
+
+    public function __construct(ForecastService $service)
     {
         $this->_service = $service;
     }
-    
+
     /**
-     * 
+     *
      * @return type
      */
     public function index()
@@ -36,20 +36,20 @@ class ForecastController extends Controller
         // Store last page
         Property::setLastViewID('JURNAL_PAGE', 'forecast');
         // ----------------------------------------
-        
+
         return view('admin.jurnal.forecast.forecast', [
             'data' => $this->_service->getData(),
         ]);
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     public function clearStorageData()
     {
         ExtApiHostStorage::truncate();
-        
+
         return 'OK';
     }
 }

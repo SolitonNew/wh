@@ -1,31 +1,25 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Script\PhpFunctions;
 
 use App\Models\ScriptString;
 use App\Library\Speech;
 
-trait FunctionSpeech 
+trait FunctionSpeech
 {
     /**
-     * 
-     * @param type $phraseID
-     * @param type $args
+     * @param int $phraseID
+     * @param int ...$args
+     * @return void
      */
-    public function function_speech($phraseID, ...$args)
-    {          
+    public function function_speech(int $phraseID, int ...$args): void
+    {
         $string = ScriptString::find($phraseID);
-        
+
         if ($string) {
             $phrase = vsprintf($string->data, $args);
-            
-            if ($this->_fake) {
+
+            if ($this->fake) {
                 $this->printLine('>>> '.$phrase);
             } else {
                 (new Speech())->turn($phrase);

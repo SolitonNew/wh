@@ -23,7 +23,7 @@ class FirmwareChangedListener
      * @param  FirmwareChangedEvent  $event
      * @return void
      */
-    public function handle(FirmwareChangedEvent $event)
+    public function handle(FirmwareChangedEvent $event): void
     {
         $n = Property::getFirmwareChanges();
         Property::setFirmwareChanges($n + 1);

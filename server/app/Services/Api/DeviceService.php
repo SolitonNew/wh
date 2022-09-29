@@ -5,26 +5,25 @@ namespace App\Services\Api;
 use App\Models\Device;
 use Illuminate\Support\Facades\DB;
 
-class DeviceService 
+class DeviceService
 {
     /**
-     * 
      * @param int $deviceID
-     * @return type
+     * @return object|null
      */
-    public function getData(int $deviceID)
+    public function getData(int $deviceID): object|null
     {
         $sql = "select p.name group_title, v.comm device_title, v.app_control, v.room_id, v.value ".
                "  from core_devices v, plan_rooms p ".
                " where v.id = $deviceID ".
-               "   and p.id = v.room_id";        
+               "   and p.id = v.room_id";
         $row = DB::select($sql)[0];
-        
+
         $roomID = $row->room_id;
         $roomTitle = mb_strtoupper($row->group_title);
-        $control = Device::decodeAppControl($row->app_control);        
+        $control = Device::decodeAppControl($row->app_control);
         $deviceTitle = Device::roomDeviceName($roomTitle, mb_strtoupper($row->device_title), $control->label);
-        
+
         switch ($control->typ) {
             case 1:
             case 2:
@@ -43,16 +42,16 @@ class DeviceService
                     ]
                 ];
         }
-        
+
         return null;
     }
-    
+
     /**
-     * 
      * @param int $deviceID
      * @param int $value
+     * @return void
      */
-    public function setValue(int $deviceID, int $value)
+    public function setValue(int $deviceID, int $value): void
     {
         Device::setValue($deviceID, $value);
     }

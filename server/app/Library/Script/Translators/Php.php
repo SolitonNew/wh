@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Script\Translators;
 
 /**
@@ -13,13 +7,12 @@ namespace App\Library\Script\Translators;
  *
  * @author soliton
  */
-class Php implements ITranslator 
+class Php implements ITranslator
 {
     /**
-     *
-     * @var type 
+     * @var array
      */
-    private $_functions = [
+    private array $functions = [
         'get' => [
             1 => '$this->function_get',
         ],
@@ -72,34 +65,34 @@ class Php implements ITranslator
         'floor' => [
             1 => '$this->function_floor',
         ],
-    ];    
-    
+    ];
+
     /**
-     * 
-     * @param type $parts
+     * @param object $prepareData
+     * @return string
      */
-    public function translate($prepareData) 
+    public function translate(object $prepareData): string
     {
         $parts = $prepareData->parts;
         $variables = $prepareData->variables;
-        
-        for($i = 0; $i < count($parts); $i++) {
+
+        for ($i = 0; $i < count($parts); $i++) {
             if (is_object($parts[$i])) {
-                if (isset($this->_functions[$parts[$i]->name])) {
-                    if (isset($this->_functions[$parts[$i]->name]['+'])) {
-                        $parts[$i] = $this->_functions[$parts[$i]->name]['+'];
+                if (isset($this->functions[$parts[$i]->name])) {
+                    if (isset($this->functions[$parts[$i]->name]['+'])) {
+                        $parts[$i] = $this->functions[$parts[$i]->name]['+'];
                     } else {
-                        $parts[$i] = $this->_functions[$parts[$i]->name][$parts[$i]->args];
+                        $parts[$i] = $this->functions[$parts[$i]->name][$parts[$i]->args];
                     }
                 } else {
                     $parts[$i] = $parts[$i]->name;
                 }
-            } else 
+            } else
             if (isset($variables[$parts[$i]])) {
                 $parts[$i] = '$'.$parts[$i];
             }
         }
-        
+
         return implode('', $parts);
     }
 }

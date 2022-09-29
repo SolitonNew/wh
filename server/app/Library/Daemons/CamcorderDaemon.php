@@ -1,14 +1,10 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Daemons;
 
 use App\Models\CamcorderHost;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use App\Models\Device;
@@ -21,120 +17,120 @@ use App\Models\Device;
 class CamcorderDaemon extends BaseDaemon
 {
     /**
-     *
-     * @var type 
+     * @var array
      */
-    private $_providers = [];
-    private $_prevExecuteHostProviderTime = false;
-    
+    private array $providers = [];
+
     /**
-     * 
+     * @var int|bool
      */
-    public function execute()
+    private int|bool $prevExecuteHostProviderTime = false;
+
+    /**
+     * @return void
+     */
+    public function execute(): void
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
-        
+
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/daemons/camcorder-daemon.description'));
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
-        
+
         // Base init
         if (!$this->initialization('camcorder')) return ;
-        
+
         try {
             while (1) {
                 // ExtApi Host Providers Execute
-                $this->_executeHostProviders();
-                
+                $this->executeHostProviders();
+
                 // Check recording
-                $this->_checkRecording();
-                
+                $this->checkRecording();
+
                 // Check event log
                 if (!$this->checkEvents()) break;
-                
+
                 usleep(100000);
             }
         } catch (\Exception $ex) {
             $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
-            $this->printLine($s); 
-        } finally {
-            
+            $this->printLine($s);
         }
     }
-    
+
     /**
-     * 
+     * @return void
      */
-    protected function initializationHosts()
+    protected function initializationHosts(): void
     {
-        $ids = $this->_hubs
+        $ids = $this->hubs
             ->pluck('id')
             ->toArray();
-        
+
         $hosts = CamcorderHost::whereIn('hub_id', $ids)
             ->get();
-        
+
         $list = [];
         foreach ($hosts as $host) {
             $driver = $host->driver();
-            $this->_providers[$host->id] = $driver;
+            $this->providers[$host->id] = $driver;
             $list[] = $host->name.' ('.$driver->title.')';
         }
-        
+
         $this->printLine('CAMCORDERS USED: ['.implode(', ', $list).']');
-        
+
         // Camcorder folder
         $folder = base_path('storage/app/camcorder');
         if (!file_exists($folder)) {
             mkdir($folder);
         }
-        
+
         // Thumbnails folder
         $folder = base_path('storage/app/camcorder/thumbnails');
         if (!file_exists($folder)) {
             mkdir($folder);
         }
-        
+
         // Videos folder
         $folder = base_path('storage/app/camcorder/videos');
         if (!file_exists($folder)) {
             mkdir($folder);
         }
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return void
      */
-    private function _executeHostProviders()
+    private function executeHostProviders(): void
     {
-        $now = floor(\Carbon\Carbon::now()->timestamp / 60);
-        
+        $now = floor(Carbon::now()->timestamp / 60);
+
         // Checking for execute after daemon restart.
-        if ($this->_prevExecuteHostProviderTime === false) {
-            $this->_prevExecuteHostProviderTime = $now;
+        if ($this->prevExecuteHostProviderTime === false) {
+            $this->prevExecuteHostProviderTime = $now;
             return ;
         }
-        
+
         // Checking for execute at ever minutes.
-        if ($now == $this->_prevExecuteHostProviderTime) {
+        if ($now == $this->prevExecuteHostProviderTime) {
             return ;
         }
-        
+
         // Storing the previous time value
-        $this->_prevExecuteHostProviderTime = $now;
-        
-        foreach ($this->_providers as $id => $provider) {
+        $this->prevExecuteHostProviderTime = $now;
+
+        foreach ($this->providers as $provider) {
             try {
                 // Request Thumbnail
                 if ($provider->canThumbnailRequest()) {
                     $result = $provider->requestThumbnail();
                     $s = "[".parse_datetime(now())."] PROVIDER '".$provider->caption." (".$provider->title.")' HAS BEEN REQUEST THUMBNAIL \n";
-                    $this->printLine($s); 
+                    $this->printLine($s);
                     if ($result) {
                         $this->printLine($result);
                     }
@@ -142,43 +138,43 @@ class CamcorderDaemon extends BaseDaemon
             } catch (\Exception $ex) {
                 $s = "[".parse_datetime(now())."] ERROR FOR '".$provider->title."'\n";
                 $s .= $ex->getMessage();
-                $this->printLine($s); 
+                $this->printLine($s);
             }
         }
     }
-    
+
     /**
-     * 
+     * @return void
      */
-    private function _checkRecording()
+    private function checkRecording(): void
     {
-        foreach ($this->_devices as $device) {
+        foreach ($this->devices as $device) {
             if ($device->value > 0 &&
-                in_array($device->hub_id, $this->_hubIds) && 
-                $device->typ == 'camcorder' && 
-                isset($this->_providers[$device->host_id])) 
+                in_array($device->hub_id, $this->hubIds) &&
+                $device->typ == 'camcorder' &&
+                isset($this->providers[$device->host_id]))
             {
-                $driver = $this->_providers[$device->host_id];
-                
+                $driver = $this->providers[$device->host_id];
+
                 if (!$driver->checkRecording()) {
                     Device::setValue($device->id, 0);
                 }
             }
         }
     }
-    
+
     /**
-     * 
-     * @param type $device
+     * @param Device $device
+     * @return void
      */
-    protected function deviceChangeValue($device)
+    protected function deviceChangeValue(Device $device): void
     {
-        if (in_array($device->hub_id, $this->_hubIds) && 
-            $device->typ == 'camcorder' && 
-            isset($this->_providers[$device->host_id])) 
+        if (in_array($device->hub_id, $this->hubIds) &&
+            $device->typ == 'camcorder' &&
+            isset($this->providers[$device->host_id]))
         {
-            $driver = $this->_providers[$device->host_id];
-            
+            $driver = $this->providers[$device->host_id];
+
             switch ($device->channel) {
                 case 'REC':
                     if ($device->value > 0) {
@@ -189,6 +185,8 @@ class CamcorderDaemon extends BaseDaemon
                     if ($result) {
                         $this->printLine('['.parse_datetime(now()).'] '.$result);
                     }
+                    break;
+                default:
                     break;
             }
         }

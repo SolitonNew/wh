@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Script\Translators;
 
 /**
@@ -13,13 +7,12 @@ namespace App\Library\Script\Translators;
  *
  * @author soliton
  */
-class C implements ITranslator 
+class C implements ITranslator
 {
     /**
-     *
-     * @var type 
+     * @var array
      */
-    private $_functions = [
+    private array $functions = [
         'get' => [
             1 => 'command_get',
         ],
@@ -73,43 +66,45 @@ class C implements ITranslator
             1 => 'command_floor',
         ],
     ];
-    
-    private $_variableNames = [];
-    
-    public function __construct($variableNames = []) 
-    {
-        $this->_variableNames = $variableNames;
-    }
-    
-    
+
     /**
-     * 
+     * @var array|mixed
+     */
+    private array $variableNames = [];
+
+    public function __construct(array $variableNames = [])
+    {
+        $this->variableNames = $variableNames;
+    }
+
+    /**
+     *
      * @param type $parts
      */
-    public function translate($prepareData) 
+    public function translate(object $prepareData): string
     {
         $parts = $prepareData->parts;
-        
+
         $variables = [];
-        foreach($prepareData->variables as $var => $v) {
+        foreach ($prepareData->variables as $var => $v) {
             $variables[] = 'int '.$var.";\n";
         }
-        
+
         $varIDs = [];
-        foreach($prepareData->strings as $str => $v) {
+        foreach ($prepareData->strings as $str => $v) {
             $s = substr($str, 1, strlen($str) - 2);
-            $i = array_search($s, $this->_variableNames);
+            $i = array_search($s, $this->variableNames);
             if ($i !== false) {
                 $varIDs[$str] = $i;
             }
         }
-        
+
         for ($i = 0; $i < count($parts); $i++) {
             if (is_object($parts[$i])) {
-                if (isset($this->_functions[$parts[$i]->name])) {
-                    if (isset($this->_functions[$parts[$i]->name]['+'])) {
+                if (isset($this->functions[$parts[$i]->name])) {
+                    if (isset($this->functions[$parts[$i]->name]['+'])) {
                         $args = $parts[$i]->args;
-                        $parts[$i] = $this->_functions[$parts[$i]->name]['+'];
+                        $parts[$i] = $this->functions[$parts[$i]->name]['+'];
                         for (; $i < count($parts); $i++) {
                             if ($parts[$i] == '(') {
                                 $parts[$i] = '('.$args.', ';
@@ -117,17 +112,17 @@ class C implements ITranslator
                             }
                         }
                     } else {
-                        $parts[$i] = $this->_functions[$parts[$i]->name][$parts[$i]->args];
+                        $parts[$i] = $this->functions[$parts[$i]->name][$parts[$i]->args];
                     }
                 } else {
                     $parts[$i] = $parts[$i]->name;
                 }
-            } else 
+            } else
             if (isset($varIDs[$parts[$i]])) {
                 $parts[$i] = $varIDs[$parts[$i]];
             }
         }
-        
+
         return implode('', $variables)."\n".implode('', $parts);
     }
 }

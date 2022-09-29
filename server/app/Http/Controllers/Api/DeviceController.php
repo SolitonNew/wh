@@ -8,15 +8,18 @@ use App\Services\Api\DeviceService;
 
 class DeviceController extends Controller
 {
+    /**
+     * @var DeviceService
+     */
     private $_service;
-    
-    public function __construct(DeviceService $service) 
+
+    public function __construct(DeviceService $service)
     {
         $this->_service = $service;
     }
-    
+
     /**
-     * 
+     *
      * @param int $deviceID
      * @return type
      */
@@ -25,9 +28,9 @@ class DeviceController extends Controller
         $data = $this->_service->getData($deviceID);
         return response()->json($data);
     }
-    
+
     /**
-     * 
+     *
      * @param Request $request
      * @param int $deviceID
      */

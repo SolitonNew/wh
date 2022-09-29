@@ -10,40 +10,42 @@ class Hub extends AffectsFirmwareModel
     protected $table = 'core_hubs';
     public $timestamps = false;
 
-    protected $_affectFirmwareFields = [
+    /**
+     * @var array|string[]
+     */
+    protected array $affectFirmwareFields = [
         'rom',
     ];
-    
+
     public function extapiHosts()
     {
         return $this->hasMany(ExtApiHost::class);
     }
-    
+
     public function camcorderHosts()
     {
         return $this->hasMany(CamcorderHost::class);
     }
-    
+
     public function owHosts()
     {
         return $this->hasMany(OwHost::class);
     }
-    
+
     public function i2cHosts()
     {
         return $this->hasMany(I2cHost::class);
     }
-    
+
     public function devices()
     {
         return $this->hasMany(Device::class);
     }
-    
+
     /**
-     * 
      * @return int
      */
-    public function hostsCount()
+    public function hostsCount(): int
     {
         switch ($this->typ) {
             case 'extapi':
@@ -57,29 +59,29 @@ class Hub extends AffectsFirmwareModel
         }
         return 0;
     }
-    
+
     /**
-     * 
      * @param int $id
-     * @return \App\Models\Hub
+     * @return Hub
      */
-    static public function findOrCreate(int $id)
+    public static function findOrCreate(int $id): Hub
     {
         $item = Hub::find($id);
+
         if (!$item) {
             $item = new Hub();
             $item->id = -1;
         }
-        
+
         return $item;
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function storeFromRequest(Request $request, int $id)
+    public static function storeFromRequest(Request $request, int $id)
     {
         // Validation  ----------------------
         $rules = [];
@@ -97,16 +99,16 @@ class Hub extends AffectsFirmwareModel
                 'comm' => 'string|nullable',
             ];
         }
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
         try {
             $item = Hub::find($id);
-            
+
             if (!$item) {
                 $item = new Hub();
             }
@@ -119,14 +121,14 @@ class Hub extends AffectsFirmwareModel
             }
             $item->comm = $request->comm;
             $item->save();
-            
+
             // Store event
             EventMem::addEvent(EventMem::HUB_LIST_CHANGE, [
                 'id' => $item->id,
                 'typ' => $item->typ,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -134,23 +136,23 @@ class Hub extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function deleteById(int $id)
+    public static function deleteById(int $id)
     {
         try {
             $item = Hub::find($id);
             if (!$item) abort(404);
-            
+
             // Clear relations
             ExtApiHost::deleteByHubId($item->id);
             OwHost::deleteByHubId($item->id);
             I2cHost::deleteByHubId($item->id);
             CamcorderHost::deleteByHubId($item->id);
-            
+
             foreach (Device::whereHubId($item->id)->get() as $device) {
                 Device::deleteById($device->id);
             }
@@ -163,7 +165,7 @@ class Hub extends AffectsFirmwareModel
                 'typ' => $item->typ,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -171,12 +173,11 @@ class Hub extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     *
-     * @var type 
+     * @var \string[][]
      */
-    static public $typs = [
+    public static $typs = [
         'extapi' => [
             'variable',
             'extapi',
@@ -199,62 +200,58 @@ class Hub extends AffectsFirmwareModel
             'variable',
         ],
     ];
-    
+
     /**
-     *
-     * @var type 
+     * @var bool|null
      */
-    static private $_withNetworks = null;
-    
+    private static bool|null $withNetworks = null;
+
     /**
-     * 
      * @param int $hubID
-     * @return type
+     * @return bool|null
      */
-    static public function withNetworks(int $hubID)
+    public static function withNetworks(int $hubID): bool|null
     {
-        if (self::$_withNetworks === null) {
-            self::$_withNetworks = false;
-            
+        if (self::$withNetworks === null) {
+            self::$withNetworks = false;
+
             $hub = Hub::find($hubID);
             if ($hub) {
                 $hubsWithNetworks = [
                     'din',
                     'orangepi',
                 ];
-                
-                self::$_withNetworks = in_array($hub->typ, $hubsWithNetworks);
-            }            
+
+                self::$withNetworks = in_array($hub->typ, $hubsWithNetworks);
+            }
         }
-        return self::$_withNetworks;
+        return self::$withNetworks;
     }
-    
+
     /**
-     *
-     * @var boolean
+     * @var bool|null
      */
-    static private $_existsFirmwareHubs = null;
-    
+    private static bool|null $existsFirmwareHubs = null;
+
     /**
      * Returns true if there are hubs with firmware.
-     * 
-     * @return boolean
+     *
+     * @return bool|null
      */
-    static public function existsFirmwareHubs()
+    public static function existsFirmwareHubs()
     {
-        if (self::$_existsFirmwareHubs === null) {
-            self::$_existsFirmwareHubs = (Hub::whereTyp('din')->count() > 0);
+        if (self::$existsFirmwareHubs === null) {
+            self::$existsFirmwareHubs = (Hub::whereTyp('din')->count() > 0);
         }
-        
-        return self::$_existsFirmwareHubs;
+
+        return self::$existsFirmwareHubs;
     }
-    
+
     /**
-     * 
-     * @param type $typ
-     * @return boolean
+     * @param string $typ
+     * @return bool
      */
-    static public function isFirstSingleHub($typ)
+    public static function isFirstSingleHub(string $typ): bool
     {
         $single = ['orangepi', 'zigbeeone'];
         if (in_array($typ, $single)) {

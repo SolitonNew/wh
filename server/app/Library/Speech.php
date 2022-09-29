@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library;
 
 use App\Models\SpeecheCache;
@@ -17,13 +11,13 @@ use Illuminate\Support\Facades\File;
  *
  * @author soliton
  */
-class Speech 
+class Speech
 {
     /**
-     * 
-     * @param type $phrase
+     * @param string $phrase
+     * @return void
      */
-    public function turn($phrase)
+    public function turn(string $phrase): void
     {
         $item = SpeecheCache::wherePhrase($phrase)->first();
         if (!$item) { // If doesn't exist create sample and save to db
@@ -31,27 +25,26 @@ class Speech
             $item = new SpeecheCache();
             $item->phrase = $phrase;
             $item->save();
-            
+
             // Render phrase to the file
             $path = storage_path('app/speech');
             if (!file_exists($path)) mkdir($path);
             $file = $path.'/speech_'.$item->id.'.wav';
             exec('echo "'.$phrase.'" | RHVoice-test -p Anna -o '.$file);
         }
-        
+
         // Append an record to the queue
         EventMem::addEvent(EventMem::WEB_SPEECH, [
-            'mediaID' => $item->id, 
+            'mediaID' => $item->id,
             'phrase' => $phrase,
         ]);
     }
-    
+
     /**
-     * 
-     * @param type $mediaID
-     * @return type
+     * @param int $mediaID
+     * @return string
      */
-    static public function makeMediaFileName($mediaID)
+    public static function makeMediaFileName(int $mediaID): string
     {
         return storage_path('app/speech').'/speech_'.$mediaID.'.wav';
     }

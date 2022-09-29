@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use \Illuminate\Http\Request;
 use \Carbon\Carbon;
@@ -13,25 +14,24 @@ class Schedule extends Model
 {
     protected $table = 'core_schedule';
     public $timestamps = false;
-    
+
     /**
-     * 
-     * @return type
+     * @return Collection
      */
-    static public function listAll()
+    public static function listAll(): Collection
     {
         $data = Schedule::whereTempDeviceId(0)
                     ->orderBy('comm', 'asc')
                     ->get();
-        
+
         $types = Lang::get('admin/schedule.interval');
         $interval_time = Lang::get('admin/schedule.interval_time');
         $interval_day = Lang::get('admin/schedule.interval_day');
-        
-        foreach($data as &$row) {
+
+        foreach ($data as &$row) {
             $s = $types[$row->interval_type];
             $s .= ' '.$interval_time.': <b>'.$row->interval_time_of_day.'</b>';
-            
+
             switch($row->interval_type) {
                 case 0: // Every day
                     //
@@ -42,19 +42,18 @@ class Schedule extends Model
                     $s .= ' '.$interval_day.': <b>'.$row->interval_day_of_type.'</b>';
                     break;
             }
-            
+
             $row->interval_text = $s;
         }
-        
+
         return $data;
     }
-    
+
     /**
-     * 
      * @param int $id
-     * @return \App\Models\Schedule
+     * @return Schedule
      */
-    static public function findOrCreate(int $id)
+    public static function findOrCreate(int $id): Schedule
     {
         $item = Schedule::find($id);
         if (!$item) {
@@ -63,16 +62,16 @@ class Schedule extends Model
             $item->interval_type = 0;
             $item->enable = 0;
         }
-        
+
         return $item;
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function storeFromRequest(Request $request, int $id) 
+    public static function storeFromRequest(Request $request, int $id)
     {
         // Validation  ----------------------
         $rules = [
@@ -81,12 +80,12 @@ class Schedule extends Model
             'interval_time_of_day' => 'required|string',
             'interval_day_of_type' => 'string|'.(in_array($request->interval_type, [1, 2, 3]) ? 'required' : 'nullable'),
         ];
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
         try {
             $item = Schedule::find($id);
@@ -109,12 +108,12 @@ class Schedule extends Model
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
+     * @return void
      */
-    static public function deleteById(int $id)
+    public static function deleteById(int $id): void
     {
         try {
             $item = Schedule::find($id);
@@ -125,18 +124,19 @@ class Schedule extends Model
             ]), 422);
         }
     }
-    
+
     /**
      * Creates a new record of the schedule for one-time execution.
      * This is for INTERVAL_TYPE = 4
      * The settings are minimal.
-     * 
-     * @param type $comm
-     * @param type $action
-     * @param type $datetime
-     * @param type $variableID
+     *
+     * @param string $comm
+     * @param string $action
+     * @param $datetime
+     * @param int|null $variableID
+     * @return void
      */
-    static public function appendFastRecord($comm, $action, $datetime, $variableID) 
+    public static function appendFastRecord(string $comm, string $action, $datetime, int|null $variableID): void
     {
         $item = new Schedule();
         $item->comm = $comm;
@@ -149,28 +149,28 @@ class Schedule extends Model
         $item->enable = 1;
         $item->save();
     }
-    
-    
+
+
     /**
      * The special keywords for variable labels of time.
-     * 
-     * @var string
+     *
+     * @var array|string[]
      */
-    private $_KEYS = [
+    private array $_KEYS = [
         'SUNRISE',
         'SUNSET',
     ];
-    
+
     /**
      * This method creates a time label using the properties of the entry.
-     * 
-     * @return type
+     *
+     * @return Carbon|null
      */
-    public function makeDateTime() 
+    public function makeDateTime(): Carbon|null
     {
         $action_datetime = Carbon::parse($this->action_datetime, 'UTC');
         $now = now(Property::getTimezone())->startOfDay();
-        
+
         // Processing time intervals
         $dates = [];
         switch ($this->interval_type) {
@@ -184,11 +184,11 @@ class Schedule extends Model
                 // Retrieve date of next week's monday
                 $dw_next = $dw->copy()->addWeek();
                 $week_days = Lang::get('admin/schedule.week_days');
-                foreach(explode(',', $this->interval_day_of_type) as $w) {
+                foreach (explode(',', $this->interval_day_of_type) as $w) {
                     try {
                         $i = array_search(mb_strtolower(trim($w)), $week_days);
                         $dates[] = $dw->copy()->addDay($i);
-                        $dates[] = $dw_next->copy()->addDay($i);                        
+                        $dates[] = $dw_next->copy()->addDay($i);
                     } catch (\Exception $ex) {
 
                     }
@@ -199,7 +199,7 @@ class Schedule extends Model
                 $dw = $now->copy()->addDay(-$now->day + 1);
                 // Retrieve date of the first day of next month
                 $dw_next = $dw->copy()->addMonth();
-                foreach(explode(',', $this->interval_day_of_type) as $n) {
+                foreach (explode(',', $this->interval_day_of_type) as $n) {
                     try {
                         $i = trim($n) - 1;
                         $dates[] = $dw->copy()->addDay($i);
@@ -211,14 +211,14 @@ class Schedule extends Model
                 break;
             case 3: // Every year
             case 4: // one time
-                foreach(explode(',', $this->interval_day_of_type) as $day) {
+                foreach (explode(',', $this->interval_day_of_type) as $day) {
                     $d = explode('-', $day);
                     if (count($d) > 1) {
                         try {
                             $dw = Carbon::create($now->year, $d[1], $d[0], 0, 0, 0, 'UTC');
                             $dw_next = $dw->copy()->addYear();
                             $dates[] = $dw;
-                            $dates[] = $dw_next;                            
+                            $dates[] = $dw_next;
                         } catch (\Exception $ex) {
 
                         }
@@ -226,37 +226,36 @@ class Schedule extends Model
                 }
                 break;
         }
-        
-        
+
         // Combining date and time into one number for sorting
         $dt = [];
-        foreach($dates as $dat) {
-            foreach($this->_makeTime($dat) as $tim) {
+        foreach ($dates as $dat) {
+            foreach ($this->makeTime($dat) as $tim) {
                 $dt[] = $tim->timestamp;
             }
         }
-        
+
         // Sorting date and time
         sort($dt);
 
         // We check which date from the schedule is the closest to be fulfilled
-        foreach($dt as $d) {
+        foreach ($dt as $d) {
             $curr = Carbon::createFromTimestamp($d);
             if ($curr->gt($action_datetime)) {
                 return $curr;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Parses a string with timestamps and returns converted timestamps in seconds
-     * 
+     *
      * @param Carbon $date
-     * @return type
+     * @return array
      */
-    private function _makeTime(Carbon $date) 
+    private function makeTime(Carbon $date): array
     {
         $times = [];
         $time_of_day = mb_strtoupper($this->interval_time_of_day);
@@ -270,7 +269,7 @@ class Schedule extends Model
                     break;
                 }
             }
-            
+
             if ($time_type == '') { // Is it time
                 try {
                     $t = explode(':', $time_str);
@@ -300,7 +299,7 @@ class Schedule extends Model
                 }
             }
         }
-        
+
         return $times;
-    }    
+    }
 }

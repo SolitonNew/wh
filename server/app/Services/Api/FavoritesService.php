@@ -7,28 +7,29 @@ use App\Models\Device;
 use Illuminate\Support\Facades\DB;
 use App\Models\CamcorderHost;
 
-class FavoritesService 
+class FavoritesService
 {
     /**
-     * 
-     * @return type
+     * @param string $host
+     * @param string $apiToken
+     * @return array
      */
-    public function getData($host, $apiToken)
+    public function getData(string $host, string $apiToken): array
     {
         $ids = explode(',', Property::getWebChecks());
-        
+
         $web_color = Property::getWebColors();
-        
+
         $select = [
             'core_devices.*',
             DB::raw('(select p.name from plan_rooms p where id = core_devices.room_id) as group_name')
         ];
-        
+
         $devices = DB::table('core_devices')
             ->select($select)
             ->whereIn('id', $ids)
             ->get();
-        
+
         $result = [];
         foreach ($ids as $id) {
             foreach ($devices as $device) {
@@ -41,14 +42,14 @@ class FavoritesService
                     $c->title = $c->label.' '.$itemLabel;
 
                     $result[] = (object)[
-                        'data' => $device, 
+                        'data' => $device,
                         'control' => $c
                     ];
                     break;
                 }
             }
         }
-        
+
         foreach ($result as $device) {
             $itemLabel = $device->control->title;
 
@@ -62,7 +63,7 @@ class FavoritesService
                     break;
                 }
             }
-            
+
             // Chart data
             if ($device->control->typ == 1) {
                 $sql = "select v.id, v.created_at, v.value ".
@@ -70,10 +71,10 @@ class FavoritesService
                        " where v.device_id = ".$device->data->id.
                        "   and v.created_at > CURRENT_TIMESTAMP() - interval 3 hour".
                        " order by v.id ";
-                
+
                 $chartData = [];
                 $firstID = false;
-                foreach(DB::select($sql) as $v_row) {
+                foreach (DB::select($sql) as $v_row) {
                     if ($firstID === false) $firstID = $v_row->id;
                     $x = \Carbon\Carbon::parse($v_row->created_at, 'UTC')->toISOString();
                     $y = $v_row->value;
@@ -82,7 +83,7 @@ class FavoritesService
                         'y' => $y,
                     ];
                 }
-                
+
                 if ($firstID && count($chartData) < 25) {
                     $sql = "select v.created_at, v.value ".
                            "  from core_device_changes v ".
@@ -92,7 +93,7 @@ class FavoritesService
                            " order by v.id desc ".
                            " limit 1" ;
                     $firsts = DB::select($sql);
-                        
+
                     if (count($firsts)) {
                         $x = \Carbon\Carbon::parse($firsts[0]->created_at, 'UTC')->toISOString();
                         $y = $firsts[0]->value;
@@ -102,11 +103,11 @@ class FavoritesService
                         ]);
                     }
                 }
-                
+
                 $device->chartColor = $color;
                 $device->chartData = $chartData;
             }
-            
+
             // Camcorder data
             if ($device->data->app_control == 6) {
                 if ($cam = CamcorderHost::find($device->data->host_id)) {
@@ -118,7 +119,7 @@ class FavoritesService
                 }
             }
         }
-        
+
         return $result;
     }
 }

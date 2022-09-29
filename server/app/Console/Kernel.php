@@ -3,7 +3,7 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Laravel\Lumen\Console\Kernel as ConsoleKernel; 
+use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 use App\Library\DaemonManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -28,12 +28,12 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
-        // Checking background processes. 
+        // Checking background processes.
         // If process stopped - to start.
         $schedule->call(function (DaemonManager $daemonManager) {
             foreach(\App\Models\Property::runningDaemons() as $daemon) {
@@ -46,12 +46,12 @@ class Kernel extends ConsoleKernel
                 }
             }
         })->everyMinute();
-        
+
         // Reading "web_logs_mem"
         $schedule->call(function (DaemonManager $daemonManager) {
             foreach ($daemonManager->daemons() as $daemon) {
                 $rows = DB::select('select id
-                                      from web_logs_mem 
+                                      from web_logs_mem
                                      where daemon = "'.$daemon.'"
                                     order by id desc
                                     limit '.config("settings.admin_daemons_log_lines_count"));
@@ -61,7 +61,7 @@ class Kernel extends ConsoleKernel
                 }
             }
         })->everyMinute();
-        
+
         // Clearing "core_events_mem"
         $schedule->call(function () {
             $maxID = DB::select('select max(m.id) mId from core_events_mem m')[0]->mId;
@@ -70,12 +70,12 @@ class Kernel extends ConsoleKernel
                 DB::delete('delete from core_events_mem m where m.id < '.$maxID);
             }
         })->everyFiveMinutes();
-        
+
         // Clearing "core_execute"
         $schedule->call(function () {
             DB::delete('delete from core_execute
-                         where id < (select a.maxID 
-                                       from (select (IFNULL(MAX(id), 0) - 100) maxID 
+                         where id < (select a.maxID
+                                       from (select (IFNULL(MAX(id), 0) - 100) maxID
                                                from core_execute) a)');
         })->dailyAt('4:00');
     }

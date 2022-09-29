@@ -18,29 +18,29 @@ class DevicesController extends Controller
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     private $_service;
-    
+
     /**
-     * 
+     *
      * @param DevicesService $service
      */
-    public function __construct(DevicesService $service) 
+    public function __construct(DevicesService $service)
     {
         $this->_service = $service;
     }
-    
+
     /**
      * This is an index route for displaying devices a list of the hub.
      * If the hub id does not exist, redirect to the owner route.
-     * 
+     *
      * @param int $hubID
      * @param type $groupID
      * @return type
      */
-    public function index(int $hubID = null, $groupID = null) 
-    {                
+    public function index(int $hubID = null, $groupID = null)
+    {
         // Last view id  --------------------------
         if (!$hubID) {
             $hubID = Property::getLastViewID('HUB');
@@ -50,28 +50,28 @@ class DevicesController extends Controller
                 $hubID = null;
             }
         }
-        
+
         if (!$hubID) {
             $item = Hub::orderBy('name', 'asc')->first();
             if ($item) {
                 return redirect(route('admin.hub-devices', ['hubID' => $item->id]));
             }
         }
-        
+
         if (!Hub::find($hubID)) {
             Property::setLastViewID('HUB', null);
             return redirect(route('admin.hubs'));
         }
-        
+
         Property::setLastViewID('HUB', $hubID);
         Property::setLastViewID('HUB_PAGE', 'devices');
         // ----------------------------------------
-        
-        
+
+
         $groupID = $this->_service->prepareRoomFilter($groupID);
 
         $data = Device::devicesList($hubID, $groupID);
-        
+
         return view('admin.hubs.devices.devices', [
             'hubID' => $hubID,
             'page' => 'devices',
@@ -79,15 +79,15 @@ class DevicesController extends Controller
             'groupID' => $groupID,
         ]);
     }
-    
+
     /**
      * Route to create or update device properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return type
      */
-    public function editShow(int $hubID, int $id) 
+    public function editShow(int $hubID, int $id)
     {
         $item = Device::findOrCreate($id, $hubID);
         $groupPath = Room::getPath($item->room_id, ' / ');
@@ -98,37 +98,37 @@ class DevicesController extends Controller
             'appControls' => config('devices.app_controls'),
         ]);
     }
-    
+
     /**
      * Route to create or update device properties.
-     * 
+     *
      * @param int $hubID
      * @param int $id
      * @return string
      */
-    public function editPost(Request $request, int $hubID, int $id) 
+    public function editPost(Request $request, int $hubID, int $id)
     {
         return Device::storeFromRequest($request, $hubID, $id);
     }
-    
+
     /**
      * Route to delete the device by id.
-     * 
+     *
      * @param int $id
      * @return string
      */
-    public function delete(int $id) 
+    public function delete(int $id)
     {
         return Device::deleteById($id);
     }
-    
+
     /**
      * Route for requesting a list of hubs by host id.
-     * 
+     *
      * @param int $hubID
      * @return type
      */
-    public function hostList(int $hubID) 
+    public function hostList(int $hubID)
     {
         $hub = Hub::find($hubID);
         $data = [];
@@ -170,18 +170,18 @@ class DevicesController extends Controller
                 }
                 break;
         }
-        
+
         return response()->json($data);
     }
-    
+
     /**
      * Route for requesting a list of host channels by id.
-     * 
+     *
      * @param string $typ [din, ow, extapi, variable]
      * @param int $hostID
      * @return type
      */
-    public function hostChannelList(string $typ, int $hostID = null) 
+    public function hostChannelList(string $typ, int $hostID = null)
     {
         $data = [];
         switch ($typ) {
@@ -217,7 +217,7 @@ class DevicesController extends Controller
                 }
                 break;
         }
-        
+
         return response()->json($data);
     }
 }

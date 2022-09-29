@@ -12,27 +12,27 @@ class DaemonsController extends Controller
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     private $_service;
-    
+
     /**
-     * 
+     *
      * @param DaemonsService $service
      */
-    public function __construct(DaemonsService $service) 
+    public function __construct(DaemonsService $service)
     {
         $this->_service = $service;
     }
-    
+
     /**
      * Index route to display a list of daemons.
-     * 
+     *
      * @param string $id
      * @return type
      */
-    public function index(DaemonManager $daemonManager, string $id = null) 
-    {        
+    public function index(DaemonManager $daemonManager, string $id = null)
+    {
         // Last view id  --------------------------
         if (!$id) {
             $id = Property::getLastViewID('DAEMON');
@@ -41,16 +41,16 @@ class DaemonsController extends Controller
             }
             $id = null;
         }
-        
+
         if (!$id) {
             $id = $daemonManager->daemons()[0];
             return redirect(route('admin.jurnal-daemons', ['id' => $id]));
         }
-        
+
         Property::setLastViewID('DAEMON', $id);
         Property::setLastViewID('JURNAL_PAGE', 'daemons');
         // ----------------------------------------
-        
+
         return view('admin.jurnal.daemons.daemons', [
             'id' => $id,
             'stat' => $this->_service->isStarted($id),
@@ -60,12 +60,12 @@ class DaemonsController extends Controller
 
     /**
      * This route returns the output of the daemons.
-     * 
+     *
      * @param string $id
      * @param int $lastID
      * @return string
      */
-    public function data(string $id, int $lastID = -1) 
+    public function data(string $id, int $lastID = -1)
     {
         $data = WebLogMem::getDaemonDataFromID($id, $lastID);
 
@@ -76,46 +76,46 @@ class DaemonsController extends Controller
 
     /**
      * This route starts the daemon by id.
-     * 
+     *
      * @param string $id
      * @return string
      */
     public function daemonStart(string $id)
     {
         $this->_service->daemonStart($id);
-        
+
         return 'OK';
     }
 
     /**
      * This route stops the daemon by id.
-     * 
+     *
      * @param string $id
      * @return string
      */
     public function daemonStop(string $id)
     {
         $this->_service->daemonStop($id);
-        
+
         return 'OK';
     }
 
     /**
      * This route restarts the daemon by id.
-     * 
+     *
      * @param string $id
      * @return string
      */
     public function daemonRestart(string $id)
     {
         $this->_service->daemonRestart($id);
-        
+
         return 'OK';
     }
-    
+
     /**
      * This route is for starting all daemons.
-     * 
+     *
      * @return string
      */
     public function daemonStartAll()
@@ -125,13 +125,13 @@ class DaemonsController extends Controller
                 $this->_service->daemonStart($daemon->id);
             }
         }
-        
+
         return 'OK';
     }
-    
+
     /**
      * This route is for stoping all daemons.
-     * 
+     *
      * @return string
      */
     public function daemonStopAll()
@@ -141,13 +141,13 @@ class DaemonsController extends Controller
                 $this->_service->daemonStop($daemon->id);
             }
         }
-        
+
         return 'OK';
     }
-    
+
     /**
      * This route is for getting state of daemons.
-     * 
+     *
      * @return type
      */
     public function daemonsState()

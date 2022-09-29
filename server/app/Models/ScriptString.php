@@ -8,24 +8,21 @@ class ScriptString extends Model
 {
     protected $table = 'core_script_strings';
     public $timestamps = false;
-    
+
     /**
-     * 
-     * @param type $data
-     * @return type
+     * @param string $data
+     * @return int
      */
-    static public function setData($data)
+    public static function setData(string $data): int
     {
-        //$data = trim($data);
-        
         $item = self::whereData($data)->first();
-        
+
         if (!$item) {
             $item = new ScriptString();
             $item->data = $data;
             $item->save();
         }
-        
+
         return $item->id;
     }
 }

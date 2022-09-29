@@ -13,12 +13,12 @@ use DB;
  *
  * @author soliton
  */
-class ScheduleDaemon extends BaseDaemon 
+class ScheduleDaemon extends BaseDaemon
 {
     /**
-     * 
+     * @return void
      */
-    public function execute() 
+    public function execute(): void
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         DB::update('update core_schedule set action_datetime = null');

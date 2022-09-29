@@ -8,12 +8,12 @@ class Execute extends Model
 {
     protected $table = 'core_execute';
     public $timestamps = false;
-    
+
     /**
-     * 
      * @param string $command
+     * @return void
      */
-    static public function command(string $command) 
+    public static function command(string $command): void
     {
         $item = new Execute();
         $item->command = $command;

@@ -6,7 +6,7 @@ use App\Events\AddedEventMem;
 use App\Models\EventMem;
 use App\Models\Property;
 
-class AddedEventMemListener 
+class AddedEventMemListener
 {
     /**
      * Create the event listener.
@@ -21,18 +21,18 @@ class AddedEventMemListener
     /**
      * Handle the event.
      *
-     * @param  \App\Events\ExampleEvent  $event
+     * @param AddedEventMem $event
      * @return void
      */
-    public function handle(AddedEventMem $event)
+    public function handle(AddedEventMem $event): void
     {
         $eventMem = $event->eventMem;
-        
+
         switch ($eventMem->typ) {
             case EventMem::PLAN_LIST_CHANGE:
                 break;
             case EventMem::HUB_LIST_CHANGE:
-                $this->_checkDaemonState($eventMem->getData()->typ);
+                $this->checkDaemonState($eventMem->getData()->typ);
                 break;
             case EventMem::HOST_LIST_CHANGE:
                 break;
@@ -42,12 +42,13 @@ class AddedEventMemListener
                 break;
         }
     }
-    
+
     /**
-     * 
-     * @param type $typ
+     * @param string $typ
+     * @return void
+     * @throws \Exception
      */
-    private function _checkDaemonState($typ)
+    private function checkDaemonState(string $typ): void
     {
         $cross = [
             'extapi' => 'extapi-daemon',
@@ -55,7 +56,7 @@ class AddedEventMemListener
             'din' => 'din-daemon',
             'camcorder' => 'camcorder-daemon',
         ];
-        
+
         if (isset($cross[$typ])) {
             $manager = new \App\Library\DaemonManager();
             if (!$manager->isStarted($cross[$typ])) {

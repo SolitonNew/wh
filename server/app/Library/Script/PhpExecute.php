@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Script;
 
 /**
@@ -13,7 +7,7 @@ namespace App\Library\Script;
  *
  * @author soliton
  */
-class PhpExecute 
+class PhpExecute
 {
     use PhpFunctions\FunctionGet,
         PhpFunctions\FunctionInfo,
@@ -28,59 +22,56 @@ class PhpExecute
         PhpFunctions\FunctionRound,
         PhpFunctions\FunctionCeil,
         PhpFunctions\FunctionFloor;
-    
+
     /**
-     *
-     * @var type 
+     * @var bool
      */
-    protected $_fake = false;
-            
+    protected bool $fake = false;
+
     /**
-     *
-     * @var type 
+     * @var Translate
      */
-    protected $_translator;
-    
+    protected Translate $translator;
+
     /**
-     * 
-     * @param type $source
+     * @param string $source
      */
-    public function __construct($source) 
+    public function __construct(string $source)
     {
-        $this->_translator = new TranslateDB($source);
+        $this->translator = new TranslateDB($source);
     }
-    
+
     /**
-     *
-     * @var type 
+     * @var array
      */
-    protected $_outLines = [];
-    
+    protected array $outLines = [];
+
     /**
-     * 
-     * @return type
+     * @param bool $fake
+     * @param array|null $report
+     * @return string
      */
-    public function run($fake = false, &$report = null) 
+    public function run(bool $fake = false, array &$report = null): string
     {
         try {
-            $this->_fake = $fake;
-            $code = $this->_translator->run(new Translators\Php(), $report);
+            $this->fake = $fake;
+            $code = $this->translator->run(new Translators\Php(), $report);
             eval($code);
         } catch (\ParseError $ex) {
             $this->printLine($ex->getMessage());
         } catch (\Throwable $ex) {
             $this->printLine($ex->getMessage());
         }
-        
-        return implode("\n", $this->_outLines);
+
+        return implode("\n", $this->outLines);
     }
-    
+
     /**
-     * 
-     * @param type $text
+     * @param string $text
+     * @return void
      */
-    public function printLine($text) 
+    public function printLine(string $text): void
     {
-        $this->_outLines[] = $text;
+        $this->outLines[] = $text;
     }
 }

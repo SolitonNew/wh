@@ -3,67 +3,63 @@
 namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 
 class ExtApiHost extends AffectsFirmwareModel
 {
     protected $table = 'core_extapi_hosts';
     public $timestamps = false;
-    
-    /**
-     * 
-     * @return type
-     */
+
     public function hub()
     {
         return $this->belongsTo(Hub::class, 'hub_id');
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return Relation
      */
-    public function devices()
+    public function devices(): Relation
     {
         return $this->hasMany(Device::class, 'host_id')
                     ->whereTyp('extapi')
                     ->orderBy('name', 'asc');
     }
-    
-    private $_driver = false;
-    
+
     /**
-     * 
-     * @return type
+     * @var object|bool
      */
-    public function driver()
+    private object|bool $driver = false;
+
+    /**
+     * @return object|bool
+     */
+    public function driver(): object|bool
     {
-        if ($this->_driver === false) {
+        if ($this->driver === false) {
             foreach (config('extapi.drivers') as $class) {
                 $instance = new $class();
                 if ($instance->name == $this->typ) {
                     $instance->assignKey($this->id);
                     $instance->assignData($this->data);
-                    $this->_driver = $instance;
+                    $this->driver = $instance;
                     break;
                 }
             }
         }
-        
-        return $this->_driver;        
+        return $this->driver;
     }
-    
+
     /**
-     *
-     * @var type 
+     * @var object|null
      */
-    public $type = null;
-    
+    public object|null $type = null;
+
     /**
-     * 
-     * @return type
+     * @return object|null
      */
-    public function type()
+    public function type(): object|null
     {
         if ($this->type === null) {
             if ($this->driver()) {
@@ -85,31 +81,27 @@ class ExtApiHost extends AffectsFirmwareModel
                     'updated_at' => false,
                 ];
             }
-            
+
             $this->type = (object)$type;
         }
-        
         return $this->type;
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return array
      */
-    public function channelsOfType()
+    public function channelsOfType(): array
     {
         if ($this->type()) {
             return $this->type()->channels;
         }
-        
         return [];
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return array
      */
-    public function typeList()
+    public function typeList(): array
     {
         $result = [];
         foreach (config('extapi.drivers') as $class) {
@@ -117,59 +109,57 @@ class ExtApiHost extends AffectsFirmwareModel
         }
         return $result;
     }
-    
+
     /**
-     * 
      * @param int $hubID
-     * @return type
+     * @return Collection
      */
-    static public function listForIndex(int $hubID)
+    public static function listForIndex(int $hubID): Collection
     {
         return self::whereHubId($hubID)
             ->orderBy('name', 'asc')
             ->get();
     }
-    
+
     /**
-     * 
      * @param int $hubID
      * @param int $id
-     * @return \App\Models\ExtApiHost
+     * @return ExtApiHost
      */
-    static public function findOrCreate(int $hubID, int $id)
+    public static function findOrCreate(int $hubID, int $id): ExtApiHost
     {
         $item = self::whereHubId($hubID)
             ->whereId($id)
             ->first();
+
         if (!$item) {
             $item = new ExtApiHost();
             $item->id = $id;
             $item->hub_id = $hubID;
         }
-        
+
         return $item;
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $hubID
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function storeFromRequest(Request $request, int $hubID, int $id)
+    public static function storeFromRequest(Request $request, int $hubID, int $id)
     {
         // Validation  ----------------------
         $rules = [
             'typ' => ($id == -1) ? 'required' : 'nullable',
         ];
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
-        
         try {
             $item = self::find($id);
             if (!$item) {
@@ -178,7 +168,7 @@ class ExtApiHost extends AffectsFirmwareModel
                 $item->name = 'ExtApi Host';
                 $item->typ = $request->typ;
             }
-            
+
             // Store properties data
             $propertiesData = [];
             $properties = $item->type()->properties;
@@ -188,16 +178,16 @@ class ExtApiHost extends AffectsFirmwareModel
             }
             $item->data = json_encode($propertiesData);
             // ---------------------
-            
+
             $item->save();
-            
+
             // Store event
             EventMem::addEvent(EventMem::HOST_LIST_CHANGE, [
                 'id' => $item->id,
                 'hubID' => $item->hub_id,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -205,30 +195,30 @@ class ExtApiHost extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function deleteById(int $id)
-    {        
+    public static function deleteById(int $id)
+    {
         try {
             // Clear relations
             foreach (Device::whereTyp('extapi')->whereHostId($id)->get() as $device) {
                 Device::deleteById($device->id);
             }
             // ------------------------
-            
+
             $item = self::find($id);
             $item->delete();
-            
+
             // Store event
             EventMem::addEvent(EventMem::HOST_LIST_CHANGE, [
                 'id' => $item->id,
                 'hubID' => $item->hub_id,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -236,12 +226,12 @@ class ExtApiHost extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $hubID
+     * @return string
      */
-    static public function deleteByHubId(int $hubID)
+    public static function deleteByHubId(int $hubID): string
     {
         $result = 'OK';
         foreach (self::whereHubId($hubID)->get() as $host) {
@@ -249,5 +239,6 @@ class ExtApiHost extends AffectsFirmwareModel
                 $result = 'With Errors';
             }
         }
+        return $result;
     }
 }

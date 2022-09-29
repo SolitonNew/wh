@@ -5,22 +5,21 @@ namespace App\Services\Admin;
 use App\Models\Room;
 use App\Models\Property;
 
-class SettingsService 
+class SettingsService
 {
     /**
-     * 
-     * @return string
+     * @return string[]
      */
-    public function levels()
+    public function levels(): array
     {
         $levels = [
             1 => '',
             2 => '',
             3 => '',
         ];
-        
+
         $parts = Room::generateTree();
-        
+
         for ($i = 0; $i < 3; $i++) {
             for ($k = count($parts) - 1; $k >= 0; $k--) {
                 if ($parts[$k]->level === $i) {
@@ -29,24 +28,23 @@ class SettingsService
                 }
             }
         }
-        
+
         return $levels;
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return int
      */
-    public function getCurrentLevel()
+    public function getCurrentLevel(): int
     {
         return Property::getPlanMaxLevel();
     }
-    
+
     /**
-     * 
-     * @param type $level
+     * @param int $level
+     * @return void
      */
-    public function setCurrentLevel($level)
+    public function setCurrentLevel(int $level): void
     {
         try {
             Property::setPlanMaxLevel($level);
