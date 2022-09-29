@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Script;
 
 use App\Library\Script\PhpExecute;
@@ -17,52 +11,52 @@ use Illuminate\Support\Facades\Lang;
  *
  * @author soliton
  */
-class ScriptEditor 
+class ScriptEditor
 {
     /**
      * Creating lists: keywords, functions, strings
-     * 
-     * @return type
+     *
+     * @return object
      */
-    static public function makeKeywords() 
+    public static function makeKeywords(): object
     {
         // Referring to the translator for keyword lists
         $translate = new \App\Library\Script\Translate('');
-        
-        $keywords = [];        
-        foreach($translate->getKeywords() as $key) {
+
+        $keywords = [];
+        foreach ($translate->getKeywords() as $key) {
             $keywords[$key] = 'keyword';
         }
-        
+
         $functions = [];
         foreach ($translate->getFunctions() as $key => $val) {
             $functions[$key] = $val['helper'];
         }
-        
+
         $strings = [];
         foreach (Device::orderBy('name', 'asc')->get() as $row) {
             $strings[$row->name] = $row->comm.' '.config('devices.app_controls.'.$row->app_control)['title'];
         }
-        
+
         return (object)[
             'keywords' => $keywords,
             'functions' => $functions,
             'strings' => $strings,
         ];
     }
-    
+
     /**
-     * 
+     *
      * @param string $command
-     * @return type
+     * @return string
      */
-    static public function scriptTest(string $command)
+    public static function scriptTest(string $command): string
     {
         try {
             $execute = new PhpExecute($command);
             $report = [];
             $res = $execute->run(true, $report);
-            
+
             $log = [];
             $log[] = 'Testing completed successfully';
             $log[] = str_repeat('-', 40);
@@ -76,7 +70,7 @@ class ScriptEditor
                 $log[] = str_repeat('-', 40);
                 $log[] = $res;
             }
-            
+
             return implode("\n", $log);
         } catch (\Exception $ex) {
             return $ex->getMessage();

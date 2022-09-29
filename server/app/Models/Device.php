@@ -3,16 +3,20 @@
 namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 class Device extends AffectsFirmwareModel
-{    
+{
     protected $table = 'core_devices';
     public $timestamps = false;
-    
-    protected $_affectFirmwareFields = [
+
+    /**
+     * @var array|string[]
+     */
+    protected array $affectFirmwareFields = [
         'hub_id',
         'typ',
         'host_id',
@@ -20,29 +24,25 @@ class Device extends AffectsFirmwareModel
         'name',
         'channel',
     ];
-    
-    /**
-     * 
-     * @return type
-     */
+
     public function room()
     {
         return $this->belongsTo(Room::class, 'room_id');
     }
-    
+
     public function events()
     {
         return $this->belongsToMany(Script::class, DeviceEvent::class, 'device_id', 'script_id');
     }
-    
+
     /**
      * Makes all the necessary attributes to create a device label.
-     * 
-     * @param type $app_control
+     *
+     * @param int $app_control
      * @return object
      */
-    static public function decodeAppControl($app_control) 
-    {        
+    public static function decodeAppControl(int $app_control): object
+    {
         $info = config('devices.app_controls.'.$app_control);
 
         return (object)[
@@ -54,12 +54,11 @@ class Device extends AffectsFirmwareModel
             'varStep' => $info['step']
         ];
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return array
      */
-    static public function getVisibleAppControlList()
+    public static function getVisibleAppControlList(): array
     {
         $result = [];
         foreach (config('devices.app_controls') as $key => $item) {
@@ -67,35 +66,33 @@ class Device extends AffectsFirmwareModel
                 $result[] = $key;
             }
         }
-        
         return $result;
     }
-    
+
     /**
-     * 
-     * 
-     * @param type $groupName
-     * @param type $variableName
-     * @param type $appControlLabel
+     * @param string $groupName
+     * @param string $variableName
+     * @param string $appControlLabel
      * @return string
      */
-    static public function roomDeviceName($groupName, $variableName, $appControlLabel) 
+    public static function roomDeviceName(string $groupName, string $variableName, string $appControlLabel): string
     {
         $resLabel = '';
         if ($appControlLabel != '') {
             $resLabel = $appControlLabel.' ';
-        }    
+        }
         return $resLabel.mb_strtoupper(str_replace($groupName, '', $variableName));
     }
-    
+
     /**
      * Sets the device value using a stored procedure.
-     * 
+     *
      * @param int $deviceID
      * @param float $value
-     * @param type $fromID
+     * @param int $fromID
+     * @return void
      */
-    static public function setValue(int $deviceID, float $value, int $fromID = 0)
+    public static function setValue(int $deviceID, float $value, int $fromID = 0): void
     {
         try {
             DB::select("CALL CORE_SET_DEVICE($deviceID, $value, $fromID)");
@@ -103,8 +100,13 @@ class Device extends AffectsFirmwareModel
             Log::error($e);
         }
     }
-    
-    static public function devicesList(int $hubID, $roomID)
+
+    /**
+     * @param int $hubID
+     * @param string|null $roomID
+     * @return Collection
+     */
+    public static function devicesList(int $hubID, string|null $roomID): Collection
     {
         switch ($roomID) {
             case 'none':
@@ -147,14 +149,13 @@ class Device extends AffectsFirmwareModel
                             ->get();
         }
     }
-    
+
     /**
-     * 
      * @param int $id
      * @param int $hubId
-     * @return \App\Models\Device
+     * @return Device
      */
-    static public function findOrCreate(int $id, int $hubId = -1)
+    public static function findOrCreate(int $id, int $hubId = -1): Device
     {
         $item = Device::find($id);
         if (!$item) {
@@ -163,17 +164,17 @@ class Device extends AffectsFirmwareModel
             $item->hub_id = $hubId;
             $item->position = '';
         }
-        
+
         return $item;
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $hubId
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function storeFromRequest(Request $request, int $hubId, int $id)
+    public static function storeFromRequest(Request $request, int $hubId, int $id)
     {
         // Validation  ----------------------
         $rules = [
@@ -183,19 +184,19 @@ class Device extends AffectsFirmwareModel
             'host_id' => ($request->typ === 'ow' ? 'required|numeric' : ''),
             'value' => 'nullable|numeric',
         ];
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
         try {
             $item = Device::find($id);
             if (!$item) {
                 $item = new Device();
             }
-            
+
             $item->hub_id = $request->hub_id;
             $item->typ = $request->typ;
             $item->host_id = in_array($request->typ, ['ow', 'extapi', 'i2c', 'camcorder']) ? $request->host_id : null;
@@ -204,18 +205,18 @@ class Device extends AffectsFirmwareModel
             $item->channel = $request->channel ?? 0;
             $item->app_control = $request->app_control;
             $item->save();
-            
+
             if (strlen($request->value)) {
                 Device::setValue($item->id, $request->value);
             }
-            
+
             // Store event
             EventMem::addEvent(EventMem::DEVICE_LIST_CHANGE, [
                 'id' => $item->id,
                 'hubID' => $item->hub_id,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -223,12 +224,12 @@ class Device extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function deleteById(int $id)
+    public static function deleteById(int $id)
     {
         try {
             $item = Device::find($id);
@@ -239,9 +240,9 @@ class Device extends AffectsFirmwareModel
             EventMem::whereDeviceId($id)->delete();
             DeviceEvent::whereDeviceId($id)->delete();
             // ----------------------
-            
+
             $item->delete();
-            
+
             // Store event
             EventMem::addEvent(EventMem::DEVICE_LIST_CHANGE, [
                 'id' => $item->id,
@@ -255,35 +256,33 @@ class Device extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     * 
-     * @param type $defaults
-     * @return type
+     * @param object|null $defaults
+     * @return object|null
      */
-    public function getPosition($defaults = null)
+    public function getPosition(object|null $defaults = null): object|null
     {
         $position = $this->position ? json_decode($this->position) : (object)[];
-        
+
         if (!isset($position->surface)) $position->surface = ($defaults && isset($defaults->surface)) ? $defaults->surface : 'top';
         if (!isset($position->offset)) $position->offset = ($defaults && isset($defaults->offset)) ? $defaults->offset : 0;
         if (!isset($position->cross)) $position->cross = ($defaults && isset($defaults->cross)) ? $defaults->cross : 0;
-        
+
         return $position;
     }
-    
+
     /**
-     * 
      * @param int $deviceID
      * @param int $afterHours
-     * @return int
+     * @return float
      */
-    static public function getValue(int $deviceID, int $afterHours = 0)
+    public static function getValue(int $deviceID, int $afterHours = 0): float
     {
         $device = self::find($deviceID);
-        
+
         if (!$device) return 0;
-        
+
         // Return valur for now
         if ($afterHours == 0) {
             return $device->value;
@@ -292,33 +291,31 @@ class Device extends AffectsFirmwareModel
         if ($device->typ != 'extapi') return 0;
 
         $host = ExtApiHost::find($device->host_id);
-        
+
         if (!$host) return 0;
-        
+
         $driver = $host->driver();
-        
+
         if (!$driver) return 0;
-        
+
         return $driver->getForecastValue($device->channel, $afterHours);
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return Collection
      */
-    static public function getForecastSortList()
+    public static function getForecastSortList(): Collection
     {
         return self::whereTyp('extapi')
             ->orderBy('name')
             ->get();
     }
-    
+
     /**
-     * 
      * @param array $app_control
-     * @return type
+     * @return Collection
      */
-    static public function getDeviceListByAppControl(array $app_control)
+    public static function getDeviceListByAppControl(array $app_control): Collection
     {
         return self::with('room')
             ->whereIn('app_control', $app_control)

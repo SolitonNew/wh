@@ -7,6 +7,7 @@ use App\Models\Property;
 use App\Models\Hub;
 use App\Models\Device;
 use App\Models\EventMem;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Library\Script\PhpExecute;
 
@@ -16,147 +17,144 @@ use App\Library\Script\PhpExecute;
  * @author soliton
  */
 class BaseDaemon
-{    
+{
     /**
      * Signature (id) of the daemon
-     * @var type 
+     * @var string
      */
-    protected $_signature = '';
-    
-    public function __construct($signature) 
+    protected string $signature = '';
+
+    public function __construct($signature)
     {
-        $this->_signature = $signature;
+        $this->signature = $signature;
     }
-    
+
     /**
-     *
-     * @var type 
+     * @var Collection|array
      */
-    protected $_hubs = [];
-    
+    protected Collection|array $hubs = [];
+
     /**
-     *
-     * @var type 
+     * @var Collection|array
      */
-    protected $_hubIds = [];
-    
+    protected Collection|array $hubIds = [];
+
     /**
-     *
-     * @var type 
+     * @var Collection|array
      */
-    protected $_devices = [];
-    
+    protected Collection|array $devices = [];
+
     /**
-     *
-     * @var type 
+     * @var int
      */
-    private $_lastEventID = -1;
-    
+    private int $lastEventID = -1;
+
     /**
-     *
-     * @var type 
+     * @var string|bool
      */
-    private $_daemonHubTyp = false;
-    
+    private string|bool $daemonHubTyp = false;
+
     /**
-     * 
-     * @param type $typ
-     * @return type
+     * @param string $typ
+     * @return bool
      */
-    protected function initialization($typ = '')
+    protected function initialization(string $typ = ''): bool
     {
-        $this->_daemonHubTyp = $typ;
-        
+        $this->daemonHubTyp = $typ;
+
         if (!$this->initializationHubs()) return false;
         $this->initializationHosts();
         $this->initializationDevices();
-        
-        $this->_lastEventID = EventMem::max('id') ?? -1;
-        
+
+        $this->lastEventID = EventMem::max('id') ?? -1;
+
         return true;
     }
-    
+
     /**
-     * 
-     * @return boolean
+     *
+     * @return bool
      */
-    protected function initializationHubs()
+    protected function initializationHubs(): bool
     {
-        if ($this->_daemonHubTyp === '') return true;
-        
-        $this->_hubs = Hub::where('id', '>', 0)
-            ->whereTyp($this->_daemonHubTyp)
+        if ($this->daemonHubTyp === '') return true;
+
+        $this->hubs = Hub::where('id', '>', 0)
+            ->whereTyp($this->daemonHubTyp)
             ->orderBy('rom', 'asc')
             ->get();
-        
-        if (count($this->_hubs) == 0) {
+
+        if (count($this->hubs) == 0) {
             $this->printLine("[".parse_datetime(now())."] WARNING! Hubs not found. The demon stopped.");
             $this->disableAutorun();
             return false;
         }
-        
-        $this->_hubIds = $this->_hubs
+
+        $this->hubIds = $this->hubs
             ->pluck('id')
             ->toArray();
-        
+
         return true;
     }
-    
-    protected function initializationHosts()
+
+    /**
+     * @return void
+     */
+    protected function initializationHosts(): void
     {
         //
     }
-    
+
     /**
-     * 
+     * @return void
      */
-    protected function initializationDevices()
+    protected function initializationDevices(): void
     {
-        $this->_devices = Device::orderBy('id')
+        $this->devices = Device::orderBy('id')
             ->get();
     }
-    
+
     /**
      * The launch of this method is automated.
-     * Each inheritor of this class must override it and place it inside 
+     * Each inheritor of this class must override it and place it inside
      * the code that the daemon should execute.
      */
-    public function execute() 
+    public function execute(): void
     {
         while (1) {
             if (!$this->checkEvents()) break;
-            
+
             usleep(200000);
         }
     }
-    
+
     /**
      * Must be called in the main daemon loop
-     * 
-     * @param type $withScripts
-     * @param type $noCheckValue
-     * @return boolean
+     *
+     * @param bool $withScripts
+     * @param bool $noCheckValue
+     * @return bool
      */
-    protected function checkEvents($withScripts = true, $noCheckValue = false)
+    protected function checkEvents(bool $withScripts = true, bool $noCheckValue = false): bool
     {
-        $changes = EventMem::where('id', '>', $this->_lastEventID)
+        $changes = EventMem::where('id', '>', $this->lastEventID)
                     ->orderBy('id', 'asc')
                     ->get();
-        
+
         foreach ($changes as $change) {
-            $this->_lastEventID = $change->id;
+            $this->lastEventID = $change->id;
             if ($change->typ == EventMem::DEVICE_CHANGE_VALUE) {
-                foreach ($this->_devices as $device) {
+                foreach ($this->devices as $device) {
                     if ($device->id == $change->device_id) {
                         if ($noCheckValue || $device->value != $change->value) {
                             // Store new device value
                             $device->value = $change->value;
                             $device->valueFromID = $change->from_id;
                             $device->lastDeviceChangesID = $change->device_changes_id;
-                            
+
                             // Call change value handler
                             $this->deviceChangeValue($device);
-                            
+
                             // Run event script if it's attached
                             if ($withScripts) {
                                 $this->executeEvents($device);
@@ -177,77 +175,75 @@ class BaseDaemon
                         $this->initializationDevices();
                         break;
                 }
-            }            
+            }
         }
-        
+
         return true;
     }
-    
+
     /**
-     * 
-     * @param type $device
-     * @return type
+     * @param Device $device
      */
-    protected function executeEvents(&$device)
+    protected function executeEvents(Device &$device): void
     {
-        if (!in_array($device->hub_id, $this->_hubIds)) return;
-        
+        if (!in_array($device->hub_id, $this->hubIds)) return;
+
         $sql = "select s.comm, s.data
                   from core_device_events de, core_scripts s
                  where de.device_id = ".$device->id."
                    and de.script_id = s.id";
-        
+
         foreach (DB::select($sql) as $script) {
             try {
                 $execute = new PhpExecute($script->data);
                 $execute->run();
                 $s = "[".parse_datetime(now())."] RUN SCRIPT '".$script->comm."' \n";
-                $this->printLine($s); 
+                $this->printLine($s);
             } catch (\Exception $ex) {
                 $s = "[".parse_datetime(now())."] ERROR\n";
                 $s .= $ex->getMessage();
-                $this->printLine($s); 
+                $this->printLine($s);
             }
         }
     }
-    
+
     /**
      * Can be overloaded to track device value changes.
-     * 
-     * @param type $device
+     *
+     * @param Device $device
      */
-    protected function deviceChangeValue($device)
+    protected function deviceChangeValue(Device $device): void
     {
         // For inheriting
     }
 
     /**
      * This method of adding a log entry into DB.
-     * 
-     * @param type $text
+     *
+     * @param string $text
      */
-    public function printLine($text) 
+    public function printLine($text): void
     {
         try {
             $item = new WebLogMem();
-            $item->daemon = $this->_signature;
+            $item->daemon = $this->signature;
             $item->data = $text;
             $item->save();
-            
+
             echo "$text\n";
         } catch (\Exception $ex) {
             echo $ex->getMessage()."\n";
         }
     }
-    
+
     /**
-     * 
-     * @param type $text
+     *
+     * @param string $text
      */
-    public function printLineToLast($text)
+    public function printLineToLast($text): void
     {
         try {
-            $item = WebLogMem::whereDaemon($this->_signature)
+            $item = WebLogMem::whereDaemon($this->signature)
                 ->orderBy('id', 'desc')
                 ->first();
             if ($item) {
@@ -258,12 +254,12 @@ class BaseDaemon
             echo $ex->getMessage()."\n";
         }
     }
-    
+
     /**
-     * 
-     * @param type $percent
+     *
+     * @param int $percent
      */
-    public function printProgress(int $percent = 0)
+    public function printProgress(int $percent = 0): void
     {
         if ($percent == 0) {
             $this->printLine('PROGRESS:0');
@@ -271,12 +267,12 @@ class BaseDaemon
             $this->printLineToLast('PROGRESS:'.$percent);
         }
     }
-    
+
     /**
      * Disabling autorun of this daemon
      */
-    public function disableAutorun()
+    public function disableAutorun(): void
     {
-        Property::setAsStoppedDaemon($this->_signature);
+        Property::setAsStoppedDaemon($this->signature);
     }
 }

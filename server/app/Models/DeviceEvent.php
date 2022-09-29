@@ -5,17 +5,16 @@ namespace App\Models;
 use \Illuminate\Database\Eloquent\Model;
 
 class DeviceEvent extends Model
-{   
+{
     protected $table = 'core_device_events';
     public $timestamps = false;
-    
-    
+
     /**
-     * 
      * @param int $scriptID
      * @param array $deviceIDs
+     * @return void
      */
-    static public function createFromIds(int $scriptID, array $deviceIDs)
+    public static function createFromIds(int $scriptID, array $deviceIDs): void
     {
         foreach ($deviceIDs as $id) {
             $item = new DeviceEvent();

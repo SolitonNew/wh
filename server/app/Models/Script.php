@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Models\DeviceEvent;
 use App\Events\FirmwareChangedEvent;
@@ -10,22 +11,24 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class Script extends AffectsFirmwareModel
-{    
+{
     protected $table = 'core_scripts';
     public $timestamps = false;
-    
-    protected $_affectFirmwareFields = [
+
+    /**
+     * @var array|string[]
+     */
+    protected array $affectFirmwareFields = [
         'data',
     ];
-    
+
     /**
-     * 
-     * @return type
+     * @return array
      */
-    static public function listAll()
+    public static function listAll(): array
     {
-        $sql = "select s.*, 
-                       (select count(*) 
+        $sql = "select s.*,
+                       (select count(*)
                           from core_devices v, core_device_events e
                          where v.id = e.device_id
                            and e.script_id = s.id) var_count
@@ -33,13 +36,12 @@ class Script extends AffectsFirmwareModel
                 order by s.comm asc";
         return DB::select($sql);
     }
-    
+
     /**
-     * 
      * @param int $id
-     * @return \App\Models\Script
+     * @return Script
      */
-    static public function findOrCreate(int $id)
+    public static function findOrCreate(int $id): Script
     {
         $item = Script::find($id);
         if (!$item) {
@@ -47,35 +49,34 @@ class Script extends AffectsFirmwareModel
             $item->id = -1;
             $item->data = '/* NEW SCRIPT */';
         }
-        
+
         return $item;
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $id
-     * @return string
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function storeFromRequest(Request $request, int $id)
+    public static function storeFromRequest(Request $request, int $id)
     {
         // Validation  ----------------------
         $rules = [
             'comm' => 'required|string|unique:core_scripts,comm,'.($id > 0 ? $id : ''),
         ];
-        
+
         $templates = require base_path('app/Library/ScriptTemplates.php');
         if (isset($templates[$request->template])) {
             foreach ($templates[$request->template]['params'] as $key => $val) {
                 $rules['param_'.$key] = 'required';
             }
         }
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
         try {
             $item = Script::find($id);
@@ -85,19 +86,19 @@ class Script extends AffectsFirmwareModel
             }
             $item->comm = $request->comm;
             $item->save();
-            
+
             // -------------------------------
             if ($request->attachDevices) {
                 DeviceEvent::createFromIds($item->id, explode(',', $request->attachDevices));
             }
             // -------------------------------
-            
+
             // Store event
             EventMem::addEvent(EventMem::SCRIPT_LIST_CHANGE, [
                 'id' => $item->id,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -105,24 +106,24 @@ class Script extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function deleteById(int $id)
+    public static function deleteById(int $id)
     {
-        try {            
+        try {
             DeviceEvent::whereScriptId($id)->delete();
             $item = Script::find($id);
             $item->delete();
-            
+
             // Store event
             EventMem::addEvent(EventMem::SCRIPT_LIST_CHANGE, [
                 'id' => $item->id,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -130,13 +131,13 @@ class Script extends AffectsFirmwareModel
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $id
+     * @return void
      */
-    static public function storeDataFromRequest(Request $request, int $id)
+    public static function storeDataFromRequest(Request $request, int $id): void
     {
         $item = Script::find($id);
         try {
@@ -148,31 +149,30 @@ class Script extends AffectsFirmwareModel
             ]), 422);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
      * @return array
      */
-    static public function attachedDevicesIds(int $id)
+    public static function attachedDevicesIds(int $id): array
     {
-        $sql = 'select device_id 
-                  from core_device_events 
+        $sql = 'select device_id
+                  from core_device_events
                  where script_id = '.$id;
-        
+
         $data = [];
-        foreach(DB::select($sql) as $row) {
+        foreach (DB::select($sql) as $row) {
             $data[] = $row->device_id;
         }
         return $data;
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $id
+     * @return void
      */
-    static public function attachDevicesFromRequest(Request $request, int $id)
+    public static function attachDevicesFromRequest(Request $request, int $id): void
     {
         try {
             $ids = $request->variables;
@@ -192,7 +192,7 @@ class Script extends AffectsFirmwareModel
                                         from core_device_events t
                                        where t.script_id = $id
                                          and t.device_id = v.id)";
-            foreach(DB::select($sql) as $row) {
+            foreach (DB::select($sql) as $row) {
                 $rec = new DeviceEvent();
                 $rec->event_type = 0;
                 $rec->device_id = $row->id;

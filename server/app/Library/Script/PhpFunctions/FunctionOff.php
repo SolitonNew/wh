@@ -1,20 +1,16 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Script\PhpFunctions;
 
-trait FunctionOff 
+trait FunctionOff
 {
     /**
-     * 
-     * @param type $name
+     * @param string $name
+     * @param int $time
+     * @return void
+     * @throws \Exception
      */
-    public function function_off($name, $time = 0) 
+    public function function_off(string $name, int $time = 0): void
     {
         $this->function_set($name, 0, $time);
     }

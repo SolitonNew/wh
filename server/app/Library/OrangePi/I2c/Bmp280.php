@@ -74,46 +74,46 @@ class Bmp280 extends I2c
     const BME280_CONTROL_MEAS_SET = (self::BME280_OVERS_T16 | self::BME280_OVERS_P16 | self::BME280_NORMAL_MODE);
     const BME280_CONTROL_HUM_SET  = self::BME280_OVERS_H2;
     const BME280_CONFIG_SET       = (self::BME280_TSB_0_5 | self::BME280_FILTER_COEFFICIENT16 | self::BME280_SPI_OFF);
-    
-    private $_digs = [];
-    
-    public function __construct($address = 0x76)
+
+    private array $digs = [];
+
+    public function __construct(int $address = 0x76)
     {
         parent::__construct($address);
         $this->init();
     }
-    
+
     /**
-     * 
+     * @return void
      */
-    protected function init()
+    protected function init(): void
     {
         // Read calibration values
-        $this->_digs['t1'] = $this->readWord(self::BME280_DIG_T1);      // Unsigned
-        $this->_digs['t2'] = $this->readWordSign(self::BME280_DIG_T2);
-        $this->_digs['t3'] = $this->readWordSign(self::BME280_DIG_T3);
-        $this->_digs['p1'] = $this->readWord(self::BME280_DIG_P1);      // Unsigned
-        $this->_digs['p2'] = $this->readWordSign(self::BME280_DIG_P2);
-        $this->_digs['p3'] = $this->readWordSign(self::BME280_DIG_P3);
-        $this->_digs['p4'] = $this->readWordSign(self::BME280_DIG_P4);
-        $this->_digs['p5'] = $this->readWordSign(self::BME280_DIG_P5);
-        $this->_digs['p6'] = $this->readWordSign(self::BME280_DIG_P6);
-        $this->_digs['p7'] = $this->readWordSign(self::BME280_DIG_P7);
-        $this->_digs['p8'] = $this->readWordSign(self::BME280_DIG_P8);
-        $this->_digs['p9'] = $this->readWordSign(self::BME280_DIG_P9);
+        $this->digs['t1'] = $this->readWord(self::BME280_DIG_T1);      // Unsigned
+        $this->digs['t2'] = $this->readWordSign(self::BME280_DIG_T2);
+        $this->digs['t3'] = $this->readWordSign(self::BME280_DIG_T3);
+        $this->digs['p1'] = $this->readWord(self::BME280_DIG_P1);      // Unsigned
+        $this->digs['p2'] = $this->readWordSign(self::BME280_DIG_P2);
+        $this->digs['p3'] = $this->readWordSign(self::BME280_DIG_P3);
+        $this->digs['p4'] = $this->readWordSign(self::BME280_DIG_P4);
+        $this->digs['p5'] = $this->readWordSign(self::BME280_DIG_P5);
+        $this->digs['p6'] = $this->readWordSign(self::BME280_DIG_P6);
+        $this->digs['p7'] = $this->readWordSign(self::BME280_DIG_P7);
+        $this->digs['p8'] = $this->readWordSign(self::BME280_DIG_P8);
+        $this->digs['p9'] = $this->readWordSign(self::BME280_DIG_P9);
 
-        $this->_digs['h1'] = $this->readByte(self::BME280_DIG_H1);	// unsigned char
-        $this->_digs['h2'] = $this->readWordSign(self::BME280_DIG_H2);
-        $this->_digs['h3'] = $this->readByte(self::BME280_DIG_H3);	// unsigned char
-        $this->_digs['h4'] = ($this->readByte(self::BME280_DIG_H4) << 24) >> 20;
-        $this->_digs['h4'] = $this->_digs['h4'] | $this->readByte(self::BME280_DIG_H4 + 1) & 0x0F;
+        $this->digs['h1'] = $this->readByte(self::BME280_DIG_H1);	// unsigned char
+        $this->digs['h2'] = $this->readWordSign(self::BME280_DIG_H2);
+        $this->digs['h3'] = $this->readByte(self::BME280_DIG_H3);	// unsigned char
+        $this->digs['h4'] = ($this->readByte(self::BME280_DIG_H4) << 24) >> 20;
+        $this->digs['h4'] = $this->digs['h4'] | $this->readByte(self::BME280_DIG_H4 + 1) & 0x0F;
 
-        $this->_digs['h5'] = ($this->readByte(self::BME280_DIG_H5 + 1) << 24) >> 20;
-        $this->_digs['h5'] = $this->_digs['h5'] | ($this->readByte(self::BME280_DIG_H5) >> 4) & 0x0F;
+        $this->digs['h5'] = ($this->readByte(self::BME280_DIG_H5 + 1) << 24) >> 20;
+        $this->digs['h5'] = $this->digs['h5'] | ($this->readByte(self::BME280_DIG_H5) >> 4) & 0x0F;
 
-        $this->_digs['h6'] = $this->readByte(self::BME280_DIG_H6);	# signed char
-        if ($this->_digs['h6'] > 127) {
-            $this->_digs['h6'] = 127 - $this->_digs['h6'];
+        $this->digs['h6'] = $this->readByte(self::BME280_DIG_H6);	# signed char
+        if ($this->digs['h6'] > 127) {
+            $this->digs['h6'] = 127 - $this->digs['h6'];
         }
 
         // Set Configuration
@@ -121,44 +121,43 @@ class Bmp280 extends I2c
         $this->writeByte(self::BME280_CONTROL_HUM, self::BME280_CONTROL_HUM_SET);
         $this->writeByte(self::BME280_CONTROL_MEAS, self::BME280_CONTROL_MEAS_SET);
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return array|null
      */
-    public function getData()
+    public function getData(): array|null
     {
         $adc_t = $this->readLong(self::BME280_TEMP);
         $adc_p = $this->readLong(self::BME280_PRESSURE);
 
-        $var1 = ($adc_t / 16384.0 - $this->_digs['t1'] / 1024.0) * $this->_digs['t2'];
-        $var2 = (($adc_t / 131072.0 - $this->_digs['t1'] / 8192.0) * ($adc_t / 131072.0 - $this->_digs['t1'] / 8192.0)) * $this->_digs['t3'];
+        $var1 = ($adc_t / 16384.0 - $this->digs['t1'] / 1024.0) * $this->digs['t2'];
+        $var2 = (($adc_t / 131072.0 - $this->digs['t1'] / 8192.0) * ($adc_t / 131072.0 - $this->digs['t1'] / 8192.0)) * $this->digs['t3'];
         $t_fine = ($var1 + $var2);
         $temperature = round(($t_fine / 5120.0) * 10) / 10;
-        
+
         if ($temperature < -40 || $temperature > 85) return null;
 
         $var1 = ($t_fine / 2.0) - 64000.0;
-        $var2 = $var1 * $var1 * $this->_digs['p6'] / 32768.0;
-        $var2 = $var2 + $var1 * $this->_digs['p5'] * 2.0;
-        $var2 = ($var2 / 4.0) + ($this->_digs['p4'] * 65536.0);
-        $var1 = ($this->_digs['p3'] * $var1 * $var1 / 524288.0 + $this->_digs['p2'] * $var1) / 524288.0;
-        $var1 = (1.0 + $var1 / 32768.0) * $this->_digs['p1'];
-        
+        $var2 = $var1 * $var1 * $this->digs['p6'] / 32768.0;
+        $var2 = $var2 + $var1 * $this->digs['p5'] * 2.0;
+        $var2 = ($var2 / 4.0) + ($this->digs['p4'] * 65536.0);
+        $var1 = ($this->digs['p3'] * $var1 * $var1 / 524288.0 + $this->digs['p2'] * $var1) / 524288.0;
+        $var1 = (1.0 + $var1 / 32768.0) * $this->digs['p1'];
+
         // Avoid exception caused by division by zero
         if ($var1 == 0.0) return null;
 
         $p = 1048576.0 - $adc_p;
         $p = ($p - ($var2 / 4096.0)) * 6250.0 / $var1;
-        $var1 = $this->_digs['p9'] * $p * $p / 2147483648.0;
-        $var2 = $p * $this->_digs['p8'] / 32768.0;
-        $pressure = round(($p + ($var1 + $var2 + $this->_digs['p7']) / 16.0));
+        $var1 = $this->digs['p9'] * $p * $p / 2147483648.0;
+        $var2 = $p * $this->digs['p8'] / 32768.0;
+        $pressure = round(($p + ($var1 + $var2 + $this->digs['p7']) / 16.0));
         $pressure = round(($pressure / 133.322) * 10) / 10;
-        
+
         if ($pressure < 700 || $pressure > 800) return null;
 
         return [
-            'TEMP' => $temperature, 
+            'TEMP' => $temperature,
             'P' => round($pressure),
         ];
     }

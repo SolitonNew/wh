@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Http\Request;
@@ -13,42 +14,41 @@ use Auth;
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable;
-    
+
     protected $table = 'web_users';
     public $timestamps = false;
-    
+
     /**
-     * 
-     * @return type
+     * @return Collection
      */
-    static public function listAll()
+    public static function listAll(): Collection
     {
         return User::orderBy('login', 'asc')->get();
     }
-    
+
     /**
-     * 
      * @param int $id
-     * @return \App\Models\User
+     * @return User
      */
-    static public function findOrCreate(int $id)
+    public static function findOrCreate(int $id): User
     {
         $item = User::find($id);
+
         if (!$item) {
             $item = new User();
             $item->id = -1;
             $item->access = 1;
         }
-        
+
         return $item;
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function storeFromRequest(Request $request, int $id)
+    public static function storeFromRequest(Request $request, int $id)
     {
         // Validation  ----------------------
         $rules = [
@@ -56,12 +56,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'password' => 'string|'.($id > 0 ? 'nullable' : 'required'),
             'email' => 'nullable|email|string',
         ];
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
         try {
             $item = User::find($id);
@@ -84,12 +84,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
+     * @return void
      */
-    static public function deleteById(int $id) 
+    public static function deleteById(int $id): void
     {
         $item = User::find($id);
         if ($item) {

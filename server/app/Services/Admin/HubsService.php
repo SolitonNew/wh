@@ -14,13 +14,12 @@ use App\Library\Firmware\Din;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class HubsService 
+class HubsService
 {
     /**
-     * 
-     * @return type
+     * @return string
      */
-    public function dinHubsScan()
+    public function dinHubsScan(): string
     {
         Property::setDinCommand('OW SEARCH');
         usleep(500000);
@@ -32,15 +31,14 @@ class HubsService
                 $text = substr($text, 0, $t);
                 break;
             }
-        }        
+        }
         return $text;
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return string
      */
-    public function orangepiHubScan()
+    public function orangepiHubScan(): string
     {
         Property::setOrangePiCommand('SCAN');
         usleep(500000);
@@ -52,41 +50,40 @@ class HubsService
                 $text = substr($text, 0, $t);
                 break;
             }
-        }        
+        }
         return $text;
     }
-    
+
     /**
-     * 
      * @param int $hubID
+     * @return void
      */
-    public function generateDevsByHub(int $hubID)
+    public function generateDevsByHub(int $hubID): void
     {
         $hub = Hub::find($hubID);
-        
+
         switch ($hub->typ) {
             case 'din':
-                $this->_generateDinDevsByHub($hubID);
+                $this->generateDinDevsByHub($hubID);
                 break;
             case 'orangepi':
-                $this->_generateOrangePiDevsByHub($hubID);
+                $this->generateOrangePiDevsByHub($hubID);
                 break;
             case 'camcorder':
-                $this->_generateCamcorderDevsByHub($hubID);
+                $this->generateCamcorderDevsByHub($hubID);
                 break;
             case 'extapi':
-                $this->_generateExtApiDevsByHub($hubID);
+                $this->generateExtApiDevsByHub($hubID);
                 break;
         }
     }
-    
+
     /**
-     * 
-     * @param type $channel
-     * @param type $default
+     * @param string $channel
+     * @param int $default
      * @return int
      */
-    private function _decodeChannelTyp($channel, $default = 0)
+    private function decodeChannelTyp(string $channel, int $default = 0): int
     {
         $channelControl = [
             1 => ['R1', 'R2', 'R3', 'R4'],      // Light
@@ -109,30 +106,29 @@ class HubsService
             18 => ['H', 'CC'],                  // Percents
             19 => ['MP'],                       // Height
         ];
-        
+
         foreach($channelControl as $key => $val) {
             if (in_array($channel, $val)) {
                 return $key;
             }
         }
-        
+
         return $default;
     }
-    
+
     /**
-     * 
      * @param int $hubID
-     * @return type
+     * @return void
      */
-    private function _generateDinDevsByHub(int $hubID)
+    private function generateDinDevsByHub(int $hubID): void
     {
         $din_channels = config('din.'.Property::getDinSettings()->mmcu.'.channels');
         $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "din"');
 
         try {
-            foreach($din_channels as $chan) {
+            foreach ($din_channels as $chan) {
                 $find = false;
-                foreach($devs as $dev) {
+                foreach ($devs as $dev) {
                     if ($dev->hub_id == $hubID && $dev->channel == $chan) {
                         $find = true;
                         break;
@@ -145,7 +141,7 @@ class HubsService
                     $item->name = 'temp for din';
                     $item->host_id = null;
                     $item->channel = $chan;
-                    $item->app_control = $this->_decodeChannelTyp($chan, 1);
+                    $item->app_control = $this->decodeChannelTyp($chan, 1);
                     $item->save(['withoutevents']);
                     $item->name = 'din_'.$item->id.'_'.$chan;
                     $item->save();
@@ -155,15 +151,15 @@ class HubsService
             Log::info($ex);
             return ;
         }
-        
+
         // Generation of devices for network hubs
         $hosts = OwHost::whereHubId($hubID)->get();
         $devs = Device::whereTyp('ow')->get();
         try {
-            foreach($hosts as $host) {
+            foreach ($hosts as $host) {
                 foreach ($host->channelsOfType() as $chan) {
                     $find = false;
-                    foreach($devs as $dev) {
+                    foreach ($devs as $dev) {
                         if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
                             $find = true;
                             break;
@@ -177,7 +173,7 @@ class HubsService
                         $item->name = 'temp for ow';
                         $item->host_id = $host->id;
                         $item->channel = $chan;
-                        $item->app_control = $this->_decodeChannelTyp($chan);
+                        $item->app_control = $this->decodeChannelTyp($chan);
                         $item->save(['withoutevents']);
                         $item->name = 'ow_'.$item->id.'_'.$chan;
                         $item->save();
@@ -189,21 +185,20 @@ class HubsService
             return ;
         }
     }
-    
+
     /**
-     * 
      * @param int $hubID
-     * @return type
+     * @return void
      */
-    private function _generateOrangePiDevsByHub(int $hubID)
+    private function generateOrangePiDevsByHub(int $hubID): void
     {
         $channels = config('orangepi.channels');
         $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "orangepi"');
 
         try {
-            foreach($channels as $chan => $num) {
+            foreach ($channels as $chan => $num) {
                 $find = false;
-                foreach($devs as $dev) {
+                foreach ($devs as $dev) {
                     if ($dev->hub_id == $hubID && $dev->channel == $chan) {
                         $find = true;
                         break;
@@ -216,7 +211,7 @@ class HubsService
                     $item->name = 'temp for din';
                     $item->host_id = null;
                     $item->channel = $chan;
-                    $item->app_control = $this->_decodeChannelTyp($chan, 1);
+                    $item->app_control = $this->decodeChannelTyp($chan, 1);
                     $item->save(['withoutevents']);
                     $item->name = 'orangepi_'.$item->id.'_'.$chan;
                     $item->save();
@@ -226,16 +221,16 @@ class HubsService
             Log::info($ex);
             return ;
         }
-        
+
         // Generation of devices for network hubs
         // Generation of devices for network hubs
         $hosts = I2cHost::whereHubId($hubID)->get();
         $devs = Device::whereTyp('i2c')->get();
         try {
-            foreach($hosts as $host) {
+            foreach ($hosts as $host) {
                 foreach ($host->channelsOfType() as $chan) {
                     $find = false;
-                    foreach($devs as $dev) {
+                    foreach ($devs as $dev) {
                         if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
                             $find = true;
                             break;
@@ -249,7 +244,7 @@ class HubsService
                         $item->name = 'temp for i2c';
                         $item->host_id = $host->id;
                         $item->channel = $chan;
-                        $item->app_control = $this->_decodeChannelTyp($chan);
+                        $item->app_control = $this->decodeChannelTyp($chan);
                         $item->save(['withoutevents']);
                         $item->name = 'i2c_'.$item->id.'_'.$chan;
                         $item->save();
@@ -261,22 +256,21 @@ class HubsService
             return ;
         }
     }
-    
+
     /**
-     * 
-     * @param type $hubID
-     * @return type
+     * @param int $hubID
+     * @return void
      */
-    private function _generateExtApiDevsByHub($hubID)
+    private function generateExtApiDevsByHub(int $hubID): void
     {
         $hosts = ExtApiHost::whereHubId($hubID)->get();
         $devs = Device::whereTyp('extapi')->get();
-        
+
         try {
-            foreach($hosts as $host) {
+            foreach ($hosts as $host) {
                 foreach ($host->channelsOfType() as $chan) {
                     $find = false;
-                    foreach($devs as $dev) {
+                    foreach ($devs as $dev) {
                         if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
                             $find = true;
                             break;
@@ -290,7 +284,7 @@ class HubsService
                         $item->name = 'temp for extapi';
                         $item->host_id = $host->id;
                         $item->channel = $chan;
-                        $item->app_control = $this->_decodeChannelTyp($chan);
+                        $item->app_control = $this->decodeChannelTyp($chan);
                         $item->save(['withoutevents']);
                         $item->name = 'extapi_'.$item->id.'_'.$chan;
                         $item->save();
@@ -302,17 +296,21 @@ class HubsService
             return ;
         }
     }
-    
-    private function _generateCamcorderDevsByHub($hubID)
+
+    /**
+     * @param int $hubID
+     * @return void
+     */
+    private function generateCamcorderDevsByHub(int $hubID): void
     {
         $hosts = CamcorderHost::whereHubId($hubID)->get();
         $devs = Device::whereTyp('camcorder')->get();
-        
+
         try {
-            foreach($hosts as $host) {
+            foreach ($hosts as $host) {
                 foreach ($host->channelsOfType() as $chan) {
                     $find = false;
-                    foreach($devs as $dev) {
+                    foreach ($devs as $dev) {
                         if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
                             $find = true;
                             break;
@@ -326,7 +324,7 @@ class HubsService
                         $item->name = 'temp for camcorder';
                         $item->host_id = $host->id;
                         $item->channel = $chan;
-                        $item->app_control = $this->_decodeChannelTyp($chan);
+                        $item->app_control = $this->decodeChannelTyp($chan);
                         $item->save(['withoutevents']);
                         $item->name = 'cam_'.$item->id.'_'.$chan;
                         $item->save();
@@ -338,36 +336,37 @@ class HubsService
             return ;
         }
     }
-    
+
     /**
-     * This method creted devices entries on each channel if the channel 
+     * This method creted devices entries on each channel if the channel
      * does not exists.
-     * 
+     *
+     * @return void
      */
-    public function generateDevs() 
+    public function generateDevs(): void
     {
         foreach (Hub::get() as $hub) {
             $this->generateDevsByHub($hub->id);
         }
     }
-    
+
     /**
      * This is the service daemons reboot method.
-     * 
-     * @return string
+     *
+     * @return string|null
      */
-    public function restartServiceDaemons() 
+    public function restartServiceDaemons(): string|null
     {
         $daemons = [
-            'din-daemon', 
+            'din-daemon',
             'extapi-daemon',
             'orangepi-daemon',
             'camcorder-daemon',
         ];
-        
+
         $daemonManager = new DaemonManager();
         try {
-            foreach($daemons as $daemon) {
+            foreach ($daemons as $daemon) {
                 Property::setAsRunningDaemon($daemon);
                 $daemonManager->restart($daemon);
             }
@@ -378,18 +377,18 @@ class HubsService
             ]), 422);
         }
     }
-    
+
     /**
-     * 
+     * @return array
      */
-    public function firmware()
+    public function firmware(): array
     {
         $makeError = false;
         $text = '';
         try {
             $firmware = new Din();
             $firmware->generateConfig();
-            
+
             $outs = [];
             if ($firmware->make($outs)) {
                 $text = implode("\n", $outs);
@@ -401,56 +400,55 @@ class HubsService
             $makeError = true;
             $text = $ex->getMessage();
         }
-        
+
         return [
-            $text, 
+            $text,
             $makeError
         ];
     }
-    
+
     /**
-     * 
+     * @return void
      */
-    public function firmwareStart()
+    public function firmwareStart(): void
     {
         Property::setDinCommand('FIRMWARE');
         Property::setDinCommandInfo('', true);
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return \Illuminate\Http\JsonResponse|void
      */
     public function firmwareStatus()
     {
         $daemonManager = new DaemonManager();
-        
+
         try {
             if (!$daemonManager->isStarted('din-daemon')) {
-                return response()->json([                    
+                return response()->json([
                     'firmware' => 'NOTPOSSIBLE',
                 ]);
             }
-            
+
             $info = Property::getDinCommandInfo();
             if ($info == 'COMPLETE') {
-                return response()->json([                    
+                return response()->json([
                     'firmware' => 'COMPLETE',
                 ]);
-            } else 
+            } else
             if (strpos($info, 'ERROR') !== false) {
                 return response()->json([
                     'error' => $info,
                 ]);
             } else {
-                $a = explode(';', $info);                    
+                $a = explode(';', $info);
                 if (count($a) < 2) {
                     $a = ['', 0];
                 }
                 return response()->json([
                     'controller' => $a[0],
                     'percent' => $a[1],
-                ]);                
+                ]);
             }
         } catch (\Exception $ex) {
             abort(response()->json([
@@ -458,15 +456,14 @@ class HubsService
             ]), 422);
         }
     }
-    
+
     /**
-     * 
-     * @return string
+     * @return void
      */
-    public function hubsReset()
+    public function hubsReset(): void
     {
         try {
-            Property::setDinCommand('RESET');           
+            Property::setDinCommand('RESET');
         } catch (\Exception $ex) {
             abort(response()->json([
                 'errors' => [$ex->getMessage()],

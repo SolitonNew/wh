@@ -1,31 +1,23 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Script\PhpFunctions;
 
-trait FunctionAbs 
+trait FunctionAbs
 {
     /**
-     * 
-     * @param type $value
-     * @return type
+     * @param int $value
+     * @return int
      */
-    public function function_abs_i($value) 
+    public function function_abs_i(int $value): int
     {
         return (int)abs($value);
     }
-    
+
     /**
-     * 
-     * @param type $value
-     * @return type
+     * @param float $value
+     * @return float
      */
-    public function function_abs_f($value) 
+    public function function_abs_f(float $value): float
     {
         return abs($value);
     }

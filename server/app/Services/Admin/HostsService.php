@@ -4,14 +4,13 @@ namespace App\Services\Admin;
 
 use App\Models\Hub;
 
-class HostsService 
+class HostsService
 {
     /**
-     * 
      * @param int $hubID
-     * @return type
+     * @return string
      */
-    public function getHostType(int $hubID)
+    public function getHostType(int $hubID): string
     {
         return Hub::findOrCreate($hubID)->typ;
     }

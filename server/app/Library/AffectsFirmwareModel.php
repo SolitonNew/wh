@@ -2,39 +2,32 @@
 
 namespace App\Library;
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 use \Illuminate\Database\Eloquent\Model;
 
 class AffectsFirmwareModel extends Model
 {
     /**
-     *
-     * @var type 
+     * @var array
      */
-    protected $_affectFirmwareFields = [];
-    
+    protected array $affectFirmwareFields = [];
+
     /**
-     * 
      * @param array $options
+     * @return void
      */
-    public function finishSave(array $options = []) 
+    public function finishSave(array $options = []): void
     {
-        $firmwareChanged = count($this->_affectFirmwareFields) ? $this->isDirty($this->_affectFirmwareFields) : true;
+        $firmwareChanged = count($this->affectFirmwareFields) ? $this->isDirty($this->affectFirmwareFields) : true;
         parent::finishSave($options);
         if ($firmwareChanged && !in_array('withoutevents', $options)) {
             event(new \App\Events\FirmwareChangedEvent());
         }
     }
-        
+
     /**
-     * 
+     * @return bool|null
      */
-    public function delete() 
+    public function delete(): bool|null
     {
         $return = parent::delete();
         event(new \App\Events\FirmwareChangedEvent());

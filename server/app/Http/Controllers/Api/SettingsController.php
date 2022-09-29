@@ -9,68 +9,71 @@ use App\Models\Property;
 
 class SettingsController extends Controller
 {
-    private $_service;
-    
-    public function __construct(SettingsService $service) 
-    {
-        $this->_service = $service;
-    }
-    
     /**
-     * 
+     * @var SettingsService
+     */
+    private $service;
+
+    public function __construct(SettingsService $service)
+    {
+        $this->service = $service;
+    }
+
+    /**
+     *
      * @return type
      */
     public function getFavoritesDeviceList()
     {
         return response()->json([
-            'devices' => $this->_service->getAllDevices(),
+            'devices' => $this->service->getAllDevices(),
             'checkeds' => explode(',', Property::getWebChecks()),
         ]);
     }
-    
+
     /**
-     * 
+     *
      * @param int $deviceID
      * @return string
      */
     public function addDeviceToFavorites(int $deviceID)
     {
         try {
-            $this->_service->addDeviceToFavorites($deviceID);
+            $this->service->addDeviceToFavorites($deviceID);
             return 'OK';
         } catch (\Exception $ex) {
             return 'ERROR';
         }
     }
-    
+
     /**
-     * 
+     *
      * @param int $deviceID
      * @return string
      */
     public function delDeviceFromFavorites(int $deviceID)
     {
         try {
-            $this->_service->delDeviceFromFavorites($deviceID);
+            $this->service->delDeviceFromFavorites($deviceID);
             return 'OK';
         } catch (\Exception $ex) {
             return 'ERROR';
         }
     }
-    
+
     /**
-     * 
+     *
      * @return type
      */
     public function getFavoritesOrderList()
     {
-        $data = $this->_service->getOrderList();
-        
+        $data = $this->service->getOrderList();
+
         return response()->json($data);
     }
-    
+
     /**
-     * 
+     *
      * @param Request $request
      * @return string
      */
@@ -83,9 +86,9 @@ class SettingsController extends Controller
             return 'ERROR';
         }
     }
-    
+
     /**
-     * 
+     *
      * @param Request $request
      * @return string
      */
@@ -98,18 +101,18 @@ class SettingsController extends Controller
             return 'ERROR';
         }
     }
-    
+
     /**
-     * 
+     *
      * @return type
      */
     public function getDeviceColors()
     {
         return response()->json(Property::getWebColors());
     }
-    
+
     /**
-     * 
+     *
      * @param Request $request
      * @param int $index
      * @return string
@@ -135,9 +138,9 @@ class SettingsController extends Controller
             return 'ERROR';
         }
     }
-    
+
     /**
-     * 
+     *
      * @param int $index
      * @return string
      */

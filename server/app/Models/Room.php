@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Models\Device;
@@ -11,18 +12,18 @@ class Room extends Model
 {
     protected $table = 'plan_rooms';
     public $timestamps = false;
-    
+
     /**
      * Load plan records with port records and with devices.
-     * 
+     *
      * @param int $id
-     * @return type
+     * @return array
      */
-    static public function listAllForIndex(int $id)
+    public static function listAllForIndex(int $id): array
     {
         $ports = [];
         $parts = Room::generateTree($id);
-        foreach($parts as $row) {
+        foreach ($parts as $row) {
             if ($row->bounds) {
                 $v = json_decode($row->bounds);
             } else {
@@ -37,13 +38,13 @@ class Room extends Model
             $row->Y = $v->Y;
             $row->W = $v->W;
             $row->H = $v->H;
-            
+
             if ($row->style) {
                 $v = json_decode($row->style);
             } else {
                 $v = (object)[];
             }
-            
+
             $row->pen_style = isset($v->pen_style) ? $v->pen_style : 'solid';
             $row->pen_width = isset($v->pen_width) ? $v->pen_width : 1;
             $row->fill = isset($v->fill) ? $v->fill : 'background';
@@ -52,7 +53,7 @@ class Room extends Model
 
             // Packed port data
             if ($row->ports) {
-                foreach(json_decode($row->ports) as $index => $port) {
+                foreach (json_decode($row->ports) as $index => $port) {
                     $ports[] = (object)[
                         'id' => count($ports),
                         'index' => $index,
@@ -63,34 +64,37 @@ class Room extends Model
                 }
             }
         }
-        
+
         // Load list of the devices
         $devices = [];
         foreach (Device::get() as $device) {
             $part = false;
-            foreach($parts as $row) {
+            foreach ($parts as $row) {
                 if ($device->room_id == $row->id) {
                     $part = $row;
                     break;
                 }
             }
-            
+
             if ($part) {
                 $device->partBounds = $part->bounds;
                 $devices[] = $device;
             }
         }
-        
-        return [$parts, $ports, $devices];
+
+        return [
+            $parts,
+            $ports,
+            $devices
+        ];
     }
-    
+
     /**
-     * 
      * @param int $id
      * @param int $p_id
-     * @return string
+     * @return Room
      */
-    static public function findOrCreate(int $id, int $p_id = -1)
+    public static function findOrCreate(int $id, int $p_id = -1): Room
     {
         $item = Room::find($id);
         if (!$item) {
@@ -98,17 +102,16 @@ class Room extends Model
             $item->id = -1;
             $item->parent_id = $p_id;
         }
-        
+
         return $item;
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $id
-     * @return string
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function storeFromRequest(Request $request, int $id)
+    public static function storeFromRequest(Request $request, int $id)
     {
         // Validation  ----------------------
         $rules = [
@@ -121,21 +124,21 @@ class Room extends Model
             'name_dx' => 'nullable|numeric',
             'name_dy' => 'nullable|numeric',
         ];
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
-        
+
         try {
             $item = Room::find($id);
-            
+
             $off = Room::parentOffset($request->parent_id);
 
             $dx = 0;
-            $dy = 0;                
+            $dy = 0;
             if (!$item) {
                 $item = new Room();
             } else {
@@ -175,7 +178,7 @@ class Room extends Model
 
             // Recalc max level
             Room::calcAndStoreMaxLevel();
-            
+
             // Store event
             EventMem::addEvent(EventMem::PLAN_LIST_CHANGE, [
                 'id' => $item->id,
@@ -189,47 +192,46 @@ class Room extends Model
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
-     * @return string
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function deleteById(int $id)
+    public static function deleteById(int $id)
     {
         try {
             $item = Room::find($id);
             $item->delete();
-            
+
             // Recalc max level
             Room::calcAndStoreMaxLevel();
-            
+
             // Store event
             EventMem::addEvent(EventMem::PLAN_LIST_CHANGE, [
                 'id' => $item->id,
             ]);
             // ------------
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [$ex->getMessage()],
             ]);
-        }        
+        }
     }
-    
+
     /**
-     * 
      * @param int $id
      * @param string $direction
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function cloneNearby(int $id, string $direction) 
+    public static function cloneNearby(int $id, string $direction)
     {
         try {
             $part = Room::find($id);
-            
+
             if (!$part) abort(404);
-            
+
             $new_part = new Room();
 
             $new_part->parent_id = $part->parent_id;
@@ -256,35 +258,34 @@ class Room extends Model
             $new_part->save();
             $new_part->order_num = $new_part->id;
             $new_part->save();
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
                 'errors' => [$ex->getMessage()],
             ]);
-        }        
+        }
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $id
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function moveChildsFromRequest(Request $request, int $id)
+    public static function moveChildsFromRequest(Request $request, int $id)
     {
         // Validation  ----------------------
         $rules = [
             'DX' => 'required|numeric',
             'DY' => 'required|numeric',
         ];
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
-        
         try {
             $item = Room::find($id);
             $item->moveChilds($request->DX, $request->DY);
@@ -295,24 +296,23 @@ class Room extends Model
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $parentId
-     * @return type
+     * @return Collection
      */
-    static public function childList(int $parentId)
+    public static function childList(int $parentId): Collection
     {
         return Room::whereParentId($parentId)
                     ->orderBy('order_num', 'asc')
                     ->get();
     }
-    
+
     /**
-     * 
      * @param Request $request
+     * @return void
      */
-    static public function setChildListOrdersFromRequest(Request $request)
+    public static function setChildListOrdersFromRequest(Request $request): void
     {
         try {
             $ids = explode(',', $request->orderIds);
@@ -320,21 +320,21 @@ class Room extends Model
             foreach (Room::find($ids) as $item) {
                 $item->order_num = array_search($item->id, $ids);
                 $item->save();
-            }            
+            }
         } catch (\Exception $ex) {
             abort(response()->json([
                 'errors' => [$ex->getMessage()],
             ]), 422);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
      * @param float $newX
      * @param float $newY
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function move(int $id, float $newX, float $newY)
+    public static function move(int $id, float $newX, float $newY)
     {
         try {
             $item = Room::find($id);
@@ -344,7 +344,7 @@ class Room extends Model
             $bounds->Y = $newY;
             $item->bounds = json_encode($bounds);
             $item->save();
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -352,25 +352,25 @@ class Room extends Model
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $id
      * @param float $newW
      * @param float $newH
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function size(int $id, float $newW, float $newH)
+    public static function size(int $id, float $newW, float $newH)
     {
         try {
             $item = Room::find($id);
             if (!$item) abort(404);
-            
+
             $bounds = json_decode($item->bounds);
             $bounds->W = $newW;
             $bounds->H = $newH;
             $item->bounds = json_encode($bounds);
             $item->save();
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -378,23 +378,23 @@ class Room extends Model
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function importFromRequest(Request $request)
+    public static function importFromRequest(Request $request)
     {
         // Validation  ----------------------
         $rules = [
             'file' => 'file|required',
         ];
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
         try {
             $data = file_get_contents($request->file('file'));
@@ -406,34 +406,34 @@ class Room extends Model
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $planID
      * @param int $deviceID
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function linkDeviceFromRequest(Request $request, int $planID, int $deviceID)
+    public static function linkDeviceFromRequest(Request $request, int $planID, int $deviceID)
     {
         $deviceID = $request->device ?? $deviceID;
-        
+
         // Validation  ----------------------
         $rules = [
             'device' => ($deviceID > 0) ? '' : 'required',
             'offset' => 'numeric|required',
             'cross' => 'numeric|required',
         ];
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
 
         $device = Device::find($deviceID);
         if (!$device) abort(404);
-        
+
         try {
             $position = (object)[
                 'surface' => $request->surface,
@@ -450,42 +450,41 @@ class Room extends Model
             ]);
         }
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return array
      */
-    static public function devicesForLink()
+    public static function devicesForLink(): array
     {
         $sql = "select v.*
                   from core_devices v
                  where not exists(select 1 from plan_rooms p where p.id = v.room_id)
                 order by v.name";
         $devices = DB::select($sql);
-        
-        foreach($devices as $dev) {
+
+        foreach ($devices as $dev) {
             $dev->label = $dev->name.' '.($dev->comm);
             $app_control = Device::decodeAppControl($dev->app_control);
             $dev->label .= ' '."'$app_control->label'";
         }
-        
+
         return $devices;
     }
-    
+
     /**
-     * 
      * @param int $deviceID
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function unlinkDevice(int $deviceID)
+    public static function unlinkDevice(int $deviceID)
     {
         $device = Device::find($deviceID);
         if (!$device) abort(404);
-        
-        try {    
+
+        try {
             $device->room_id = null;
             $device->position = null;
             $device->save();
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -493,14 +492,14 @@ class Room extends Model
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param Request $request
      * @param int $planID
      * @param int $portIndex
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function storePortFromRequest(Request $request, int $planID, int $portIndex)
+    public static function storePortFromRequest(Request $request, int $planID, int $portIndex)
     {
         // Validation  ----------------------
         $rules = [
@@ -508,19 +507,19 @@ class Room extends Model
             'width' => 'numeric|required',
             'depth' => 'numeric|required',
         ];
-        
+
         $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
-        
+
         // Saving -----------------------
         try {
             $part = Room::find($planID);
             if (!$part) abort(404);
-            
+
             $ports = json_decode($part->ports) ?? [];
-            
+
             $port = (object)[
                 'surface' => $request->surface,
                 'offset' => $request->offset,
@@ -542,25 +541,25 @@ class Room extends Model
             ]);
         }
     }
-    
+
     /**
-     * 
      * @param int $partID
      * @param int $portIndex
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function deletePortByIndex(int $partID, int $portIndex)
+    public static function deletePortByIndex(int $partID, int $portIndex)
     {
         try {
             $part = Room::find($partID);
             if (!$part) abort(404);
-            
+
             $ports = json_decode($part->ports);
             if (isset($ports[$portIndex])) {
                 array_splice($ports, $portIndex, 1);
                 $part->ports = json_encode($ports);
                 $part->save();
             }
-            
+
             return 'OK';
         } catch (\Exception $ex) {
             return response()->json([
@@ -568,42 +567,44 @@ class Room extends Model
             ]);
         }
     }
-    
+
     /**
      * The chache of the all plan records used to build the tree.
      * Used in many places in one session.
-     * 
-     * @var type 
+     *
+     * @var Collection|null
      */
-    static private $_all_parts_cache = null;
-    
+    private static Collection|null $all_parts_cache = null;
+
     /**
      * Returns a cache of all plan entries.
      * If the cache is not initialized, loading from the database is performed.
-     * 
-     * @return type
+     *
+     * @return Collection
      */
-    static public function getAllPartsCache() 
+    public static function getAllPartsCache(): Collection
     {
-        if (self::$_all_parts_cache == null) {
-            self::$_all_parts_cache = self::orderBy('order_num', 'asc')
+        if (self::$all_parts_cache == null) {
+            self::$all_parts_cache = self::orderBy('order_num', 'asc')
                                             ->get();
         }
-        
-        return self::$_all_parts_cache;
+
+        return self::$all_parts_cache;
     }
-        
+
     /**
      * The tree data generator.
-     * 
+     *
+     * @param int|null $id
+     * @param bool $asChars
      * @return array
      */
-    static public function generateTree(int $id = null, bool $asChars = true) 
-    {       
+    public static function generateTree(int $id = null, bool $asChars = true): array
+    {
         $data = [];
-        
+
         $treeLevel = function ($p_id, $level) use (&$treeLevel, &$data) {
-            foreach(self::getAllPartsCache() as $row) {
+            foreach (self::getAllPartsCache() as $row) {
                 if ($row->parent_id == $p_id) {
                     $item = $row;
                     $item->level = $level;
@@ -612,7 +613,7 @@ class Room extends Model
                 }
             }
         };
-        
+
         foreach(self::getAllPartsCache() as $row) {
             if ($row->id == $id) {
                 $data[] = $row;
@@ -620,9 +621,9 @@ class Room extends Model
                 break;
             }
         }
-        
+
         $treeLevel($id, 0);
-        
+
         // Forming a tree using pseudo-graphic symbols
         $levels = [];
         $prev_level = -1;
@@ -631,7 +632,7 @@ class Room extends Model
             for ($n = $prev_level + 1; $n <= $data[$i]->level; $n++) {
                 $levels[$n] = false;
             }
-            
+
             // Putting the states of the levels in the output path
             $path = [];
             for ($n = 0; $n < $data[$i]->level; $n++) {
@@ -641,7 +642,7 @@ class Room extends Model
                     $path[] = $asChars ? '&nbsp;&nbsp;&nbsp;' : 2;
                 }
             }
-            
+
             // Checking if the entry is the last node
             $n = $data[$i]->level;
             if (isset($levels[$n]) && $levels[$n]) {
@@ -649,66 +650,67 @@ class Room extends Model
             } else {
                 $path[count($path)] = $asChars ? '└─' : 4;
             }
-            
+
             // Note that we are using this level
             $levels[$n] = true;
-            
+
             $prev_level = $n;
-            
+
             if (count($path)) {
                 $path = array_slice($path, 1);
             }
-            
+
             if ($asChars) {
                 $data[$i]->treePath = implode('', $path);
             } else {
                 $data[$i]->treePath = $path;
             }
         }
-        
+
         // --------------------------------------------------------
-        
+
         return $data;
     }
-       
+
     /**
      * Returns ids of all child plans starting with parent_id
-     * 
-     * @param type $id
-     * @return type
+     *
+     * @param int|null $id
+     * @return string
      */
-    static public function genIDsForRoomAtParent($id) 
-    {       
+    public static function genIDsForRoomAtParent(int|null $id)
+    {
         $data = [$id];
-        
+
         $genLevel = function ($p_id) use (&$genLevel, &$data) {
-            foreach(self::getAllPartsCache() as $row) {
+            foreach (self::getAllPartsCache() as $row) {
                 if ($row->parent_id == $p_id) {
                     $data[] = $row->id;
                     $genLevel($row->id);
                 }
             }
         };
-        
+
         $genLevel($id);
-        
+
         return implode(', ', $data);
     }
-    
+
     /**
-     * Performs movement of nested plan records with recalculation of their 
+     * Performs movement of nested plan records with recalculation of their
      * coordinates.
-     * 
+     *
      * @param float $dx
      * @param float $dy
+     * @return void
      */
-    public function moveChilds(float $dx, float $dy) 
+    public function moveChilds(float $dx, float $dy): void
     {
         $ids = explode(',', self::genIDsForRoomAtParent($this->id));
-        
-        foreach(Room::whereIn('id', $ids)->cursor() as $row) {
+
+        foreach (Room::whereIn('id', $ids)->cursor() as $row) {
             if ($row->id == $this->id) continue;
-            
+
             $bounds = json_decode($row->bounds);
             if (!$bounds) {
                 $bounds = (object)[
@@ -724,22 +726,22 @@ class Room extends Model
             $row->save();
         }
     }
-    
+
     /**
      * Checks if a plan entry is a nested entry.
-     * 
+     *
      * @param int $id
      * @param int $parentID
-     * @return boolean
+     * @return bool
      */
-    static public function checkIdAsChildOfParentID(int $id, int $parentID) 
+    public static function checkIdAsChildOfParentID(int $id, int $parentID): bool
     {
         if ($id == $parentID) {
             return false;
         }
-        
+
         $list = self::getAllPartsCache();
-        
+
         $curr_id = $id;
         do {
             foreach($list as $row) {
@@ -752,41 +754,40 @@ class Room extends Model
                 }
             }
         } while ($curr_id != null);
-        
+
         return true;
     }
-    
+
     /**
-     * 
+     * @return void
      */
-    static public function calcAndStoreMaxLevel() 
+    public static function calcAndStoreMaxLevel(): void
     {
         // Calculating levels
-        
         $maxLevel = 0;
-        self::$_all_parts_cache = null;
-        foreach(self::generateTree() as $row) {
+        self::$all_parts_cache = null;
+        foreach (self::generateTree() as $row) {
             if ($row->level > $maxLevel) {
                 $maxLevel = $row->level;
             }
         }
-        
+
         if ($maxLevel > 2) $maxLevel = 2;
-        
+
         $maxLevel++;
-        
+
         if (Property::getPlanMaxLevel() > $maxLevel) {
             Property::setPlanMaxLevel($maxLevel);
         }
     }
-    
+
     /**
      * Returns $parentId coords
      *
-     * @param type $parentId
-     * @return type
+     * @param int|null $parentId
+     * @return object
      */
-    static public function parentOffset($parentId) 
+    public static function parentOffset(int|null $parentId): object
     {
         $parent = Room::find($parentId);
         if ($parent) {
@@ -796,25 +797,25 @@ class Room extends Model
                 'Y' => $bounds->Y,
             ];
         }
-        
+
         return (object)[
             'X' => 0,
             'Y' => 0,
         ];
     }
-    
+
     /**
-     * Returns the path string to $id, where the individual nodes are 
+     * Returns the path string to $id, where the individual nodes are
      * separated by $delimiter.
-     * 
-     * @param type $id
-     * @param type $delimeter
-     * @return type
+     *
+     * @param int|null $id
+     * @param string $delimeter
+     * @return string
      */
-    static public function getPath($id, $delimeter) 
+    public static function getPath(int|null $id, string $delimeter): string
     {
         $path = [];
-        
+
         $genLevel = function ($id) use (&$genLevel, &$path) {
             foreach (self::getAllPartsCache() as $row) {
                 if ($row->id === $id) {
@@ -824,23 +825,23 @@ class Room extends Model
                 }
             }
         };
-        
+
         $genLevel($id);
-        
+
         return implode($delimeter, array_reverse($path));
     }
-    
+
     /**
      * Performs import of the plan records from a string.
-     * 
+     *
      * @param string $data
-     * @return string
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    static public function importFromString(string $data) 
+    public static function importFromString(string $data)
     {
         $storeLevel = function ($level, $parentID) use (&$storeLevel) {
             $i = 1;
-            foreach($level as $item) {
+            foreach ($level as $item) {
                 $plan = new Room();
                 $plan->id = $item->id;
                 $plan->parent_id = $parentID;
@@ -849,11 +850,11 @@ class Room extends Model
                 $plan->style = $item->style;
                 $plan->ports = $item->ports;
                 $plan->order_num = $i++;
-                $plan->save();                    
+                $plan->save();
                 $storeLevel($item->childs, $item->id);
             }
         };
-            
+
         try {
             // Decoding
             $parts = json_decode($data);
@@ -874,16 +875,16 @@ class Room extends Model
             ]);
         }
     }
-    
+
     /**
      * Performs export of the plan records to a string
-     * 
+     *
      * @return string
      */
-    static public function exportToString(): string
+    public static function exportToString(): string
     {
         $parts = self::orderBy('order_num', 'asc')->get();
-        
+
         $loadLevel = function ($parentID) use (&$loadLevel, $parts) {
             $res = [];
             foreach($parts as $part) {
@@ -900,82 +901,78 @@ class Room extends Model
             }
             return $res;
         };
-        
+
         return json_encode($loadLevel(null));
     }
-    
+
     /**
-     * 
-     * @param type $defaults
-     * @return type
+     * @param object|null $defaults
+     * @return object
      */
-    public function getBounds($defaults = null)
+    public function getBounds(object|null $defaults = null): object
     {
         $bounds = $this->bounds ? json_decode($this->bounds) : (object)[];
-        
+
         if (!isset($bounds->X)) $bounds->X = ($defaults && isset($defaults->X)) ? $defaults->X : 0;
         if (!isset($bounds->Y)) $bounds->Y = ($defaults && isset($defaults->Y)) ? $defaults->Y : 0;
         if (!isset($bounds->W)) $bounds->W = ($defaults && isset($defaults->W)) ? $defaults->W : 10;
         if (!isset($bounds->H)) $bounds->H = ($defaults && isset($defaults->H)) ? $defaults->H : 6;
-        
+
         return $bounds;
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return object
      */
-    public function getBoundsRelativeParent()
+    public function getBoundsRelativeParent(): object
     {
         $bounds = $this->getBounds();
-        
+
         if ($this->id > 0) {
             $off = Room::parentOffset($this->parent_id);
             $bounds->X -= $off->X;
             $bounds->Y -= $off->Y;
         }
-        
+
         return $bounds;
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return object
      */
-    public function getStyle()
+    public function getStyle(): object
     {
         $style = $this->style ? json_decode($this->style) : (object)[];
-        
+
         if (!isset($style->pen_style)) $style->pen_style = 'solid';
         if (!isset($style->pen_width)) $style->pen_width = 1;
         if (!isset($style->fill)) $style->fill = 'background';
         if (!isset($style->name_dx)) $style->name_dx = 0;
-        if (!isset($style->name_dy)) $style->name_dy = 0;     
-            
+        if (!isset($style->name_dy)) $style->name_dy = 0;
+
         return $style;
     }
-    
+
     /**
-     * 
      * @param int $index
-     * @param type $defaults
-     * @return type
+     * @param object|null $defaults
+     * @return object
      */
-    public function getPort(int $index, $defaults = null) 
+    public function getPort(int $index, object|null $defaults = null): object
     {
         $ports = json_decode($this->ports) ?? [];
-        
+
         if (isset($ports[$index])) {
             $port = $ports[$index];
         } else {
             $port = (object)[];
         }
-        
+
         if (!isset($port->surface)) $port->surface = ($defaults && isset($defaults->surface)) ? $defaults->surface : 'top';
         if (!isset($port->offset)) $port->offset = ($defaults && isset($defaults->offset)) ? $defaults->offset : 0;
         if (!isset($port->width)) $port->width = ($defaults && isset($defaults->width)) ? $defaults->width : 0.8;
         if (!isset($port->depth)) $port->depth = ($defaults && isset($defaults->depth)) ? $defaults->depth : 0.3;
-        
+
         return $port;
     }
 }

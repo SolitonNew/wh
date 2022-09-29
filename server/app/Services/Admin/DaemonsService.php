@@ -5,23 +5,23 @@ namespace App\Services\Admin;
 use App\Library\DaemonManager;
 use App\Models\Property;
 
-class DaemonsService 
+class DaemonsService
 {
     private $_daemonManager;
-    
-    public function __construct() 
+
+    public function __construct()
     {
         $this->_daemonManager = new DaemonManager();
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return array
+     * @throws \Exception
      */
-    public function daemonsList()
+    public function daemonsList(): array
     {
         $daemons = [];
-        foreach($this->_daemonManager->daemons() as $dem) {
+        foreach ($this->_daemonManager->daemons() as $dem) {
             $stat = $this->_daemonManager->isStarted($dem);
             $daemons[] = (object)[
                 'id' => $dem,
@@ -29,36 +29,35 @@ class DaemonsService
                 'idName' => $this->makeDaemonName($dem),
             ];
         }
-        
+
         return $daemons;
     }
-    
+
     /**
-     * 
-     * @param type $id
-     * @return type
+     * @param string $id
+     * @return bool
+     * @throws \Exception
      */
-    public function isStarted($id)
+    public function isStarted(string $id): bool
     {
         return $this->_daemonManager->isStarted($id);
     }
-    
+
     /**
-     * 
-     * @param type $id
-     * @return type
+     * @param string $id
+     * @return bool
      */
-    public function existsDaemon($id)
+    public function existsDaemon(string $id): bool
     {
         return $this->_daemonManager->exists($id);
     }
-    
+
     /**
-     * 
      * @param string $id
+     * @return void
      */
-    public function daemonStart(string $id)
-    {        
+    public function daemonStart(string $id): void
+    {
         try {
             Property::setAsRunningDaemon($id);
             $this->_daemonManager->start($id);
@@ -69,12 +68,12 @@ class DaemonsService
             ]), 422);
         }
     }
-    
+
     /**
-     * 
      * @param string $id
+     * @return void
      */
-    public function daemonStop(string $id)
+    public function daemonStop(string $id): void
     {
         try {
             Property::setAsStoppedDaemon($id);
@@ -86,14 +85,14 @@ class DaemonsService
             ]), 422);
         }
     }
-    
+
     /**
-     * 
      * @param string $id
+     * @return void
      */
-    public function daemonRestart(string $id)
+    public function daemonRestart(string $id): void
     {
-        try {           
+        try {
             Property::setAsRunningDaemon($id);
             $this->_daemonManager->restart($id);
             usleep(250000);
@@ -103,13 +102,12 @@ class DaemonsService
             ]), 422);
         }
     }
-    
+
     /**
-     * 
-     * @param type $id
-     * @return type
+     * @param string $id
+     * @return string
      */
-    public function makeDaemonName($id)
+    public function makeDaemonName(string $id): string
     {
         $a = explode(':', $id);
         return $a[0];

@@ -9,14 +9,13 @@ class Property extends Model
 {
     protected $table = 'core_properties';
     public $timestamps = false;
-    
-    const VERSION = '2.12.1 alpha';
-    
+
+    const VERSION = '2.13.1 alpha';
+
     /**
-     * 
-     * @return type
+     * @return array
      */
-    static public function getWebColors() 
+    public static function getWebColors(): array
     {
         $item = self::whereName('WEB_COLOR')
             ->whereUserId(Auth::user()->id)
@@ -27,35 +26,34 @@ class Property extends Model
             return [];
         }
     }
-    
+
     /**
-     * 
      * @param array $colors
+     * @return void
      */
-    static public function setWebColors(array $colors)
+    public static function setWebColors(array $colors): void
     {
         $userID = Auth::user()->id;
-        
+
         $item = self::whereName('WEB_COLOR')
             ->whereUserId($userID)
             ->first();
-        
+
         if (!$item) {
             $item = new Property();
             $item->user_id = $userID;
             $item->name = 'WEB_COLOR';
             $item->comm = '';
         }
-        
+
         $item->value = json_encode($colors);
         $item->save();
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return string
      */
-    static public function getWebChecks() 
+    public static function getWebChecks(): string
     {
         $item = self::whereName('WEB_CHECKED')
             ->whereUserId(Auth::user()->id)
@@ -66,15 +64,15 @@ class Property extends Model
             return '';
         }
     }
-    
+
     /**
-     * 
      * @param string $checks
+     * @return void
      */
-    static public function setWebChecks(string $checks)
+    public static function setWebChecks(string $checks): void
     {
         $userID = Auth::user()->id;
-        
+
         $item = self::whereName('WEB_CHECKED')
             ->whereUserId($userID)
             ->first();
@@ -84,16 +82,15 @@ class Property extends Model
             $item->name = 'WEB_CHECKED';
             $item->comm = '';
         }
-        
+
         $item->value = $checks;
         $item->save();
     }
-    
+
     /**
-     * 
      * @return string
      */
-    static public function getWebColumns() 
+    public static function getWebColumns(): string
     {
         $item = self::whereName('WEB_COLUMNS')
             ->whereUserId(Auth::user()->id)
@@ -104,15 +101,15 @@ class Property extends Model
             return '3';
         }
     }
-    
+
     /**
-     * 
      * @param string $columns
+     * @return void
      */
-    static public function setWebColumns(string $columns)
+    public static function setWebColumns(string $columns): void
     {
         $userID = Auth::user()->id;
-        
+
         $item = self::whereName('WEB_COLUMNS')
             ->whereUserId($userID)
             ->first();
@@ -122,16 +119,15 @@ class Property extends Model
             $item->name = 'WEB_COLUMNS';
             $item->comm = '';
         }
-        
+
         $item->value = $columns;
         $item->save();
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return array
      */
-    static public function runningDaemons() 
+    public static function runningDaemons(): array
     {
         $item = self::whereName('RUNNING_DAEMONS')->first();
         if ($item && $item->value) {
@@ -140,12 +136,12 @@ class Property extends Model
             return [];
         }
     }
-    
+
     /**
-     * 
-     * @param type $daemon
+     * @param string $daemon
+     * @return void
      */
-    static public function setAsRunningDaemon($daemon) 
+    public static function setAsRunningDaemon(string $daemon): void
     {
         $a = self::runningDaemons();
         if (!in_array($daemon, $a)) {
@@ -160,12 +156,12 @@ class Property extends Model
             $item->save();
         }
     }
-    
+
     /**
-     * 
-     * @param type $daemon
+     * @param string $daemon
+     * @return void
      */
-    static public function setAsStoppedDaemon($daemon) 
+    public static function setAsStoppedDaemon(string $daemon): void
     {
         $a = self::runningDaemons();
         if (in_array($daemon, $a)) {
@@ -180,12 +176,11 @@ class Property extends Model
             $item->save();
         }
     }
-    
+
     /**
-     * 
      * @return int
      */
-    static public function getPlanMaxLevel() 
+    public static function getPlanMaxLevel(): int
     {
         $item = self::whereName('PLAN_MAX_LEVEL')->first();
         if ($item && $item->value) {
@@ -194,12 +189,12 @@ class Property extends Model
             return 1;
         }
     }
-    
+
     /**
-     * 
-     * @param type $maxLevel
+     * @param int $maxLevel
+     * @return void
      */
-    static public function setPlanMaxLevel($maxLevel) 
+    public static function setPlanMaxLevel(int $maxLevel): void
     {
         $item = self::whereName('PLAN_MAX_LEVEL')->first();
         if ($item) {
@@ -212,12 +207,12 @@ class Property extends Model
         }
         $item->save();
     }
-    
+
     /**
-     * 
+     * @param bool $clear
      * @return string
      */
-    static public function getDinCommand($clear = false) 
+    public static function getDinCommand(bool $clear = false): string
     {
         $item = self::whereName('DIN_COMMAND')->first();
         if ($item) {
@@ -230,23 +225,22 @@ class Property extends Model
         }
         return '';
     }
-    
+
     /**
-     * 
-     * @param type $command
+     * @param string $command
+     * @return void
      */
-    static public function setDinCommand($command) 
+    public static function setDinCommand(string $command): void
     {
         $item = self::whereName('DIN_COMMAND')->first();
         $item->value = $command;
         $item->save();
     }
-    
+
     /**
-     * 
      * @return string
      */
-    static public function getDinCommandInfo() 
+    public static function getDinCommandInfo(): string
     {
         $item = self::whereName('DIN_COMMAND_INFO')->first();
         if ($item) {
@@ -254,13 +248,13 @@ class Property extends Model
         }
         return '';
     }
-    
+
     /**
-     * 
-     * @param type $text
-     * @param type $new
+     * @param string $text
+     * @param bool $first
+     * @return void
      */
-    static public function setDinCommandInfo($text, $first = false) 
+    public static function setDinCommandInfo(string $text, bool $first = false): void
     {
         $item = self::whereName('DIN_COMMAND_INFO')->first();
         if (!$item) {
@@ -275,37 +269,40 @@ class Property extends Model
         }
         $item->save();
     }
-    
+
     /**
      * The cache for getFirmwareChanges.
+     *
+     * @var int|bool
      */
-    static protected $_firmwareChanges = false;
-    
+    protected static int|bool $firmwareChanges = false;
+
     /**
      * Returns the number of changes to the DB (what affects the firmware)
      * siens the last update.
-     * 
+     *
      * @return int
      */
-    static public function getFirmwareChanges() 
+    public static function getFirmwareChanges(): int
     {
-        if (self::$_firmwareChanges === false) {
+        if (self::$firmwareChanges === false) {
             $item = self::whereName('FIRMWARE_CHANGES')->first();
             if ($item) {
-                self::$_firmwareChanges = $item->value ?: 0;
+                self::$firmwareChanges = $item->value ?: 0;
             } else {
-                self::$_firmwareChanges = 0;
+                self::$firmwareChanges = 0;
             }
         }
-        return self::$_firmwareChanges;
+        return self::$firmwareChanges;
     }
-    
+
     /**
      * Sets the number of changes to the DB (what affects the firmware).
-     * 
+     *
      * @param int $count
+     * @return void
      */
-    static public function setFirmwareChanges(int $count) 
+    public static function setFirmwareChanges(int $count): void
     {
         $item = self::whereName('FIRMWARE_CHANGES')->first();
         if (!$item) {
@@ -315,63 +312,63 @@ class Property extends Model
         }
         $item->value = $count;
         $item->save();
-        
-        self::$_firmwareChanges = $count;
+
+        self::$firmwareChanges = $count;
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return int
      */
-    static public function getTotalDaemons()
+    public static function getTotalDaemons(): int
     {
         $manager = new \App\Library\DaemonManager();
         return count($manager->daemons());
     }
-    
+
     /**
-     * 
      * @return int
      */
-    static public function getRunedDaemons()
+    public static function getRunedDaemons(): int
     {
         $service = new \App\Services\Admin\DaemonsService();
-        
+
         $count = 0;
         foreach ($service->daemonsList() as $daemon) {
             if ($daemon->stat) {
                 $count++;
             }
         }
-        
+
         return $count;
     }
-    
-    static private $_timezone = false;
-    
+
     /**
-     * 
-     * @return type
+     * @var string|bool
      */
-    static public function getTimezone()
+    private static string|bool $timezone = false;
+
+    /**
+     * @return string|bool
+     */
+    public static function getTimezone(): string|bool
     {
-        if (self::$_timezone === false) {
+        if (self::$timezone === false) {
             $item = self::whereName('TIMEZONE')->first();
             if ($item) {
-                self::$_timezone = $item->value ?: 'UTC';
+                self::$timezone = $item->value ?: 'UTC';
             } else {
-                self::$_timezone = 'UTC';
+                self::$timezone = 'UTC';
             }
         }
-        
-        return self::$_timezone;
+
+        return self::$timezone;
     }
-    
+
     /**
-     * 
-     * @param type $timezone
+     * @param string $timezone
+     * @return void
      */
-    static public function setTimezone($timezone)
+    public static function setTimezone(string $timezone): void
     {
         $item = self::whereName('TIMEZONE')->first();
         if (!$item) {
@@ -379,42 +376,44 @@ class Property extends Model
             $item->name = 'TIMEZONE';
             $item->comm = '';
         }
-        
+
         $item->value = $timezone;
         $item->save();
-        
-        self::$_timezone = $timezone;
+
+        self::$timezone = $timezone;
     }
-    
-    static private $_location = false;
-    
+
     /**
-     * 
-     * @return type
+     * @var object|bool
      */
-    static public function getLocation()
+    private static object|bool $location = false;
+
+    /**
+     * @return object|bool
+     */
+    public static function getLocation(): object|bool
     {
-        if (self::$_location === false) {
+        if (self::$location === false) {
             $item = self::whereName('LOCATION')->first();
             if ($item && $item->value) {
-                self::$_location = json_decode($item->value);
+                self::$location = json_decode($item->value);
             } else {
-                self::$_location = (object)[
+                self::$location = (object)[
                     'latitude' => 0,
                     'longitude' => 0,
                 ];
             }
         }
-        
-        return self::$_location;
+
+        return self::$location;
     }
-    
+
     /**
-     * 
-     * @param type $latitude
-     * @param type $longitude
+     * @param float $latitude
+     * @param float $longitude
+     * @return void
      */
-    static public function setLocation($latitude, $longitude)
+    public static function setLocation(float $latitude, float $longitude): void
     {
         $item = self::whereName('LOCATION')->first();
         if (!$item) {
@@ -422,45 +421,47 @@ class Property extends Model
             $item->name = 'LOCATION';
             $item->comm = '';
         }
-        
-        self::$_location = (object)[
+
+        self::$location = (object)[
             'latitude' => $latitude,
             'longitude' => $longitude,
         ];
-        
-        $item->value = json_encode(self::$_location);
+
+        $item->value = json_encode(self::$location);
         $item->save();
     }
-    
-    static private $_din_settings = false;
-    
+
     /**
-     * 
-     * @return type
+     * @var object|bool
      */
-    static public function getDinSettings()
+    private static object|bool $din_settings = false;
+
+    /**
+     * @return object|bool
+     */
+    public static function getDinSettings(): object|bool
     {
-        if (self::$_din_settings === false) {
+        if (self::$din_settings === false) {
             $item = self::whereName('DIN_SETTINGS')->first();
             if ($item && $item->value) {
-                self::$_din_settings = json_decode($item->value);
+                self::$din_settings = json_decode($item->value);
             } else {
-                self::$_din_settings = (object)[
+                self::$din_settings = (object)[
                     'port' => '/dev/ttyUSB0',
                     'mmcu' => 'atmega16a',
                 ];
             }
         }
-        
-        return self::$_din_settings;
+
+        return self::$din_settings;
     }
-    
+
     /**
-     * 
-     * @param type $port
-     * @param type $mmcu
+     * @param string $port
+     * @param string $mmcu
+     * @return void
      */
-    static public function setDinSettings($port, $mmcu)
+    public static function setDinSettings(string $port, string $mmcu): void
     {
         $item = self::whereName('DIN_SETTINGS')->first();
         if (!$item) {
@@ -468,30 +469,32 @@ class Property extends Model
             $item->name = 'DIN_SETTINGS';
             $item->comm = '';
         }
-        
-        self::$_din_settings = (object)[
+
+        self::$din_settings = (object)[
             'port' => $port,
             'mmcu' => $mmcu,
         ];
-        
-        $item->value = json_encode(self::$_din_settings);
+
+        $item->value = json_encode(self::$din_settings);
         $item->save();
     }
-    
-    static private $_forecast_settings = false;
-    
+
     /**
-     * 
-     * @return type
+     * @var object|bool
      */
-    static public function getForecastSettings()
+    private static object|bool $forecast_settings = false;
+
+    /**
+     * @return object|bool
+     */
+    public static function getForecastSettings(): object|bool
     {
-        if (self::$_forecast_settings === false) {
+        if (self::$forecast_settings === false) {
             $item = self::whereName('FORECAST_SETTINGS')->first();
             if ($item && $item->value) {
-                self::$_forecast_settings = json_decode($item->value);
+                self::$forecast_settings = json_decode($item->value);
             } else {
-                self::$_forecast_settings = (object)[
+                self::$forecast_settings = (object)[
                     'TEMP' => '',
                     'P' => '',
                     'CC' => '',
@@ -504,23 +507,23 @@ class Property extends Model
                 ];
             }
         }
-        
-        return self::$_forecast_settings;
+
+        return self::$forecast_settings;
     }
-    
+
     /**
-     * 
-     * @param type $temp
-     * @param type $p
-     * @param type $cc
-     * @param type $g
-     * @param type $h
-     * @param type $v
-     * @param type $wd
-     * @param type $ws
-     * @param type $mp
+     * @param $temp
+     * @param $p
+     * @param $cc
+     * @param $g
+     * @param $h
+     * @param $v
+     * @param $wd
+     * @param $ws
+     * @param $mp
+     * @return void
      */
-    static public function setForecastSettings($temp, $p, $cc, $g, $h, $v, $wd, $ws, $mp)
+    public static function setForecastSettings($temp, $p, $cc, $g, $h, $v, $wd, $ws, $mp): void
     {
         $item = self::whereName('FORECAST_SETTINGS')->first();
         if (!$item) {
@@ -528,8 +531,8 @@ class Property extends Model
             $item->name = 'FORECAST_SETTINGS';
             $item->comm = '';
         }
-        
-        self::$_forecast_settings = (object)[
+
+        self::$forecast_settings = (object)[
             'TEMP' => $temp,
             'P' => $p,
             'CC' => $cc,
@@ -540,43 +543,45 @@ class Property extends Model
             'WS' => $ws,
             'MP' => $mp,
         ];
-        
-        $item->value = json_encode(self::$_forecast_settings);
+
+        $item->value = json_encode(self::$forecast_settings);
         $item->save();
     }
-    
-    static private $_last_view_id = false;
-    
+
     /**
-     * 
-     * @param type $page
-     * @return type
+     * @var array|bool
      */
-    static public function getLastViewID($page)
+    private static array|bool $last_view_id = false;
+
+    /**
+     * @param string $page
+     * @return string
+     */
+    public static function getLastViewID(string $page): string
     {
-        if (self::$_last_view_id === false) {
+        if (self::$last_view_id === false) {
             $item = self::whereName('LAST_VIEW_ID')
                 ->whereUserId(Auth::user()->id)
                 ->first();
             if ($item && $item->value) {
-                self::$_last_view_id = json_decode($item->value, true);
+                self::$last_view_id = json_decode($item->value, true);
             } else {
-                self::$_last_view_id = [];
+                self::$last_view_id = [];
             }
         }
-        
-        return isset(self::$_last_view_id[$page]) ? self::$_last_view_id[$page] : '';
+
+        return isset(self::$last_view_id[$page]) ? self::$last_view_id[$page] : '';
     }
-    
+
     /**
-     * 
-     * @param type $page
-     * @param type $id
+     * @param string $page
+     * @param string|null $id
+     * @return void
      */
-    static public function setLastViewID($page, $id)
+    public static function setLastViewID(string $page, string|null $id): void
     {
         $userID = Auth::user()->id;
-        
+
         $item = self::whereName('LAST_VIEW_ID')
             ->whereUserId($userID)
             ->first();
@@ -586,20 +591,19 @@ class Property extends Model
             $item->comm = '';
             $item->user_id = $userID;
         }
-        
+
         $data = $item->value ? json_decode($item->value, true) : [];
         $data[$page] = $id;
-        self::$_last_view_id = json_encode($data);;
-        $item->value = self::$_last_view_id;
+        self::$last_view_id = $data;
+        $item->value = json_encode(self::$last_view_id);
         $item->save();
     }
-    
+
     /**
-     * 
-     * @param type $clear
+     * @param bool $clear
      * @return string
      */
-    static public function getOrangePiCommand($clear = false) 
+    public static function getOrangePiCommand(bool $clear = false): string
     {
         $item = self::whereName('ORANGEPI_COMMAND')->first();
         if ($item) {
@@ -612,12 +616,12 @@ class Property extends Model
         }
         return '';
     }
-    
+
     /**
-     * 
-     * @param type $command
+     * @param string $command
+     * @return void
      */
-    static public function setOrangePiCommand($command) 
+    public static function setOrangePiCommand(string $command): void
     {
         $item = self::whereName('ORANGEPI_COMMAND')->first();
         if (!$item) {
@@ -628,12 +632,11 @@ class Property extends Model
         $item->value = $command;
         $item->save();
     }
-    
+
     /**
-     * 
      * @return string
      */
-    static public function getOrangePiCommandInfo() 
+    public static function getOrangePiCommandInfo(): string
     {
         $item = self::whereName('ORANGEPI_COMMAND_INFO')->first();
         if ($item) {
@@ -641,13 +644,13 @@ class Property extends Model
         }
         return '';
     }
-    
+
     /**
-     * 
-     * @param type $text
-     * @param type $new
+     * @param string $text
+     * @param bool $first
+     * @return void
      */
-    static public function setOrangePiCommandInfo($text, $first = false) 
+    public static function setOrangePiCommandInfo(string $text, bool $first = false): void
     {
         $item = self::whereName('ORANGEPI_COMMAND_INFO')->first();
         if (!$item) {

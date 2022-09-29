@@ -1,14 +1,9 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Daemons;
 
 use App\Models\Device;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
 use App\Models\I2cHost;
@@ -23,89 +18,103 @@ use App\Library\OrangePi\I2c\I2c;
  */
 class OrangePiDaemon extends BaseDaemon
 {
-    private $_prevExecuteHostI2cTime = false;
-    private $_i2cHosts = [];
-    private $_i2cDrivers = [];
-    
-    public function execute()
+    /**
+     * @var int|bool
+     */
+    private int|bool $prevExecuteHostI2cTime = false;
+
+    /**
+     * @var Collection|array
+     */
+    private Collection|array $i2cHosts = [];
+
+    /**
+     * @var array
+     */
+    private array $i2cDrivers = [];
+
+    /**
+     * @return void
+     */
+    public function execute(): void
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
-        
+
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/daemons/orangepi-daemon.description'));
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
-        
+
         if (!$this->initialization('orangepi')) return ;
-        
+
         // Init GPIO pins
-        $this->_initGPIO();
+        $this->initGPIO();
         // ------------------------
-        
+
         $lastMinute = \Carbon\Carbon::now()->startOfMinute();
         try {
             while (1) {
                 if (!$this->checkEvents()) break;
-                
+
                 // Commands processing
                 $command = Property::getOrangePiCommand(true);
                 switch ($command) {
                     case 'SCAN':
-                        $this->_scanNetworks();
+                        $this->scanNetworks();
                         break;
                 }
-                
+
                 // I2c hosts
-                $this->_processingI2cHosts();
-                
+                $this->processingI2cHosts();
+
                 // Get Orange Pi system info
                 $minute = \Carbon\Carbon::now()->startOfMinute();
                 if ($minute->gt($lastMinute)) {
-                    $this->_getSystemInfo();
+                    $this->getSystemInfo();
                 }
                 $lastMinute = $minute;
                 // -----------------------------
-                
+
                 usleep(100000);
             }
         } catch (\Exception $ex) {
             $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
-            $this->printLine($s); 
+            $this->printLine($s);
         } finally {
-            
+
         }
     }
-    
+
     /**
-     * 
+     * @return void
      */
-    protected function initializationHosts()
+    protected function initializationHosts(): void
     {
-        $this->_i2cDrivers = config('orangepi.drivers');
-        
-        $this->_i2cHosts = I2cHost::whereIn('hub_id', $this->_hubIds)
+        $this->i2cDrivers = config('orangepi.drivers');
+
+        $this->i2cHosts = I2cHost::whereIn('hub_id', $this->hubIds)
             ->get();
     }
-    
+
     /**
-     * 
+     * @return void
      */
-    private function _initGPIO()
+    private function initGPIO(): void
     {
         $channels = config('orangepi.channels');
-        
+
         $enabled = [];
         $errors = [];
-        
+
         foreach ($channels as $chan => $num) {
             if ($num > -1) {
                 try {
                     $res = '';
-                    foreach ($this->_devices as $device) {
-                        if (in_array($device->hub_id, $this->_hubIds) && $device->channel == $chan) {
+                    foreach ($this->devices as $device) {
+                        if (in_array($device->hub_id, $this->hubIds) && $device->channel == $chan) {
                             if ($device->value) {
                                 $res = shell_exec('gpioset 0 '.$num.'=1 2>&1');
                             } else {
@@ -118,38 +127,39 @@ class OrangePiDaemon extends BaseDaemon
                     if ($res) {
                         throw new \Exception($res);
                     }
-                    
+
                     $enabled[] = $chan;
                 } catch (\Exception $ex) {
                     $errors[$chan] = $ex->getMessage();
                 }
             }
         }
-        
+
         $this->printLine('GPIO ['.implode(', ', $enabled).'] ENABLED');
         if (count($errors)) {
             foreach ($errors as $chan => $error) {
                 $this->printLine('GPIO ['.$chan.'] INIT ERROR: '.$error);
             }
         }
-        
+
         $this->printLine(str_repeat('-', 100));
     }
-    
+
     /**
-     * 
-     * @param type $chan
-     * @param type $value
+     *
+     * @param string $chan
+     * @param int $value
+     * @return void
      * @throws \Exception
      */
-    private function _setValueGPIO($chan, $value)
+    private function setValueGPIO(string $chan, int $value): void
     {
         try {
             $channels = config('orangepi.channels');
             $num = $channels[$chan];
-            
+
             if ($num == -1) return ;
-            
+
             $res = [];
             if ($value) {
                 exec('gpioset 0 '.$num.'=1 2>&1', $res);
@@ -163,26 +173,26 @@ class OrangePiDaemon extends BaseDaemon
         } catch (\Exception $ex) {
             $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
-            $this->printLine($s); 
+            $this->printLine($s);
         }
     }
-    
+
     /**
-     * 
-     * @param type $device
+     * @param Device $device
+     * @return void
+     * @throws \Exception
      */
-    protected function deviceChangeValue($device)
+    protected function deviceChangeValue(Device $device): void
     {
-        if (in_array($device->hub_id, $this->_hubIds) && $device->typ == 'orangepi') {
-            $this->_setValueGPIO($device->channel, $device->value);
+        if (in_array($device->hub_id, $this->hubIds) && $device->typ == 'orangepi') {
+            $this->setValueGPIO($device->channel, $device->value);
         }
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return void
      */
-    private function _getSystemInfo()
+    private function getSystemInfo(): void
     {
         try {
             $val = file_get_contents('/sys/devices/virtual/thermal/thermal_zone0/temp');
@@ -194,59 +204,58 @@ class OrangePiDaemon extends BaseDaemon
                 $temp = round($temp);
             }
 
-            foreach ($this->_devices as $dev) {
+            foreach ($this->devices as $dev) {
                 if ($dev->typ == 'orangepi' && $dev->channel == 'PROC_TEMP') {
                     if (round($dev->value) != $temp) {
                         Device::setValue($dev->id, $temp);
                     }
                     break;
                 }
-            }    
+            }
         } catch (\Exception $ex) {
             $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
-            $this->printLine($s); 
+            $this->printLine($s);
         }
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return void
      */
-    private function _processingI2cHosts()
+    private function processingI2cHosts(): void
     {
         $now = floor(\Carbon\Carbon::now()->timestamp / 60);
-        
+
         // Checking for execute after daemon restart.
-        if ($this->_prevExecuteHostI2cTime === false) {
-            $this->_prevExecuteHostI2cTime = $now;
+        if ($this->prevExecuteHostI2cTime === false) {
+            $this->prevExecuteHostI2cTime = $now;
             return ;
         }
-        
+
         // Checking for execute at ever minutes.
-        if ($now == $this->_prevExecuteHostI2cTime) {
+        if ($now == $this->prevExecuteHostI2cTime) {
             return ;
         }
-        
+
         // Storing the previous time value
-        $this->_prevExecuteHostI2cTime = $now;
-        
+        $this->prevExecuteHostI2cTime = $now;
+
         $outData = [];
-        
-        foreach ($this->_i2cHosts as $host) {
-            if (!isset($this->_i2cDrivers[$host->typ])) continue;
-            
-            $cron = $this->_i2cDrivers[$host->typ]['cron'];
+
+        foreach ($this->i2cHosts as $host) {
+            if (!isset($this->i2cDrivers[$host->typ])) continue;
+
+            $cron = $this->i2cDrivers[$host->typ]['cron'];
             if (CronExpression::factory($cron)->isDue()) {
-                $class = $this->_i2cDrivers[$host->typ]['class'];
+                $class = $this->i2cDrivers[$host->typ]['class'];
                 try {
                     $driver = new $class($host->address);
                     $result = $driver->getData();
-                    
+
                     if ($result) {
                         foreach ($result as $chan => $val) {
-                            foreach ($this->_devices as $dev) {
-                                if ($dev->host_id == $host->id && 
+                            foreach ($this->devices as $dev) {
+                                if ($dev->host_id == $host->id &&
                                     $dev->typ == 'i2c' &&
                                     $dev->channel == $chan &&
                                     $dev->value != $val)
@@ -261,31 +270,31 @@ class OrangePiDaemon extends BaseDaemon
                 } catch (\Exception $ex) {
                     $s = "[".parse_datetime(now())."] ERROR\n";
                     $s .= $ex->getMessage();
-                    $this->printLine($s); 
+                    $this->printLine($s);
                 }
             }
         }
-        
+
         if (count($outData)) {
             $s = "[".parse_datetime(now())."] I2C [".implode(", ", $outData)."]";
             $this->printLine($s);
         }
     }
-    
+
     /**
-     * 
+     * @return void
      */
-    private function _scanNetworks()
+    private function scanNetworks(): void
     {
         Property::setOrangePiCommandInfo('', true);
-        
+
         $addresses = I2c::scan();
-        
+
         $new = 0;
         $lost = 0;
-        
-        $oldHosts = $this->_i2cHosts;
-        
+
+        $oldHosts = $this->i2cHosts;
+
         // Finding a lost entries
         foreach ($oldHosts as $oldHost) {
             if (!in_array($oldHost->address, $addresses)) {
@@ -296,7 +305,7 @@ class OrangePiDaemon extends BaseDaemon
             }
             $oldHost->save();
         }
-        
+
         // Check found entries.
         foreach ($addresses as $addr) {
             $find = false;
@@ -306,14 +315,14 @@ class OrangePiDaemon extends BaseDaemon
                     break;
                 }
             }
-            
+
             if (!$find) {
                 $new++;
                 // Add to the list immediately.
                 // ...
             }
         }
-        
+
         $report = [];
         $s = "I2C SEARCH. [TOTAL: ".count($addresses).", NEW: ".$new.", LOST: ".$lost."] ";
         $this->printLine($s);
@@ -324,7 +333,7 @@ class OrangePiDaemon extends BaseDaemon
         }
         $report[] = str_repeat('-', 35);
         $report[] = '';
-        
+
         Property::setOrangePiCommandInfo(implode("\n", $report));
         Property::setOrangePiCommandInfo('END_SCAN');
     }

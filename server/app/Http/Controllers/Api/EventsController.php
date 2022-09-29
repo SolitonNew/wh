@@ -7,15 +7,18 @@ use App\Services\Api\EventsService;
 
 class EventsController extends Controller
 {
+    /**
+     * @var EventsService
+     */
     private $_service;
-    
-    public function __construct(EventsService $service) 
+
+    public function __construct(EventsService $service)
     {
         $this->_service = $service;
     }
-    
+
     /**
-     * 
+     *
      * @param int $lastID
      * @return type
      */
@@ -28,6 +31,6 @@ class EventsController extends Controller
             return response()->json([
                 'lastID' => $this->_service->getLastID(),
             ]);
-        }        
+        }
     }
 }

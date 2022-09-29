@@ -1,14 +1,10 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Daemons;
 
+use App\Models\Device;
 use App\Models\ExtApiHost;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 
@@ -20,104 +16,104 @@ use Illuminate\Support\Facades\Lang;
 class ExtApiDaemon extends BaseDaemon
 {
     /**
-     *
-     * @var type 
+     * @var Collection|array
      */
-    private $_providers = [];
-    private $_prevExecuteHostProviderTime = false;
-    
+    private Collection|array $providers = [];
+
     /**
-     * 
+     * @var int|bool
      */
-    public function execute()
+    private int|bool $prevExecuteHostProviderTime = false;
+
+    /**
+     * @return void
+     */
+    public function execute(): void
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
-        
+
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/daemons/extapi-daemon.description'));
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
-        
+
         // Base init
         if (!$this->initialization('extapi')) return ;
-        
+
         try {
             while (1) {
                 // ExtApi Host Providers Execute
-                $this->_executeHostProviders();
-                
+                $this->executeHostProviders();
+
                 // Check event log
                 if (!$this->checkEvents()) break;
-                
+
                 usleep(100000);
             }
         } catch (\Exception $ex) {
             $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
-            $this->printLine($s); 
-        } finally {
-            
+            $this->printLine($s);
         }
     }
-    
+
     /**
-     * 
+     * @return void
      */
-    protected function initializationHosts()
+    protected function initializationHosts(): void
     {
-        $ids = $this->_hubs
+        $ids = $this->hubs
             ->pluck('id')
             ->toArray();
-        
+
         $hosts = ExtApiHost::whereIn('hub_id', $ids)
             ->get();
-        
+
         $list = [];
         foreach ($hosts as $host) {
             $driver = $host->driver();
-            $this->_providers[$host->id] = $driver;
+            $this->providers[$host->id] = $driver;
             $list[] = $driver->title;
         }
-        
+
         $this->printLine('PROVIDERS USED: ['.implode(', ', $list).']');
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return void
      */
-    private function _executeHostProviders()
+    private function executeHostProviders(): void
     {
         $now = floor(\Carbon\Carbon::now()->timestamp / 60);
-        
+
         // Checking for execute after daemon restart.
-        if ($this->_prevExecuteHostProviderTime === false) {
-            $this->_prevExecuteHostProviderTime = $now;
+        if ($this->prevExecuteHostProviderTime === false) {
+            $this->prevExecuteHostProviderTime = $now;
             return ;
         }
-        
+
         // Checking for execute at ever minutes.
-        if ($now == $this->_prevExecuteHostProviderTime) {
+        if ($now == $this->prevExecuteHostProviderTime) {
             return ;
         }
-        
+
         // Storing the previous time value
-        $this->_prevExecuteHostProviderTime = $now;
-        
-        foreach ($this->_providers as $id => $provider) {
+        $this->prevExecuteHostProviderTime = $now;
+
+        foreach ($this->providers as $id => $provider) {
             try {
                 // Request
                 if ($provider->canRequest()) {
                     $result = $provider->request();
                     $s = "[".parse_datetime(now())."] PROVIDER '".$provider->title."' HAS BEEN REQUESTED \n";
-                    $this->printLine($s); 
+                    $this->printLine($s);
                     if ($result) {
                         $this->printLine($result);
                     }
                 }
-                
+
                 // Update
                 if ($provider->canUpdate()) {
                     $result = $provider->update();
@@ -132,13 +128,17 @@ class ExtApiDaemon extends BaseDaemon
             } catch (\Exception $ex) {
                 $s = "[".parse_datetime(now())."] ERROR FOR '".$provider->title."'\n";
                 $s .= $ex->getMessage();
-                $this->printLine($s); 
+                $this->printLine($s);
             }
         }
     }
-    
-    protected function deviceChangeValue($device)
+
+    /**
+     * @param Device $device
+     * @return void
+     */
+    protected function deviceChangeValue(Device $device): void
     {
-        
+
     }
 }

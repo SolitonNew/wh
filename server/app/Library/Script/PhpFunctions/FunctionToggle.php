@@ -1,26 +1,22 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Script\PhpFunctions;
 
 use App\Models\Device;
 
-trait FunctionToggle 
+trait FunctionToggle
 {
     /**
-     * 
-     * @param type $name
+     * @param string $name
+     * @param int $time
+     * @return void
+     * @throws \Exception
      */
-    public function function_toggle($name, $time = 0) 
+    public function function_toggle(string $name, int $time = 0): void
     {
         $device = Device::whereName($name)->first();
         if ($device) {
-            if ($this->_fake) {
+            if ($this->fake) {
                 //
             } else {
                 if ($device->value) {

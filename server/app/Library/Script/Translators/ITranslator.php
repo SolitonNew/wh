@@ -1,22 +1,16 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Script\Translators;
 
 /**
  *
  * @author soliton
  */
-interface ITranslator 
+interface ITranslator
 {
     /**
-     * 
-     * @param type $source
+     * @param object $prepareData
+     * @return string
      */
-     public function translate($prepareData);
+     public function translate(object $prepareData): string;
 }

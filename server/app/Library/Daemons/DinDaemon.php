@@ -2,6 +2,7 @@
 
 namespace App\Library\Daemons;
 
+use App\Models\Hub;
 use App\Models\Property;
 use App\Models\OwHost;
 use App\Models\Device;
@@ -13,105 +14,95 @@ use Illuminate\Support\Facades\Lang;
  *
  * @author soliton
  */
-class DinDaemon extends BaseDaemon 
+class DinDaemon extends BaseDaemon
 {
     /**
-     *
-     * @var type 
+     * @var mixed
      */
-    private $_port;
-    
+    private mixed $portHandle;
+
+    /**
+     * @var int
+     */
+    private int $waitCount = 0;
+
+    /**
+     * @var int
+     */
+    private int $inPackCount = 0;
+
+    /**
+     * @var string
+     */
+    private string $inBuffer = '';
+
+    /**
+     * @var array
+     */
+    private array $inServerCommands = [];
+
+    /**
+     * @var array
+     */
+    private array $inVariables = [];
+
+    /**
+     * @var array
+     */
+    private array $inRooms = [];
+
+    /**
+     * @var array
+     */
+    private array $firmwareHex = [];
+
+    /**
+     * @var int
+     */
+    private int $firmwareSpmPageSize = 0;
+
+    /**
+     * @var array
+     */
+    private array $devicesLoopChanges = [];
+
     /**
      *
-     * @var type 
-     */
-    private $_waitCount = 0;
-    
-    /**
-     *
-     * @var type 
-     */
-    private $_inPackCount = 0;
-    
-    /**
-     *
-     * @var type 
-     */
-    private $_inBuffer = '';
-    
-    /**
-     *
-     * @var type 
-     */
-    private $_inServerCommands = [];
-    
-    /**
-     *
-     * @var type 
-     */
-    private $_inVariables = [];
-    
-    /**
-     *
-     * @var type 
-     */
-    private $_inRooms = [];
-    
-    /**
-     *
-     * @var type 
-     */
-    private $_firmwareHex = [];
-    
-    /**
-     *
-     * @var type 
-     */
-    private $_firmwareSpmPageSize = 0;
-    
-    /**
-     *
-     * @var type 
-     */
-    private $_devicesLoopChanges = [];
-    
-    /**
-     * 
      */
     const SLEEP_TIME = 50;
-    
+
     /**
-     * 
+     * @return void
      */
-    public function execute() 
+    public function execute(): void
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
-        
+
         $settings = Property::getDinSettings();
 
         $this->printLine('');
         $this->printLine('');
         $this->printLine(str_repeat('-', 100));
         $this->printLine(Lang::get('admin/daemons/din-daemon.description'));
-        $this->printLine('--    PORT: '.$settings->port); 
-        $this->printLine('--    BAUD: '.config('din.'.$settings->mmcu.'.baud')); 
+        $this->printLine('--    PORT: '.$settings->port);
+        $this->printLine('--    BAUD: '.config('din.'.$settings->mmcu.'.baud'));
         $this->printLine(str_repeat('-', 100));
         $this->printLine('');
-        
+
         if (!$this->initialization('din')) return ;
-        
+
         try {
             $settings = Property::getDinSettings();
             $port = $settings->port;
             $baud = config('din.'.$settings->mmcu.'.baud');
             exec("stty -F $port $baud cs8 cstopb -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
-            $this->_port = fopen($port, 'r+b');
-            stream_set_blocking($this->_port, false);
-            while (!feof($this->_port)) {
+            $this->portHandle = fopen($port, 'r+b');
+            stream_set_blocking($this->portHandle, false);
+            while (!feof($this->portHandle)) {
                 $loopErrors = false;
                 $command = Property::getDinCommand(true);
-                
-                $this->_devicesLoopChanges = [];
+
+                $this->devicesLoopChanges = [];
                 // Performing the initial preparation of the iteration
                 // It is the same for all controllers.
                 switch ($command) {
@@ -123,30 +114,30 @@ class DinDaemon extends BaseDaemon
                         break;
                     case 'FIRMWARE':
                         Property::setDinCommandInfo('', true);
-                        $this->_firmwareHex = false;
+                        $this->firmwareHex = false;
                         break;
                     default:
                         if (!$this->checkEvents(false, true)) return;
                 }
-                                
-                foreach($this->_hubs as $controller) {
+
+                foreach($this->hubs as $controller) {
                     switch ($command) {
                         case 'RESET':
-                            $this->_commandReset($controller);
+                            $this->commandReset($controller);
                             break;
                         case 'OW SEARCH':
-                            $this->_commandOwSearch($controller);
+                            $this->commandOwSearch($controller);
                             break;
                         case 'FIRMWARE':
-                            if (!$this->_commandFirmware($controller)) {
+                            if (!$this->commandFirmware($controller)) {
                                 $loopErrors = true;
                             }
                             break;
                         default:
-                            $this->_syncVariables($controller);
+                            $this->syncVariables($controller);
                     }
                 }
-                
+
                 switch ($command) {
                     case 'RESET':
                         // not records
@@ -162,69 +153,71 @@ class DinDaemon extends BaseDaemon
                         } else {
                             Property::setDinCommandInfo('ERROR', true);
                         }
-                        $this->_firmwareHex = false;
+                        $this->firmwareHex = false;
                         break;
                     default:
-                        
+
                 }
-                
+
                 usleep(100000);
             }
         } catch (\Exception $ex) {
             $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
-            $this->printLine($s); 
+            $this->printLine($s);
         } finally {
-            if ($this->_port) {
-                fclose($this->_port);    
+            if ($this->portHandle) {
+                fclose($this->portHandle);
             }
         }
     }
-    
+
     /**
-     * 
-     * @param type $device
+     * @param Device $device
+     * @return void
      */
-    protected function deviceChangeValue($device)
+    protected function deviceChangeValue(Device $device): void
     {
-        $this->_devicesLoopChanges[] = $device;
+        $this->devicesLoopChanges[] = $device;
     }
-    
+
     /**
      * Controller reboot processing command.
-     * 
-     * @param type $conrollerROM
+     *
+     * @param $controller
+     * @return void
      */
-    private function _commandReset($controller) 
+    private function commandReset(Hub $controller): void
     {
-        $this->_readPacks(250);
-        $this->_transmitCMD($controller->rom, 1, 0);
+        $this->readPacks(250);
+        $this->transmitCMD($controller->rom, 1, 0);
         usleep(250000);
     }
-    
+
     /**
      * One Wire scan processing command.
-     * 
-     * @param type $conrollerROM
+     *
+     * @param Hub $controller
+     * @return void
      */
-    private function _commandOwSearch($controller) 
+    private function commandOwSearch(Hub $controller): void
     {
-        $this->_readPacks(250);
-        $this->_inRooms = [];
-        $this->_transmitCMD($controller->rom, 7, 0);
-        $this->_readPacks(500);
-        
-        // We got the data. You need to combine them with what is already in 
+        $this->readPacks(250);
+        $this->inRooms = [];
+        $this->transmitCMD($controller->rom, 7, 0);
+        $this->readPacks(500);
+
+        // We got the data. You need to combine them with what is already in
         // the system and issue a report on the operation.
-        
+
         $new = 0;
         $lost = 0;
-        
+
         $owOldList = OwHost::whereHubId($controller->id)->get();
         // Finding a lost entries
         foreach ($owOldList as $owOld) {
             $find = false;
-            foreach ($this->_inRooms as $rom) {
+            foreach ($this->inRooms as $rom) {
                 if ($owOld->rom_1 === $rom[0] &&
                     $owOld->rom_2 === $rom[1] &&
                     $owOld->rom_3 === $rom[2] &&
@@ -239,16 +232,16 @@ class DinDaemon extends BaseDaemon
             }
             if (!$find) {
                 $lost++;
-                
+
                 $owOld->lost = 1;
             } else {
                 $owOld->lost = 0;
             }
             $owOld->save();
         }
-        
+
         // Check found entries.
-        foreach ($this->_inRooms as $rom) {
+        foreach ($this->inRooms as $rom) {
             $find = false;
             foreach ($owOldList as $owOld) {
                 if ($owOld->rom_1 === $rom[0] &&
@@ -281,14 +274,14 @@ class DinDaemon extends BaseDaemon
                 $ow->save();
             }
         }
-        
+
         $report = [];
-        $s = "OW SEARCH. '$controller->name' [TOTAL: ".count($this->_inRooms).", NEW: ".$new.", LOST: ".$lost."] ";
+        $s = "OW SEARCH. '$controller->name' [TOTAL: ".count($this->inRooms).", NEW: ".$new.", LOST: ".$lost."] ";
         $this->printLine($s);
         $report[] = $s;
         $report[] = str_repeat('-', 35);
-        
-        foreach ($this->_inRooms as $rom) {
+
+        foreach ($this->inRooms as $rom) {
             $a = [];
             foreach($rom as $b) {
                 $a[] = sprintf("x%'02X", $b);
@@ -297,54 +290,55 @@ class DinDaemon extends BaseDaemon
             $this->printLine($s);
             $report[] = $s;
         }
-        
+
         $report[] = str_repeat('-', 35);
         $report[] = '';
 
         Property::setDinCommandInfo(implode("\n", $report));
     }
-    
+
     /**
      * Firmware processing command.
-     * 
-     * @param type $controller
+     *
+     * @param Hub $controller
+     * @return bool
      */
-    public function _commandFirmware($controller) 
+    public function commandFirmware(Hub $controller): bool
     {
         // ------------------------------
         $this->printProgress();
         // ------------------------------
-        if (!$this->_firmwareHex) {
+        if (!$this->firmwareHex) {
             $firmware = new \App\Library\Firmware\Din();
-            $this->_firmwareHex = $firmware->getHex();
-            $this->_firmwareSpmPageSize = $firmware->spmPageSize();
+            $this->firmwareHex = $firmware->getHex();
+            $this->firmwareSpmPageSize = $firmware->spmPageSize();
         }
-        
+
         $PAGE_STORE_PAUSE = 150000;
-        
-        $count = count($this->_hubs);
+
+        $count = count($this->hubs);
         $index = 0;
         for ($i = 0; $i < $count; $i++) {
-            if ($this->_hubs[$i]->id == $controller->id) {
+            if ($this->hubs[$i]->id == $controller->id) {
                 $index = $i;
                 break;
             }
         }
-        
-        $this->_readPacks(250);
-        $this->_transmitCMD($controller->rom, 1, 0);
-        
+
+        $this->readPacks(250);
+        $this->transmitCMD($controller->rom, 1, 0);
+
         usleep(1000000);
-        
-        $this->_transmitCMD($controller->rom, 24, count($this->_firmwareHex));
-        
-        $hexPackStep = ceil($this->_firmwareSpmPageSize / 8);
-        
-        $dp = 100 / count($this->_firmwareHex);
+
+        $this->transmitCMD($controller->rom, 24, count($this->firmwareHex));
+
+        $hexPackStep = ceil($this->firmwareSpmPageSize / 8);
+
+        $dp = 100 / count($this->firmwareHex);
         $packs = 0;
         $p = 0;
-        foreach ($this->_firmwareHex as $hex) {
-            $this->_transmitHEX($controller->rom, $hex);
+        foreach ($this->firmwareHex as $hex) {
+            $this->transmitHEX($controller->rom, $hex);
             $packs++;
             if ($packs % $hexPackStep == 0) {
                 $a = [
@@ -364,58 +358,59 @@ class DinDaemon extends BaseDaemon
             round((($index * 100) + $p) / $count),
         ];
         Property::setDinCommandInfo(implode(';', $a), true);
-        
+
         usleep($PAGE_STORE_PAUSE);
-        
-        $this->_transmitCMD($controller->rom, 25, count($this->_firmwareHex));
-        $this->_readPacks(750);
-        
-        return ($this->_inPackCount == count($this->_firmwareHex));
+
+        $this->transmitCMD($controller->rom, 25, count($this->firmwareHex));
+        $this->readPacks(750);
+
+        return ($this->inPackCount == count($this->firmwareHex));
     }
-    
+
     /**
      * Devices sync processing and initializing controllers.
-     * 
-     * @param type $conrollerROM
+     *
+     * @param Hub $controller
+     * @return void
      */
-    private function _syncVariables($controller) 
+    private function syncVariables(Hub $controller): void
     {
-        $stat = 'OK';        
+        $stat = 'OK';
         $vars_out = [];
         $errorText = '';
         try {
             // Send command "prepare to receive"
-            $this->_transmitCMD($controller->rom, 2, count($this->_devicesLoopChanges));
+            $this->transmitCMD($controller->rom, 2, count($this->devicesLoopChanges));
 
             // Send device values
-            foreach ($this->_devicesLoopChanges as $device) {
+            foreach ($this->devicesLoopChanges as $device) {
                 if ($device->valueFromID !== $controller->id) {
-                    $this->_transmitVAR($controller->rom, $device->id, $device->value);
+                    $this->transmitVAR($controller->rom, $device->id, $device->value);
                     $vars_out[] = "$device->id: $device->value";
                 }
             }
 
             // Send command "prepare to give your changes"
-            $this->_transmitCMD($controller->rom, 3, 0);
-            
-            $this->_inVariables = [];
-            $this->_inServerCommands = [];
+            $this->transmitCMD($controller->rom, 3, 0);
+
+            $this->inVariables = [];
+            $this->inServerCommands = [];
             // Waiting for a controller's response.
-            switch ($this->_readPacks(250)) {
+            switch ($this->readPacks(250)) {
                 case 5: // Controller request of the initialization data
                     $stat = 'INIT';
                     $vars_out = [];
-                    $this->_transmitCMD($controller->rom, 6, count($this->_devices));
+                    $this->transmitCMD($controller->rom, 6, count($this->devices));
                     $counter = 0;
-                    foreach ($this->_devices as $device) {
-                        $this->_transmitVAR($controller->rom, $device->id, $device->value);
+                    foreach ($this->devices as $device) {
+                        $this->transmitVAR($controller->rom, $device->id, $device->value);
                         $vars_out[] = "$device->id: $device->value";
                         if ($counter++ > 5) {
                             usleep(75000); // We slow down periodically. The controller on the other end is not powerful.
                             $counter = 0;
                         }
                     }
-                    $this->_readPacks(250);        
+                    $this->readPacks(250);
                     break;
                 case 26: // The controller asked for the firmware
                     $stat = 'FIRMWARE QUERY';
@@ -424,21 +419,21 @@ class DinDaemon extends BaseDaemon
                     $stat = 'BOOTLOADER';
                     break;
                 case -1:
-                    $this->_inBuffer = '';
+                    $this->inBuffer = '';
                     throw new \Exception('Controller did not respond');
                 default:
                     // Saving variables data
-                    $this->_processingInVariables($controller);
-                    
+                    $this->processingInVariables($controller);
+
                     // Processing server commands
-                    $this->_processingInServerCommands();
-            }            
+                    $this->processingInServerCommands();
+            }
         } catch (\Exception $ex) {
             $stat = 'ERROR';
             $errorText = $ex->getMessage();
         }
-        
-        $this->printLine("[".parse_datetime(now())."] SYNC. '$controller->name': $stat [".strlen($this->_inBuffer)."]");
+
+        $this->printLine("[".parse_datetime(now())."] SYNC. '$controller->name': $stat [".strlen($this->inBuffer)."]");
         if ($stat == 'OK') {
             foreach (array_chunk($vars_out, 15) as $key => $chunk) {
                 if ($key == 0) {
@@ -451,12 +446,12 @@ class DinDaemon extends BaseDaemon
             if (!count($vars_out)) {
                 $this->printLine('   >>   []');
             }
-            
+
             $vars_in = [];
-            foreach ($this->_inVariables as $variable) {
+            foreach ($this->inVariables as $variable) {
                 $vars_in[] = "$variable->id: $variable->value";
             }
-            
+
             $this->printLine("   <<   [".implode(', ', $vars_in)."]");
         } elseif ($stat == 'INIT') {
             foreach (array_chunk($vars_out, 15) ?? [] as $key => $chunk) {
@@ -475,40 +470,41 @@ class DinDaemon extends BaseDaemon
         } elseif ($stat == 'IN BOOTLOADER') {
             //
         } elseif ($stat == 'FIRMWARE QUERY') {
-            if ($this->_commandFirmware($controller)) {
+            if ($this->commandFirmware($controller)) {
                 $this->printLine('FIRMWARE OK');
             } else {
                 $this->printLine('FIRMWARE ERROR');
             }
         }
     }
-    
+
     /**
-     * 
+     * @param Hub $controller
+     * @return void
      */
-    private function _processingInVariables($controller)
+    private function processingInVariables(Hub $controller): void
     {
-        foreach ($this->_inVariables as $variable) {
+        foreach ($this->inVariables as $variable) {
             Device::setValue($variable->id, $variable->value, $controller->id);
         }
     }
-    
+
     /**
-     * 
+     * @return void
      */
-    private function _processingInServerCommands()
+    private function processingInServerCommands(): void
     {
-        if (count($this->_inServerCommands) == 0) return ;
-        
+        if (count($this->inServerCommands) == 0) return ;
+
         try {
-            for ($i = 0; $i < count($this->_inServerCommands);) {
-                $w = $this->_inServerCommands[$i++];
+            for ($i = 0; $i < count($this->inServerCommands);) {
+                $w = $this->inServerCommands[$i++];
                 $cmd = $w & 0xff;
                 $args = (($w & 0xff00) >> 8) - 1;
-                $id = $this->_inServerCommands[$i++];
+                $id = $this->inServerCommands[$i++];
                 $params = [];
                 for ($p = 0; $p < $args; $p++) {
-                    $params[] = $this->_inServerCommands[$i++];
+                    $params[] = $this->inServerCommands[$i++];
                 }
                 $string = \App\Models\ScriptString::find($id);
                 if ($string) {
@@ -531,101 +527,101 @@ class DinDaemon extends BaseDaemon
                         \App\Models\Execute::command($command);
                     }
                 }
-                
+
             }
-            $this->printLine('   SC   ['.implode(', ', $this->_inServerCommands).']');
+            $this->printLine('   SC   ['.implode(', ', $this->inServerCommands).']');
         } catch (\Exception $ex) {
-            $this->printLine('Bad server command data. ['.implode(', ', $this->_inServerCommands).']');
+            $this->printLine('Bad server command data. ['.implode(', ', $this->inServerCommands).']');
         }
     }
-    
+
     /**
      * Reading the queue of the incoming packet.
      * An individual timeout value for receiving data is set.
-     * 
-     * @param integer $utimeout  Allowable waiting time for new data
+     *
+     * @param int $utimeout  Allowable waiting time for new data
      * @return int    -1 - no data received. >= 0 - received something
      */
-    private function _readPacks($utimeout = 250) 
+    private function readPacks(int $utimeout = 250): int
     {
         $returnCmd = -1;
-        $this->_waitCount = 0;
-        while ($this->_waitCount < ($utimeout / self::SLEEP_TIME)) {            
-            $c = fgetc($this->_port);
+        $this->waitCount = 0;
+        while ($this->waitCount < ($utimeout / self::SLEEP_TIME)) {
+            $c = fgetc($this->portHandle);
             if ($c !== false) {
-                $this->_waitCount = 0;        
-                $this->_inBuffer .= $c;
+                $this->waitCount = 0;
+                $this->inBuffer .= $c;
                 $cmd = 0;
-                if ($this->_processedInBuffer($cmd)) {        
-                    $this->_waitCount = 0; // Resets the timeout counter
+                if ($this->processedInBuffer($cmd)) {
+                    $this->waitCount = 0; // Resets the timeout counter
                     if ($cmd > 0) {
                         $returnCmd = $cmd;
                     } else {
                         $returnCmd = 0;
                     }
-                    
-                    if ($this->_inPackCount <= 0) break; // Let's not wait for the timeout. We read everything we needed.
+
+                    if ($this->inPackCount <= 0) break; // Let's not wait for the timeout. We read everything we needed.
                 }
             } else {
                 usleep(self::SLEEP_TIME * 1000);
-                $this->_waitCount++;
+                $this->waitCount++;
             }
         }
         return $returnCmd;
     }
-    
+
     /**
      * The main handler for all incoming packets.
-     * 
-     * @param integer $returnCmd  the code of the last command processed in this 
-     *                            iteration. If there were no commands, there 
+     *
+     * @param integer $returnCmd  the code of the last command processed in this
+     *                            iteration. If there were no commands, there
      *                            will be 0.
-     * @return boolean  true -    at least one packet was processed. false - no 
+     * @return boolean  true -    at least one packet was processed. false - no
      *                            package was found.
      */
-    private function _processedInBuffer(&$returnCmd) 
+    private function processedInBuffer(int &$returnCmd): bool
     {
         $returnCmd = 0;
         $result = false;
-        
+
         start_loop:
-        
-        if (strlen($this->_inBuffer) < 7) return $result;
-        
-        $sign = unpack('a*', $this->_inBuffer[0].$this->_inBuffer[1].$this->_inBuffer[2])[1];
+
+        if (strlen($this->inBuffer) < 7) return $result;
+
+        $sign = unpack('a*', $this->inBuffer[0].$this->inBuffer[1].$this->inBuffer[2])[1];
         $size = 0;
         switch ($sign) {
             case 'INT':
-                if (strlen($this->_inBuffer) < 7) return $result;
+                if (strlen($this->inBuffer) < 7) return $result;
                 $size = 7;
                 $crc = 0;
                 for ($i = 0; $i < $size; $i++) {
-                    $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                    $crc = $this->crc_table($crc ^ ord($this->inBuffer[$i]));
                 }
                 if ($crc === 0) {
                     $returnCmd = 0;
-                    $controller = unpack('C', $this->_inBuffer[3])[1];
-                    $data = unpack('s', $this->_inBuffer[4].$this->_inBuffer[5])[1];
-                    $this->_inServerCommands[] = $data;
-                    $this->_inPackCount--;                    
+                    $controller = unpack('C', $this->inBuffer[3])[1];
+                    $data = unpack('s', $this->inBuffer[4].$this->inBuffer[5])[1];
+                    $this->inServerCommands[] = $data;
+                    $this->inPackCount--;
                 } else {
                     $size = 0;
                 }
                 break;
             case 'CMD':
-                if (strlen($this->_inBuffer) < 8) return $result;
+                if (strlen($this->inBuffer) < 8) return $result;
                 $size = 8;
                 $crc = 0;
                 for ($i = 0; $i < $size; $i++) {
-                    $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                    $crc = $this->crc_table($crc ^ ord($this->inBuffer[$i]));
                 }
                 if ($crc === 0) {
-                    $this->_inPackCount = 0;
-                    $controller = unpack('C', $this->_inBuffer[3])[1];
-                    $cmd = unpack('C', $this->_inBuffer[4])[1];
-                    $tag = unpack('s', $this->_inBuffer[5].$this->_inBuffer[6])[1];
+                    $this->inPackCount = 0;
+                    $controller = unpack('C', $this->inBuffer[3])[1];
+                    $cmd = unpack('C', $this->inBuffer[4])[1];
+                    $tag = unpack('s', $this->inBuffer[5].$this->inBuffer[6])[1];
                     if ($cmd === 4) { // This is a package that indicates how much to read after
-                        $this->_inPackCount = $tag;
+                        $this->inPackCount = $tag;
                     }
                     $returnCmd = $cmd;
                 } else {
@@ -633,43 +629,43 @@ class DinDaemon extends BaseDaemon
                 }
                 break;
             case 'VAR':
-                if (strlen($this->_inBuffer) < 9) return $result;
+                if (strlen($this->inBuffer) < 9) return $result;
                 $size = 9;
                 $crc = 0;
                 for ($i = 0; $i < $size; $i++) {
-                    $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                    $crc = $this->crc_table($crc ^ ord($this->inBuffer[$i]));
                 }
                 if ($crc === 0) {
                     $returnCmd = 0;
-                    $controller = unpack('C', $this->_inBuffer[3])[1];
-                    $id = unpack('s', $this->_inBuffer[4].$this->_inBuffer[5])[1];
-                    $value = unpack('s', $this->_inBuffer[6].$this->_inBuffer[7])[1];
+                    $controller = unpack('C', $this->inBuffer[3])[1];
+                    $id = unpack('s', $this->inBuffer[4].$this->inBuffer[5])[1];
+                    $value = unpack('s', $this->inBuffer[6].$this->inBuffer[7])[1];
                     $value = $value / 10;
-                    $this->_inVariables[] = (object)[
+                    $this->inVariables[] = (object)[
                         'id' => $id,
                         'value' => $value,
                     ];
-                    $this->_inPackCount--;                    
+                    $this->inPackCount--;
                 } else {
                     $size = 0;
                 }
                 break;
             case 'ROM':
-                if (strlen($this->_inBuffer) < 13) return $result;
+                if (strlen($this->inBuffer) < 13) return $result;
                 $size = 13;
-                $controller = unpack('C', $this->_inBuffer[3])[1];
+                $controller = unpack('C', $this->inBuffer[3])[1];
                 $crc = 0;
                 for ($i = 0; $i < $size; $i++) {
-                    $crc = $this->_crc_table($crc ^ ord($this->_inBuffer[$i]));
+                    $crc = $this->crc_table($crc ^ ord($this->inBuffer[$i]));
                 }
                 if ($crc === 0) {
                     $returnCmd = 0;
                     $rom = [];
                     for ($i = 0; $i < 8; $i++) {
-                        $rom[] = unpack('C', $this->_inBuffer[4 + $i])[1];
+                        $rom[] = unpack('C', $this->inBuffer[4 + $i])[1];
                     }
-                    $this->_inRooms[] = $rom;
-                    $this->_inPackCount--;
+                    $this->inRooms[] = $rom;
+                    $this->inPackCount--;
                 } else {
                     $size = 0;
                 }
@@ -677,42 +673,42 @@ class DinDaemon extends BaseDaemon
             default:
                 $sign = '';
         }
-        
+
         if ($sign == '' || $size === 0) {
-            for ($i = 1; $i < strlen($this->_inBuffer) - 2; $i++) {
-                if ($this->_inBuffer[$i] >= 'A' &&
-                    $this->_inBuffer[$i + 1] >= 'A' &&
-                    $this->_inBuffer[$i + 2] >= 'A') {
+            for ($i = 1; $i < strlen($this->inBuffer) - 2; $i++) {
+                if ($this->inBuffer[$i] >= 'A' &&
+                    $this->inBuffer[$i + 1] >= 'A' &&
+                    $this->inBuffer[$i + 2] >= 'A') {
                     $size = $i;
                     break;
                 }
             }
         }
-        
+
         if ($size === 0) {
-            $this->_inBuffer = '';
+            $this->inBuffer = '';
             return $result;
-        } elseif ($size === strlen($this->_inBuffer)) {
-            $this->_inBuffer = '';
+        } elseif ($size === strlen($this->inBuffer)) {
+            $this->inBuffer = '';
             return true;
         } else {
-            $this->_inBuffer = substr($this->_inBuffer, $size);
+            $this->inBuffer = substr($this->inBuffer, $size);
             $result = true;
             goto start_loop;
         }
     }
-    
+
     /**
      * CRC calculating.
-     * 
+     *
      * @param int $data
-     * @return type
+     * @return int
      */
-    private function _crc_table($data) 
+    private function crc_table(int $data): int
     {
         $crc = 0x0;
         $fb_bit = 0;
-        for ($b = 0; $b < 8; $b++) { 
+        for ($b = 0; $b < 8; $b++) {
             $fb_bit = ($crc ^ $data) & 0x01;
             if ($fb_bit == 0x01) {
                 $crc = $crc ^ 0x18;
@@ -725,35 +721,33 @@ class DinDaemon extends BaseDaemon
         }
         return $crc;
     }
-    
+
     /**
-     * 
-     * @param type $controllerROM
-     * @param type $cmd
-     * @param type $tag
+     * @param int $controllerROM
+     * @param int $cmd
+     * @param int $tag
      */
-    private function _transmitCMD($controllerROM, $cmd, $tag) 
+    private function transmitCMD(int $controllerROM, int $cmd, int $tag)
     {
         $pack = pack('a*', 'CMD');
         $pack .= pack('C', $controllerROM);
         $pack .= pack('C', $cmd);
-        $pack .= pack('s', $tag);        
+        $pack .= pack('s', $tag);
         $crc = 0x0;
         for ($i = 0; $i < strlen($pack); $i++) {
-            $crc = $this->_crc_table($crc ^ ord($pack[$i]));
+            $crc = $this->crc_table($crc ^ ord($pack[$i]));
         }
-        $pack .= pack('C', $crc);        
-        fwrite($this->_port, $pack);
-        fflush($this->_port);
+        $pack .= pack('C', $crc);
+        fwrite($this->portHandle, $pack);
+        fflush($this->portHandle);
     }
-    
+
     /**
-     * 
-     * @param type $controllerROM
-     * @param type $id
-     * @param type $value
+     * @param int $controllerROM
+     * @param int $id
+     * @param float $value
      */
-    private function _transmitVAR($controllerROM, $id, $value) 
+    private function transmitVAR(int $controllerROM, int $id, float $value)
     {
         $pack = pack('a*', 'VAR');
         $pack .= pack('C', $controllerROM);
@@ -761,19 +755,18 @@ class DinDaemon extends BaseDaemon
         $pack .= pack('s', ceil($value * 10));
         $crc = 0x0;
         for ($i = 0; $i < strlen($pack); $i++) {
-            $crc = $this->_crc_table($crc ^ ord($pack[$i]));
+            $crc = $this->crc_table($crc ^ ord($pack[$i]));
         }
         $pack .= pack('C', $crc);
-        fwrite($this->_port, $pack);
-        fflush($this->_port);
+        fwrite($this->portHandle, $pack);
+        fflush($this->portHandle);
     }
-    
+
     /**
-     * 
-     * @param type $controllerROM
-     * @param type $data
+     * @param int $controllerROM
+     * @param array $data
      */
-    private function _transmitHEX($controllerROM, $data) 
+    private function transmitHEX(int $controllerROM, array $data)
     {
         $pack = pack('a*', 'HEX');
         $pack .= pack('C', $controllerROM);
@@ -782,12 +775,12 @@ class DinDaemon extends BaseDaemon
         }
         $crc = 0x0;
         for ($i = 0; $i < strlen($pack); $i++) {
-            $crc = $this->_crc_table($crc ^ ord($pack[$i]));
+            $crc = $this->crc_table($crc ^ ord($pack[$i]));
         }
         $pack .= pack('C', $crc);
-        fwrite($this->_port, $pack);
-        fflush($this->_port);
-        
+        fwrite($this->portHandle, $pack);
+        fflush($this->portHandle);
+
         usleep(10000); // Otherwise, the controller does not have time to process.
     }
 }

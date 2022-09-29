@@ -10,15 +10,15 @@ class DeviceChange extends Model
     public $timestamps = false;
 
     /**
-     * 
      * @param int $id
+     * @return void
      */
-    static public function deleteById(int $id)
+    public static function deleteById(int $id): void
     {
         try {
             $item = DeviceChange::find($id);
             if (!$item) abort(404);
-            
+
             $item->delete();
         } catch (\Exception $ex) {
             abort(response()->json([
@@ -26,17 +26,16 @@ class DeviceChange extends Model
             ]), 422);
         }
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return string
      */
-    static public function getCount()
+    public static function getCount(): string
     {
         $count = self::count();
-        
+
         $sizes = ['', 'k', 'M', 'G'];
-        
+
         $s = 0;
         for ($i = 0; $i < 4; $i++) {
             if ($count > 1000) {
@@ -46,7 +45,7 @@ class DeviceChange extends Model
                 break;
             }
         }
-        
+
         return round($count, 2).$sizes[$s];
     }
 }

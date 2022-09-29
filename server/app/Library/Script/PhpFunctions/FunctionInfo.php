@@ -1,24 +1,18 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Library\Script\PhpFunctions;
 
 use App\Models\Device;
 use Illuminate\Support\Facades\Lang;
 
-trait FunctionInfo 
+trait FunctionInfo
 {
     /**
-     * 
+     * @return void
      */
-    public function function_info() 
+    public function function_info(): void
     {
-        // Формируем строку текущего времени  ------------------------------
+        // We form a string of the current time  ------------------------------
         $h = now()->hour;
         $m = now()->minute;
         $minute_speech = '';
@@ -43,7 +37,7 @@ trait FunctionInfo
         $text = Lang::get('admin/daemons/command-daemon.hours.'.$h).$minute_speech;
         $this->function_speech($text);
 
-        // Формируем строку текущей температуры на улице  ------------------
+        // We form a string of the current temperature on the outside  ------------------
         $temp_item = Device::find(config("settings.command_info_temp_id"));
         if ($temp_item) {
             $t_out = $temp_item->value;

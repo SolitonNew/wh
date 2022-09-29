@@ -5,19 +5,20 @@ namespace App\Library\Script\PhpFunctions;
 use App\Models\Device;
 use App\Models\Schedule;
 
-trait FunctionSet 
+trait FunctionSet
 {
     /**
-     * 
-     * @param type $name
-     * @param type $value
+     * @param string $name
+     * @param float $value
+     * @param int $time
+     * @return void
      * @throws \Exception
      */
-    public function function_set(string $name, float $value, int $time = 0) 
+    public function function_set(string $name, float $value, int $time = 0): void
     {
         $device = Device::whereName($name)->first();
         if ($device) {
-            if ($this->_fake) {
+            if ($this->fake) {
                 //
             } else {
                 if ($time == 0) {

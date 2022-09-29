@@ -4,52 +4,46 @@ namespace App\Library\CamcorderHostDrivers;
 
 use App\Models\Device;
 use \Cron\CronExpression;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Lang;
 
 class CamcorderDriverBase
 {
     /**
-     *
-     * @var type 
+     * @var string
      */
-    public $name = '';
-    
+    public string $name = '';
+
     /**
-     *
-     * @var type 
+     * @var array
      */
-    public $channels = [];
-    
+    public array $channels = [];
+
     /**
-     *
-     * @var type 
+     * @var array
      */
-    public $properties = [];   // Key => small|large
-    
+    public array $properties = [];   // Key => small|large
+
     /**
-     *
-     * @var type 
+     * @var object|null
      */
-    protected $data;
-    
+    protected object|null $data;
+
     /**
-     *
-     * @var type 
+     * @var string|null
      */
-    protected $key;
-    
+    protected string|null $key;
+
     /**
-     *
-     * @var type 
+     * @var string|null
      */
-    protected $caption;
-    
+    protected string|null $caption;
+
     /**
-     *
-     * @var type 
+     * @var string
      */
-    protected $thumbnailCronExpression = '* * * * *';
-    
+    protected string $thumbnailCronExpression = '* * * * *';
+
     public function __get($name) {
         switch ($name) {
             case 'title':
@@ -59,39 +53,39 @@ class CamcorderDriverBase
                 return $this->caption;
         }
     }
-    
+
     /**
-     * 
-     * @param type $key
+     * @param string|null $key
+     * @return void
      */
-    public function assignKey($key)
+    public function assignKey(string|null $key): void
     {
         $this->key = $key;
     }
-    
+
     /**
-     * 
-     * @param type $caption
+     * @param string|null $caption
+     * @return void
      */
-    public function assignCaption($caption)
+    public function assignCaption(string|null $caption): void
     {
         $this->caption = $caption;
     }
-    
+
     /**
-     * 
-     * @param type $data
+     * @param string|null $data
+     * @return void
      */
-    public function assignData($data)
+    public function assignData(string|null $data): void
     {
         $this->data = json_decode($data);
     }
-    
+
     /**
-     * 
-     * @return type
+     *
+     * @return array
      */
-    public function propertiesWithTitles()
+    public function propertiesWithTitles(): array
     {
         $result = [];
         foreach ($this->properties as $key => $val) {
@@ -100,72 +94,66 @@ class CamcorderDriverBase
                 'size' => $val,
             ];
         }
-        
+
         return $result;
     }
-    
+
     /**
-     * 
-     * @param type $key
-     * @return type
+     * @param string $key
+     * @return string
      */
-    protected function getDataValue($key)
+    protected function getDataValue(string $key): string
     {
         return isset($this->data->$key) ? $this->data->$key : '';
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return Collection
      */
-    public function getAssociatedDevices()
+    public function getAssociatedDevices(): Collection
     {
         return Device::whereTyp('camcorder')
             ->whereHostId($this->key)
             ->get();
     }
-    
+
     /**
-     * 
-     * @return boolean
+     * @return bool
      */
-    public function canThumbnailRequest()
+    public function canThumbnailRequest(): bool
     {
         return CronExpression::factory($this->thumbnailCronExpression)->isDue();
     }
-    
+
     /**
-     * 
      * @return string
      */
-    public function thumbnailRequest() 
+    public function requestThumbnail(): string
     {
         return '';
     }
-    
+
     /**
-     * 
+     * @return bool
      */
-    public function checkRecording()
+    public function checkRecording(): bool
     {
         return false;
     }
-    
+
     /**
-     * 
      * @param int $key
      * @return string
      */
-    public function startRecording(int $key)
+    public function startRecording(int $key): string
     {
         return '';
     }
-    
+
     /**
-     * 
      * @return string
      */
-    public function stopRecording()
+    public function stopRecording(): string
     {
         return '';
     }

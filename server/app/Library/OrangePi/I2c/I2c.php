@@ -2,20 +2,22 @@
 
 namespace App\Library\OrangePi\I2c;
 
-class I2c 
+class I2c
 {
     const PORT = 0;
-    
-    private $_address = false;
-    
+
     /**
-     * 
-     * @return type
+     * @var int|bool|type
      */
-    static public function scan()
+    private int|bool $address = false;
+
+    /**
+     * @return array
+     */
+    public static function scan(): array
     {
         $output = shell_exec('i2cdetect -y -a '.self::PORT);
-        
+
         $result = [];
         $num = 0;
         $y = 0;
@@ -33,58 +35,54 @@ class I2c
             }
             $y++;
         }
-        
+
         return $result;
     }
-    
+
     /**
-     * 
-     * @param type $address
+     * @param int $address
      */
-    public function __construct($address)
+    public function __construct(int $address)
     {
-        $this->_address = $address;
-    }
-    
-    /**
-     * 
-     * @param type $adr
-     * @param type $byte
-     */
-    protected function writeByte($adr, $byte)
-    {
-        shell_exec('i2cset -y '.self::PORT.' '.$this->_address.' '.$adr.' '.$byte);
+        $this->address = $address;
     }
 
     /**
-     * 
-     * @param type $adr
-     * @return type
+     * @param int $adr
+     * @param int $byte
+     * @return void
      */
-    protected function readByte($adr): int
+    protected function writeByte(int $adr, int $byte): void
     {
-        return hexdec(trim(shell_exec('i2cget -y '.self::PORT.' '.$this->_address.' '.$adr)));
+        shell_exec('i2cset -y '.self::PORT.' '.$this->address.' '.$adr.' '.$byte);
     }
 
     /**
-     * 
-     * @param type $adr
-     * @return type
+     * @param int $adr
+     * @return int
      */
-    protected function readWord($adr)
+    protected function readByte(int $adr): int
+    {
+        return hexdec(trim(shell_exec('i2cget -y '.self::PORT.' '.$this->address.' '.$adr)));
+    }
+
+    /**
+     * @param int $adr
+     * @return int
+     */
+    protected function readWord(int $adr): int
     {
         // ATANTION! Joke from Bosch! LBS before HBS. For calibration registers only!
         $lbs = $this->readByte($adr);
         $hbs = $this->readByte($adr + 1);
         return ($hbs << 8) + $lbs;
     }
-    
+
     /**
-     * 
-     * @param type $adr
-     * @return type
+     * @param int $adr
+     * @return int
      */
-    protected function readWordSign($adr)
+    protected function readWordSign(int $adr): int
     {
         $val = $this->readWord($adr);
         if ($val >= 0x8000) {
@@ -95,11 +93,10 @@ class I2c
     }
 
     /**
-     * 
-     * @param type $adr
-     * @return type
+     * @param int $adr
+     * @return int
      */
-    protected function readLong($adr)
+    protected function readLong(int $adr): int
     {
         $mbs = $this->readByte($adr);
         $lbs = $this->readByte($adr + 1);
@@ -108,12 +105,11 @@ class I2c
         $val = ($val >> 4);
         return $val;
     }
-    
+
     /**
-     * 
-     * @return type
+     * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         return [];
     }
