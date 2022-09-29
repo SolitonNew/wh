@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -22,9 +23,9 @@ class I2cHost extends AffectsFirmwareModel
     }
 
     /**
-     * @return Collection
+     * @return Relation
      */
-    public function devices(): Collection
+    public function devices(): Relation
     {
         return $this->hasMany(Device::class, 'host_id')
                     ->whereTyp('i2c')
