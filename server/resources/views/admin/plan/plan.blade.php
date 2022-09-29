@@ -23,7 +23,7 @@
     .plan-part-toolbar {
         position: absolute;
         display:flex;
-        align-items: center; 
+        align-items: center;
         background-color: #ffffff;
         padding: 0.375rem 1.5rem;
         border: 1px solid #ced4da;
@@ -31,7 +31,7 @@
         z-index: 1;
         margin-left: 250px;
     }
-    
+
     @media(max-width: 768px) {
         .plan-part-toolbar {
             position: relative;
@@ -40,31 +40,31 @@
             max-width: 100%;
         }
     }
-    
+
     .plan-part-toolbar > * {
         margin: 0px;
         margin-right: 1.25rem;
     }
-    
+
     .plan-part-toolbar .btn {
         margin: 0.25rem;
     }
-    
+
     .main-content {
         display: flex;
         flex-direction: column;
     }
-    
+
     .content-body {
         background-image: url('/img/plan/grid.svg');
     }
-    
+
     #planContentOff {
         opacity: 0.65;
     }
-    
+
     .btn-zoom {
-        padding: 12px 12px; 
+        padding: 12px 12px;
         border-radius: 2rem;
         border: 1px solid #ffffff;
     }
@@ -81,12 +81,12 @@
 <div id="planToolbar" style="display: flex;justify-content: center;width: 100%;">
     <div class="plan-part-toolbar">
         <label id="toolbarPartName" class="strong">Room</label>
-        
+
         <label id="toolbarOperation" class="">operation</label>
 
         <label id="toolbarLabel1" class="strong">X</label>
         <input id="toolbarValue1" class="form-control" type="number" step="0.01" style="width: 80px;" oninput="planToolbarValue1(event);">
-        
+
         <label id="toolbarLabel2" class="strong">Y</label>
         <input id="toolbarValue2" class="form-control" type="number" step="0.01" style="width: 80px;" oninput="planToolbarValue2(event)">
 
@@ -113,7 +113,7 @@
                 @if($row->W > 0 && $row->H > 0)
                 <div class="plan-part {{ $row->fill }}" data-id="{{ $row->id }}" data-parent-id="{{ $row->parent_id }}"
                      style="border: {{ $row->pen_width }}px {{ $row->pen_style }};"
-                     data-x="{{ $row->X }}" data-y="{{ $row->Y }}" 
+                     data-x="{{ $row->X }}" data-y="{{ $row->Y }}"
                      data-w="{{ $row->W }}" data-h="{{ $row->H }}"
                      data-pen-style="{{ $row->pen_style }}" data-pen-width="{{ $row->pen_width }}"
                      data-name-dx="{{ $row->name_dx }}" data-name-dy="{{ $row->name_dy }}">
@@ -122,13 +122,13 @@
                 @endif
             @endforeach
             @foreach($ports as $port)
-            <div class="plan-port" 
-                 data-id="{{ $port->id }}" data-index="{{ $port->index }}" data-part-id="{{ $port->partID }}" 
-                 data-position="{{ $port->position }}" 
+            <div class="plan-port"
+                 data-id="{{ $port->id }}" data-index="{{ $port->index }}" data-part-id="{{ $port->partID }}"
+                 data-position="{{ $port->position }}"
                  data-part-bounds="{{ $port->partBounds }}"></div>
             @endforeach
             @foreach($devices as $row)
-            <div class="plan-device dev-{{ $row->app_control }}" 
+            <div class="plan-device dev-{{ $row->app_control }}"
                  data-id="{{ $row->id }}" data-part-id="{{ $row->room_id }}"
                  data-position="{{ $row->position }}"
                  data-part-bounds="{{ $row->partBounds }}"></div>
@@ -197,12 +197,12 @@
     const planZoomMin = 5;
     const planPenZoomScale = 50;
     const planMinPenWidth = 0.5;
-    
+
     var planZoom = 50;
     var planMouseDown = false;
     var planMouseScroll = false;
-    var planMinX = 0;    
-    var planMinY = 0;    
+    var planMinX = 0;
+    var planMinY = 0;
     var planContextMenuID = -1;
     var planContextMenuMouse = false;
     var planContextMenuOpened = false;
@@ -211,19 +211,19 @@
 
     $(document).ready(() => {
         $('#planToolbar').hide();
-        
+
         window.addEventListener('mousedown', function (e) {
             planContextMenuOpened = ($('#planPartMenu').css('display') != 'none');
-            
+
             if ($('#planPartMenu').find(e.target).length == 0) {
                 $('#planPartMenu').hide();
             }
         });
-        
+
         window.addEventListener('mouseup', function (e) {
-            $('#planPartMenu').hide();
+            //$('#planPartMenu').hide();
         });
-        
+
         @if($partID)
         $('#planContent .plan-part').on('click', function (e) {
             if (planMouseScroll) return ;
@@ -233,11 +233,11 @@
             planShowContextMenu(e, 'part');
             return false;
         }).on('mouseover', function () {
-            $('#planParts a.tree-item[data-id="' + $(this).data('id') + '"]').addClass('hover'); 
+            $('#planParts a.tree-item[data-id="' + $(this).data('id') + '"]').addClass('hover');
         }).on('mouseleave', function () {
             $('#planParts a.tree-item[data-id="' + $(this).data('id') + '"]').removeClass('hover');
         });
-        
+
         $('#planContent .plan-port').on('click', function (e) {
             if (planMouseScroll) return ;
             if (planContextMenuOpened) return ;
@@ -246,7 +246,7 @@
             planShowContextMenu(e, 'port');
             return false;
         });
-        
+
         $('#planContent .plan-device').on('click', function (e) {
             if (planMouseScroll) return ;
             if (planContextMenuOpened) return ;
@@ -265,7 +265,7 @@
         $(window).on('resize', function() {
             planResize();
         }).trigger('resize');
-        
+
         $('#planContentScroll').on('wheel', function (e) {
             e.preventDefault();
             $('#planPartMenu').hide();
@@ -292,7 +292,7 @@
                     planMouseScroll = ((Math.abs(planMouseDown.x - e.screenX) > planMouseScrollDelta) ||
                                        (Math.abs(planMouseDown.y - e.screenY) > planMouseScrollDelta));
                 }
-                
+
                 if (planMouseScroll) {
                     $('div', this).css('cursor', 'all-scroll');
                 }
@@ -305,41 +305,41 @@
             let pos = $('#planContent').position();
             $(this).css({
                 'background-position-x': pos.left + planMinX + planRootPenWidth2 - $(this).scrollLeft() + 'px',
-                'background-position-y': pos.top + planMinY + planRootPenWidth2 - $(this).scrollTop() + 'px',                
+                'background-position-y': pos.top + planMinY + planRootPenWidth2 - $(this).scrollTop() + 'px',
             });
         });
-        
+
         $('#planParts a.tree-item').on('mouseover', function () {
             $('#planContent .plan-part[data-id="' + $(this).data('id') + '"]').addClass('hover');
         }).on('mouseleave', function () {
             $('#planContent .plan-part[data-id="' + $(this).data('id') + '"]').removeClass('hover');
         });
-        
+
         $('#planZoomInBtn').on('click', function () {
             planZoomIn(2);
         });
-        
+
         $('#planZoomOutBtn').on('click', function () {
             planZoomOut(2);
         });
-        
+
         // Compact Navigate
         $('#planPartsCombobox').on('change', function () {
             window.location.href = '{{ route("admin.plan", ["id" => ""]) }}/' + $(this).val();
         });
-        
+
         $('.dropdown-menu-sub').on('mousedown', function (e) {
             e.stopPropagation();
         });
-        
+
         $('.dropdown-menu-sub').on('mouseup', function (e) {
             e.stopPropagation();
         });
     });
-    
+
     function planShowContextMenu(e, typ) {
         $('#planPartMenu > div').hide();
-        
+
         switch (typ) {
             case 'part':
                 $('#planPartMenu > .plan-part-context').show();
@@ -351,16 +351,16 @@
                 $('#planPartMenu > .plan-device-context').show();
                 break;
         }
-        
+
         let scrollOffset = $('#planContentScroll').offset();
         let parentOffset = $('#planPartMenu').parent().position();
-        
+
         let w = $('#planPartMenu').width();
         let h = $('#planPartMenu').height();
-        
+
         let x = e.pageX - parentOffset.left;
         let y = e.pageY - parentOffset.top;
-        
+
         let pageW = $('#planContentScroll').width();
         let pageH = $('#planContentScroll').height();
         if (x + w > pageW + scrollOffset.left - parentOffset.left) {
@@ -373,11 +373,11 @@
             left: x + 'px',
             top: y + 'px',
         }).show();
-        
+
         let part = $(e.currentTarget);
         let offset = part.offset();
         planContextMenuID = part.data('id');
-        
+
         planContextMenuMouse = {
             x: e.pageX - offset.left,
             y: e.pageY - offset.top,
@@ -386,7 +386,7 @@
 
     function planResize() {
         let penWidth2Parts = new Array(); /* Нужен кеш с вычислениями бордеров, что бы правильно позиционировать устройства */
-        
+
         let minX = 99999999;
         let minY = 99999999;
         let maxX = -99999999;
@@ -395,7 +395,7 @@
         $('#planContent .plan-part').css({
             'transition-duration': '0s',
         });
-        
+
         planRootPenWidth2 = false;
 
         /* Setting the display of rooms */
@@ -411,11 +411,11 @@
 
             let penWidth2 = Math.ceil(penWidth / 2);
             penWidth = penWidth2 + penWidth2;
-            
+
             if (planRootPenWidth2 === false) {
                 planRootPenWidth2 = penWidth2;
             }
-            
+
             penWidth2Parts.push({
                 id: $(this).data('id'),
                 width: penWidth2,
@@ -430,7 +430,7 @@
             if (y < minY) minY = y;
             if (x + w > maxX) maxX = x + w;
             if (y + h > maxY) maxY = y + h;
-            
+
             let bg_z = planZoom * 2.5 / Math.sqrt(planZoom);
             let f_size = planZoom * 2 / Math.sqrt(planZoom);
 
@@ -443,7 +443,7 @@
                 'background-size': bg_z + 'px',
                 'font-size': f_size + 'px',
             });
-            
+
             let span = $('span', this);
             let w2 = 0;
             let h2 = 0;
@@ -459,28 +459,28 @@
                 top: h2 + h2 * $(this).data('name-dy') / 100 - span.height() / 2 + 'px',
             });
         });
-        
+
         $('#planContent .plan-port').each(function () {
             let partId = $(this).data('part-id');
             let position = $(this).data('position');
-            let partBounds = $(this).data('partBounds');            
-            
+            let partBounds = $(this).data('partBounds');
+
             let partX = partBounds.X * planZoom;
             let partY = partBounds.Y * planZoom;
             let partW = partBounds.W * planZoom;
             let partH = partBounds.H * planZoom;
-            
+
             let pw = 0;
             let ph = 0;
             let pw2 = 1;
-            
+
             for (let i = 0; i < penWidth2Parts.length; i++) {
                 if (penWidth2Parts[i].id == partId) {
                     pw2 = penWidth2Parts[i].width;
                     break;
                 }
             }
-            
+
             switch (position.surface) {
                 case 'top':
                     pw = position.width * planZoom + pw2 + pw2;
@@ -528,7 +528,7 @@
                     break;
             }
         });
-        
+
         /* Setting the display of devices */
         let devicePenWidth = planZoom / planPenZoomScale;
         if (devicePenWidth < planMinPenWidth) devicePenWidth = planMinPenWidth;
@@ -537,7 +537,7 @@
         let deviceW = 0.20 * planZoom;
         let deviceH = 0.20 * planZoom;
         let deviceR = 0.05 * planZoom;
-        
+
         $('#planContent .plan-device').each(function () {
             let partId = $(this).data('part-id');
             let partPenWidth2 = 1;
@@ -548,18 +548,18 @@
                 }
             }
             let partPenWidth = partPenWidth2 + partPenWidth2;
-            
+
             let position = $(this).data('position');
             let partBounds = $(this).data('partBounds');
-            
+
             let partX = partBounds.X * planZoom + partPenWidth2;
             let partY = partBounds.Y * planZoom + partPenWidth2;
             let partW = partBounds.W * planZoom - partPenWidth;
             let partH = partBounds.H * planZoom - partPenWidth;
-            
+
             let kx = (partW - deviceW) / partBounds.W;
             let ky = (partH - deviceH) / partBounds.H;
-            
+
             switch (position.surface) {
                 case 'top':
                     $(this).css({
@@ -613,7 +613,7 @@
                     break;
             }
         });
-        
+
         /* Setting a view port */
         let w = maxX - minX;
         let h = maxY - minY;
@@ -637,10 +637,10 @@
         $('#planContent .plan-part').css({
             'transition-duration': '0.25s',
         });
-        
+
         planMinX = minX;
         planMinY = minY;
-        
+
         $('#planContentScroll').css({
             'background-size': planZoom + 'px',
             'background-position-x': nx + planMinX + planRootPenWidth2 - $('#planContentScroll').scrollLeft() + 'px',
@@ -651,37 +651,37 @@
     function planZoomIn(step) {
         let z = planZoom * (step ? step : planZoomStep);
         if (z > planZoomMax) z = planZoomMax;
-        
+
         let z_off = z / planZoom;
         let s_w = $('#planContentScroll').width();
         let s_h = $('#planContentScroll').height();
         let s_x = $('#planContentScroll').scrollLeft();
         let s_y = $('#planContentScroll').scrollTop();
-        
+
         planZoom = z;
         planResize();
-        
+
         let c_x = (s_x + s_w / 2) * z_off - s_w / 2;
         $('#planContentScroll').scrollLeft(c_x);
         let c_y = (s_y + s_h / 2) * z_off - s_h / 2;
         $('#planContentScroll').scrollTop(c_y);
-        
+
         setCookie('planZoom', planZoom);
     }
 
     function planZoomOut(step) {
         let z = planZoom / (step ? step : planZoomStep);
         if (z < planZoomMin) z = planZoomMin;
-        
+
         let z_off = z / planZoom;
         let s_w = $('#planContentScroll').width();
         let s_h = $('#planContentScroll').height();
         let s_x = $('#planContentScroll').scrollLeft();
         let s_y = $('#planContentScroll').scrollTop();
-        
+
         planZoom = z;
         planResize();
-        
+
         let c_x = (s_x + s_w / 2) * z_off - s_w / 2;
         $('#planContentScroll').scrollLeft(c_x);
         let c_y = (s_y + s_h / 2) * z_off - s_h / 2;
@@ -707,11 +707,11 @@
         dialog('{{ route("admin.plan-order", ["id" => $partID]) }}');
     }
     @endif
-    
+
     function planImport() {
         dialog('{{ route("admin.plan-import") }}');
     }
-    
+
     @if($partID)
     function planMenuPlanEdit() {
         dialog('{{ route("admin.plan-edit", ["id" => ""]) }}/' + planContextMenuID);
@@ -724,24 +724,24 @@
     function planMenuAddPart() {
         dialog('{{ route("admin.plan-edit", ["id" => -1, "p_id" => ""]) }}/' + planContextMenuID);
     }
-        
+
     function planMenuAddDevice() {
         let part = $('#planContent .plan-part[data-id="' + planContextMenuID + '"]');
-        
+
         let w = part.width();
         let h = part.height();
-        
+
         let b = Math.min(w, h) / 4;
-        
+
         let surface = 'top';
         let offset = 0;
         let cross = 0;
-        
+
         let x1 = b;
         let x2 = w - b;
         let y1 = b;
         let y2 = h - b;
-        
+
         if (planContextMenuMouse.y < y1) {
             surface = 'top';
             if (planContextMenuMouse.y > planContextMenuMouse.x) {
@@ -780,10 +780,10 @@
         } else {
             surface = 'roof';
         }
-        
+
         let m_x = planContextMenuMouse.x;
         let m_y = planContextMenuMouse.y;
-        
+
         switch (surface) {
             case 'top':
                 offset = Math.round(part.data('w') * m_x / w * 10) / 10;
@@ -802,10 +802,10 @@
                 cross = Math.round(part.data('h') * m_y / h * 10) / 10;
                 break;
         }
-        
+
         dialog('{{ route("admin.plan-link-device", ["planID" => "", "deviceID" => ""]) }}/' + planContextMenuID + '/-1?surface=' + surface + '&offset=' + offset + '&cross=' + cross);
     }
-    
+
     function planMenuClonePart(direction) {
         $.ajax({
             url: '{{ route("admin.plan-clone", ["id" => "", "direction" => ""]) }}/' + planContextMenuID + '/' + direction,
@@ -813,25 +813,25 @@
                 if (data == 'OK') {
                     window.location.reload();
                 } else {
-                    
+
                 }
             },
         });
     }
-    
+
     function planMenuToolbar(operation) {
         planToolbarCancel(true);
-        
+
         planToolbarPart = $('#planContent .plan-part[data-id="' + planContextMenuID + '"]');
-        
+
         $('#toolbarPartName').text($('#planParts .tree-item[data-id="' + planContextMenuID + '"]').text());
-        
+
         switch (operation) {
             case 'move':
                 $('#toolbarOperation').text('@lang("admin/plan.toolbar_move")');
                 $('#toolbarLabel1').text('@lang("admin/plan.toolbar_move_x"):');
                 $('#toolbarLabel2').text('@lang("admin/plan.toolbar_move_y"):');
-                
+
                 let parent = $('#planContent .plan-part[data-id="' + planToolbarPart.data('parent-id') + '"]');
                 let parent_x = 0;
                 let parent_y = 0;
@@ -839,7 +839,7 @@
                     parent_x = Math.ceil(parent.data('x') * 100) / 100;
                     parent_y = Math.ceil(parent.data('y') * 100) / 100;
                 }
-                
+
                 $('#toolbarValue1')
                     .val(Math.ceil((planToolbarPart.data('x') - parent_x) * 100) / 100)
                     .data('old', planToolbarPart.data('x'))
@@ -853,7 +853,7 @@
                 $('#toolbarOperation').text('@lang("admin/plan.toolbar_size")');
                 $('#toolbarLabel1').text('@lang("admin/plan.toolbar_size_w"):');
                 $('#toolbarLabel2').text('@lang("admin/plan.toolbar_size_h"):');
-                
+
                 $('#toolbarValue1')
                     .val(planToolbarPart.data('w'))
                     .data('old', planToolbarPart.data('w'));
@@ -862,12 +862,12 @@
                     .data('old', planToolbarPart.data('h'));
                 break;
         }
-        
+
         $('#planToolbar')
             .data('operation', operation)
             .fadeIn(250);
     }
-    
+
     function planToolbarValue1(event) {
         switch ($('#planToolbar').data('operation')) {
             case 'move':
@@ -881,7 +881,7 @@
                 break;
         }
     }
-    
+
     function planToolbarValue2(event) {
         switch ($('#planToolbar').data('operation')) {
             case 'move':
@@ -895,18 +895,18 @@
                 break;
         }
     }
-    
+
     function planToolbarOk() {
         let id = planToolbarPart.data('id');
         switch ($('#planToolbar').data('operation')) {
             case 'move':
                 let newX = parseFloat($('#toolbarValue1').val()) + parseFloat($('#toolbarValue1').data('parent'));
                 let newY = parseFloat($('#toolbarValue2').val()) + parseFloat($('#toolbarValue2').data('parent'));
-                
+
                 $.post({
                     url: '{{ route("admin.plan-move", ["id" => "", "newX" => "", "newY" => ""]) }}/' + id + '/' + newX + '/' + newY,
                     data: {
-                        
+
                     },
                     success: function (data) {
                         if (data == 'OK') {
@@ -924,7 +924,7 @@
                 $.post({
                     url: '{{ route("admin.plan-size", ["id" => "", "newW" => "", "newH" => ""]) }}/' + id + '/' + newW + '/' + newH,
                     data: {
-                        
+
                     },
                     success: function (data) {
                         if (data == 'OK') {
@@ -936,7 +936,7 @@
                 break;
         }
     }
-    
+
     function planToolbarCancel(fast) {
         if (planToolbarPart) {
             switch ($('#planToolbar').data('operation')) {
@@ -952,35 +952,35 @@
         }
         planResize();
         planToolbarPart = false;
-        
+
         $('#planToolbar').fadeOut(fast ? 0 : 250);
     }
-    
+
     function planMenuDeviceLink() {
         let device = $('#planContentOff .plan-device[data-id="' + planContextMenuID + '"]');
         dialog('{{ route("admin.plan-link-device", ["planID" => "", "deviceID" => ""]) }}/' + device.data('part-id') + '/' + device.data('id'));
     }
-    
-    function planMenuDeviceEdit() {       
+
+    function planMenuDeviceEdit() {
         dialog('{{ route("admin.hub-device-edit", ["hubID" => -1, "id" => ""]) }}/' + planContextMenuID);
     }
-    
+
     function planMenuAddPort() {
         let part = $('#planContent .plan-part[data-id="' + planContextMenuID + '"]');
-        
+
         let w = part.width();
         let h = part.height();
-        
+
         let b = Math.min(w, h) / 4;
-        
+
         let surface = 'top';
         let offset = 0;
-        
+
         let x1 = b;
         let x2 = w - b;
         let y1 = b;
         let y2 = h - b;
-        
+
         if (planContextMenuMouse.y < y1) {
             surface = 'top';
             if (planContextMenuMouse.y > planContextMenuMouse.x) {
@@ -1016,8 +1016,8 @@
             if (planContextMenuMouse.x > h - planContextMenuMouse.y) {
                 surface = 'bottom';
             }
-        } 
-        
+        }
+
         switch (surface) {
             case 'top':
                 offset = Math.round(part.data('w') * planContextMenuMouse.x / w * 10) / 10;
@@ -1032,15 +1032,15 @@
                 offset = Math.round((part.data('h') - part.data('h') * planContextMenuMouse.y / h) * 10) / 10;
                 break;
         }
-        
+
         dialog('{{ route("admin.plan-port-edit", ["planID" => "", "portIndex" => ""]) }}/' + planContextMenuID + '/-1?surface=' + surface + '&offset=' + offset);
     }
-    
+
     function planMenuPortEdit() {
         let port = $('#planContentOff .plan-port[data-id="' + planContextMenuID + '"]');
         dialog('{{ route("admin.plan-port-edit", ["planID" => "", "portIndex" => ""]) }}/' + port.data('part-id') + '/' + port.data('index'));
     }
-    
+
     @endif
 </script>
 @endsection

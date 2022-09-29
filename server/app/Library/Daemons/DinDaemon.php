@@ -52,9 +52,9 @@ class DinDaemon extends BaseDaemon
     private array $inRooms = [];
 
     /**
-     * @var array
+     * @var array|bool
      */
-    private array $firmwareHex = [];
+    private array|bool $firmwareHex = [];
 
     /**
      * @var int
@@ -433,7 +433,7 @@ class DinDaemon extends BaseDaemon
             $errorText = $ex->getMessage();
         }
 
-        $this->printLine("[".parse_datetime(now())."] SYNC. '$controller->name': $stat [".strlen($this->inBuffer)."]");
+        $this->printLine("[".parse_datetime(now())."] SYNC. '$controller->name': $stat");
         if ($stat == 'OK') {
             foreach (array_chunk($vars_out, 15) as $key => $chunk) {
                 if ($key == 0) {
