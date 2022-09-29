@@ -52,9 +52,9 @@ class DinDaemon extends BaseDaemon
     private array $inRooms = [];
 
     /**
-     * @var array
+     * @var array|bool
      */
-    private array $firmwareHex = [];
+    private array!bool $firmwareHex = [];
 
     /**
      * @var int
