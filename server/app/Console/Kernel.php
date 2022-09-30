@@ -36,8 +36,8 @@ class Kernel extends ConsoleKernel
         // Checking background processes.
         // If process stopped - to start.
         $schedule->call(function (DaemonManager $daemonManager) {
-            foreach(\App\Models\Property::runningDaemons() as $daemon) {
-                if (count($daemonManager->findDaemonPID($daemon)) !== 0) {
+            foreach (\App\Models\Property::runningDaemons() as $daemon) {
+                if (count($daemonManager->findDaemonPID($daemon)) == 0) {
                     try {
                         Log::channel('daemons')->info("An attempt to launch the '$daemon' demon...");
                         $daemonManager->start($daemon);
