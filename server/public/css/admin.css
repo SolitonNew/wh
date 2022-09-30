@@ -2,11 +2,11 @@
     width: 5px;
     height: 5px;
 }
- 
+
 ::-webkit-scrollbar-track {
     background-color: rgba(255, 255, 255, 0.5);
 }
- 
+
 ::-webkit-scrollbar-thumb {
     background-color: rgba(0,0,0,0.75);
     border-radius: 3px;
@@ -72,8 +72,8 @@
 }
 
 .navbar-top-menu {
-    display: flex; 
-    flex-grow: 1; 
+    display: flex;
+    flex-grow: 1;
     align-items: center;
     height: 47px;
     position: fixed;
@@ -82,7 +82,7 @@
 }
 
 .navbar-top-menu-tab {
-    margin-bottom: -1.5rem; 
+    margin-bottom: -1.5rem;
     border-bottom: 1px solid #ffffff;
     flex-wrap: nowrap;
 }
@@ -108,9 +108,9 @@
 }
 
 .navbar-page-group {
-    display: flex; 
-    flex-direction: row; 
-    align-items: center; 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     padding: 0px 1rem;
 }
 
@@ -158,7 +158,7 @@
 .main-left-panel-container {
     flex-grow: 1;
     border-right: 1px solid rgba(0,0,0,.125);
-    overflow-x: hidden; 
+    overflow-x: hidden;
     overflow-y: auto;
     display: flex;
     flex-direction: row;
@@ -369,7 +369,7 @@
 }
 
 tr.table-empty {
-    
+
 }
 
 tr.table-empty td {
@@ -404,7 +404,7 @@ tr.table-empty:hover td {
 }
 
 .log-text {
-    
+
 }
 
 #showLog {
@@ -687,7 +687,7 @@ option:disabled {
 }
 
 .content-body.codeedit {
-    display: flex; 
+    display: flex;
     padding: 0;
 }
 
@@ -702,7 +702,7 @@ option:disabled {
 }
 
 .codeedit .codetext {
-    flex-grow: 1; 
+    flex-grow: 1;
     font-family: 'Courier New';
     padding: 1rem;
     white-space: pre;
@@ -729,6 +729,7 @@ option:disabled {
 
 div.form-control {
     background-color: rgba(0,0,0,0.05);
+    white-space: nowrap;
 }
 
 .script-editor-background {
@@ -793,7 +794,7 @@ div.form-control {
 }
 
 .daemon-log-line .progress-bg .progress-bar {
-    
+
 }
 
 .daemon-log-header {
@@ -899,7 +900,7 @@ select.select-tree option {
     .form-label {
         margin-bottom: 0px;
     }
-    
+
 }
 
 @media(min-width: 769px) {
@@ -912,109 +913,109 @@ select.select-tree option {
     .only-large {
         display: none;
     }
-    
+
     .page-jumbotron {
         margin: 1rem;
     }
-    
+
     .card {
         margin-left: calc(-1rem + 1px);
         margin-top: -1rem;
         margin-right: -1rem;
         margin-bottom: 2rem!important;
     }
-    
+
     #sizeMainMenu {
         display: none;
     }
-    
+
     .btn .btn-label {
         display: none;
     }
-    
+
     .navbar-down-menu {
         min-width: auto!important;
         flex-grow: 1;
     }
-    
+
     .main-menu .navbar {
         align-items: flex-start;
         height: 58px;
         position: relative;
     }
-    
+
     .main-menu .navbar-with-tabs {
         height: 99px;
     }
-    
+
     .navbar-top-menu {
         position: fixed;
         left: 56px!important;
         top: 43px;
     }
-    
+
     /* Plan */
     #planParts {
         display: none;
     }
-    
+
     #planPartsCompact {
         display: inline-block!important;
         width: 100%;
     }
-    
+
     /* Hubs */
     #hubsList {
         display: none;
     }
-    
+
     #hubsListCompact {
         display: inline-block!important;
         width: 100%;
     }
-    
+
     /* Scripts */
     #scriptList {
         width: 100%!important;
     }
-    
+
     #scriptViewerPanel {
         display: none;
     }
-    
+
     /* History */
     #historyFilter {
         display: none;
     }
-    
+
     #jurnalHistoryFiltrPanel {
         width: 100%!important;
         margin: 0px!important;
         padding: 0px!important;
     }
-    
+
     #historyList {
         width: 100%!important;
     }
-    
+
     #historyBody {
         display: none;
     }
-    
+
     /* Daemons */
     #daemonsList {
         display: none!important;
     }
-    
+
     #daemonListCompact {
         display: inline-block!important;
         width: 100%;
     }
-    
+
     #daemonViewer {
-        
+
     }
-    
+
     .show-log #hideLogMobile {
         display: inline-block;
         position: fixed;
@@ -1024,7 +1025,7 @@ select.select-tree option {
         border-radius: 1.75rem;
         padding: 6px 10px;
     }
-    
+
     #logList {
         position: absolute;
         height: 100vh;
