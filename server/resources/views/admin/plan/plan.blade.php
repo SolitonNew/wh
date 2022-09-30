@@ -11,7 +11,7 @@
 <div class="dropdown-divider"></div>
 <a href="#" class="dropdown-item" onclick="planImport(); return false;">@lang('admin/plan.plan_import')</a>
 @if($partID)
-<a href="{{ route('admin.plan-export') }}" class="dropdown-item">@lang('admin/plan.plan_export')</a>
+<a href="{{ route('admin.plan-export') }}" class="dropdown-item" target="_blank">@lang('admin/plan.plan_export')</a>
 @endif
 @endsection
 
@@ -224,10 +224,6 @@
             if(!$(e.target).is('span')) {
                 $('#planPartMenu').hide();
             }
-        });
-
-        window.addEventListener('mouseup', function (e) {
-            //$('#planPartMenu').hide();
         });
 
         @if($partID)
