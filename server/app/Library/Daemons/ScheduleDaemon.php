@@ -23,12 +23,10 @@ class ScheduleDaemon extends BaseDaemon
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
         DB::update('update core_schedule set action_datetime = null');
 
-        $this->printLine('');
-        $this->printLine('');
-        $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/daemons/schedule-daemon.description'));
-        $this->printLine(str_repeat('-', 100));
-        foreach(Schedule::orderBy('comm', 'asc')->get() as $row) {
+        $this->printInitPrompt(Lang::get('admin/daemons/schedule-daemon.description'));
+
+        // Showing current tasks
+        foreach (Schedule::orderBy('comm', 'asc')->get() as $row) {
             $row->action_datetime = $row->makeDateTime();
             $row->save();
             $time = '--//--';
@@ -37,11 +35,9 @@ class ScheduleDaemon extends BaseDaemon
             }
             $this->printLine("[$time] $row->comm       ".($row->enable ? '' : Lang::get('admin/daemons/schedule-daemon.disabled')));
         }
-        $this->printLine(str_repeat('-', 100));
-        $this->printLine('');
 
-        while(1) {
-            foreach(Schedule::orderBy('comm', 'asc')->get() as $row) {
+        while (1) {
+            foreach (Schedule::orderBy('comm', 'asc')->get() as $row) {
                 $next_time = null;
                 if (!$row->action_datetime) {
                     $next_time = $row->makeDateTime();

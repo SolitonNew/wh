@@ -80,14 +80,11 @@ class DinDaemon extends BaseDaemon
 
         $settings = Property::getDinSettings();
 
-        $this->printLine('');
-        $this->printLine('');
-        $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/daemons/din-daemon.description'));
-        $this->printLine('--    PORT: '.$settings->port);
-        $this->printLine('--    BAUD: '.config('din.'.$settings->mmcu.'.baud'));
-        $this->printLine(str_repeat('-', 100));
-        $this->printLine('');
+        $this->printInitPrompt([
+            Lang::get('admin/daemons/din-daemon.description'),
+            '--    PORT: '.$settings->port,
+            '--    BAUD: '.config('din.'.$settings->mmcu.'.baud')
+        ]);
 
         if (!$this->initialization('din')) return ;
 
@@ -283,7 +280,7 @@ class DinDaemon extends BaseDaemon
 
         foreach ($this->inRooms as $rom) {
             $a = [];
-            foreach($rom as $b) {
+            foreach ($rom as $b) {
                 $a[] = sprintf("x%'02X", $b);
             }
             $s = implode(' ', $a);

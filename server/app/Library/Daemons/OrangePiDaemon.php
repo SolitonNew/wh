@@ -40,12 +40,7 @@ class OrangePiDaemon extends BaseDaemon
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
 
-        $this->printLine('');
-        $this->printLine('');
-        $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/daemons/orangepi-daemon.description'));
-        $this->printLine(str_repeat('-', 100));
-        $this->printLine('');
+        $this->printInitPrompt(Lang::get('admin/daemons/orangepi-daemon.description'));
 
         if (!$this->initialization('orangepi')) return ;
 

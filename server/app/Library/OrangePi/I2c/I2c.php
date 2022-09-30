@@ -7,7 +7,7 @@ class I2c
     const PORT = 0;
 
     /**
-     * @var int|bool|type
+     * @var int|bool
      */
     private int|bool $address = false;
 
@@ -107,9 +107,9 @@ class I2c
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getData(): array
+    public function getData(): array|null
     {
         return [];
     }
