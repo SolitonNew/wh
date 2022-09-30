@@ -27,12 +27,7 @@ class CommandDaemon extends BaseDaemon
 
         $lastProcessedID = -1;
 
-        $this->printLine('');
-        $this->printLine('');
-        $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/daemons/command-daemon.description'));
-        $this->printLine(str_repeat('-', 100));
-        $this->printLine('');
+        $this->printInitPrompt(Lang::get('admin/daemons/command-daemon.description'));
 
         while(1) {
             $sql = "select *

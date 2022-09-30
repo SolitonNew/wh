@@ -32,12 +32,7 @@ class ExtApiDaemon extends BaseDaemon
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
 
-        $this->printLine('');
-        $this->printLine('');
-        $this->printLine(str_repeat('-', 100));
-        $this->printLine(Lang::get('admin/daemons/extapi-daemon.description'));
-        $this->printLine(str_repeat('-', 100));
-        $this->printLine('');
+        $this->printInitPrompt(Lang::get('admin/daemons/extapi-daemon.description'));
 
         // Base init
         if (!$this->initialization('extapi')) return ;

@@ -10,6 +10,7 @@ use App\Models\EventMem;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Library\Script\PhpExecute;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * This is the base class for all daemons.
@@ -266,6 +267,26 @@ class BaseDaemon
         } else {
             $this->printLineToLast('PROGRESS:'.$percent);
         }
+    }
+
+    /**
+     * @param string|array $text
+     * @return void
+     */
+    public function printInitPrompt(string|array $text): void
+    {
+        $this->printLine('');
+        $this->printLine('');
+        $this->printLine(str_repeat('-', 100));
+        if (is_array($text)) {
+            foreach (array_reverse($text) as $line) {
+                $this->printLine($line);
+            }
+        } else {
+            $this->printLine($text);
+        }
+        $this->printLine('-- ['.parse_datetime(now()).'] '.str_repeat('-', 75));
+        $this->printLine('');
     }
 
     /**
