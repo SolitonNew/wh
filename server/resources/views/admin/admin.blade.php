@@ -6,7 +6,7 @@
 @endsection
 
 @section('body')
-<div class="body-container 
+<div class="body-container
             {{ isset($_COOKIE['SHOW_LOG']) && $_COOKIE['SHOW_LOG'] == 'true' ? 'show-log' : '' }}
             {{ isset($_COOKIE['SIZE_MAIN_MENU']) && $_COOKIE['SIZE_MAIN_MENU'] == 'small' ? 'main-menu-collapse' : '' }}" style="opacity: 0;">
     <div class="body-content">
@@ -174,7 +174,7 @@
 
 <script>
     var serverTimeOffset = (new Date()).getTime() / 1000 - {{ \Carbon\Carbon::now('UTC')->timestamp }};
-    
+
     $('document').ready(() => {
         convertTableToScrollGrid($('.table-fixed-header'));
 
@@ -209,9 +209,9 @@
                 setCookie(name, o.scrollTop() + '|' + o.scrollLeft());
             }).trigger('scroll');
         });
-        
+
         // Log controls ---------
-        
+
         $('#showLog').on('click', function () {
             $('.body-container').addClass('show-log');
             $('.body-content-log')
@@ -222,7 +222,7 @@
             setCookie('SHOW_LOG', 'true');
             return false;
         });
-        
+
         $('#hideLog, #hideLogMobile').on('click', function () {
             $('.body-content-log')
                 .css({width: '370px', 'min-width': '370px'})
@@ -233,16 +233,23 @@
             setCookie('SHOW_LOG', 'false');
             return false;
         });
-                
+
         // Global Waiter
-        
-        /*$('a').on('click', function () {
-            startGlobalWaiter();
-            $('body').css('opacity', 0.5);
-        });*/
-        
+
+        $('a').on('click', function () {
+            let href = $(this).attr('href');
+            let target = $(this).attr('target');
+            if (href
+                && href != '#'
+                && (href.indexOf('javascript') < 0)
+                && target != '_blank') {
+                startGlobalWaiter();
+                $('body').css('opacity', 0.5);
+            }
+        });
+
         // Main menu
-        
+
         $('#sizeMainMenu').on('click', function () {
             $('.body-container').toggleClass('main-menu-collapse');
             setCookie('SIZE_MAIN_MENU', $('.body-container').hasClass('main-menu-collapse') ? 'small' : 'large');
@@ -250,19 +257,19 @@
                 $(window).trigger('resize');
             }, 300);
         });
-        
+
         // Main menu actions
-        
+
         if ($('#menuActionGroup .dropdown-menu > .dropdown-item').length == 0) {
             $('#menuActionGroup > button').addClass('disabled');
         }
-        
+
         // ----------------------
-        
+
         if ($('.navbar-top-menu .nav-link').length) {
             $('.main-menu .navbar').addClass('navbar-with-tabs');
         }
-        
+
         $(window).on('resize', function () {
             if ($(this).width() < 758) {
                 if (!$('.body-container').hasClass('main-menu-collapse')) {
@@ -323,15 +330,15 @@
                 "@lang('dialogs.btn_no')",
                 handler, noHandler);
     }
-    
+
     var alertHandler = false;
-    
+
     function alert(text, handler) {
         alertHandler = handler;
         $('#alert_text').html(text);
         $('#alert_window').modal({backdrop: 'static', keyboard: false});
     }
-    
+
     function alertOk() {
         if (alertHandler) {
             alertHandler();
@@ -358,7 +365,7 @@
     }
 
     let lastDeviceChangeID = -1;
-    
+
     function calcLastVariableID() {
         let ls = $('.log-row');
         if (ls.length > 0) {
@@ -378,13 +385,13 @@
                 $('#logList').prepend(ls.hide());
                 ls.slideToggle(250);
                 calcLastVariableID();
-                
+
                 /*  Call handler if registered  */
                 if (window.variableChangesHandler) {
                     variableChangesHandler(data);
                 }
-                /*  --------------------------------------------------------  */                
-                
+                /*  --------------------------------------------------------  */
+
                 $('.log-row:gt({{ config("settings.admin_log_lines_count") }})').remove();
             }
 
@@ -413,7 +420,7 @@
         headerContainer.insertAfter(table);
 
         let parent = $(table.parent());
-        
+
         parent.on('scroll', (e) => {
             header.css({
                 left: -parent.scrollLeft() + 'px',
@@ -432,7 +439,7 @@
                     'width': w,
                 });
             }
-            
+
             let offset = parent.offset();
             if (offset) {
                 let r = header[0].getBoundingClientRect();
@@ -443,7 +450,7 @@
                     height: r.height + 'px',
                 });
             }
-            
+
             parent.trigger('scroll');
         }).trigger('resize');
     }
@@ -454,7 +461,7 @@
             setCookie(name, '0');
         }
     }
-    
+
     function firmware() {
         dialog("{{ route('admin.firmware') }}");
     }
@@ -477,7 +484,7 @@
                     }
                 }
                 $('#daemonsState').text(enabled + ' / ' + count);
-                
+
                 if (window.daemonListChangeState) {
                     daemonListChangeState(data);
                 }
