@@ -220,6 +220,12 @@
             }
         });
 
+        $('#planPartMenu').on('click', function (e) {
+            if(!$(e.target).is('span')) {
+                $('#planPartMenu').hide();
+            }
+        });
+
         window.addEventListener('mouseup', function (e) {
             //$('#planPartMenu').hide();
         });
