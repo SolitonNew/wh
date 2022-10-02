@@ -40,14 +40,14 @@
 @if($hubID)
 <div id="hubsListCompact" class="navbar navbar-page" style="display: none;">
     <select id="hubsListCombobox" class="nav-link custom-select select-tree" style="width: 100%;">
-        @foreach(\App\Models\Hub::orderBy('rom', 'asc')->get() as $row)
+        @foreach(\App\Models\Hub::getSortList() as $row)
         <option value="{{ $row->id }}" {{ $row->id == $hubID ? 'selected' : '' }}>{{ $row->name }} [{{ $row->typ }}]</option>
         @endforeach
     </select>
 </div>
 <div style="display: flex; flex-direction: row; flex-grow: 1; overflow: hidden;">
     <div id="hubsList" class="tree" style="width: 250px;min-width:250px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="hubsList">
-        @foreach(\App\Models\Hub::orderBy('rom', 'asc')->get() as $row)
+        @foreach(\App\Models\Hub::getSortList() as $row)
         <a href="{{ route('admin.hubs', ['hubID' => $row->id]).'/'.$page }}"
            class="tree-item {{ $row->id == $hubID ? 'active' : '' }}" style="white-space: normal;">
             <div style="flex-grow: 1;">

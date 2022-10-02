@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -13,6 +13,7 @@ return [
     'list' => [
         'extapi-daemon',
         'din-daemon',
+        'pyhome-daemon',
         'orangepi-daemon',
         'schedule-daemon',
         'command-daemon',

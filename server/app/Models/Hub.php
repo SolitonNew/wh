@@ -44,6 +44,16 @@ class Hub extends AffectsFirmwareModel
     }
 
     /**
+     * @return mixed
+     */
+    public static function getSortList()
+    {
+        return self::orderBy('name')
+            ->orderBy('rom')
+            ->get();
+    }
+
+    /**
      * @return int
      */
     public function hostsCount(): int

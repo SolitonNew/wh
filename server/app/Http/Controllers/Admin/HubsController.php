@@ -11,25 +11,23 @@ use App\Models\Property;
 class HubsController extends Controller
 {
     /**
-     *
-     * @var type
+     * @var HubsService
      */
-    private $_service;
+    private HubsService $service;
 
     /**
-     *
-     * @param HubsService $hubsService
+     * @param HubsService $service
      */
     public function __construct(HubsService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
      * This is index route.
      * If the hub exists, to redirect to the device page.
      *
-     * @param int $hubID
+     * @param int|null $hubID
      * @return type
      */
     public function index(int $hubID = null)
@@ -64,7 +62,7 @@ class HubsController extends Controller
      *  Route to create or update a hub property.
      *
      * @param int $id
-     * @return type
+     * @return \Illuminate\View\View|\Laravel\Lumen\Application
      */
     public function editShow(int $id)
     {
@@ -78,8 +76,9 @@ class HubsController extends Controller
     /**
      * Route to create or update a hub property.
      *
+     * @param Request $request
      * @param int $id
-     * @return string
+     * @return \Illuminate\Http\JsonResponse|string
      */
     public function editPost(Request $request, int $id)
     {
@@ -90,7 +89,7 @@ class HubsController extends Controller
      * Route to delete the hub by id.
      *
      * @param int $id
-     * @return type
+     * @return \Illuminate\Http\JsonResponse|string
      */
     public function delete(int $id)
     {
@@ -102,7 +101,7 @@ class HubsController extends Controller
      * Returns a view with scan dialog report.
      *
      * @param int $id
-     * @return type
+     * @return \Illuminate\View\View|\Laravel\Lumen\Application
      */
     public function hubNetworkScan(int $id)
     {
@@ -110,10 +109,10 @@ class HubsController extends Controller
 
         switch ($hub->typ) {
             case 'din':
-                $text = $this->_service->dinHubsScan();
+                $text = $this->service->dinHubsScan();
                 break;
             case 'orangepi':
-                $text = $this->_service->orangepiHubScan();
+                $text = $this->service->orangepiHubScan();
                 break;
             default:
                 $text = 'It is impossible';
@@ -128,11 +127,11 @@ class HubsController extends Controller
      * This route builds the firmware and returns a build report view
      * containing the update controls.
      *
-     * @return type
+     * @return \Illuminate\View\View|\Laravel\Lumen\Application
      */
     public function firmware()
     {
-        list($text, $makeError) = $this->_service->firmware();
+        list($text, $makeError) = $this->service->firmware();
 
         return view('admin.hubs.firmware', [
             'data' => $text,
@@ -146,21 +145,20 @@ class HubsController extends Controller
      *
      * @return string
      */
-    public function firmwareStart()
+    public function firmwareStart(): string
     {
-        $this->_service->firmwareStart();
-
+        $this->service->firmwareStart();
         return 'OK';
     }
 
     /**
      * This route to query the firmware status now.
      *
-     * @return type
+     * @return \Illuminate\Http\JsonResponse|null
      */
     public function firmwareStatus()
     {
-        return $this->_service->firmwareStatus();
+        return $this->service->firmwareStatus();
     }
 
     /**
@@ -168,10 +166,9 @@ class HubsController extends Controller
      *
      * @return string
      */
-    public function hubsReset()
+    public function hubsReset(): string
     {
-        $this->_service->hubsReset();
-
+        $this->service->hubsReset();
         return 'OK';
     }
 
@@ -181,10 +178,9 @@ class HubsController extends Controller
      * @param int $hubID
      * @return string
      */
-    public function addDevicesForAllHosts(int $hubID)
+    public function addDevicesForAllHosts(int $hubID): string
     {
-        $this->_service->generateDevsByHub($hubID);
-
+        $this->service->generateDevsByHub($hubID);
         return 'OK';
     }
 }

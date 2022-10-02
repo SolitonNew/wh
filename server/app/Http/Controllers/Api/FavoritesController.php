@@ -11,11 +11,11 @@ class FavoritesController extends Controller
     /**
      * @var FavoritesService
      */
-    private $_service;
+    private FavoritesService $service;
 
     public function __construct(FavoritesService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
@@ -24,7 +24,7 @@ class FavoritesController extends Controller
      */
     public function getData(Request $request)
     {
-        $data = $this->_service->getData($request->getHttpHost(), $request->api_token);
+        $data = $this->service->getData($request->getHttpHost(), $request->api_token);
         return response()->json($data);
     }
 }

@@ -15,12 +15,11 @@ use App\Models\Hub;
 class HostsController extends Controller
 {
     /**
-     * @var HostsService 
+     * @var HostsService
      */
     private HostsService $service;
 
     /**
-     *
      * @param HostsService $service
      */
     public function __construct(HostsService $service)

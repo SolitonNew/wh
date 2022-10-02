@@ -482,6 +482,51 @@ class Property extends Model
     /**
      * @var object|bool
      */
+    private static object|bool $pyhome_settings = false;
+
+    /**
+     * @return object|bool
+     */
+    public static function getPyhomeSettings(): object|bool
+    {
+        if (self::$pyhome_settings === false) {
+            $item = self::whereName('PYHOME_SETTINGS')->first();
+            if ($item && $item->value) {
+                self::$pyhome_settings = json_decode($item->value);
+            } else {
+                self::$pyhome_settings = (object)[
+                    'port' => '/dev/ttyUSB0',
+                ];
+            }
+        }
+
+        return self::$pyhome_settings;
+    }
+
+    /**
+     * @param string $port
+     * @return void
+     */
+    public static function setPyhomeSettings(string $port): void
+    {
+        $item = self::whereName('PYHOME_SETTINGS')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'PYHOME_SETTINGS';
+            $item->comm = '';
+        }
+
+        self::$pyhome_settings = (object)[
+            'port' => $port,
+        ];
+
+        $item->value = json_encode(self::$pyhome_settings);
+        $item->save();
+    }
+
+    /**
+     * @var object|bool
+     */
     private static object|bool $forecast_settings = false;
 
     /**

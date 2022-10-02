@@ -6,11 +6,6 @@ use App\Models\Device;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 
-/**
- * Description of ObserverDaemon
- *
- * @author soliton
- */
 class ObserverDaemon extends BaseDaemon
 {
     /**

@@ -16,7 +16,6 @@ class DaemonsController extends Controller
     private DaemonsService $service;
 
     /**
-     *
      * @param DaemonsService $service
      */
     public function __construct(DaemonsService $service)

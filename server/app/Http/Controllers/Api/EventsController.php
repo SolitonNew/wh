@@ -10,11 +10,11 @@ class EventsController extends Controller
     /**
      * @var EventsService
      */
-    private $_service;
+    private EventsService $service;
 
     public function __construct(EventsService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
@@ -25,11 +25,11 @@ class EventsController extends Controller
     public function getData(int $lastID)
     {
         if ($lastID > -1) {
-            $data = $this->_service->getEvents($lastID);
+            $data = $this->service->getEvents($lastID);
             return response()->json($data);
         } else {
             return response()->json([
-                'lastID' => $this->_service->getLastID(),
+                'lastID' => $this->service->getLastID(),
             ]);
         }
     }

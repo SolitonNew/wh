@@ -9,7 +9,7 @@ use App\Models\Device;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 
-class DinDaemon extends BaseDaemon
+class PyhomeDaemon extends BaseDaemon
 {
     /**
      * @var mixed
@@ -76,7 +76,7 @@ class DinDaemon extends BaseDaemon
         $settings = Property::getDinSettings();
 
         $this->printInitPrompt([
-            Lang::get('admin/daemons/din-daemon.description'),
+            Lang::get('admin/daemons/pyhome-daemon.description'),
             '--    PORT: '.$settings->port,
             '--    BAUD: '.config('din.'.$settings->mmcu.'.baud')
         ]);

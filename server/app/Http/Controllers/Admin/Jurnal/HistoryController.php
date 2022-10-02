@@ -12,25 +12,24 @@ use Illuminate\Http\Request;
 class HistoryController extends Controller
 {
     /**
-     *
-     * @var type
+     * @var HistoryService
      */
-    private $_service;
+    private HistoryService $service;
 
     /**
-     *
      * @param HistoryService $service
      */
     public function __construct(HistoryService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
      * Index route to display device history data.
      *
-     * @param int $id
-     * @return type
+     * @param Request $request
+     * @param int|null $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View|\Laravel\Lumen\Application|\Laravel\Lumen\Http\Redirector
      */
     public function index(Request $request, int $id = null)
     {
@@ -47,9 +46,9 @@ class HistoryController extends Controller
         Property::setLastViewID('JURNAL_PAGE', 'history');
         // ----------------------------------------
 
-        $this->_service->storeFilterDataFromRequest($request);
+        $this->service->storeFilterDataFromRequest($request);
 
-        list($data, $errors) = $this->_service->getFilteringData($id);
+        list($data, $errors) = $this->service->getFilteringData($id);
 
         $devices = Device::orderBy('name', 'asc')->get();
 
@@ -64,7 +63,7 @@ class HistoryController extends Controller
      * This route to display device history by id.
      *
      * @param int $id
-     * @return type
+     * @return \Illuminate\View\View|\Laravel\Lumen\Application
      */
     public function valueView(int $id)
     {
@@ -81,10 +80,9 @@ class HistoryController extends Controller
      * @param int $id
      * @return string
      */
-    public function valueDelete(int $id)
+    public function valueDelete(int $id): string
     {
         DeviceChange::deleteById($id);
-
         return 'OK';
     }
 
@@ -94,9 +92,9 @@ class HistoryController extends Controller
      * @param int $id
      * @return string
      */
-    public function deleteAllVisibleValues(int $id)
+    public function deleteAllVisibleValues(int $id): string
     {
-        $count = $this->_service->deleteAllVisibleValues($id);
+        $count = $this->service->deleteAllVisibleValues($id);
 
         return 'OK: '.$count;
     }

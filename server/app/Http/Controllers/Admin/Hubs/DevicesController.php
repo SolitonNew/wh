@@ -17,12 +17,11 @@ use App\Models\Property;
 class DevicesController extends Controller
 {
     /**
-     * @var DevicesService 
+     * @var DevicesService
      */
     private DevicesService $service;
 
     /**
-     *
      * @param DevicesService $service
      */
     public function __construct(DevicesService $service)

@@ -11,11 +11,6 @@ use \Cron\CronExpression;
 use App\Models\Property;
 use App\Library\OrangePi\I2c\I2c;
 
-/**
- * Description of OrangePiDaemon
- *
- * @author User
- */
 class OrangePiDaemon extends BaseDaemon
 {
     /**

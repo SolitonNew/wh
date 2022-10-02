@@ -12,11 +12,6 @@ use Illuminate\Support\Facades\DB;
 use App\Library\Script\PhpExecute;
 use Illuminate\Support\Facades\Lang;
 
-/**
- * This is the base class for all daemons.
- *
- * @author soliton
- */
 class BaseDaemon
 {
     /**

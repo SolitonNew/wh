@@ -5,11 +5,6 @@ namespace App\Library\Daemons;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 
-/**
- * Description of CommandDaemon
- *
- * @author soliton
- */
 class CommandDaemon extends BaseDaemon
 {
     /**
