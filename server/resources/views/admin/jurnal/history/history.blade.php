@@ -5,16 +5,16 @@
 @endsection
 
 @section('page-content')
-<div id="deviceListCompact" class="navbar navbar-page" style="display: none;">
-    <select id="deviceListCombobox" class="nav-link custom-select select-tree" style="width: 100%;">
-        @foreach($devices as $row)
-            <option value="{{ $row->id }}" {{ $row->id == $id ? 'selected' : '' }}>
-                {{ $row->comm ?: ($row->room ? $row->room->name : $row->name) }}
-            </option>
-        @endforeach
-    </select>
-</div>
 <div style="display: flex; flex-direction: column; height: 100%;">
+    <div id="deviceListCompact" class="navbar navbar-page" style="display: none;">
+        <select id="deviceListCombobox" class="nav-link custom-select select-tree" style="width: 100%;">
+            @foreach($devices as $row)
+                <option value="{{ $row->id }}" {{ $row->id == $id ? 'selected' : '' }}>
+                    {{ $row->comm ?: ($row->room ? $row->room->name : $row->name) }}
+                </option>
+            @endforeach
+        </select>
+    </div>
     <div class="navbar navbar-page">
         <div id="jurnalHistoryFiltrPanel" style="width: 320px; margin-left: -1rem; padding: 0px 1rem;">
             <input id="jurnalHistoryFiltr" type="text" class="form-control" placeholder="@lang('admin/jurnal.history_var_filtr')" >
