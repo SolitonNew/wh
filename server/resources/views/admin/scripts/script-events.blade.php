@@ -30,7 +30,7 @@
         $('#script_events_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
-                    window.location.reload();
+                    reloadWithWaiter();
                 });
             } else {
                 dialogShowErrors(data);

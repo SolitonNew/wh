@@ -22,7 +22,7 @@
         width: 10rem;
         height: 10rem;
     }
-    
+
     @media(max-width: 574px) {
         .ext-control-column {
             position: relative;
@@ -53,7 +53,7 @@
             @if($deviceID == -1)
             <select class="custom-select" name="device" data-app-control="0">
             @foreach($devices as $row)
-            <option value="{{ $row->id }}" {{ $row->id == $deviceID ? 'selected' : '' }} 
+            <option value="{{ $row->id }}" {{ $row->id == $deviceID ? 'selected' : '' }}
                     data-app-control="{{ $row->app_control }}">{{ $row->label }}</option>
             @endforeach
             </select>
@@ -95,14 +95,14 @@
     </div>
     <div class="ext-control-column">
         <div class="form-control" style="margin-bottom: -10rem; height:calc(9rem + 2px); padding: 1rem; overflow: hidden;">
-            <div id="deviceLinkView" 
+            <div id="deviceLinkView"
                  style="position: relative; display: inline-block; overflow: hiddend;
                         border: 1px solid #000000; width: 100%; height: 100%;">
                 <div style="position: absolute; left: 0px; top: 0px; display: flex; width: 100%;height: 100%;align-items: center;justify-content: center;">
                     <small class="text-muted">{{ $partBounds->W }}x{{ $partBounds->H }}</small>
                 </div>
                 <div class="plan-device" style="cursor: default;"></div>
-            </div>                
+            </div>
         </div>
     </div>
 </form>
@@ -123,13 +123,13 @@
         $('#plan_link_device_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
-                    window.location.reload();
+                    reloadWithWaiter();
                 });
             } else {
                 dialogShowErrors(data);
             }
         });
-        
+
         let updateAppControl = function (appControl) {
             let devClass = 'dev-';
             let device = $('#plan_link_device_form .plan-device');
@@ -142,7 +142,7 @@
             });
             device.addClass(devClass + appControl);
         };
-        
+
         @if($deviceID == -1)
         $('#plan_link_device_form select[name="device"]').on('change', function () {
             updateAppControl($('#plan_link_device_form option[value="' + $(this).val() + '"]').data('app-control'));
@@ -150,40 +150,40 @@
         @else
         updateAppControl({{ $device->app_control }});
         @endif
-        
+
         $('#plan_link_device_form select[name="surface"]').on('change', function () {
             planViewUpdate();
         });
-        
+
         $('#plan_link_device_form input[name="offset"]').on('input', function () {
             planViewUpdate();
         });
-        
+
         $('#plan_link_device_form input[name="cross"]').on('input', function () {
             planViewUpdate();
         });
-        
+
         setTimeout(function () {
             planViewUpdate();
         }, 150);
     });
-    
+
     function planLinkDeviceOK() {
         $('#plan_link_device_form').submit();
     }
-    
+
     function planLinkDeviceDelete() {
         confirmYesNo("@lang('admin/plan.device_unlink_confirm')", () => {
             $.ajax({
                 method: 'delete',
                 url: '{{ route("admin.plan-unlink-device", ["deviceID" => $deviceID]) }}',
                 data: {
-                    
+
                 },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {
-                            window.location.reload();
+                            reloadWithWaiter();
                         });
                     } else {
                         alert(data.errors);
@@ -192,18 +192,18 @@
             });
         });
     }
-    
+
     function planViewUpdate() {
         let b_w = {{ $partBounds->W }};
         if (b_w == 0) b_w = 1;
         let b_h = {{ $partBounds->H }};
         if (b_h == 0) b_h = 1;
-        
+
         let b_top = false;
         let b_right = false;
         let b_bottom = false;
         let b_left = false;
-        
+
         // Корректируем интерфейс
         if ($('#plan_link_device_form select[name="surface"]').val() == 'roof') {
             $('#plan_link_device_form .not-roof').fadeOut(100, function () {
@@ -243,18 +243,18 @@
             'border-bottom-width': (b_bottom ? 3 : 1) + 'px',
             'border-left-width': (b_left ? 3 : 1) + 'px',
         });
-        
+
         // Двигаем устройство
         let device = $('#deviceLinkView .plan-device');
-        
+
         let w = $('#deviceLinkView').width() - 4; /* Учитываем толщину обводки */
         let h = $('#deviceLinkView').height() - 4;
         let kx = (w - device.width()) / b_w;
         let ky = (h - device.height()) / b_h;
-        
+
         let offset = $('#plan_link_device_form input[name="offset"]').val();
         let cross = $('#plan_link_device_form input[name="cross"]').val();
-        
+
         switch ($('#plan_link_device_form select[name="surface"]').val()) {
             case 'top':
                 device.css({

@@ -41,7 +41,7 @@
             success: function(data) {
                 if (data == 'OK') {
                     dialogHide(() => {
-                        window.location.reload();
+                        reloadWithWaiter();
                     });
                 } else {
                     dialogShowErrors(data);

@@ -37,7 +37,7 @@
             @if($item->id == -1)
             <select id="hostTyp" name="typ" class="custom-select">
                 @foreach($item->typeList() as $type)
-                <option value="{{ $type->name }}" 
+                <option value="{{ $type->name }}"
                         data-description="{{ $type->description }}"
                         data-properties="{{ json_encode($type->propertiesWithTitles()) }}">{{ $type->title }}</option>
                 @endforeach
@@ -96,14 +96,14 @@
         $('#host_edit_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
-                    window.location.reload();
+                    reloadWithWaiter();
                 });
             } else {
                 console.log(data);
                 dialogShowErrors(data);
             }
         });
-        
+
         @if($item->id > -1)
         let properties = '{!! json_encode($item->type()->properties) !!}';
         buildProperties(JSON.parse(properties.replace(/&quot;/g,'"')));
@@ -114,11 +114,11 @@
         $('#hostTyp').on('change', function () {
             let description = $('#hostTyp option[value="' + $(this).val() + '"]').data('description');
             $('#hostTypDescription').text(description);
-            
+
             buildProperties($('#hostTyp option[value="' + $(this).val() + '"]').data('properties'));
         }).trigger('change');
         @endif
-        
+
         function buildProperties(properties) {
             $('#host_edit_form .property').remove();
             let lastFormRow = $('#lastFormRow');
@@ -133,23 +133,23 @@
                         input = '<textarea class="form-control" name="' + key + '" rows="3"></textarea>';
                         break;
                 }
-                
+
                 let html = '<div class="row property">' +
                            '    <div class="col-sm-3">' +
                            '        <label class="form-label">' + properties[key].title + '</label>' +
                            '    </div>' +
-                           '    <div class="col-sm-9">' + 
+                           '    <div class="col-sm-9">' +
                            input +
-                           '    </div>' + 
+                           '    </div>' +
                            '</div>';
-                   
+
                 lastFormRow = $(html).insertAfter(lastFormRow);
-                
+
                 i++;
             }
         }
     });
-    
+
     function hostEditOK() {
         $('#host_edit_form').submit();
     }
@@ -160,12 +160,12 @@
                 type: 'delete',
                 url: '{{ route("admin.hub-camcorderhost-delete", ["hubID" => $item->hub_id, "id" => $item->id]) }}',
                 data: {
-                    
+
                 },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {
-                            window.location.reload();
+                            reloadWithWaiter();
                         });
                     } else {
                         if (data.errors) {

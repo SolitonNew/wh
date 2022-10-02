@@ -43,7 +43,7 @@
             $('#location .btn').removeAttr('disabled');
             updateMap();
         });
-        
+
         $('#location .btn').on('click', function () {
             $.ajax({
                 method: 'post',
@@ -54,7 +54,7 @@
                 },
                 success: function (data) {
                     if (data == 'OK') {
-                        window.location.reload();
+                        reloadWithWaiter();
                     } else {
                         alert(data);
                     }
@@ -64,9 +64,9 @@
                 }
             });
         });
-        
+
         let updateMapTimeout = false;
-        
+
         function updateMap()
         {
             clearTimeout(updateMapTimeout);
@@ -76,7 +76,7 @@
                 $('#locationMapPreview').attr('src', url);
             }, 500);
         }
-        
+
         updateMap();
     });
 </script>

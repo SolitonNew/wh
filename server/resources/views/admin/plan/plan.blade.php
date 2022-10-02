@@ -813,7 +813,7 @@
             url: '{{ route("admin.plan-clone", ["id" => "", "direction" => ""]) }}/' + planContextMenuID + '/' + direction,
             success: function (data) {
                 if (data == 'OK') {
-                    window.location.reload();
+                    reloadWithWaiter();
                 } else {
 
                 }

@@ -102,7 +102,7 @@
 @section('script')
 <script>
     var actionEditor = false;
-    
+
     $(document).ready(function () {
         let ctx = document.getElementById('actionEditor');
         let options = {
@@ -128,11 +128,11 @@
             name: 'action',
         };
         actionEditor = new ScriptEditor(ctx, options);
-        
+
         $('#schedule_edit_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
-                    window.location.reload();
+                    reloadWithWaiter();
                 });
             } else {
                 console.log(data);
@@ -173,12 +173,12 @@
                 type: 'delete',
                 url: '{{ route("admin.schedule-delete", ["id" => $item->id]) }}',
                 data: {
-                    
+
                 },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {
-                            window.location.reload();
+                            reloadWithWaiter();
                         });
                     } else {
 

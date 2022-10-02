@@ -160,24 +160,24 @@
 @section('script')
 <script>
     var planEditFormParentOldBounds = false;
-    
+
     $(document).ready(() => {
         $('#plan_edit_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
-                    window.location.reload();
+                    reloadWithWaiter();
                 });
             } else {
                 dialogShowErrors(data);
             }
         });
-        
+
         planEditFormParentBounds = false;
-        
+
         $('#plan_edit_form select[name="parent_id"]').on('change', function () {
             let val = $(this).val();
             let bounds = $('#plan_edit_form select[name="parent_id"] option[value="' + val + '"]').data('bounds');
-            
+
             if (!bounds) {
                 bounds = {
                     X: 0,
@@ -186,19 +186,19 @@
                     H: 6,
                 };
             }
-            
+
             if (planEditFormParentOldBounds) {
-                let X = $('#plan_edit_form input[name="X"]');                
+                let X = $('#plan_edit_form input[name="X"]');
                 let Xval = X.val() ? parseFloat(X.val()) : 0;
                 Xval = Math.floor((Xval + planEditFormParentOldBounds.X - bounds.X) * 100) / 100;
                 X.val(Xval);
-                
+
                 let Y = $('#plan_edit_form input[name="Y"]');
                 let Yval = Y.val() ? parseFloat(Y.val()) : 0;
                 Yval = Math.floor((Yval + planEditFormParentOldBounds.Y - bounds.Y) * 100) / 100;
                 Y.val(Yval);
             }
-            
+
             planEditFormParentOldBounds = bounds;
         }).trigger('change');
     });
@@ -213,12 +213,12 @@
                 type: 'delete',
                 url: '{{ route("admin.plan-delete", ["id" => $item->id]) }}',
                 data: {
-                    
+
                 },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {
-                            window.location.reload();
+                            reloadWithWaiter();
                         });
                     } else {
 

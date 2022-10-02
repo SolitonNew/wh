@@ -242,7 +242,8 @@
             if (href
                 && href != '#'
                 && (href.indexOf('javascript') < 0)
-                && target != '_blank') {
+                && target != '_blank')
+            {
                 startGlobalWaiter();
                 $('body').css('opacity', 0.5);
             }
@@ -362,6 +363,16 @@
             clearTimeout(globalWaiter);
         }
         $('#globalWaiter').hide();
+    }
+
+    function reloadWithWaiter(url = '') {
+        startGlobalWaiter();
+        $('body').css('opacity', 0.5);
+        if (url) {
+            window.location.href = url;
+        } else {
+            window.location.reload();
+        }
     }
 
     let lastDeviceChangeID = -1;

@@ -40,7 +40,7 @@
         <div class="col-sm-9">
             <select id="hostTyp" name="typ" class="custom-select">
                 @foreach($item->typeList() as $type)
-                <option value="{{ $type->name }}" 
+                <option value="{{ $type->name }}"
                         data-description="{{ $type->description }}"
                         data-channels="{{ $type->channels }}"
                         data-address="{{ $type->address }}"
@@ -95,19 +95,19 @@
         $('#host_edit_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
-                    window.location.reload();
+                    reloadWithWaiter();
                 });
             } else {
                 console.log(data);
                 dialogShowErrors(data);
             }
         });
-        
+
         $('#hostTyp').on('change', function () {
             let option = $('#hostTyp option[value="' + $(this).val() +'"]');
-            
+
             $('#hostTypDescription').html(option.data('description'));
-            
+
             $('#hostAddress').html('');
             let ls = option.data('address').split(';');
             let a = new Array();
@@ -120,7 +120,7 @@
             @endif
         }).trigger('change');
     });
-    
+
     function hostEditOK() {
         $('#host_edit_form').submit();
     }
@@ -131,12 +131,12 @@
                 type: 'delete',
                 url: '{{ route("admin.hub-orangehost-delete", ["hubID" => $item->hub_id, "id" => $item->id]) }}',
                 data: {
-                    
+
                 },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {
-                            window.location.reload();
+                            reloadWithWaiter();
                         });
                     } else {
                         if (data.errors) {

@@ -16,17 +16,17 @@
     #daemonsList .started .stop {
         display: none;
     }
-    
+
     #daemonsList .stop,
     #daemonsList .started .start {
         display: inline;
     }
-    
+
     .main-content {
         display: flex;
         flex-direction: column;
     }
-    
+
     .bold {
         font-weight: bold;
     }
@@ -34,14 +34,14 @@
 <div id="daemonListCompact" class="navbar navbar-page" style="display: none;">
     <select id="daemonListCombobox" class="nav-link custom-select select-tree" style="width: 100%;">
         @foreach($daemons as $row)
-        <option value="{{ $row->id }}" 
+        <option value="{{ $row->id }}"
                 {{ $row->id == $id ? 'selected' : '' }}></option>
         @endforeach
     </select>
 </div>
 <div style="position:relative; display: flex; flex-direction: row; height: 100%;">
-    <div id="daemonsList" class="tree" 
-         style="width: 250px; min-width:250px; border-right: 1px solid rgba(0,0,0,0.125); justify-content: space-between;" 
+    <div id="daemonsList" class="tree"
+         style="width: 250px; min-width:250px; border-right: 1px solid rgba(0,0,0,0.125); justify-content: space-between;"
          scroll-store="jurnalDaemonsList">
         @foreach($daemons as $row)
         <a href="{{ route('admin.jurnal-daemons', ['id' => $row->id]) }}"
@@ -73,7 +73,7 @@
 
     $(document).ready(() => {
         getDaemonData();
-        
+
         $('.content-body').on('scroll', function () {
             if ($(this).scrollTop() == 0) {
                 $('.daemon-log-btn-top').fadeOut(250);
@@ -81,15 +81,15 @@
                 $('.daemon-log-btn-top').fadeIn(250);
             }
         });
-        
+
         // Compact Navigate
         $('#daemonListCombobox').on('change', function () {
             window.location.href = '{{ route("admin.jurnal-daemons", ["id" => ""]) }}/' + $(this).val();
         });
-        
+
         daemonCompactListUpdate();
     });
-    
+
     function daemonListChangeState(data) {
         for (let i = 0; i < data.length; i++) {
             if (data[i].stat) {
@@ -98,10 +98,10 @@
                 $('#daemonsList .tree-item[data-id="' + data[i].id + '"]').removeClass('started');
             }
         }
-        
+
         daemonCompactListUpdate();
     }
-    
+
     function daemonCompactListUpdate() {
         $('#daemonListCombobox option').each(function () {
             let row = $('#daemonsList .tree-item[data-id="' + $(this).val() + '"]');
@@ -123,7 +123,7 @@
             $.ajax('{{ route("admin.jurnal-daemon-start", ["id" => $id]) }}').done((data) => {
                 stopGlobalWaiter();
                 if (data == 'OK') {
-                    window.location.reload();
+                    reloadWithWaiter();
                 } else {
                     console.log(data);
                 }
@@ -137,7 +137,7 @@
             $.ajax('{{ route("admin.jurnal-daemon-stop", ["id" => $id]) }}').done((data) => {
                 stopGlobalWaiter();
                 if (data == 'OK') {
-                    window.location.reload();
+                    reloadWithWaiter();
                 } else {
                     console.log(data);
                 }
@@ -151,7 +151,7 @@
             $.ajax('{{ route("admin.jurnal-daemon-restart", ["id" => $id]) }}').done((data) => {
                 stopGlobalWaiter();
                 if (data == 'OK') {
-                    window.location.reload();
+                    reloadWithWaiter();
                 } else {
                     console.log(data);
                 }
@@ -168,37 +168,37 @@
                     let count = lines.length;
                     if (count) {
                         $('.daemon-log-offset').css('top', '0px');
-                        
+
                         let prevProgress = $('.daemon-log-offset > div:first').first().text().indexOf('PROGRESS:') == 0;
                         let nextProgress = lines.last().text().indexOf('PROGRESS:') == 0;
                         let nextFirstProgress = lines.first().text().indexOf('PROGRESS:') == 0;
-                        
+
                         let nowProgress = false;
                         if (prevProgress && nextProgress) {
                             $('.daemon-log-offset > div:first').remove();
                             nowProgress = (count == 1);
                             count--;
                         }
-                        
+
                         $('.daemon-log-offset').prepend(lines);
                         daemonLogLastID = $(lines.first()).data('id');
-                        
+
                         if ((!daemonLogStart && nextFirstProgress) || (nowProgress || nextFirstProgress)) {
                             daemonLogLastID--;
                         }
-                        
+
                         $('.daemon-log-offset > div:gt({{ config("settings.admin_daemons_log_lines_count") }})').remove();
-                        
+
                         $('.daemon-log-offset > div').each(function () {
                             if ($(this).text().indexOf('PROGRESS:') == 0) {
                                 makeProgressForElement(this);
                             }
                         });
                     }
-                    
+
                     if (!daemonLogStart || $('.content-body').scrollTop() > 0) {
-                        
-                    } else {                        
+
+                    } else {
                         if (count) {
                             $('.daemon-log-offset').stop(true);
                             let h = 0;
@@ -222,54 +222,54 @@
                 setTimeout(getDaemonData, 3000);
             },
         });
-        
+
         function makeProgressForElement(element) {
             let div = $(element);
             let percent = div.text().split(':')[1];
-            
+
             if (percent > 97) percent = 100;
             if (percent > 100) percent = 100;
-            
+
             let control = $('.progress', element);
-            
-            if (control.length == 0) { 
+
+            if (control.length == 0) {
                 let html = '<div class="progress-bg">' +
-                           '<div class="progress">' + 
+                           '<div class="progress">' +
                            '<div class="progress-bar" role="progressbar" style="width: ' + percent + '%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>' +
                            '</div>' +
                            '</div>'
                 div.append(html);
             } else {
-                
+
             }
         }
     }
-    
+
     function daemonLogScrollTop() {
         $('.content-body').scrollTop(0);
     }
-    
+
     function daemonStartAll() {
         confirmYesNo("@lang('admin/jurnal.daemon_run_all_confirm')", () => {
             startGlobalWaiter();
             $.ajax('{{ route("admin.jurnal-daemon-start-all") }}').done((data) => {
                 stopGlobalWaiter();
                 if (data == 'OK') {
-                    window.location.reload();
+                    reloadWithWaiter();
                 } else {
                     console.log(data);
                 }
             });
         });
     }
-    
+
     function daemonStopAll() {
         confirmYesNo("@lang('admin/jurnal.daemon_stop_all_confirm')", () => {
             startGlobalWaiter();
             $.ajax('{{ route("admin.jurnal-daemon-stop-all") }}').done((data) => {
                 stopGlobalWaiter();
                 if (data == 'OK') {
-                    window.location.reload();
+                    reloadWithWaiter();
                 } else {
                     console.log(data);
                 }

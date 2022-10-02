@@ -10,7 +10,7 @@
         white-space: nowrap;
         padding: 0.5rem!important;
     }
-    
+
     .end-day {
         border-bottom: 2px solid #0000ff;
     }
@@ -57,7 +57,7 @@
     $(document).ready(function () {
         forecastColors();
     });
-    
+
     function forecastClearAll() {
         confirmYesNo("@lang('admin/jurnal.forecast_clear_all_confirm')", () => {
             startGlobalWaiter();
@@ -65,12 +65,12 @@
                 type: 'delete',
                 url: '{{ route("admin.jurnal-forecast-clear") }}',
                 data: {
-                    
+
                 },
                 success: function (data) {
                     stopGlobalWaiter();
                     if (data == 'OK') {
-                        window.location.reload();
+                        reloadWithWaiter();
                     } else {
                         console.log(data);
                     }
@@ -82,7 +82,7 @@
             });
         });
     }
-    
+
     function forecastColors() {
         let rules = [
             {},                                                    // time
@@ -96,18 +96,18 @@
             {color: '#ff0000', invert: true, min: 1, max: 20},     // G
             {color: '#0000ff', invert: true, min: 0, max: 1},    // MP
         ];
-        
+
         function colorTD(td, color, invert, minValue, maxValue) {
             let value = td.text();
-            
+
             if (value == '-//-') return ;
-            
+
             let r = parseInt(color.substr(1, 2), 16);
             let g = parseInt(color.substr(3, 2), 16);
             let b = parseInt(color.substr(5, 2), 16);
-                        
+
             let range = maxValue - minValue;
-            let level = 1; 
+            let level = 1;
             if (range > 0) {
                 level = (parseFloat(value) - minValue) / (maxValue - minValue);
             } else {
@@ -120,7 +120,7 @@
                 'color': invert && level > 0.5 ? '#ffffff' : '#000000',
             });
         }
-        
+
         $('#forecast_list tr').each(function () {
             for (let i = 1; i < rules.length; i++) {
                 let r = rules[i];
