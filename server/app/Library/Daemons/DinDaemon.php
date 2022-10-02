@@ -117,7 +117,7 @@ class DinDaemon extends BaseDaemon
                         if (!$this->checkEvents(false, true)) return;
                 }
 
-                foreach($this->hubs as $controller) {
+                foreach ($this->hubs as $controller) {
                     switch ($command) {
                         case 'RESET':
                             $this->commandReset($controller);

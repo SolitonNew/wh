@@ -614,7 +614,7 @@ class Room extends Model
             }
         };
 
-        foreach(self::getAllPartsCache() as $row) {
+        foreach (self::getAllPartsCache() as $row) {
             if ($row->id == $id) {
                 $data[] = $row;
                 $data[0]->level = 0;
@@ -744,7 +744,7 @@ class Room extends Model
 
         $curr_id = $id;
         do {
-            foreach($list as $row) {
+            foreach ($list as $row) {
                 if ($row->id == $curr_id) {
                     $curr_id = $row->parent_id;
                     if ($curr_id == $parentID) {
@@ -887,7 +887,7 @@ class Room extends Model
 
         $loadLevel = function ($parentID) use (&$loadLevel, $parts) {
             $res = [];
-            foreach($parts as $part) {
+            foreach ($parts as $part) {
                 if ($part->parent_id == $parentID) {
                     $res[] = (object)[
                         'id' => $part->id,

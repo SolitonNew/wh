@@ -3,16 +3,16 @@
 return [
     'menu' => 'Configuration',
     'title' => '',
-    
+
     'main_prompt' => 'To get started, you first need to add a hub',
-    
+
     'hub_add' => 'Add hub...',
     'hub_edit' => 'Hub properties...',
     'hub_scan' => 'Hub network scan...',
     'hub_scan_title' => 'Hub network scan result',
     'firmware' => 'Update hubs...',
     'hubs_reset' => 'Reboot hubs',
-    
+
     'hub_add_title' => 'New hub',
     'hub_edit_title' => 'Hub properties',
     'hub_delete_confirm' => 'Delete this hub?',
@@ -26,6 +26,7 @@ return [
         'orangepi' => 'Orange Pi hub',
         'camcorder' => 'Video Cameras Hub',
         'din' => 'Din hub',
+        'pyhome' => 'Pyhome hub',
         'onewire' => 'OneWire hub',
         'zigbeeone' => 'Zeegbe switch',
     ],
@@ -35,7 +36,7 @@ return [
     'firmware_start_progress' => 'Update is running',
     'firmware_complete' => 'Update completed successfully',
     'firmware_notpossible' => 'Update is not possible',
-    
+
     'devices' => 'Device',
     'device_ID' => 'ID',
     'device_CONTROLLER' => 'Hub',
@@ -47,17 +48,17 @@ return [
     'device_APP_CONTROL' => 'Device type',
     'device_VALUE' => 'Value',
     'device_CHANNEL' => 'Host channel',
-    
+
     'device_filter' => 'Filter',
     'device_filter_null' => 'Without filter',
     'device_group_empty' => 'Not in the room',
-    
+
     'device_add' => 'Add new device...',
     'device_add_title' => 'New device',
     'device_edit_title' => 'Device properties',
     'device_delete_confirm' => 'Delete this device?',
     'devices_add_all' => 'Add all devices for current Hub',
-    
+
     'hosts' => 'Hosts',
     'host_ID' => 'ID',
     'host_CONTROLLER' => 'Hub',
@@ -67,13 +68,13 @@ return [
     'host_CHANNELS' => 'Channels',
     'host_DEVICES' => 'Devices',
     'host_NAME' => 'Name',
-    
+
     'host_add' => 'Add new host...',
     'extapi_host_add' => 'Add External Api host...',
     'orange_host_add' => 'Add Orange Pi host...',
     'camcorder_host_add' => 'Add Camcorder host...',
     'zigbee_host_add' => 'Add Zigbee One host...',
-    
+
     'host_add_title' => 'New host',
     'host_edit_title' => 'Host properties',
     'host_delete_confirm' => 'Delete this host?',

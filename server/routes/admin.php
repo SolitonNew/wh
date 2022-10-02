@@ -65,6 +65,10 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->get('/hub-dinhost-edit/{hubID}/{id}', ['as' => 'admin.hub-dinhost-edit', 'uses' => 'Hubs\HostsController@editDinShow']);
     $router->post('/hub-dinhost-edit/{hubID}/{id}', ['as' => 'admin.hub-dinhost-edit', 'uses' => 'Hubs\HostsController@editDinPost']);
     $router->delete('/hub-dinhost-delete/{hubID}/{id}', ['as' => 'admin.hub-dinhost-delete', 'uses' => 'Hubs\HostsController@deleteDin']);
+    // Pyhome hosts
+    $router->get('/hub-pyhomehost-edit/{hubID}/{id}', ['as' => 'admin.hub-pyhomehost-edit', 'uses' => 'Hubs\HostsController@editPyhomeShow']);
+    $router->post('/hub-pyhomehost-edit/{hubID}/{id}', ['as' => 'admin.hub-pyhomehost-edit', 'uses' => 'Hubs\HostsController@editPyhomePost']);
+    $router->delete('/hub-pyhomehost-delete/{hubID}/{id}', ['as' => 'admin.hub-pyhomehost-delete', 'uses' => 'Hubs\HostsController@deletePyhome']);
     // Zigbee One hosts
     $router->get('/hub-zigbeehost-edit/{hubID}/{id}', ['as' => 'admin.hub-zigbeehost-edit', 'uses' => 'Hubs\HostsController@editZigbeeShow']);
     $router->post('/hub-zigbeehost-edit/{hubID}/{id}', ['as' => 'admin.hub-zigbeehost-edit', 'uses' => 'Hubs\HostsController@editZigbeePost']);
@@ -129,7 +133,7 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->get('/jurnal/forecast', ['as' => 'admin.jurnal-forecast', 'uses' => 'Jurnal\ForecastController@index']);
     $router->delete('/jurnal/forecast-clear', ['as' => 'admin.jurnal-forecast-clear', 'uses' => 'Jurnal\ForecastController@clearStorageData']);
 
-    /* Power management routes */    
+    /* Power management routes */
     $router->get('/jurnal/power', ['as' => 'admin.jurnal-power', 'uses' => 'Jurnal\PowerController@index']);
 
 

@@ -85,7 +85,7 @@ class Hub extends AffectsFirmwareModel
     {
         // Validation  ----------------------
         $rules = [];
-        if ($request->typ == 'din') {
+        if ($request->typ == 'din' || $request->typ == 'pyhome') {
             $rules = [
                 'name' => 'string|required',
                 'typ' => 'string|required',
@@ -114,7 +114,7 @@ class Hub extends AffectsFirmwareModel
             }
             $item->name = $request->name;
             $item->typ = $request->typ;
-            if ($item->typ == 'din') {
+            if ($item->typ == 'din' || $item->typ == 'pyhome') {
                 $item->rom = $request->rom;
             } else {
                 $item->rom = null;
@@ -192,6 +192,11 @@ class Hub extends AffectsFirmwareModel
             'camcorder',
         ],
         'din' => [
+            'variable',
+            'din',
+            'ow',
+        ],
+        'pyhome' => [
             'variable',
             'din',
             'ow',

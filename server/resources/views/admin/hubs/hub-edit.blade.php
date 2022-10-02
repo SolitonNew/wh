@@ -62,7 +62,7 @@
             <div class="invalid-feedback"></div>
         </div>
     </div>
-    @if($item->id < 1 || $item->typ == 'din')
+    @if($item->id < 1 || $item->typ == 'din' || $item->typ == 'pyhome')
     <div id="rowROM" class="row">
         <div class="col-sm-3">
             <label class="form-label strong">@lang('admin/hubs.hub_ROM')</label>
@@ -108,7 +108,7 @@
         });
 
         $('#hub_edit_form select[name="typ"]').on('change', function () {
-            if ($(this).val() == 'din') {
+            if ($(this).val() == 'din' || $(this).val() == 'pyhome') {
                 $('#rowROM').show(150);
             } else {
                 $('#rowROM').hide(150);

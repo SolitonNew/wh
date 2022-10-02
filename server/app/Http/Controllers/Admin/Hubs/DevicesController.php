@@ -17,10 +17,9 @@ use App\Models\Property;
 class DevicesController extends Controller
 {
     /**
-     *
-     * @var type
+     * @var DevicesService 
      */
-    private $_service;
+    private DevicesService $service;
 
     /**
      *
@@ -28,7 +27,7 @@ class DevicesController extends Controller
      */
     public function __construct(DevicesService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
@@ -68,7 +67,7 @@ class DevicesController extends Controller
         // ----------------------------------------
 
 
-        $groupID = $this->_service->prepareRoomFilter($groupID);
+        $groupID = $this->service->prepareRoomFilter($groupID);
 
         $data = Device::devicesList($hubID, $groupID);
 

@@ -107,7 +107,7 @@ class HubsService
             19 => ['MP'],                       // Height
         ];
 
-        foreach($channelControl as $key => $val) {
+        foreach ($channelControl as $key => $val) {
             if (in_array($channel, $val)) {
                 return $key;
             }
