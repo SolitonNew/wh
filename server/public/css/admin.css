@@ -985,21 +985,36 @@ select.select-tree option {
 
     /* History */
     #historyFilter {
+        display: inline-block!important;
+        width: 100%;
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #historyFilter > span {
         display: none;
+    }
+
+    #historyFilter * {
+        margin-bottom: 0.5rem;
+        width: 100%!important;
     }
 
     #jurnalHistoryFiltrPanel {
-        width: 100%!important;
-        margin: 0px!important;
-        padding: 0px!important;
+        display: none;
     }
 
     #historyList {
-        width: 100%!important;
+        display: none!important;
     }
 
     #historyBody {
-        display: none;
+
+    }
+
+    #deviceListCompact {
+        display: inline-block!important;
+        width: 100%;
     }
 
     /* Daemons */

@@ -5,6 +5,15 @@
 @endsection
 
 @section('page-content')
+<div id="deviceListCompact" class="navbar navbar-page" style="display: none;">
+    <select id="deviceListCombobox" class="nav-link custom-select select-tree" style="width: 100%;">
+        @foreach($devices as $row)
+            <option value="{{ $row->id }}" {{ $row->id == $id ? 'selected' : '' }}>
+                {{ $row->comm ?: ($row->room ? $row->room->name : $row->name) }}
+            </option>
+        @endforeach
+    </select>
+</div>
 <div style="display: flex; flex-direction: column; height: 100%;">
     <div class="navbar navbar-page">
         <div id="jurnalHistoryFiltrPanel" style="width: 320px; margin-left: -1rem; padding: 0px 1rem;">
@@ -129,12 +138,20 @@
         });
 
         $('input[name="date"], input[name="sql"]').on('input', () => {
-            $('#jurnalHistoryBtn').fadeIn(250);
+            $('#jurnalHistoryBtn').fadeIn(250, function () {
+                $(window).trigger('resize');
+            });
         });
 
         @if(count($data))
         initJurnalHistoryChart();
         @endif
+
+        // Compact Navigate
+        $('#deviceListCombobox').on('change', function () {
+            let url = '{{ route('admin.jurnal-history', ['id' => '']) }}/' + $(this).val();
+            reloadWithWaiter(url);
+        });
     });
 
     function initJurnalHistoryChart() {

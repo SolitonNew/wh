@@ -84,7 +84,8 @@
 
         // Compact Navigate
         $('#daemonListCombobox').on('change', function () {
-            window.location.href = '{{ route("admin.jurnal-daemons", ["id" => ""]) }}/' + $(this).val();
+            let url = '{{ route("admin.jurnal-daemons", ["id" => ""]) }}/' + $(this).val();
+            reloadWithWaiter(url);
         });
 
         daemonCompactListUpdate();
