@@ -19,7 +19,7 @@ class DinDaemon extends BaseDaemon
     /**
      * @var mixed
      */
-    private mixed $portHandle;
+    private mixed $portHandle = false;
 
     /**
      * @var int

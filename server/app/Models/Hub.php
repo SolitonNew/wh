@@ -4,6 +4,7 @@ namespace App\Models;
 
 use \App\Library\AffectsFirmwareModel;
 use \Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class Hub extends AffectsFirmwareModel
 {
@@ -89,8 +90,19 @@ class Hub extends AffectsFirmwareModel
             $rules = [
                 'name' => 'string|required',
                 'typ' => 'string|required',
-                'rom' => 'numeric|required|min:1|max:15|unique:core_hubs,rom,'.($id > 0 ? $id : ''),
                 'comm' => 'string|nullable',
+                'rom' => [
+                    'numeric',
+                    'required',
+                    'min:1',
+                    'max:15',
+                    Rule::unique('core_hubs')->where(function ($query) use ($id, $request) {
+                        return $query
+                            ->where('typ', $request->typ)
+                            ->where('rom', $request->rom)
+                            ->whereNot('id', $id);
+                    }),
+                ]
             ];
         } else {
             $rules = [
