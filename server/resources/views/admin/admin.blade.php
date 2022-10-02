@@ -352,10 +352,6 @@
 
     function startGlobalWaiter() {
         $('#globalWaiter').show();
-        $('#globalWaiter').css('opacity', 0);
-        globalWaiter = setTimeout(function () {
-            $('#globalWaiter').fadeTo(1000, 1);
-        }, 500);
     }
 
     function stopGlobalWaiter() {
