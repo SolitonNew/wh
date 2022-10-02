@@ -50,12 +50,12 @@
                 type: 'delete',
                 url: '{{ route("admin.jurnal-history-value-delete", ["id" => $item->id]) }}',
                 data: {
-                    
+
                 },
                 success: function (data) {
                     if (data === 'OK') {
                         dialogHide(() => {
-                            window.location.reload();
+                            reloadWithWaiter();
                         });
                     } else {
 

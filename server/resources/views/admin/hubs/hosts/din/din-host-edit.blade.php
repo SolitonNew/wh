@@ -78,12 +78,12 @@
                 type: 'delete',
                 url: '{{ route("admin.hub-dinhost-delete", ["hubID" => $item->hub_id, "id" => $item->id]) }}',
                 data: {
-                    
+
                 },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {
-                            window.location.reload();
+                            reloadWithWaiter();
                         });
                     } else {
                         if (data.errors) {

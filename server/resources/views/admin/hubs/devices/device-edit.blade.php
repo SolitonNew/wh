@@ -42,7 +42,7 @@
         <div class="col-sm-6">
             <select class="custom-select" name="hub_id">
             @foreach(\App\Models\Hub::orderBy('name', 'asc')->get() as $row)
-            <option value="{{ $row->id }}" 
+            <option value="{{ $row->id }}"
                     {{ $row->id == $item->hub_id ? 'selected' : '' }}
                     data-typs="{{ implode('|', \App\Models\Hub::$typs[$row->typ]) }}">{{ $row->name }}</option>
             @endforeach
@@ -127,7 +127,7 @@
 @section('script')
 <script>
     window.deviceEditFormAnimateDuration = 0;
-    
+
     $(document).ready(() => {
         @if($item->id == -1)
         //$('#device_edit_form select[name="room_id"] option').removeAttr('selected');
@@ -137,7 +137,7 @@
         $('#device_edit_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
-                    window.location.reload();
+                    reloadWithWaiter();
                 });
             } else {
                 dialogShowErrors(data);
@@ -160,7 +160,7 @@
             l.attr('data-value', l.val());
             reloadChannels();
         });
-        
+
         reloadTyps();
 
         reloadHostList(() => {
@@ -168,33 +168,33 @@
                 //
             });
         });
-        
+
         setTimeout(function () {
             window.deviceEditFormAnimateDuration = 250;
         }, 500)
     });
-    
+
     function reloadTyps() {
         let controller = $('#device_edit_form select[name="hub_id"]').val();
         let typs = $('#device_edit_form select[name="hub_id"] option[value="' + controller + '"]').data('typs').split('|');
-        
+
         let typSelect = $('#device_edit_form select[name="typ"]');
         let currTyp = typSelect.data('val') ? typSelect.data('val') : typSelect.val();
         typSelect.data('val', null);
         typSelect.html('');
-        
+
         let a = new Array();
         for (let i = 0; i < typs.length; i++) {
             a.push('<option val="' + typs[i] + '">' + typs[i] + '</option>');
         }
         typSelect.html(a.join(''));
-        
+
         if (typs.indexOf(currTyp) > -1) {
             typSelect.val(currTyp);
         } else {
             typSelect.val(typs[0]);
         }
-        
+
         typSelect.trigger('change');
     }
 
@@ -267,12 +267,12 @@
                 type: 'delete',
                 url: '{{ route("admin.hub-device-delete", ["id" => $item->id]) }}',
                 data: {
-                    
+
                 },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {
-                            window.location.reload();
+                            reloadWithWaiter();
                         });
                     } else {
                         alert(data.errors.join('; '));

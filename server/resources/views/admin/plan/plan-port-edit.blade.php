@@ -17,7 +17,7 @@
         width: 10rem;
         height: 10rem;
     }
-    
+
     @media(max-width: 574px) {
         .ext-control-column {
             position: relative;
@@ -68,14 +68,14 @@
     </div>
     <div class="ext-control-column">
         <div class="form-control" style="margin-bottom: -10rem; height:calc(9rem + 2px); padding: 1rem; overflow: hidden;">
-            <div id="portView" 
+            <div id="portView"
                  style="position: relative; display: inline-block; overflow: hiddend;
                         border: 1px solid #000000; width: 100%; height: 100%;">
                 <div style="position: absolute; left: 0px; top: 0px; display: flex; width: 100%;height: 100%;align-items: center;justify-content: center;">
                     <small class="text-muted">{{ $partBounds->W }}x{{ $partBounds->H }}</small>
                 </div>
                 <div class="plan-port" style="cursor: default;"></div>
-            </div>                
+            </div>
         </div>
     </div>
 </form>
@@ -96,50 +96,50 @@
         $('#plan_port_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
-                    window.location.reload();
+                    reloadWithWaiter();
                 });
             } else {
                 dialogShowErrors(data);
             }
         });
-        
+
         $('#plan_port_form select[name="surface"]').on('change', function () {
             planViewUpdate();
         });
-        
+
         $('#plan_port_form input[name="offset"]').on('input', function () {
             planViewUpdate();
         });
-        
+
         $('#plan_port_form input[name="width"]').on('input', function () {
             planViewUpdate();
         });
-        
+
         $('#plan_port_form input[name="depth"]').on('input', function () {
             planViewUpdate();
         });
-        
+
         setTimeout(function () {
             planViewUpdate();
         }, 150);
     });
-    
+
     function planPortOK() {
         $('#plan_port_form').submit();
     }
-    
+
     function planPortDelete() {
         confirmYesNo("@lang('admin/plan.port_delete_confirm')", () => {
             $.ajax({
                 method: 'delete',
                 url: '{{ route("admin.plan-port-delete", ["planID" => $planID, "portIndex" => $portIndex]) }}',
                 data: {
-                    
+
                 },
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {
-                            window.location.reload();
+                            reloadWithWaiter();
                         });
                     } else {
                         //
@@ -148,13 +148,13 @@
             });
         });
     }
-    
+
     function planViewUpdate() {
         let b_w = {{ $partBounds->W }};
         if (b_w == 0) b_w = 1;
         let b_h = {{ $partBounds->H }};
         if (b_h == 0) b_h = 1;
-        
+
         let b_top = false;
         let b_right = false;
         let b_bottom = false;
@@ -182,21 +182,21 @@
             'border-bottom-width': (b_bottom ? 3 : 1) + 'px',
             'border-left-width': (b_left ? 3 : 1) + 'px',
         });
-        
+
         // Move port
         let port = $('#portView .plan-port');
-        
-        let w = $('#portView').width(); 
+
+        let w = $('#portView').width();
         let h = $('#portView').height();
         let kx = w / b_w;
         let ky = h / b_h;
         let offset = $('#plan_port_form input[name="offset"]').val();
         let width = $('#plan_port_form input[name="width"]').val();
         let depth = $('#plan_port_form input[name="depth"]').val();
-        
+
         let pw = 0;
         let ph = 0;
-        
+
         switch ($('#plan_port_form select[name="surface"]').val()) {
             case 'top':
                 pw = width * kx;
@@ -220,7 +220,7 @@
                 break;
             case 'bottom':
                 pw = width * kx;
-                ph = depth * ky;                
+                ph = depth * ky;
                 port.css({
                     left: (w - offset * kx - pw) + 'px',
                     top: h + 'px',
@@ -230,7 +230,7 @@
                 break;
             case 'left':
                 pw = depth * kx;
-                ph = width * ky;                
+                ph = width * ky;
                 port.css({
                     left: -pw + 'px',
                     top: (h - offset * ky - ph) + 'px',

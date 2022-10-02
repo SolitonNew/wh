@@ -37,7 +37,7 @@
         $('#dinSettings input, #dinSettings select').on('input', function () {
             $('#dinSettings .btn').removeAttr('disabled');
         });
-        
+
         $('#dinSettings .btn').on('click', function () {
             $.ajax({
                 method: 'post',
@@ -48,7 +48,7 @@
                 },
                 success: function (data) {
                     if (data == 'OK') {
-                        window.location.reload();
+                        reloadWithWaiter();
                     } else {
                         alert(data);
                     }

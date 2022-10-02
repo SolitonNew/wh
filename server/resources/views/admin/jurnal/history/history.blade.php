@@ -6,6 +6,15 @@
 
 @section('page-content')
 <div style="display: flex; flex-direction: column; height: 100%;">
+    <div id="deviceListCompact" class="navbar navbar-page" style="display: none;">
+        <select id="deviceListCombobox" class="nav-link custom-select select-tree" style="width: 100%;">
+            @foreach($devices as $row)
+                <option value="{{ $row->id }}" {{ $row->id == $id ? 'selected' : '' }}>
+                    {{ $row->comm ?: ($row->room ? $row->room->name : $row->name) }}
+                </option>
+            @endforeach
+        </select>
+    </div>
     <div class="navbar navbar-page">
         <div id="jurnalHistoryFiltrPanel" style="width: 320px; margin-left: -1rem; padding: 0px 1rem;">
             <input id="jurnalHistoryFiltr" type="text" class="form-control" placeholder="@lang('admin/jurnal.history_var_filtr')" >
@@ -15,7 +24,7 @@
             <input type="date" class="form-control" style="width: auto;" name="date" value="{{ isset($_COOKIE['STATISTICS-TABLE-DATE']) ? $_COOKIE['STATISTICS-TABLE-DATE'] : '' }}" required="true">
             <span>@lang('admin/jurnal.history_sql_filtr'):</span>
             <div>
-                <input type="text" class="form-control {{ $errors->first('sql') ? 'is-invalid' : '' }}" 
+                <input type="text" class="form-control {{ $errors->first('sql') ? 'is-invalid' : '' }}"
                        style="width: auto;" name="sql" value="{{ isset($_COOKIE['STATISTICS-TABLE-SQL']) ? $_COOKIE['STATISTICS-TABLE-SQL'] : '' }}">
             </div>
             <button id="jurnalHistoryBtn" class="btn btn-primary" style="display:none;">@lang('admin/jurnal.history_show')</button>
@@ -23,7 +32,7 @@
     </div>
     <div style="flex-grow: 1; overflow: hidden;">
         <div style="position:relative; display: flex; flex-direction: row; height: 100%;">
-            <div id="historyList" class="tree" style="width: 320px; min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" 
+            <div id="historyList" class="tree" style="width: 320px; min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);"
                  scroll-store="jurnalHistoryVarList">
                 @foreach($devices as $row)
                 <a href="{{ route('admin.jurnal-history', ['id' => $row->id]) }}"
@@ -46,7 +55,7 @@
                             <th scope="col" style="width: 100px;">
                                 <span>
                                     <span>@lang('admin/jurnal.history_ID')</span>
-                                    <span class="text-primary">({{ count($data) }})</span>    
+                                    <span class="text-primary">({{ count($data) }})</span>
                                 </span>
                             </th>
                             <th scope="col" style="width: 180px;"><span>@lang('admin/jurnal.history_CREATED_AT')</span></th>
@@ -84,12 +93,12 @@
 <script>
     $(document).ready(() => {
         $('#jurnalHistoryFiltr').val(getCookie('jurnalHistoryFiltr'));
-        
+
         $('#historyFilter').on('submit', function () {
             setCookie('STATISTICS-TABLE-DATE', $('#historyFilter [name="date"]').val());
             setCookie('STATISTICS-TABLE-SQL', $('#historyFilter [name="sql"]').val());
         });
-        
+
         $('#jurnalHistoryFiltr').on('input', function () {
             let s = $(this).val().toUpperCase();
             if (s == '') {
@@ -101,7 +110,7 @@
                         $(this).show();
                     } else {
                         let comm = $('small', this);
-                        
+
                         if ($(comm[0]).text().toUpperCase().indexOf(s) > -1) {
                             $(this).show();
                         } else {
@@ -118,25 +127,33 @@
                     }
                 });
             }
-            
+
             setCookie('jurnalHistoryFiltr', $(this).val());
-            
+
         }).trigger('input');
-        
+
         $('#jurnal_history_List tbody tr').on('click', function () {
             if ($(this).hasClass('table-empty')) return ;
             dialog('{{ route("admin.jurnal-history-value-view", ["id" => ""]) }}/' + $(this).data('id'));
         });
-        
+
         $('input[name="date"], input[name="sql"]').on('input', () => {
-            $('#jurnalHistoryBtn').fadeIn(250);
+            $('#jurnalHistoryBtn').fadeIn(250, function () {
+                $(window).trigger('resize');
+            });
         });
-        
+
         @if(count($data))
         initJurnalHistoryChart();
         @endif
+
+        // Compact Navigate
+        $('#deviceListCombobox').on('change', function () {
+            let url = '{{ route('admin.jurnal-history', ['id' => '']) }}/' + $(this).val();
+            reloadWithWaiter(url);
+        });
     });
-    
+
     function initJurnalHistoryChart() {
         var ctx = document.getElementById('jurnalHistoryChart');
         var chart = new Chart(ctx, {
@@ -176,7 +193,7 @@
             }
         });
     }
-    
+
     @if($id)
     function jurnalHistoryDeleteAllVisible() {
         confirmYesNo("@lang('admin/jurnal.history_delete_all_visible_confirm')", () => {
@@ -184,17 +201,17 @@
                 type: 'delete',
                 url: "{{ route('admin.jurnal-history-delete-all-visible', ['id' => $id]) }}",
                 data: {
-                    
+
                 },
                 success: function (data) {
                     alert(data, function () {
-                        window.location.reload();
+                        reloadWithWaiter();
                     });
                 },
             });
         });
     }
     @endif
-    
+
 </script>
 @endsection

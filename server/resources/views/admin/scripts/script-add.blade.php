@@ -46,7 +46,7 @@
 @section('script')
 <script>
     var scriptTemplateEditor = false;
-    
+
     $(document).ready(() => {
         let ctx = document.getElementById('scriptTemplateEditor');
         let options = {
@@ -71,18 +71,18 @@
             name: 'templateSource',
         };
         scriptTemplateEditor = new ScriptEditor(ctx, options);
-        
-        
+
+
         $('#script_add_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
-                    window.location.reload();
+                    reloadWithWaiter();
                 });
             } else {
                 dialogShowErrors(data);
             }
         });
-        
+
         $('#script_add_form [name="template"]').on('change', function () {
             scriptEditTemplate($(this).val());
         }).trigger('change');
@@ -91,11 +91,11 @@
     function scriptEditOK() {
         $('#script_add_form').submit();
     }
-    
+
     function scriptEditTemplate(key) {
         $('#script_add_form [data-param]').css('opacity', 0);
         $('#scriptTemplateEditorRow').css('opacity', 0);
-        
+
         $.ajax({
             url: '{{ route("admin.script-template") }}',
             data: {
@@ -104,15 +104,15 @@
             success: function (data) {
                 $('#script_add_form [data-param]').remove();
                 $('#scriptBeforeParams').after(data);
-                
+
                 $('#script_add_form [data-param] select').on('change', function () {
                     scriptEditorSetSource();
                 });
-                
+
                 $('#script_add_form [data-param] input').on('input', function () {
                     scriptEditorSetSource();
                 });
-                
+
                 scriptEditorSetSource();
             },
             error: function (err) {
@@ -120,10 +120,10 @@
             }
         });
     }
-    
+
     function scriptEditorSetSource() {
         let name = $('#scriptTemplateName').val();
-        
+
         let room = 'ROOM';
         let p = $('#script_add_form [data-param]');
         if (p.length) {
@@ -136,7 +136,7 @@
             }
         }
         $('#script_add_form input[name="comm"]').val(name.replaceAll('@ROOM@', room));
-        
+
         // --------------------------------------------
         let events = new Array();
         $('#script_add_form [data-event] select').each(function () {
@@ -145,23 +145,23 @@
         });
         $('#script_add_form input[name="attachDevices"]').val(events.join(','));
         // --------------------------------------------
-        
+
         let source = $('#scriptTemplateSource').val();
-        
+
         if (!source) {
             $('#scriptTemplateEditorRow').hide();
             scriptTemplateEditor.setData('');
             return ;
         }
-        
+
         $('#script_add_form [data-param]').each(function () {
             let param = $('select, input', this);
             let key = $(this).data('param');
             let value = param.val();
-            
+
             source = source.replaceAll('@' + key + '@', value ? value : key);
         });
-        
+
         scriptTemplateEditor.setData(source);
         $('#scriptTemplateEditorRow').css('opacity', 1);
         $('#scriptTemplateEditorRow').show();

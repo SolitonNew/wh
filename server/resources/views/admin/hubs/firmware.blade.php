@@ -42,12 +42,12 @@
 @section('script')
 <script>
     $(document).ready(function () {
-        
+
     });
-    
+
     function firmwareStart() {
         $('#firmware-start').hide(250);
-        
+
         $.ajax({
             url: "{{ route('admin.firmware-start') }}",
             success: function (data) {
@@ -57,7 +57,7 @@
             }
         });
     }
-    
+
     function firmwareStatus() {
         $.ajax({
             url: "{{ route('admin.firmware-status') }}",
@@ -73,18 +73,18 @@
                         $('#progress-firmware .progress-bar').css({
                             width: '100%',
                         });
-                        
+
                         alert("@lang('admin/hubs.firmware_complete')", () => {
                             dialogHide(() => {
-                                window.location.reload();
-                            });                            
+                                reloadWithWaiter();
+                            });
                         });
-                        
+
                         firmwareButtons(1);
                         return ;
                     } else {
                         alert('@lang("admin/hubs.firmware_notpossible")', () => {
-                            window.location.reload();
+                            reloadWithWaiter();
                         });
                         return ;
                     }
@@ -94,12 +94,12 @@
                         width: data.percent + '%',
                     });
                 }
-                
+
                 setTimeout(firmwareStatus, 500);
             },
         });
     }
-    
+
     function firmwareButtons(show) {
         if (show) {
             $('#btn-close').removeAttr('disabled');

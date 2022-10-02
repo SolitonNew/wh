@@ -9,13 +9,13 @@
         </div>
     </div>
 </div>
-<script>         
+<script>
     var scriptEditor = false;
-    
+
     $(document).ready(function () {
         $(window).on('resize', () => {
             let scriptViewer = $('#scriptViewer')[0];
-            
+
             if ($(window).width() > 768) {
                 let bounds = scriptViewer.getBoundingClientRect();
                 $('#scriptEditorWindow').css({
@@ -33,7 +33,7 @@
                 });
             }
         });
-        
+
         let ctx = document.getElementById('scriptEditor');
         let options = {
         @foreach([\App\Library\Script\ScriptEditor::makeKeywords()] as $row)
@@ -58,7 +58,7 @@
         };
         scriptEditor = new ScriptEditor(ctx, options);
     });
-    
+
     function editorShow(selStart, selEnd, data) {
         $('.script-editor-background').fadeIn(250);
         scriptEditor.setData(data);
@@ -81,7 +81,7 @@
             success: function (data) {
                 if (data == 'OK') {
                     editorHide(() => {
-                        window.location.reload();
+                        reloadWithWaiter();
                     });
                 } else {
                     console.log(data);
@@ -89,7 +89,7 @@
             }
         });
     }
-    
+
     function editorTest() {
         runScriptTest(scriptEditor.getData());
     }

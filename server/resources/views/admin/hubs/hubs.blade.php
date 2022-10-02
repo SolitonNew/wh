@@ -27,9 +27,9 @@
 @section('top-menu')
 @if($hubID)
 <div class="nav nav-tabs navbar-top-menu-tab">
-    <a class="nav-link {{ active_segment(4, 'hosts') }}" 
+    <a class="nav-link {{ active_segment(4, 'hosts') }}"
         href="{{ route('admin.hub-hosts', ['hubID' => $hubID]) }}">@lang('admin/hubs.hosts') ({{ \App\Models\Hub::find($hubID)->hostsCount() }})</a>
-    <a class="nav-link {{ active_segment(4, 'devices') }}" 
+    <a class="nav-link {{ active_segment(4, 'devices') }}"
         href="{{ route('admin.hub-devices', ['hubID' => $hubID]) }}">@lang('admin/hubs.devices') ({{ \App\Models\Hub::find($hubID)->devices->count() }})</a>
 </div>
 @endif
@@ -85,32 +85,32 @@
         });
         @endif
     });
-    
+
     function hubAdd() {
         dialog("{{ route('admin.hub-edit', ['id' => -1]) }}");
     }
-    
+
     @if($hubID)
     function devicesAddAll() {
         startGlobalWaiter();
         $.ajax({
             url: '{{ route("admin.hubs-add-devices-for-all-hosts", ["hubID" => $hubID]) }}',
             success: function (data) {
-                window.location.reload();
+                reloadWithWaiter();
             }
         });
     }
-        
+
     function hubEdit() {
         dialog("{{ route('admin.hub-edit', ['id' => $hubID]) }}");
     }
 
     function hubScan() {
         dialog("{{ route('admin.hub-network-scan', ['id' => $hubID]) }}", null, function () {
-            window.location.reload();
+            reloadWithWaiter();
         });
     }
-    
+
     function hubsReset() {
         $.ajax({
             url: '{{ route("admin.hubs-reset") }}',
@@ -122,6 +122,6 @@
         })
     }
     @endif
-    
+
 </script>
 @endsection

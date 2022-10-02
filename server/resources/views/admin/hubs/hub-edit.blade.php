@@ -33,8 +33,8 @@
             @else
             <select class="custom-select" name="typ">
             @foreach(\App\Models\Hub::$typs as $key => $val)
-            <option value="{{ $key }}" 
-                    data-description="@lang('admin/hubs.hub_types.'.$key)" 
+            <option value="{{ $key }}"
+                    data-description="@lang('admin/hubs.hub_types.'.$key)"
                     {{ App\Models\Hub::isFirstSingleHub($key) ? '' : 'disabled' }}
                     {{ $item->typ == $key ? 'selected' : '' }}>{{ $key }}</option>
             @endforeach
@@ -71,7 +71,7 @@
             <input type="text" class="form-control" name="rom" value="{{ $item->rom }}">
             <div class="invalid-feedback"></div>
         </div>
-    </div>    
+    </div>
     @endif
     <div class="row">
         <div class="col-sm-3">
@@ -100,20 +100,20 @@
         $('#hub_edit_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
-                    window.location.reload();
+                    reloadWithWaiter();
                 });
             } else {
                 dialogShowErrors(data);
             }
         });
-        
+
         $('#hub_edit_form select[name="typ"]').on('change', function () {
             if ($(this).val() == 'din') {
                 $('#rowROM').show(150);
             } else {
                 $('#rowROM').hide(150);
             }
-            
+
             let description = $('#hub_edit_form option[value="' + $(this).val() + '"]').data('description');
             $('#hubTypDescription').text(description);
         }).trigger('change');
@@ -128,13 +128,13 @@
             $.ajax({
                 url: '{{ route("admin.hub-delete", ["id" => $item->id]) }}',
                 data: {
-                    
+
                 },
                 type: 'delete',
                 success: function (data) {
                     if (data == 'OK') {
                         dialogHide(() => {
-                            window.location.reload();
+                            reloadWithWaiter();
                         });
                     } else {
 

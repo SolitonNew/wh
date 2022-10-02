@@ -18,7 +18,7 @@
         $('#timezoneSelect').on('change', function () {
             $('#timezone .btn').removeAttr('disabled');
         });
-        
+
         $('#timezone .btn').on('click', function () {
             $.ajax({
                 method: 'post',
@@ -28,7 +28,7 @@
                 },
                 success: function (data) {
                     if (data == 'OK') {
-                        window.location.reload();
+                        reloadWithWaiter();
                     } else {
                         alert(data);
                     }

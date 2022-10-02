@@ -27,7 +27,7 @@
         $('#import_form').ajaxForm((data) => {
             if (data == 'OK') {
                 dialogHide(() => {
-                    window.location.reload();
+                    reloadWithWaiter();
                 });
             } else {
                 dialogShowErrors(data);
@@ -41,7 +41,7 @@
             }
         }).trigger('change');
     });
-    
+
     function planImportOK() {
         $('#import_form').submit();
     }

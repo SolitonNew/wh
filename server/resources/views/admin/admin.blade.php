@@ -242,7 +242,8 @@
             if (href
                 && href != '#'
                 && (href.indexOf('javascript') < 0)
-                && target != '_blank') {
+                && target != '_blank')
+            {
                 startGlobalWaiter();
                 $('body').css('opacity', 0.5);
             }
@@ -351,10 +352,6 @@
 
     function startGlobalWaiter() {
         $('#globalWaiter').show();
-        $('#globalWaiter').css('opacity', 0);
-        globalWaiter = setTimeout(function () {
-            $('#globalWaiter').fadeTo(1000, 1);
-        }, 500);
     }
 
     function stopGlobalWaiter() {
@@ -362,6 +359,16 @@
             clearTimeout(globalWaiter);
         }
         $('#globalWaiter').hide();
+    }
+
+    function reloadWithWaiter(url = '') {
+        startGlobalWaiter();
+        $('body').css('opacity', 0.5);
+        if (url) {
+            window.location.href = url;
+        } else {
+            window.location.reload();
+        }
     }
 
     let lastDeviceChangeID = -1;

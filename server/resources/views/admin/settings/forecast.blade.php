@@ -130,7 +130,7 @@
         $('#forecast select').on('change', function () {
             $('#forecast .btn').removeAttr('disabled');
         });
-        
+
         $('#forecast .btn').on('click', function () {
             $.ajax({
                 method: 'post',
@@ -148,7 +148,7 @@
                 },
                 success: function (data) {
                     if (data == 'OK') {
-                        window.location.reload();
+                        reloadWithWaiter();
                     } else {
                         alert(data);
                     }
