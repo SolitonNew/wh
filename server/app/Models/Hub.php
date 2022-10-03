@@ -67,6 +67,8 @@ class Hub extends AffectsFirmwareModel
                 return $this->camcorderHosts->count();
             case 'din':
                 return $this->owHosts->count();
+            case 'pyhome':
+                return $this->owHosts->count();
         }
         return 0;
     }
@@ -220,7 +222,7 @@ class Hub extends AffectsFirmwareModel
         ],
         'pyhome' => [
             'variable',
-            'din',
+            'pyhome',
             'ow',
         ],
         'zigbeeone' => [

@@ -66,6 +66,9 @@ class HubsService
             case 'din':
                 $this->generateDinDevsByHub($hubID);
                 break;
+            case 'pyhome':
+                $this->generatePyhomeDevsByHub($hubID);
+                break;
             case 'orangepi':
                 $this->generateOrangePiDevsByHub($hubID);
                 break;
@@ -86,7 +89,14 @@ class HubsService
     private function decodeChannelTyp(string $channel, int $default = 0): int
     {
         $channelControl = [
-            1 => ['R1', 'R2', 'R3', 'R4'],      // Light
+            1 => [
+                'R1', 'R2', 'R3', 'R4',
+                'X1', 'X2', 'X3', 'X4',
+                'X5', 'X6', 'X7', 'X8',
+                'X9', 'X10', 'X11', 'X12',
+                'Y1', 'Y2', 'Y3', 'Y4',
+                'Y5', 'Y6', 'Y7', 'Y8',
+            ],      // Light
             2 => ['LEFT', 'RIGHT', 'LEFT_LONG', 'RIGHT_LONG'], // Switch
             //3 => [],                          // Socket
             4 => ['T', 'TEMP', 'PROC_TEMP'],    // Termometr
@@ -144,6 +154,76 @@ class HubsService
                     $item->app_control = $this->decodeChannelTyp($chan, 1);
                     $item->save(['withoutevents']);
                     $item->name = 'din_'.$item->id.'_'.$chan;
+                    $item->save();
+                }
+            }
+        } catch (\Exception $ex) {
+            Log::info($ex);
+            return ;
+        }
+
+        // Generation of devices for network hubs
+        $hosts = OwHost::whereHubId($hubID)->get();
+        $devs = Device::whereTyp('ow')->get();
+        try {
+            foreach ($hosts as $host) {
+                foreach ($host->channelsOfType() as $chan) {
+                    $find = false;
+                    foreach ($devs as $dev) {
+                        if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
+                            $find = true;
+                            break;
+                        }
+                    }
+
+                    if (!$find) {
+                        $item = new Device();
+                        $item->hub_id = $host->hub_id;
+                        $item->typ = 'ow';
+                        $item->name = 'temp for ow';
+                        $item->host_id = $host->id;
+                        $item->channel = $chan;
+                        $item->app_control = $this->decodeChannelTyp($chan);
+                        $item->save(['withoutevents']);
+                        $item->name = 'ow_'.$item->id.'_'.$chan;
+                        $item->save();
+                    }
+                }
+            }
+        } catch (\Exception $ex) {
+            Log::info($ex);
+            return ;
+        }
+    }
+
+    /**
+     * @param int $hubID
+     * @return void
+     */
+    private function generatePyhomeDevsByHub(int $hubID): void
+    {
+        $pyhome_channels = config('pyhome.channels');
+        $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "pyhome"');
+
+        try {
+            foreach ($pyhome_channels as $chan) {
+                $find = false;
+                foreach ($devs as $dev) {
+                    if ($dev->hub_id == $hubID && $dev->channel == $chan) {
+                        $find = true;
+                        break;
+                    }
+                }
+                if (!$find) {
+                    $item = new Device();
+                    $item->hub_id = $hubID;
+                    $item->typ = 'pyhome';
+                    $item->name = 'temp for pyhome';
+                    $item->host_id = null;
+                    $item->channel = $chan;
+                    $item->app_control = $this->decodeChannelTyp($chan, 1);
+                    $item->save(['withoutevents']);
+                    $item->name = 'pyhome_'.$item->id.'_'.$chan;
                     $item->save();
                 }
             }

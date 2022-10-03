@@ -167,6 +167,15 @@ class DevicesController extends Controller
                     ];
                 }
                 break;
+            case 'pyhome':
+                foreach ($hub->owHosts as $host) {
+                    $data[] = (object)[
+                        'id' => $host->id,
+                        'rom' => $host->romAsString(),
+                        'count' => $host->devices->count(),
+                    ];
+                }
+                break;
         }
 
         return response()->json($data);
@@ -186,6 +195,9 @@ class DevicesController extends Controller
             case 'din':
                 $settings = Property::getDinSettings();
                 $data = config('din.'.$settings->mmcu.'.channels');
+                break;
+            case 'pyhome':
+                $data = config('pyhome.channels');
                 break;
             case 'ow':
                 $host = OwHost::find($hostID);
