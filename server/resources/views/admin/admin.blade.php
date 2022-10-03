@@ -245,7 +245,6 @@
                 && target != '_blank')
             {
                 startGlobalWaiter();
-                $('body').css('opacity', 0.5);
             }
         });
 
@@ -363,7 +362,6 @@
 
     function reloadWithWaiter(url = '') {
         startGlobalWaiter();
-        $('body').css('opacity', 0.5);
         if (url) {
             window.location.href = url;
         } else {
