@@ -145,6 +145,10 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->post('/settings-set-din-settings', ['as' => 'admin.settings-set-din-settings', 'uses' => 'SettingsController@setDinSettings']);
     $router->post('/settings-set-pyhome-settings', ['as' => 'admin.settings-set-pyhome-settings', 'uses' => 'SettingsController@setPyhomeSettings']);
     $router->post('/settings-set-forecast', ['as' => 'admin.settings-set-forecast', 'uses' => 'SettingsController@setForecast']);
+    /* Metadata backup system */
+    $router->get('/backup-meta-import-show', ['as' => 'admin.backup-meta-import-show', 'uses' => 'BackupMetaController@importShow']);
+    $router->post('/backup-meta-import-post', ['as' => 'admin.backup-meta-import-post', 'uses' => 'BackupMetaController@importPost']);
+    $router->get('/backup-meta-export', ['as' => 'admin.backup-meta-export', 'uses' => 'BackupMetaController@export']);
 
     /* Test  ------------------------------------------------- */
     $router->get('/test', 'TestController@test');

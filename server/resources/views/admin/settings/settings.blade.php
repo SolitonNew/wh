@@ -1,6 +1,8 @@
 @extends('admin.admin')
 
 @section('down-menu')
+<a href="#" class="dropdown-item" onclick="backupMetaImportDialog(); return false;">@lang('admin/settings.backup_meta_menu_import')</a>
+<a href="{{ route('admin.backup-meta-export') }}" class="dropdown-item" target="_blank">@lang('admin/settings.backup_meta_menu_export')</a>
 @endsection
 
 @section('top-menu')
@@ -46,5 +48,9 @@
             });
         });
     });
+
+    function backupMetaImportDialog() {
+        dialog("{{ route('admin.backup-meta-import-show') }}");
+    }
 </script>
 @endsection
