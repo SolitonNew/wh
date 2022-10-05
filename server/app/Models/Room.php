@@ -16,10 +16,10 @@ class Room extends Model
     /**
      * Load plan records with port records and with devices.
      *
-     * @param int $id
+     * @param int|null $id
      * @return array
      */
-    public static function listAllForIndex(int $id): array
+    public static function listAllForIndex(int|null $id): array
     {
         $ports = [];
         $parts = Room::generateTree($id);
