@@ -710,4 +710,66 @@ class Property extends Model
         }
         $item->save();
     }
+
+    /**
+     * @param bool $clear
+     * @return string
+     */
+    public static function getPyhomeCommand(bool $clear = false): string
+    {
+        $item = self::whereName('PYHOME_COMMAND')->first();
+        if ($item) {
+            $value = $item->value;
+            if ($clear && $value != '') {
+                $item->value = '';
+                $item->save();
+            }
+            return $value;
+        }
+        return '';
+    }
+
+    /**
+     * @param string $command
+     * @return void
+     */
+    public static function setPyhomeCommand(string $command): void
+    {
+        $item = self::whereName('PYHOME_COMMAND')->first();
+        $item->value = $command;
+        $item->save();
+    }
+
+    /**
+     * @return string
+     */
+    public static function getPyhomeCommandInfo(): string
+    {
+        $item = self::whereName('PYHOME_COMMAND_INFO')->first();
+        if ($item) {
+            return $item->value;
+        }
+        return '';
+    }
+
+    /**
+     * @param string $text
+     * @param bool $first
+     * @return void
+     */
+    public static function setPyhomeCommandInfo(string $text, bool $first = false): void
+    {
+        $item = self::whereName('PYHOME_COMMAND_INFO')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'PYHOME_COMMAND_INFO';
+            $item->comm = '';
+        }
+        if ($first) {
+            $item->value = $text;
+        } else {
+            $item->value .= $text;
+        }
+        $item->save();
+    }
 }
