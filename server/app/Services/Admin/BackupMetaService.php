@@ -77,22 +77,18 @@ class BackupMetaService
                     if ($tableData['table'] == $table) {
                         foreach ($tableData['data'] as $row) {
                             $fields = [];
+                            $params = [];
                             $values = [];
                             foreach ($row as $name => $value) {
                                 $fields[] = $name;
-                                if (is_null($value)) {
-                                    $values[] = 'NULL';
-                                } elseif (is_float($value)) {
-                                    $values[] = $value;
-                                } else {
-                                    $values[] = "'".$value."'";
-                                }
+                                $params[] = '?';
+                                $values[] = $value;
                             }
 
                             $sql = 'insert into '.$table.' ('.implode(', ', $fields).')'.
-                                ' values ('.implode(', ', $values).')';
+                                ' values ('.implode(', ', $params).')';
 
-                            DB::insert($sql);
+                            DB::insert($sql, $values);
                         }
                     }
                 }
