@@ -17,14 +17,14 @@ class DatabaseSeeder extends Seeder
         $item->password = app('hash')->make('wh');
         $item->access = 2;
         $item->save();
-        
+
         // Create default terminal record
         $item = new \App\Models\User();
         $item->login = 'terminal';
         $item->password = app('hash')->make('terminal');
         $item->access = 1;
         $item->save();
-        
+
         // Filling out of the core_properties table
         $data = [
             '1|SYNC_STATE|Synchronization state of the server and controllers: Running/Stoped|STOP',
@@ -46,10 +46,5 @@ class DatabaseSeeder extends Seeder
                 'value' => $attrs[3],
             ])->save();
         }
-        
-        // Filling out of the plan_rooms table
-        $data = file_get_contents(base_path().'/database/seeders/sample.plan.json');
-        App\Models\Room::importFromString($data);
-        
     }
 }
