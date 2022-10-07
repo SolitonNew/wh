@@ -193,6 +193,7 @@
                         message = "@lang('admin/hubs.config_wizard_complete_error')";
                     } else {
                         message = "@lang('admin/hubs.config_wizard_complete')";
+                        configWizardComplete();
                     }
 
                     alert(message, () => {
@@ -204,6 +205,16 @@
             },
             error: function (err) {
                 setTimeout(configWizardTransmitStatus, transmitStatusInterval);
+            }
+        });
+    }
+
+    function configWizardComplete() {
+        $.ajax({
+            url: '{{ route("admin.hubs-config-complete") }}',
+            success: function (data) {
+            },
+            error: function (err) {
             }
         });
     }

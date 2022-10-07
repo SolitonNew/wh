@@ -166,25 +166,12 @@ class HubsController extends Controller
     }
 
     /**
-     * This route sends the din-daemon command to start uploading firmware
-     * to the controllers.
-     *
      * @return string
      */
-    public function firmwareStart(): string
+    public function configWizardComplete()
     {
-        $this->service->firmwareStart();
+        Property::setFirmwareChanges(0);
         return 'OK';
-    }
-
-    /**
-     * This route to query the firmware status now.
-     *
-     * @return \Illuminate\Http\JsonResponse|null
-     */
-    public function firmwareStatus()
-    {
-        return $this->service->firmwareStatus();
     }
 
     /**

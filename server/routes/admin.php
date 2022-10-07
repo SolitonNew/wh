@@ -43,11 +43,11 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->get('/hub-network-scan/{id}', ['as' => 'admin.hub-network-scan', 'uses' => 'HubsController@hubNetworkScan']);
     $router->get('/hubs-reset', ['as' => 'admin.hubs-reset', 'uses' => 'HubsController@hubsReset']);
     $router->get('/hubs-add-devices-for-all-hosts/{hubID}', ['as' => 'admin.hubs-add-devices-for-all-hosts', 'uses' => 'HubsController@addDevicesForAllHosts']);
-
     $router->get('/hubs-config-wizard', ['as' => 'admin.hubs-config-wizard', 'uses' => 'HubsController@configWizardShow']);
     $router->get('/hubs-config-wizard-make/{typ}', ['as' => 'admin.hubs-config-wizard-make', 'uses' => 'HubsController@configWizardMake']);
     $router->get('/hubs-config-wizard-transmit', ['as' => 'admin.hubs-config-wizard-transmit', 'uses' => 'HubsController@configWizardTransmit']);
     $router->get('/hubs-config-wizard-status', ['as' => 'admin.hubs-config-wizard-status', 'uses' => 'HubsController@configWizardStatus']);
+    $router->get('/hubs-config-complete', ['as' => 'admin.hubs-config-complete', 'uses' => 'HubsController@configWizardComplete']);
 
     /* Hosts management routes */
     $router->get('/hubs/{hubID}/hosts', ['as' => 'admin.hub-hosts', 'uses' => 'Hubs\HostsController@index']);
