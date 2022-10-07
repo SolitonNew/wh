@@ -628,22 +628,24 @@ class HubsService
             }
 
             $info = Property::getPyhomeCommandInfo();
-            if ($info == 'COMPLETE') {
-                $status = 'COMPLETE';
-                $percent = 100;
-            } else
-                if (strpos($info, 'ERROR') !== false) {
-                    $status = 'ERROR';
-                    $details = $info;
-                } else {
-                    $a = explode(';', $info);
-                    if (count($a) < 2) {
-                        $a = ['', 0];
-                    }
-
-                    $status = 'IN PROGRESS';
-                    $percent = $a[1];
+            $a = [];
+            foreach (explode(';', $info) as $s) {
+                $c = explode(':', $s);
+                if (count($c) == 2 && $c[0] == $id) {
+                    if ($c[1] == 'BAD') {
+                        $status = 'ERROR';
+                        $details = 'Bad controller response';
+                    } else
+                        if ($c[1] == 'COMPLETE') {
+                            $status = 'COMPLETE';
+                            $percent = 100;
+                        } else {
+                            $status = 'IN PROGRESS';
+                            $percent = $c[1];
+                        }
+                    break;
                 }
+            }
         } catch (\Exception $ex) {
             $status = 'ERROR';
             $details = $ex->getMessage();
@@ -670,22 +672,24 @@ class HubsService
             }
 
             $info = Property::getZigbeeoneCommandInfo();
-            if ($info == 'COMPLETE') {
-                $status = 'COMPLETE';
-                $percent = 100;
-            } else
-                if (strpos($info, 'ERROR') !== false) {
-                    $status = 'ERROR';
-                    $details = $info;
-                } else {
-                    $a = explode(';', $info);
-                    if (count($a) < 2) {
-                        $a = ['', 0];
-                    }
-
-                    $status = 'IN PROGRESS';
-                    $percent = $a[1];
+            $a = [];
+            foreach (explode(';', $info) as $s) {
+                $c = explode(':', $s);
+                if (count($c) == 2 && $c[0] == $id) {
+                    if ($c[1] == 'BAD') {
+                        $status = 'ERROR';
+                        $details = 'Bad controller response';
+                    } else
+                        if ($c[1] == 'COMPLETE') {
+                            $status = 'COMPLETE';
+                            $percent = 100;
+                        } else {
+                            $status = 'IN PROGRESS';
+                            $percent = $c[1];
+                        }
+                    break;
                 }
+            }
         } catch (\Exception $ex) {
             $status = 'ERROR';
             $details = $ex->getMessage();
@@ -695,18 +699,17 @@ class HubsService
     }
 
     /**
-     * @return void
+     * @return string
      */
-    public function hubsReset(): void
+    public function hubsReset(): string
     {
         try {
             Property::setDinCommand('RESET');
             Property::setPyhomeCommand('RESET');
             Property::setZigbeeoneCommand('RESET');
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
-                'errors' => [$ex->getMessage()],
-            ]), 422);
+            return 'ERROR';
         }
     }
 }
