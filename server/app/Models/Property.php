@@ -233,6 +233,11 @@ class Property extends Model
     public static function setDinCommand(string $command): void
     {
         $item = self::whereName('DIN_COMMAND')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'DIN_COMMAND';
+            $item->comm = '';
+        }
         $item->value = $command;
         $item->save();
     }
@@ -736,6 +741,11 @@ class Property extends Model
     public static function setPyhomeCommand(string $command): void
     {
         $item = self::whereName('PYHOME_COMMAND')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'PYHOME_COMMAND';
+            $item->comm = '';
+        }
         $item->value = $command;
         $item->save();
     }
@@ -798,6 +808,11 @@ class Property extends Model
     public static function setZigbeeoneCommand(string $command): void
     {
         $item = self::whereName('ZIGBEEONE_COMMAND')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'ZIGBEEONE_COMMAND';
+            $item->comm = '';
+        }
         $item->value = $command;
         $item->save();
     }

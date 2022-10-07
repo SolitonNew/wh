@@ -72,6 +72,8 @@
 
 @section('script')
 <script>
+    var transmitStatusInterval = 500;
+
     $(document).ready(function () {
         $('#configWizardMakeBtn').on('click', function () {
             $('#configWizardPage_begin').hide();
@@ -132,54 +134,58 @@
     }
 
     function configWizardTransmit() {
-        let interval = 500;
+        $.ajax({
+            url: '{{ route("admin.hubs-config-wizard-transmit") }}',
+            success: function (data) {
+                setTimeout(configWizardTransmitStatus, transmitStatusInterval);
+            },
+            error: function (err) {
 
-        function statusRequest() {
-            if ($('#dialog_window').css('display') == 'none') return ;
+            }
+        });
+    }
 
-            $.ajax({
-                url: '{{ route("admin.hubs-config-wizard-status") }}',
-                data: {
-                    ids: [{{ implode(', ', $hubIds) }}],
-                },
-                success: function (data) {
-                    let finishedCount = 0;
+    function configWizardTransmitStatus() {
+        if ($('#dialog_window').css('display') == 'none') return ;
 
-                    console.log(data);
+        $.ajax({
+            url: '{{ route("admin.hubs-config-wizard-status") }}',
+            data: {
+                ids: [{{ implode(', ', $hubIds) }}],
+            },
+            success: function (data) {
+                let finishedCount = 0;
 
-                    data.forEach(function (item) {
-                        let row = $('#configWizardPage_transmit [data-id="' + item.id + '"]');
+                data.forEach(function (item) {
+                    let row = $('#configWizardPage_transmit [data-id="' + item.id + '"]');
 
-                        switch (item.status) {
-                            case 'ERROR':
-                                $('.progress', row).hide();
-                                $('.transmit_info', row).show().text('ERROR');
-                                finishedCount++;
-                                break;
-                            case 'IN PROGRESS':
-                                $('.progress', row).show();
-                                $('.progress > div').width(item.percent + '%');
-                                $('.transmit_info', row).hide();
-                                break;
-                            case 'COMPLETE':
-                                $('.progress', row).hide();
-                                $('.transmit_info', row).show().text('COMPLETE');
-                                finishedCount++;
-                                break;
-                        }
-                    });
-
-                    if (data.length > finishedCount) {
-                        setTimeout(statusRequest, interval);
+                    switch (item.status) {
+                        case 'ERROR':
+                            $('.progress', row).hide();
+                            $('.transmit_info', row).show().text('ERROR');
+                            finishedCount++;
+                            break;
+                        case 'IN PROGRESS':
+                            $('.progress', row).show();
+                            $('.progress > div').width(item.percent + '%');
+                            $('.transmit_info', row).hide();
+                            break;
+                        case 'COMPLETE':
+                            $('.progress', row).hide();
+                            $('.transmit_info', row).show().text('COMPLETE');
+                            finishedCount++;
+                            break;
                     }
-                },
-                error: function (err) {
-                    setTimeout(statusRequest, interval);
-                }
-            });
-        }
+                });
 
-        setTimeout(statusRequest, interval);
+                if (data.length > finishedCount) {
+                    setTimeout(configWizardTransmitStatus, transmitStatusInterval);
+                }
+            },
+            error: function (err) {
+                setTimeout(configWizardTransmitStatus, transmitStatusInterval);
+            }
+        });
     }
 
     function configWizardButtons(show) {
