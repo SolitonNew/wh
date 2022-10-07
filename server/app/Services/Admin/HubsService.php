@@ -592,15 +592,12 @@ class HubsService
                         $status = 'ERROR';
                         $details = 'Bad firmware size';
                     } else
-                    if ($c[1] < 100) {
-                        $status = 'IN PROGRESS';
-                        $percent = $c[1];
-                    } else
                     if ($c[1] == 'COMPLETE') {
                         $status = 'COMPLETE';
                         $percent = 100;
                     } else {
-                        $status = 'PENDING';
+                        $status = 'IN PROGRESS';
+                        $percent = $c[1];
                     }
                     break;
                 }
