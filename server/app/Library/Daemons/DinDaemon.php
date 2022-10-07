@@ -59,6 +59,11 @@ class DinDaemon extends BaseDaemon
     /**
      * @var array
      */
+    private array $firmwareStatuses = [];
+
+    /**
+     * @var array
+     */
     private array $devicesLoopChanges = [];
 
     /**
@@ -111,6 +116,8 @@ class DinDaemon extends BaseDaemon
                     default:
                         if (!$this->checkEvents(false, true)) return;
                 }
+
+                $this->firmwareStatuses = [];
 
                 foreach ($this->hubs as $controller) {
                     switch ($command) {
@@ -333,10 +340,12 @@ class DinDaemon extends BaseDaemon
             $this->transmitHEX($controller->rom, $hex);
             $packs++;
             if ($packs % $hexPackStep == 0) {
-                $a = [
-                    $controller->name,
-                    round((($index * 100) + $p) / $count),
-                ];
+                $this->firmwareStatuses[$controller->id] = round($p);
+                // Pack statuses
+                $a = [];
+                foreach ($this->firmwareStatuses as $cId => $cPerc) {
+                    $a[] = $cId.':'.$cPerc;
+                }
                 Property::setDinCommandInfo(implode(';', $a), true);
                 // ------------------------------
                 $this->printProgress(round($p));
@@ -345,10 +354,13 @@ class DinDaemon extends BaseDaemon
             }
             $p += $dp;
         }
-        $a = [
-            $controller->name,
-            round((($index * 100) + $p) / $count),
-        ];
+
+        // Pack statuses
+        $this->firmwareStatuses[$controller->id] = 100;
+        $a = [];
+        foreach ($this->firmwareStatuses as $cId => $cPerc) {
+            $a[] = $cId.':'.$cPerc;
+        }
         Property::setDinCommandInfo(implode(';', $a), true);
 
         usleep($PAGE_STORE_PAUSE);

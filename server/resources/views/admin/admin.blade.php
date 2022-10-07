@@ -468,7 +468,7 @@
     }
 
     function firmware() {
-        dialog("{{ route('admin.firmware') }}");
+        dialog("{{ route('admin.hubs-config-wizard') }}");
     }
 
     function requestDaemonsState() {

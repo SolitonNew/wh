@@ -30,6 +30,11 @@ return [
         'onewire' => 'OneWire hub',
         'zigbeeone' => 'Zeegbe switch',
     ],
+
+    'config_wizard_title' => 'Apply hubs configuration',
+    'config_wizard_make_btn' => 'Make Config Files',
+    'config_wizard_transmit_btn' => 'Transmit Config Files',
+
     'firmware_title' => 'Apply hubs configuration',
     'firmware_make_title' => 'Report of the make',
     'firmware_start' => 'Start update',

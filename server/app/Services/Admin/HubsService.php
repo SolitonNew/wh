@@ -2,6 +2,8 @@
 
 namespace App\Services\Admin;
 
+use App\Library\Firmware\Pyhome;
+use App\Library\Firmware\ZigbeeOne;
 use App\Models\Hub;
 use App\Models\Device;
 use App\Models\OwHost;
@@ -458,10 +460,35 @@ class HubsService
         }
     }
 
+    public function firmwareMake(string $typ): string
+    {
+        try {
+            switch ($typ) {
+                case 'din':
+                    list($text, $makeError) = $this->firmwareDinMake();
+                    if ($makeError) {
+                        return $text;
+                    }
+                    return 'OK';
+                case 'pyhome':
+                    $pyhome = new Pyhome();
+                    $pyhome->generateConfig();
+                    return 'OK';
+                case 'zigbeeone':
+                    $zigbeeone = new ZigbeeOne();
+                    $zigbeeone->generateConfig();
+                    return 'OK';
+            }
+            return 'Type not found';
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
     /**
      * @return array
      */
-    public function firmware(): array
+    public function firmwareDinMake(): array
     {
         $makeError = false;
         $text = '';
@@ -490,51 +517,187 @@ class HubsService
     /**
      * @return void
      */
-    public function firmwareStart(): void
+    public function configWizardTransmit(): void
     {
         Property::setDinCommand('FIRMWARE');
         Property::setDinCommandInfo('', true);
+
+        Property::setPyhomeCommand('COMFIG UPDATE');
+        Property::setPyhomeCommandInfo('', true);
+
+        Property::setZigbeeoneCommand('COMFIG UPDATE');
+        Property::setZigbeeoneCommandInfo('', true);
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse|void
+     * @param array $ids
+     * @return \Illuminate\Http\JsonResponse|string
      */
-    public function firmwareStatus()
+    public function configWizardStatus(array $ids)
+    {
+        $hubs = Hub::whereIn('id', $ids)->get();
+
+        $result = [];
+        foreach ($hubs as $hub) {
+            $status = '';
+            $percent = 0;
+            $details = '';
+
+            switch ($hub->typ) {
+                case 'din':
+                    list($status, $percent, $details) = $this->configWizardStatusDin($hub->id);
+                    break;
+                case 'pyhome':
+                    list($status, $percent, $details) = $this->configWizardStatusPyhome($hub->id);
+                    break;
+                case 'zigbeeone':
+                    list($status, $percent, $details) = $this->configWizardStatusZigbeeone($hub->id);
+                    break;
+            }
+
+            $result[] = (object)[
+                'id' => $hub->id,
+                'status' => $status,
+                'percent' => $percent,
+                'details' => $details,
+            ];
+        }
+
+        return response()->json($result);
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    private function configWizardStatusDin(int $id): array
     {
         $daemonManager = new DaemonManager();
 
+        $status = '';
+        $percent = 0;
+        $details = '';
+
         try {
             if (!$daemonManager->isStarted('din-daemon')) {
-                return response()->json([
-                    'firmware' => 'NOTPOSSIBLE',
-                ]);
+                throw new \Exception('NOT POSSIBLE');
             }
 
             $info = Property::getDinCommandInfo();
             if ($info == 'COMPLETE') {
-                return response()->json([
-                    'firmware' => 'COMPLETE',
-                ]);
+                $status = 'COMPLETE';
+                $percent = 100;
             } else
-            if (strpos($info, 'ERROR') !== false) {
-                return response()->json([
-                    'error' => $info,
-                ]);
-            } else {
-                $a = explode(';', $info);
-                if (count($a) < 2) {
-                    $a = ['', 0];
+                if (strpos($info, 'ERROR') !== false) {
+                    $status = 'ERROR';
+                    $details = $info;
+                } else {
+                    $a = [];
+                    foreach (explode(';', $info) as $s) {
+                        $c = explode(':', $s);
+                        if (count($c) == 2 && $c[0] == $id) {
+                            if ($c[1] < 100) {
+                                $status = 'IN PROGRESS';
+                                $percent = $c[1];
+                            } else {
+                                $status = 'COMPLETE';
+                                $percent = 100;
+                            }
+                        } else {
+                            $status = 'ERROR';
+                        }
+                    }
                 }
-                return response()->json([
-                    'controller' => $a[0],
-                    'percent' => $a[1],
-                ]);
-            }
         } catch (\Exception $ex) {
-            abort(response()->json([
-                'errors' => [$ex->getMessage()],
-            ]), 422);
+            $status = 'ERROR';
+            $details = $ex->getMessage();
         }
+
+        return [$status, $percent, $details];
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    private function configWizardStatusPyhome(int $id): array
+    {
+        $daemonManager = new DaemonManager();
+
+        $status = '';
+        $percent = 0;
+        $details = '';
+
+        try {
+            if (!$daemonManager->isStarted('pyhome-daemon')) {
+                throw new \Exception('NOT POSSIBLE');
+            }
+
+            $info = Property::getPyhomeCommandInfo();
+            if ($info == 'COMPLETE') {
+                $status = 'COMPLETE';
+                $percent = 100;
+            } else
+                if (strpos($info, 'ERROR') !== false) {
+                    $status = 'ERROR';
+                    $details = $info;
+                } else {
+                    $a = explode(';', $info);
+                    if (count($a) < 2) {
+                        $a = ['', 0];
+                    }
+
+                    $status = 'IN PROGRESS';
+                    $percent = $a[1];
+                }
+        } catch (\Exception $ex) {
+            $status = 'ERROR';
+            $details = $ex->getMessage();
+        }
+
+        return [$status, $percent, $details];
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    private function configWizardStatusZigbeeone(int $id): array
+    {
+        $daemonManager = new DaemonManager();
+
+        $status = '';
+        $percent = 0;
+        $details = '';
+
+        try {
+            if (!$daemonManager->isStarted('zigbeeone-daemon')) {
+                throw new \Exception('NOT POSSIBLE');
+            }
+
+            $info = Property::getZigbeeoneCommandInfo();
+            if ($info == 'COMPLETE') {
+                $status = 'COMPLETE';
+                $percent = 100;
+            } else
+                if (strpos($info, 'ERROR') !== false) {
+                    $status = 'ERROR';
+                    $details = $info;
+                } else {
+                    $a = explode(';', $info);
+                    if (count($a) < 2) {
+                        $a = ['', 0];
+                    }
+
+                    $status = 'IN PROGRESS';
+                    $percent = $a[1];
+                }
+        } catch (\Exception $ex) {
+            $status = 'ERROR';
+            $details = $ex->getMessage();
+        }
+
+        return [$status, $percent, $details];
     }
 
     /**
@@ -544,6 +707,8 @@ class HubsService
     {
         try {
             Property::setDinCommand('RESET');
+            Property::setPyhomeCommand('RESET');
+            Property::setZigbeeoneCommand('RESET');
         } catch (\Exception $ex) {
             abort(response()->json([
                 'errors' => [$ex->getMessage()],

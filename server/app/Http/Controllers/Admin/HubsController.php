@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Library\Firmware\Din;
+use App\Library\Firmware\Pyhome;
+use App\Library\Firmware\ZigbeeOne;
 use Illuminate\Http\Request;
 use App\Services\Admin\HubsService;
 use App\Models\Hub;
@@ -124,19 +127,42 @@ class HubsController extends Controller
     }
 
     /**
-     * This route builds the firmware and returns a build report view
-     * containing the update controls.
-     *
      * @return \Illuminate\View\View|\Laravel\Lumen\Application
      */
-    public function firmware()
+    public function configWizardShow()
     {
-        list($text, $makeError) = $this->service->firmware();
-
-        return view('admin.hubs.firmware', [
-            'data' => $text,
-            'makeError' => $makeError,
+        $hubs = Hub::getSortListFirmwareHubs();
+        return view('admin.hubs.config-wizard', [
+            'hubs' => $hubs,
+            'hubIds' => array_values($hubs->pluck('id')->toArray()),
         ]);
+    }
+
+    /**
+     * @param string $typ
+     * @return string
+     */
+    public function configWizardMake(string $typ)
+    {
+        return $this->service->firmwareMake($typ);
+    }
+
+    /**
+     * @return string
+     */
+    public function configWizardTransmit()
+    {
+        $this->service->configWizardTransmit();
+        return 'OK';
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|string
+     */
+    public function configWizardStatus(Request $request)
+    {
+        return $this->service->configWizardStatus($request->ids);
     }
 
     /**

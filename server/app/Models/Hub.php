@@ -11,6 +11,12 @@ class Hub extends AffectsFirmwareModel
     protected $table = 'core_hubs';
     public $timestamps = false;
 
+    const FIRMWARE_HUB_TYPES = [
+        'din',
+        'pyhome',
+        'zigbeeone',
+    ];
+
     /**
      * @var array|string[]
      */
@@ -270,7 +276,7 @@ class Hub extends AffectsFirmwareModel
     public static function existsFirmwareHubs()
     {
         if (self::$existsFirmwareHubs === null) {
-            self::$existsFirmwareHubs = (Hub::whereTyp('din')->count() > 0);
+            self::$existsFirmwareHubs = (Hub::whereIn('typ', self::FIRMWARE_HUB_TYPES)->count() > 0);
         }
 
         return self::$existsFirmwareHubs;
@@ -287,5 +293,16 @@ class Hub extends AffectsFirmwareModel
             return (self::whereTyp($typ)->count() === 0);
         }
         return true;
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getSortListFirmwareHubs()
+    {
+        return Hub::whereIn('typ', self::FIRMWARE_HUB_TYPES)
+            ->orderBy('typ')
+            ->orderBy('name')
+            ->get();
     }
 }

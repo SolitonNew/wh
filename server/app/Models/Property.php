@@ -772,4 +772,66 @@ class Property extends Model
         }
         $item->save();
     }
+
+    /**
+     * @param bool $clear
+     * @return string
+     */
+    public static function getZigbeeoneCommand(bool $clear = false): string
+    {
+        $item = self::whereName('ZIGBEEONE_COMMAND')->first();
+        if ($item) {
+            $value = $item->value;
+            if ($clear && $value != '') {
+                $item->value = '';
+                $item->save();
+            }
+            return $value;
+        }
+        return '';
+    }
+
+    /**
+     * @param string $command
+     * @return void
+     */
+    public static function setZigbeeoneCommand(string $command): void
+    {
+        $item = self::whereName('ZIGBEEONE_COMMAND')->first();
+        $item->value = $command;
+        $item->save();
+    }
+
+    /**
+     * @return string
+     */
+    public static function getZigbeeoneCommandInfo(): string
+    {
+        $item = self::whereName('ZIGBEEONE_COMMAND_INFO')->first();
+        if ($item) {
+            return $item->value;
+        }
+        return '';
+    }
+
+    /**
+     * @param string $text
+     * @param bool $first
+     * @return void
+     */
+    public static function setZigbeeoneCommandInfo(string $text, bool $first = false): void
+    {
+        $item = self::whereName('ZIGBEEONE_COMMAND_INFO')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'ZIGBEEONE_COMMAND_INFO';
+            $item->comm = '';
+        }
+        if ($first) {
+            $item->value = $text;
+        } else {
+            $item->value .= $text;
+        }
+        $item->save();
+    }
 }
