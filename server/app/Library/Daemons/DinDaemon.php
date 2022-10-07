@@ -365,14 +365,12 @@ class DinDaemon extends BaseDaemon
         $this->inPackCount = 0;
 
         // Pack statuses
-        $this->firmwareStatuses[$controller->id] = $ok ? 100 : 'ERROR';
+        $this->firmwareStatuses[$controller->id] = $ok ? 100 : 'BAD';
         $a = [];
         foreach ($this->firmwareStatuses as $cId => $cPerc) {
             $a[] = $cId.':'.$cPerc;
         }
         Property::setDinCommandInfo(implode(';', $a), true);
-
-        Log::info(implode(';', $a));
 
         return $ok;
     }
