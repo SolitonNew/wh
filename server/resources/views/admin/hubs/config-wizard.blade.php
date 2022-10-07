@@ -178,9 +178,9 @@
                     }
                 });
 
-                if (data.length > finishedCount) {
+                //if (data.length > finishedCount) {
                     setTimeout(configWizardTransmitStatus, transmitStatusInterval);
-                }
+                //}
             },
             error: function (err) {
                 setTimeout(configWizardTransmitStatus, transmitStatusInterval);
