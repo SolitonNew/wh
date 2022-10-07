@@ -593,6 +593,7 @@ class HubsService
                     $details = $info;
                 } else {
                     $a = [];
+                    Log::info($info);
                     foreach (explode(';', $info) as $s) {
                         $c = explode(':', $s);
                         if (count($c) == 2 && $c[0] == $id) {
