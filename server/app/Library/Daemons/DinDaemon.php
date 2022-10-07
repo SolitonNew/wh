@@ -355,20 +355,22 @@ class DinDaemon extends BaseDaemon
             $p += $dp;
         }
 
+        usleep($PAGE_STORE_PAUSE);
+
+        $this->transmitCMD($controller->rom, 25, count($this->firmwareHex));
+        $this->readPacks(750);
+
+        $ok = ($this->inPackCount == count($this->firmwareHex));
+
         // Pack statuses
-        $this->firmwareStatuses[$controller->id] = 100;
+        $this->firmwareStatuses[$controller->id] = $ok ? 100 : 'ERROR';
         $a = [];
         foreach ($this->firmwareStatuses as $cId => $cPerc) {
             $a[] = $cId.':'.$cPerc;
         }
         Property::setDinCommandInfo(implode(';', $a), true);
 
-        usleep($PAGE_STORE_PAUSE);
-
-        $this->transmitCMD($controller->rom, 25, count($this->firmwareHex));
-        $this->readPacks(750);
-
-        return ($this->inPackCount == count($this->firmwareHex));
+        return $ok;
     }
 
     /**

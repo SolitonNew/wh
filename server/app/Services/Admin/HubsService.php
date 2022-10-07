@@ -596,6 +596,10 @@ class HubsService
                     foreach (explode(';', $info) as $s) {
                         $c = explode(':', $s);
                         if (count($c) == 2 && $c[0] == $id) {
+                            if ($c[1] == 'ERROR') {
+                                $status = 'ERROR';
+                                $details = 'Bad firmware size';
+                            } else
                             if ($c[1] < 100) {
                                 $status = 'IN PROGRESS';
                                 $percent = $c[1];
