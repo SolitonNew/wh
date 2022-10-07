@@ -370,6 +370,9 @@ class DinDaemon extends BaseDaemon
         foreach ($this->firmwareStatuses as $cId => $cPerc) {
             $a[] = $cId.':'.$cPerc;
         }
+
+        Log::info(print_r($a, true));
+
         Property::setDinCommandInfo(implode(';', $a), true);
 
         return $ok;
