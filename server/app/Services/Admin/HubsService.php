@@ -596,7 +596,7 @@ class HubsService
                         $status = 'IN PROGRESS';
                         $percent = $c[1];
                     } else
-                    if ($c[1] == 100) {
+                    if ($c[1] == 'COMPLETE') {
                         $status = 'COMPLETE';
                         $percent = 100;
                     } else {
