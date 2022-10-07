@@ -362,6 +362,7 @@ class DinDaemon extends BaseDaemon
         $this->readPacks(750);
 
         $ok = ($this->inPackCount == count($this->firmwareHex));
+        $this->inPackCount = 0;
 
         Log::info($ok);
 
