@@ -584,33 +584,24 @@ class HubsService
             }
 
             $info = Property::getDinCommandInfo();
-            if ($info == 'COMPLETE') {
-                $status = 'COMPLETE';
-                $percent = 100;
-            } else
-                if (strpos($info, 'ERROR') !== false) {
-                    $status = 'ERROR';
-                    $details = $info;
-                } else {
-                    $a = [];
-                    foreach (explode(';', $info) as $s) {
-                        $c = explode(':', $s);
-                        if (count($c) == 2 && $c[0] == $id) {
-                            if ($c[1] == 'BAD') {
-                                $status = 'ERROR';
-                                $details = 'Bad firmware size';
-                            } else
-                            if ($c[1] < 100) {
-                                $status = 'IN PROGRESS';
-                                $percent = $c[1];
-                            } else {
-                                $status = 'COMPLETE';
-                                $percent = 100;
-                            }
-                            break;
-                        }
+            $a = [];
+            foreach (explode(';', $info) as $s) {
+                $c = explode(':', $s);
+                if (count($c) == 2 && $c[0] == $id) {
+                    if ($c[1] == 'BAD') {
+                        $status = 'ERROR';
+                        $details = 'Bad firmware size';
+                    } else
+                    if ($c[1] < 100) {
+                        $status = 'IN PROGRESS';
+                        $percent = $c[1];
+                    } else {
+                        $status = 'COMPLETE';
+                        $percent = 100;
                     }
+                    break;
                 }
+            }
         } catch (\Exception $ex) {
             $status = 'ERROR';
             $details = $ex->getMessage();

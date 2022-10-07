@@ -146,13 +146,13 @@ class DinDaemon extends BaseDaemon
                         Property::setDinCommandInfo('END_OW_SCAN');
                         break;
                     case 'FIRMWARE':
-                        if (!$loopErrors) {
+                        /*if (!$loopErrors) {
                             Property::setDinCommandInfo('COMPLETE', true);
                             // Reset the firmware change counter
                             Property::setFirmwareChanges(0);
                         } else {
                             Property::setDinCommandInfo('ERROR', true);
-                        }
+                        }*/
                         $this->firmwareHex = false;
                         break;
                     default:
