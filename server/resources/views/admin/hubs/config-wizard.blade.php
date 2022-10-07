@@ -39,7 +39,7 @@
             @endforeach
         </div>
         <div class="d-flex justify-content-center full-width">
-            <a id="configWizardTransmitBtn" href="#" class="btn btn-primary disabled">
+            <a id="configWizardTransmitBtn" href="#" class="btn btn-primary" style="display: none;">
                 @lang('admin/hubs.config_wizard_transmit_btn')
             </a>
         </div>
@@ -122,7 +122,7 @@
             requestCounter--;
             if (requestCounter == 0) {
                 if (errors.length == 0) {
-                    $('#configWizardTransmitBtn').removeClass('disabled');
+                    $('#configWizardTransmitBtn').show();
                 } else {
                     alert(errors.join('\n'));
                 }
