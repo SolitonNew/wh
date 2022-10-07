@@ -557,7 +557,7 @@ class HubsService
 
             $result[] = (object)[
                 'id' => $hub->id,
-                'status' => $status,
+                'status' => $status ?: 'PENDING',
                 'percent' => $percent,
                 'details' => $details,
             ];
@@ -593,7 +593,6 @@ class HubsService
                     $details = $info;
                 } else {
                     $a = [];
-                    Log::info($info);
                     foreach (explode(';', $info) as $s) {
                         $c = explode(':', $s);
                         if (count($c) == 2 && $c[0] == $id) {

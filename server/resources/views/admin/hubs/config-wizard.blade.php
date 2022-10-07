@@ -59,9 +59,6 @@
             @endforeach
         </div>
     </div>
-    <div id="configWizardPage_report" class="configWizardHidePage">
-
-    </div>
 </div>
 @endsection
 
@@ -134,6 +131,8 @@
     }
 
     function configWizardTransmit() {
+        configWizardBlock(true);
+
         $.ajax({
             url: '{{ route("admin.hubs-config-wizard-transmit") }}',
             success: function (data) {
@@ -155,15 +154,21 @@
             },
             success: function (data) {
                 let finishedCount = 0;
+                let hasErrors = false;
 
                 data.forEach(function (item) {
                     let row = $('#configWizardPage_transmit [data-id="' + item.id + '"]');
 
                     switch (item.status) {
+                        case 'PENDING':
+                            $('.progress', row).hide();
+                            $('.transmit_info', row).show().text('PENDING');
+                            break;
                         case 'ERROR':
                             $('.progress', row).hide();
                             $('.transmit_info', row).show().text('ERROR');
                             finishedCount++;
+                            hasErrors = true;
                             break;
                         case 'IN PROGRESS':
                             $('.progress', row).show();
@@ -180,6 +185,21 @@
 
                 if (data.length > finishedCount) {
                     setTimeout(configWizardTransmitStatus, transmitStatusInterval);
+                } else {
+                    configWizardBlock(false);
+
+                    let message = '';
+                    if (hasErrors) {
+                        message = "@lang('admin/hubs.config_wizard_complete_error')";
+                    } else {
+                        message = "@lang('admin/hubs.config_wizard_complete')";
+                    }
+
+                    alert(message, () => {
+                        dialogHide(() => {
+                            reloadWithWaiter();
+                        });
+                    });
                 }
             },
             error: function (err) {
@@ -188,15 +208,15 @@
         });
     }
 
-    function configWizardButtons(show) {
-        if (show) {
-            $('#btn-close').removeAttr('disabled');
-            $('#btn-dialog-close').removeAttr('disabled');
-            $('#dialog_window').modal({keyboard: true});
-        } else {
+    function configWizardBlock(block) {
+        if (block) {
             $('#btn-close').attr('disabled', 'true');
             $('#btn-dialog-close').attr('disabled', 'true');
-            $('#dialog_window').modal({keyboard: false});
+            $('#dialog_window').data('bs.modal')._config.keyboard = false;
+        } else {
+            $('#btn-close').removeAttr('disabled');
+            $('#btn-dialog-close').removeAttr('disabled');
+            $('#dialog_window').data('bs.modal')._config.keyboard = true;
         }
     }
 </script>

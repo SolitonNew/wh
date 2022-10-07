@@ -34,6 +34,8 @@ return [
     'config_wizard_title' => 'Apply hubs configuration',
     'config_wizard_make_btn' => 'Make Config Files',
     'config_wizard_transmit_btn' => 'Transmit Config Files',
+    'config_wizard_complete' => 'Update Completed Successfully',
+    'config_wizard_complete_error' => 'Update Completed With Errors',
 
     'firmware_title' => 'Apply hubs configuration',
     'firmware_make_title' => 'Report of the make',
