@@ -8,6 +8,7 @@ use App\Models\OwHost;
 use App\Models\Device;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Log;
 
 class DinDaemon extends BaseDaemon
 {
@@ -361,6 +362,8 @@ class DinDaemon extends BaseDaemon
         $this->readPacks(750);
 
         $ok = ($this->inPackCount == count($this->firmwareHex));
+
+        Log::info($ok);
 
         // Pack statuses
         $this->firmwareStatuses[$controller->id] = $ok ? 100 : 'ERROR';
