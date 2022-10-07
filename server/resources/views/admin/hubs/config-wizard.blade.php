@@ -167,7 +167,7 @@
                             break;
                         case 'IN PROGRESS':
                             $('.progress', row).show();
-                            $('.progress > div').width(item.percent + '%');
+                            $('.progress > div', row).width(item.percent + '%');
                             $('.transmit_info', row).hide();
                             break;
                         case 'COMPLETE':
