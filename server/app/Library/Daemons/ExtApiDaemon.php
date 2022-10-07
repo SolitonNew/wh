@@ -8,11 +8,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 
-/**
- * Description of ExtApiDaemon
- *
- * @author soliton
- */
 class ExtApiDaemon extends BaseDaemon
 {
     /**

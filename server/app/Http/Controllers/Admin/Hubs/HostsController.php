@@ -15,18 +15,16 @@ use App\Models\Hub;
 class HostsController extends Controller
 {
     /**
-     *
-     * @var type
+     * @var HostsService
      */
-    private $_service;
+    private HostsService $service;
 
     /**
-     *
      * @param HostsService $service
      */
     public function __construct(HostsService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
@@ -64,8 +62,7 @@ class HostsController extends Controller
         Property::setLastViewID('HUB_PAGE', 'hosts');
         // ----------------------------------------
 
-
-        switch ($this->_service->getHostType($hubID)) {
+        switch ($this->service->getHostType($hubID)) {
             case 'extapi':
                 return view('admin.hubs.hosts.extapi.extapi-hosts', [
                     'hubID' => $hubID,
@@ -86,6 +83,12 @@ class HostsController extends Controller
                 ]);
             case 'din':
                 return view('admin.hubs.hosts.din.din-hosts', [
+                    'hubID' => $hubID,
+                    'page' => 'hosts',
+                    'data' => OwHost::listForIndex($hubID),
+                ]);
+            case 'pyhome':
+                return view('admin.hubs.hosts.pyhome.pyhome-hosts', [
                     'hubID' => $hubID,
                     'page' => 'hosts',
                     'data' => OwHost::listForIndex($hubID),
@@ -159,7 +162,6 @@ class HostsController extends Controller
             'item' => $item,
         ]);
     }
-
 
     /**
      * Route to create or update orange pi host properties.
@@ -262,6 +264,46 @@ class HostsController extends Controller
      * @return string
      */
     public function deleteDin(int $hubID, int $id)
+    {
+        return OwHost::deleteById($id);
+    }
+
+    /**
+     * Route to show pyhome host properties.
+     *
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editPyhomeShow(int $hubID, int $id)
+    {
+        $item = OwHost::findOrCreate($hubID, $id);
+
+        return view('admin.hubs.hosts.pyhome.pyhome-host-edit', [
+            'item' => $item,
+        ]);
+    }
+
+    /**
+     * Route to create or update pyhome host properties.
+     *
+     * @param int $hubID
+     * @param int $id
+     * @return type
+     */
+    public function editPyhomePost(Request $request, int $hubID, int $id)
+    {
+        return OwHost::storeFromRequest($request, $hubID, $id);
+    }
+
+    /**
+     * Route to delete Pyhome host by id.
+     *
+     * @param int $hubID
+     * @param int $id
+     * @return string
+     */
+    public function deletePyhome(int $hubID, int $id)
     {
         return OwHost::deleteById($id);
     }

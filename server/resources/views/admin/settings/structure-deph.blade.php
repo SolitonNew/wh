@@ -1,5 +1,5 @@
 <div class="card">
-    <div id="terminalMaxLevel" class="card-body">
+    <div id="terminalMaxLevel" class="card-body" style="z-index: 0;">
         <h5 class="card-title">@lang('admin/settings.max_level_title')</h5>
         @if($levels[1])
         <div class="custom-control custom-radio">

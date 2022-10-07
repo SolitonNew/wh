@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\ExtApiDaemon::class,
         Commands\DinDaemon::class,
+        Commands\PyhomeDaemon::class,
         Commands\ScheduleDaemon::class,
         Commands\CommandDaemon::class,
         Commands\ObserverDaemon::class,

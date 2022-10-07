@@ -204,9 +204,9 @@ class Din
     }
 
     /**
-     * Выполняет необходимые действия с компилятором avr-gcc для получения
-     * файла прошивки в формате IntelHEX.
-     * Результат работы будет помещен в подпапку Release.
+     * Performs the necessary actions with the avr-gcc compiler to obtain
+     * the firmware file in IntelHEX format.
+     * The result of the work will be placed in the Release subfolder.
      *
      * @param array $outs
      * @return bool    true - OK; false - ERROR
@@ -219,7 +219,7 @@ class Din
         $xml = simplexml_load_file($firmwarePath.'/'.$this->project.'.cproj');
 
         $files = [];
-        foreach($xml->ItemGroup[0]->Compile as $item) {
+        foreach ($xml->ItemGroup[0]->Compile as $item) {
             $file = (string)$item['Include'];
             if (strpos($file, '.c') === strlen($file) - 2) {
                 //if ($file == 'lcd.c') continue;
@@ -228,7 +228,7 @@ class Din
         }
 
         $folders = [];
-        foreach($xml->ItemGroup[1]->Folder as $item) {
+        foreach ($xml->ItemGroup[1]->Folder as $item) {
             $folder = (string)$item['Include'];
             $folders[] = str_replace('\\', '/', $folder);
         }
@@ -240,7 +240,7 @@ class Din
         }
 
         // Checking availability or creating subdirectories
-        foreach($folders as $folder) {
+        foreach ($folders as $folder) {
             if (!file_exists($release_path.'/'.$folder)) {
                 mkdir($release_path.'/'.$folder);
             }
@@ -249,7 +249,7 @@ class Din
         $commands = [];
 
         // We collect commands for compiling .c files
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $path_c = $firmwarePath.'/'.$file;
             $path_o = $release_path.'/'.substr($file, 0, strlen($file) - 2).'.o';
             $commands[] = "avr-gcc -funsigned-char -funsigned-bitfields -Os -fpack-struct -fshort-enums -Wall -c -std=gnu99 -MD -MP -mmcu=$this->mmcu -o $path_o $path_c";
@@ -259,7 +259,7 @@ class Din
         $path_map = $release_path.'/'.$this->project.'.map';
         $path_elf = $release_path.'/'.$this->project.'.elf';
         $files_o = [];
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $files_o[] = $release_path.'/'.substr($file, 0, strlen($file) - 2).'.o';
         }
         $path_o_all = implode(' ', $files_o);
@@ -274,7 +274,7 @@ class Din
         $commands[] = "avr-size -C --mcu=$this->mmcu $path_elf";
 
         // We launch the created commands for execution
-        for($i = 0; $i < count($commands); $i++) {
+        for ($i = 0; $i < count($commands); $i++) {
             exec($commands[$i].' 2>&1', $outs);
             if (count($outs)) {
                 return ($i == count($commands) - 1);

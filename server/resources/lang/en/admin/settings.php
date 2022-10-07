@@ -3,20 +3,30 @@
 return [
     'menu' => 'Settings',
     'title' => '',
-    
+
+    'backup_meta_menu_import' => 'Import metadata...',
+    'backup_meta_menu_export' => 'Export metadata',
+    'backup_meta_import_title' => 'Import metadata',
+    'backup_meta_import_file' => 'Plan file',
+    'backup_meta_import_btn' => 'Choose...',
+    'backup_meta_import_select' => 'Select a file...',
+
+    'timezone_title' => 'Timezone',
+
     'max_level_title' => 'Displayed structure depth',
     'plan_rooms_empty' => 'Structure of the plan is empty',
-    
-    'timezone_title' => 'Timezone',
-    
+
     'location_title' => 'Location',
     'location_latitude' => 'Latitude',
     'location_longitude' => 'Longitude',
-    
+
     'din_settings_title' => 'DIN Settings',
     'din_settings_port' => 'Port',
     'din_settings_mmcu' => 'MMCU',
-    
+
+    'pyhome_settings_title' => 'Pyhome Settings',
+    'pyhome_settings_port' => 'Port',
+
     'forecast_title' => 'Forecast',
     'forecast_TEMP' => 'Temperature',
     'forecast_P' => 'Pressure',

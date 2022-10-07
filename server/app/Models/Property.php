@@ -10,7 +10,7 @@ class Property extends Model
     protected $table = 'core_properties';
     public $timestamps = false;
 
-    const VERSION = '2.13.3 alpha';
+    const VERSION = '2.15.2 alpha';
 
     /**
      * @return array
@@ -233,6 +233,11 @@ class Property extends Model
     public static function setDinCommand(string $command): void
     {
         $item = self::whereName('DIN_COMMAND')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'DIN_COMMAND';
+            $item->comm = '';
+        }
         $item->value = $command;
         $item->save();
     }
@@ -482,6 +487,51 @@ class Property extends Model
     /**
      * @var object|bool
      */
+    private static object|bool $pyhome_settings = false;
+
+    /**
+     * @return object|bool
+     */
+    public static function getPyhomeSettings(): object|bool
+    {
+        if (self::$pyhome_settings === false) {
+            $item = self::whereName('PYHOME_SETTINGS')->first();
+            if ($item && $item->value) {
+                self::$pyhome_settings = json_decode($item->value);
+            } else {
+                self::$pyhome_settings = (object)[
+                    'port' => '/dev/ttyUSB0',
+                ];
+            }
+        }
+
+        return self::$pyhome_settings;
+    }
+
+    /**
+     * @param string $port
+     * @return void
+     */
+    public static function setPyhomeSettings(string $port): void
+    {
+        $item = self::whereName('PYHOME_SETTINGS')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'PYHOME_SETTINGS';
+            $item->comm = '';
+        }
+
+        self::$pyhome_settings = (object)[
+            'port' => $port,
+        ];
+
+        $item->value = json_encode(self::$pyhome_settings);
+        $item->save();
+    }
+
+    /**
+     * @var object|bool
+     */
     private static object|bool $forecast_settings = false;
 
     /**
@@ -656,6 +706,140 @@ class Property extends Model
         if (!$item) {
             $item = new Property();
             $item->name = 'ORANGEPI_COMMAND_INFO';
+            $item->comm = '';
+        }
+        if ($first) {
+            $item->value = $text;
+        } else {
+            $item->value .= $text;
+        }
+        $item->save();
+    }
+
+    /**
+     * @param bool $clear
+     * @return string
+     */
+    public static function getPyhomeCommand(bool $clear = false): string
+    {
+        $item = self::whereName('PYHOME_COMMAND')->first();
+        if ($item) {
+            $value = $item->value;
+            if ($clear && $value != '') {
+                $item->value = '';
+                $item->save();
+            }
+            return $value;
+        }
+        return '';
+    }
+
+    /**
+     * @param string $command
+     * @return void
+     */
+    public static function setPyhomeCommand(string $command): void
+    {
+        $item = self::whereName('PYHOME_COMMAND')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'PYHOME_COMMAND';
+            $item->comm = '';
+        }
+        $item->value = $command;
+        $item->save();
+    }
+
+    /**
+     * @return string
+     */
+    public static function getPyhomeCommandInfo(): string
+    {
+        $item = self::whereName('PYHOME_COMMAND_INFO')->first();
+        if ($item) {
+            return $item->value;
+        }
+        return '';
+    }
+
+    /**
+     * @param string $text
+     * @param bool $first
+     * @return void
+     */
+    public static function setPyhomeCommandInfo(string $text, bool $first = false): void
+    {
+        $item = self::whereName('PYHOME_COMMAND_INFO')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'PYHOME_COMMAND_INFO';
+            $item->comm = '';
+        }
+        if ($first) {
+            $item->value = $text;
+        } else {
+            $item->value .= $text;
+        }
+        $item->save();
+    }
+
+    /**
+     * @param bool $clear
+     * @return string
+     */
+    public static function getZigbeeoneCommand(bool $clear = false): string
+    {
+        $item = self::whereName('ZIGBEEONE_COMMAND')->first();
+        if ($item) {
+            $value = $item->value;
+            if ($clear && $value != '') {
+                $item->value = '';
+                $item->save();
+            }
+            return $value;
+        }
+        return '';
+    }
+
+    /**
+     * @param string $command
+     * @return void
+     */
+    public static function setZigbeeoneCommand(string $command): void
+    {
+        $item = self::whereName('ZIGBEEONE_COMMAND')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'ZIGBEEONE_COMMAND';
+            $item->comm = '';
+        }
+        $item->value = $command;
+        $item->save();
+    }
+
+    /**
+     * @return string
+     */
+    public static function getZigbeeoneCommandInfo(): string
+    {
+        $item = self::whereName('ZIGBEEONE_COMMAND_INFO')->first();
+        if ($item) {
+            return $item->value;
+        }
+        return '';
+    }
+
+    /**
+     * @param string $text
+     * @param bool $first
+     * @return void
+     */
+    public static function setZigbeeoneCommandInfo(string $text, bool $first = false): void
+    {
+        $item = self::whereName('ZIGBEEONE_COMMAND_INFO')->first();
+        if (!$item) {
+            $item = new Property();
+            $item->name = 'ZIGBEEONE_COMMAND_INFO';
             $item->comm = '';
         }
         if ($first) {

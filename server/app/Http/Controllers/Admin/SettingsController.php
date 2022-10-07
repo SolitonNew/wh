@@ -10,29 +10,27 @@ use App\Models\Property;
 class SettingsController extends Controller
 {
     /**
-     *
-     * @var type
+     * @var SettingsService
      */
-    private $_service;
+    private SettingsService $service;
 
     /**
-     *
      * @param SettingsService $service
      */
     public function __construct(SettingsService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
      * Index route of the terminal settings module.
      *
-     * @return type
+     * @return \Illuminate\View\View|\Laravel\Lumen\Application
      */
     public function index()
     {
-        $levels = $this->_service->levels();
-        $currentLevel = $this->_service->getCurrentLevel();
+        $levels = $this->service->levels();
+        $currentLevel = $this->service->getCurrentLevel();
 
         return view('admin.settings.settings', [
             'levels' => $levels,
@@ -47,54 +45,57 @@ class SettingsController extends Controller
      * @param type $value
      * @return string
      */
-    public function setMaxLevel($value) {
-        $this->_service->setCurrentLevel($value);
-
+    public function setMaxLevel($value): string
+    {
+        $this->service->setCurrentLevel($value);
         return 'OK';
     }
 
     /**
-     *
      * @param Request $request
      * @return string
      */
-    public function setTimezone(Request $request)
+    public function setTimezone(Request $request): string
     {
         Property::setTimezone($request->timezone);
-
         return 'OK';
     }
 
     /**
-     *
      * @param Request $request
      * @return string
      */
-    public function setLocation(Request $request)
+    public function setLocation(Request $request): string
     {
         Property::setLocation($request->latitude, $request->longitude);
-
         return 'OK';
     }
 
     /**
-     *
      * @param Request $request
      * @return string
      */
-    public function setDinSettings(Request $request)
+    public function setDinSettings(Request $request): string
     {
         Property::setDinSettings($request->port, $request->mmcu);
-
         return 'OK';
     }
 
     /**
-     *
      * @param Request $request
      * @return string
      */
-    public function setForecast(Request $request)
+    public function setPyhomeSettings(Request $request): string
+    {
+        Property::setPyhomeSettings($request->port);
+        return 'OK';
+    }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
+    public function setForecast(Request $request): string
     {
         Property::setForecastSettings(
             $request->TEMP,

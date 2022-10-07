@@ -1,6 +1,8 @@
 @extends('admin.admin')
 
 @section('down-menu')
+<a href="#" class="dropdown-item" onclick="backupMetaImportDialog(); return false;">@lang('admin/settings.backup_meta_menu_import')</a>
+<a href="{{ route('admin.backup-meta-export') }}" class="dropdown-item" target="_blank">@lang('admin/settings.backup_meta_menu_export')</a>
 @endsection
 
 @section('top-menu')
@@ -18,6 +20,7 @@
             @include('admin.settings.timezone')
             @include('admin.settings.structure-deph')
             @include('admin.settings.din-settings')
+            @include('admin.settings.pyhome-settings')
             @include('admin.settings.forecast')
         </div>
         <div class="col-sm-6">
@@ -33,17 +36,21 @@
                 method: 'post',
                 url: '{{ route("admin.settings-set-max-level", ["value" => ""]) }}/' + $(this).data('value'),
                 data: {
-                    
+
                 },
                 success: function (data) {
                     if (data == 'OK') {
-                        
+
                     } else {
-                        
+
                     }
                 },
             });
         });
     });
+
+    function backupMetaImportDialog() {
+        dialog("{{ route('admin.backup-meta-import-show') }}");
+    }
 </script>
 @endsection

@@ -17,18 +17,16 @@ use App\Models\Property;
 class DevicesController extends Controller
 {
     /**
-     *
-     * @var type
+     * @var DevicesService
      */
-    private $_service;
+    private DevicesService $service;
 
     /**
-     *
      * @param DevicesService $service
      */
     public function __construct(DevicesService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
@@ -68,7 +66,7 @@ class DevicesController extends Controller
         // ----------------------------------------
 
 
-        $groupID = $this->_service->prepareRoomFilter($groupID);
+        $groupID = $this->service->prepareRoomFilter($groupID);
 
         $data = Device::devicesList($hubID, $groupID);
 
@@ -169,6 +167,15 @@ class DevicesController extends Controller
                     ];
                 }
                 break;
+            case 'pyhome':
+                foreach ($hub->owHosts as $host) {
+                    $data[] = (object)[
+                        'id' => $host->id,
+                        'rom' => $host->romAsString(),
+                        'count' => $host->devices->count(),
+                    ];
+                }
+                break;
         }
 
         return response()->json($data);
@@ -188,6 +195,9 @@ class DevicesController extends Controller
             case 'din':
                 $settings = Property::getDinSettings();
                 $data = config('din.'.$settings->mmcu.'.channels');
+                break;
+            case 'pyhome':
+                $data = config('pyhome.channels');
                 break;
             case 'ow':
                 $host = OwHost::find($hostID);

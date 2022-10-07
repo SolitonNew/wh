@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use App\Models\Device;
 
-/**
- * Description of CamcorderDaemon
- *
- * @author soliton
- */
 class CamcorderDaemon extends BaseDaemon
 {
     /**

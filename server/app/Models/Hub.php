@@ -4,11 +4,18 @@ namespace App\Models;
 
 use \App\Library\AffectsFirmwareModel;
 use \Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class Hub extends AffectsFirmwareModel
 {
     protected $table = 'core_hubs';
     public $timestamps = false;
+
+    const FIRMWARE_HUB_TYPES = [
+        'din',
+        'pyhome',
+        'zigbeeone',
+    ];
 
     /**
      * @var array|string[]
@@ -43,6 +50,16 @@ class Hub extends AffectsFirmwareModel
     }
 
     /**
+     * @return mixed
+     */
+    public static function getSortList()
+    {
+        return self::orderBy('name')
+            ->orderBy('rom')
+            ->get();
+    }
+
+    /**
      * @return int
      */
     public function hostsCount(): int
@@ -55,6 +72,8 @@ class Hub extends AffectsFirmwareModel
             case 'camcorder':
                 return $this->camcorderHosts->count();
             case 'din':
+                return $this->owHosts->count();
+            case 'pyhome':
                 return $this->owHosts->count();
         }
         return 0;
@@ -85,12 +104,23 @@ class Hub extends AffectsFirmwareModel
     {
         // Validation  ----------------------
         $rules = [];
-        if ($request->typ == 'din') {
+        if ($request->typ == 'din' || $request->typ == 'pyhome') {
             $rules = [
                 'name' => 'string|required',
                 'typ' => 'string|required',
-                'rom' => 'numeric|required|min:1|max:15|unique:core_hubs,rom,'.($id > 0 ? $id : ''),
                 'comm' => 'string|nullable',
+                'rom' => [
+                    'numeric',
+                    'required',
+                    'min:1',
+                    'max:15',
+                    Rule::unique('core_hubs')->where(function ($query) use ($id, $request) {
+                        return $query
+                            ->where('typ', $request->typ)
+                            ->where('rom', $request->rom)
+                            ->whereNot('id', $id);
+                    }),
+                ]
             ];
         } else {
             $rules = [
@@ -114,7 +144,7 @@ class Hub extends AffectsFirmwareModel
             }
             $item->name = $request->name;
             $item->typ = $request->typ;
-            if ($item->typ == 'din') {
+            if ($item->typ == 'din' || $item->typ == 'pyhome') {
                 $item->rom = $request->rom;
             } else {
                 $item->rom = null;
@@ -196,6 +226,11 @@ class Hub extends AffectsFirmwareModel
             'din',
             'ow',
         ],
+        'pyhome' => [
+            'variable',
+            'pyhome',
+            'ow',
+        ],
         'zigbeeone' => [
             'variable',
         ],
@@ -241,7 +276,7 @@ class Hub extends AffectsFirmwareModel
     public static function existsFirmwareHubs()
     {
         if (self::$existsFirmwareHubs === null) {
-            self::$existsFirmwareHubs = (Hub::whereTyp('din')->count() > 0);
+            self::$existsFirmwareHubs = (Hub::whereIn('typ', self::FIRMWARE_HUB_TYPES)->count() > 0);
         }
 
         return self::$existsFirmwareHubs;
@@ -258,5 +293,16 @@ class Hub extends AffectsFirmwareModel
             return (self::whereTyp($typ)->count() === 0);
         }
         return true;
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getSortListFirmwareHubs()
+    {
+        return Hub::whereIn('typ', self::FIRMWARE_HUB_TYPES)
+            ->orderBy('typ')
+            ->orderBy('name')
+            ->get();
     }
 }

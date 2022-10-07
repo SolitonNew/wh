@@ -27,7 +27,7 @@
                 @if($row->var_count > 0)
                 <div class="badge badge-pill badge-warning">{{ $row->var_count }}</div>
                 @endif
-                <button class="only-small btn btn-primary btn-sm ml-2" onclick="scriptEditSource({{ $row->id }}); return false;">Edit</button>
+                <button class="only-small btn btn-primary btn-sm ml-2 script_edit_btn" data-id="{{ $row->id }}">Edit</button>
             </div>
         </a>
         @endforeach
@@ -52,8 +52,8 @@
 
 <script>
     var scriptViewer = false;
-    
-    $(document).ready(() => {        
+
+    $(document).ready(() => {
         @if($data)
         let ctx = document.getElementById('scriptViewer');
         let options = {
@@ -78,18 +78,24 @@
             data: `{!! addslashes($data->data) !!}`,
         };
         scriptViewer = new ScriptEditor(ctx, options);
-        
+
         $('#scriptViewer').on('click', function (e) {
             const sel = scriptViewer.getSelection();
             editorShow(sel.start, sel.end, scriptViewer.getData());
         });
         @endif
-        
+
         let a = window.location.href.split('?');
         if (a.length > 1 && a[a.length - 1] == 'editor=show') {
             history.pushState({}, '', a[0]);
             scriptEditSource();
         }
+
+        $('#scriptList button.script_edit_btn').on('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            scriptEditSource($(this).data('id'));
+        });
     });
 
     function scriptAdd() {
@@ -131,7 +137,7 @@
     function scriptAttachEvent() {
         dialog('{{ route("admin.script-events", ["id" => $scriptID]) }}');
     }
-    @endif    
+    @endif
 </script>
 
 @endsection

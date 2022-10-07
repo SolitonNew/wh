@@ -259,11 +259,11 @@ class Schedule extends Model
     {
         $times = [];
         $time_of_day = mb_strtoupper($this->interval_time_of_day);
-        foreach(explode(',', $time_of_day) as $time_val) {
+        foreach (explode(',', $time_of_day) as $time_val) {
             $time_type = '';
             $time_str = trim($time_val);
             // Check sunrise/sunset
-            foreach($this->_KEYS as $key) {
+            foreach ($this->_KEYS as $key) {
                 if (strpos($key, $time_str) !== false) {
                     $time_type = $key;
                     break;

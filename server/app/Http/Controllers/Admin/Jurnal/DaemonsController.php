@@ -11,25 +11,25 @@ use App\Library\DaemonManager;
 class DaemonsController extends Controller
 {
     /**
-     *
-     * @var type
+     * @var DaemonsService
      */
-    private $_service;
+    private DaemonsService $service;
 
     /**
-     *
      * @param DaemonsService $service
      */
     public function __construct(DaemonsService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
      * Index route to display a list of daemons.
      *
-     * @param string $id
-     * @return type
+     * @param DaemonManager $daemonManager
+     * @param string|null $id
+     * @return mixed
+     * @throws \Exception
      */
     public function index(DaemonManager $daemonManager, string $id = null)
     {
@@ -53,8 +53,8 @@ class DaemonsController extends Controller
 
         return view('admin.jurnal.daemons.daemons', [
             'id' => $id,
-            'stat' => $this->_service->isStarted($id),
-            'daemons' => $this->_service->daemonsList(),
+            'stat' => $this->service->isStarted($id),
+            'daemons' => $this->service->daemonsList(),
         ]);
     }
 
@@ -82,7 +82,7 @@ class DaemonsController extends Controller
      */
     public function daemonStart(string $id)
     {
-        $this->_service->daemonStart($id);
+        $this->service->daemonStart($id);
 
         return 'OK';
     }
@@ -95,7 +95,7 @@ class DaemonsController extends Controller
      */
     public function daemonStop(string $id)
     {
-        $this->_service->daemonStop($id);
+        $this->service->daemonStop($id);
 
         return 'OK';
     }
@@ -108,7 +108,7 @@ class DaemonsController extends Controller
      */
     public function daemonRestart(string $id)
     {
-        $this->_service->daemonRestart($id);
+        $this->service->daemonRestart($id);
 
         return 'OK';
     }
@@ -120,9 +120,9 @@ class DaemonsController extends Controller
      */
     public function daemonStartAll()
     {
-        foreach ($this->_service->daemonsList() as $daemon) {
+        foreach ($this->service->daemonsList() as $daemon) {
             if (!$daemon->stat) {
-                $this->_service->daemonStart($daemon->id);
+                $this->service->daemonStart($daemon->id);
             }
         }
 
@@ -136,9 +136,9 @@ class DaemonsController extends Controller
      */
     public function daemonStopAll()
     {
-        foreach ($this->_service->daemonsList() as $daemon) {
+        foreach ($this->service->daemonsList() as $daemon) {
             if ($daemon->stat) {
-                $this->_service->daemonStop($daemon->id);
+                $this->service->daemonStop($daemon->id);
             }
         }
 
@@ -152,6 +152,6 @@ class DaemonsController extends Controller
      */
     public function daemonsState()
     {
-        return response()->json($this->_service->daemonsList());
+        return response()->json($this->service->daemonsList());
     }
 }

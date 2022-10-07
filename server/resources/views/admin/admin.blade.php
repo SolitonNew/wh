@@ -245,7 +245,6 @@
                 && target != '_blank')
             {
                 startGlobalWaiter();
-                $('body').css('opacity', 0.5);
             }
         });
 
@@ -363,7 +362,6 @@
 
     function reloadWithWaiter(url = '') {
         startGlobalWaiter();
-        $('body').css('opacity', 0.5);
         if (url) {
             window.location.href = url;
         } else {
@@ -470,7 +468,7 @@
     }
 
     function firmware() {
-        dialog("{{ route('admin.firmware') }}");
+        dialog("{{ route('admin.hubs-config-wizard') }}");
     }
 
     function requestDaemonsState() {

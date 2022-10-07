@@ -11,24 +11,22 @@ use App\Models\Property;
 class ScriptsController extends Controller
 {
     /**
-     *
-     * @var type
+     * @var ScriptsService
      */
-    private $_service;
+    private ScriptsService $service;
 
     /**
-     *
      * @param ScriptsService $service
      */
     public function __construct(ScriptsService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
      * The index route to display a list of scripts.
      *
-     * @param int $scriptID
+     * @param int|null $id
      * @return type
      */
     public function index(int $id = null)
@@ -87,8 +85,9 @@ class ScriptsController extends Controller
     /**
      * The route to create or update script record properties.
      *
+     * @param Request $request
      * @param int $id
-     * @return string
+     * @return \Illuminate\Http\JsonResponse|string
      */
     public function editPost(Request $request, int $id)
     {
@@ -101,17 +100,15 @@ class ScriptsController extends Controller
      * @param int $id
      * @return string
      */
-    public function delete(int $id)
+    public function delete(int $id): string
     {
         Script::deleteById($id);
-
         return 'OK';
     }
 
     /**
-     *
      * @param Request $request
-     * @return string
+     * @return \Illuminate\View\View|\Laravel\Lumen\Application|string
      */
     public function scriptTemplate(Request $request)
     {
@@ -131,17 +128,15 @@ class ScriptsController extends Controller
      * @param int $id
      * @return string
      */
-    public function saveScript(Request $request, int $id)
+    public function saveScript(Request $request, int $id): string
     {
         Script::storeDataFromRequest($request, $id);
-
         return 'OK';
     }
 
     /**
-     *
      * @param int $id
-     * @return type
+     * @return \Illuminate\View\View|\Laravel\Lumen\Application
      */
     public function attacheEventsShow(int $id)
     {
@@ -154,15 +149,13 @@ class ScriptsController extends Controller
     }
 
     /**
-     *
      * @param Request $request
      * @param int $id
      * @return string
      */
-    public function attacheEventsPost(Request $request, int $id)
+    public function attacheEventsPost(Request $request, int $id): string
     {
         Script::attachDevicesFromRequest($request, $id);
-
         return 'OK';
     }
 
@@ -170,6 +163,7 @@ class ScriptsController extends Controller
      * The route performs a script test.
      *
      * @param Request $request
+     * @return string
      */
     public function scriptTest(Request $request)
     {

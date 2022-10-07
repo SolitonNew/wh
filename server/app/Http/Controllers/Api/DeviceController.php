@@ -11,11 +11,11 @@ class DeviceController extends Controller
     /**
      * @var DeviceService
      */
-    private $_service;
+    private DeviceService $service;
 
     public function __construct(DeviceService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
@@ -25,7 +25,7 @@ class DeviceController extends Controller
      */
     public function getData(int $deviceID)
     {
-        $data = $this->_service->getData($deviceID);
+        $data = $this->service->getData($deviceID);
         return response()->json($data);
     }
 
@@ -36,6 +36,6 @@ class DeviceController extends Controller
      */
     public function setData(Request $request, int $deviceID)
     {
-        $this->_service->setValue($deviceID, $request->value);
+        $this->service->setValue($deviceID, $request->value);
     }
 }

@@ -38,7 +38,7 @@ class FavoritesService
                     if (!$device->comm) {
                         $device->comm = $device->group_name;
                     }
-                    $itemLabel = mb_strtoupper($device->comm);
+                    $itemLabel = mb_strtoupper($device->comm ?? '');
                     $c->title = $c->label.' '.$itemLabel;
 
                     $result[] = (object)[

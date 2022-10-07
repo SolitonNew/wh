@@ -41,11 +41,13 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->post('/hub-edit/{id}', ['as' => 'admin.hub-edit', 'uses' => 'HubsController@editPost']);
     $router->delete('/hub-delete/{id}', ['as' => 'admin.hub-delete', 'uses' => 'HubsController@delete']);
     $router->get('/hub-network-scan/{id}', ['as' => 'admin.hub-network-scan', 'uses' => 'HubsController@hubNetworkScan']);
-    $router->get('/hubs-firmware', ['as' => 'admin.firmware', 'uses' => 'HubsController@firmware']);
-    $router->get('/hubs-firmware-start', ['as' => 'admin.firmware-start', 'uses' => 'HubsController@firmwareStart']);
-    $router->get('/hubs-firmware-status', ['as' => 'admin.firmware-status', 'uses' => 'HubsController@firmwareStatus']);
     $router->get('/hubs-reset', ['as' => 'admin.hubs-reset', 'uses' => 'HubsController@hubsReset']);
     $router->get('/hubs-add-devices-for-all-hosts/{hubID}', ['as' => 'admin.hubs-add-devices-for-all-hosts', 'uses' => 'HubsController@addDevicesForAllHosts']);
+    $router->get('/hubs-config-wizard', ['as' => 'admin.hubs-config-wizard', 'uses' => 'HubsController@configWizardShow']);
+    $router->get('/hubs-config-wizard-make/{typ}', ['as' => 'admin.hubs-config-wizard-make', 'uses' => 'HubsController@configWizardMake']);
+    $router->get('/hubs-config-wizard-transmit', ['as' => 'admin.hubs-config-wizard-transmit', 'uses' => 'HubsController@configWizardTransmit']);
+    $router->get('/hubs-config-wizard-status', ['as' => 'admin.hubs-config-wizard-status', 'uses' => 'HubsController@configWizardStatus']);
+    $router->get('/hubs-config-complete', ['as' => 'admin.hubs-config-complete', 'uses' => 'HubsController@configWizardComplete']);
 
     /* Hosts management routes */
     $router->get('/hubs/{hubID}/hosts', ['as' => 'admin.hub-hosts', 'uses' => 'Hubs\HostsController@index']);
@@ -65,6 +67,10 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->get('/hub-dinhost-edit/{hubID}/{id}', ['as' => 'admin.hub-dinhost-edit', 'uses' => 'Hubs\HostsController@editDinShow']);
     $router->post('/hub-dinhost-edit/{hubID}/{id}', ['as' => 'admin.hub-dinhost-edit', 'uses' => 'Hubs\HostsController@editDinPost']);
     $router->delete('/hub-dinhost-delete/{hubID}/{id}', ['as' => 'admin.hub-dinhost-delete', 'uses' => 'Hubs\HostsController@deleteDin']);
+    // Pyhome hosts
+    $router->get('/hub-pyhomehost-edit/{hubID}/{id}', ['as' => 'admin.hub-pyhomehost-edit', 'uses' => 'Hubs\HostsController@editPyhomeShow']);
+    $router->post('/hub-pyhomehost-edit/{hubID}/{id}', ['as' => 'admin.hub-pyhomehost-edit', 'uses' => 'Hubs\HostsController@editPyhomePost']);
+    $router->delete('/hub-pyhomehost-delete/{hubID}/{id}', ['as' => 'admin.hub-pyhomehost-delete', 'uses' => 'Hubs\HostsController@deletePyhome']);
     // Zigbee One hosts
     $router->get('/hub-zigbeehost-edit/{hubID}/{id}', ['as' => 'admin.hub-zigbeehost-edit', 'uses' => 'Hubs\HostsController@editZigbeeShow']);
     $router->post('/hub-zigbeehost-edit/{hubID}/{id}', ['as' => 'admin.hub-zigbeehost-edit', 'uses' => 'Hubs\HostsController@editZigbeePost']);
@@ -129,7 +135,7 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->get('/jurnal/forecast', ['as' => 'admin.jurnal-forecast', 'uses' => 'Jurnal\ForecastController@index']);
     $router->delete('/jurnal/forecast-clear', ['as' => 'admin.jurnal-forecast-clear', 'uses' => 'Jurnal\ForecastController@clearStorageData']);
 
-    /* Power management routes */    
+    /* Power management routes */
     $router->get('/jurnal/power', ['as' => 'admin.jurnal-power', 'uses' => 'Jurnal\PowerController@index']);
 
 
@@ -139,7 +145,12 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->post('/settings-set-timezone', ['as' => 'admin.settings-set-timezone', 'uses' => 'SettingsController@setTimezone']);
     $router->post('/settings-set-location', ['as' => 'admin.settings-set-location', 'uses' => 'SettingsController@setLocation']);
     $router->post('/settings-set-din-settings', ['as' => 'admin.settings-set-din-settings', 'uses' => 'SettingsController@setDinSettings']);
+    $router->post('/settings-set-pyhome-settings', ['as' => 'admin.settings-set-pyhome-settings', 'uses' => 'SettingsController@setPyhomeSettings']);
     $router->post('/settings-set-forecast', ['as' => 'admin.settings-set-forecast', 'uses' => 'SettingsController@setForecast']);
+    /* Metadata backup system */
+    $router->get('/backup-meta-import-show', ['as' => 'admin.backup-meta-import-show', 'uses' => 'BackupMetaController@importShow']);
+    $router->post('/backup-meta-import-post', ['as' => 'admin.backup-meta-import-post', 'uses' => 'BackupMetaController@importPost']);
+    $router->get('/backup-meta-export', ['as' => 'admin.backup-meta-export', 'uses' => 'BackupMetaController@export']);
 
     /* Test  ------------------------------------------------- */
     $router->get('/test', 'TestController@test');

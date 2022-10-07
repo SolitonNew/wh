@@ -20,16 +20,21 @@ use App\Models\Property;
  */
 class ForecastController extends Controller
 {
-    private $_service;
+    /**
+     * @var ForecastService
+     */
+    private ForecastService $service;
 
+    /**
+     * @param ForecastService $service
+     */
     public function __construct(ForecastService $service)
     {
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
-     *
-     * @return type
+     * @return \Illuminate\View\View|\Laravel\Lumen\Application
      */
     public function index()
     {
@@ -38,15 +43,14 @@ class ForecastController extends Controller
         // ----------------------------------------
 
         return view('admin.jurnal.forecast.forecast', [
-            'data' => $this->_service->getData(),
+            'data' => $this->service->getData(),
         ]);
     }
 
     /**
-     *
      * @return string
      */
-    public function clearStorageData()
+    public function clearStorageData(): string
     {
         ExtApiHostStorage::truncate();
 

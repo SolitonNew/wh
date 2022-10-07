@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 class RoomController
 {
     /**
-     * @var RoomService 
+     * @var RoomService
      */
-    private $service;
+    private RoomService $service;
 
     public function __construct(RoomService $service)
     {

@@ -8,11 +8,6 @@ use \Carbon\Carbon;
 use Illuminate\Support\Facades\Lang;
 use DB;
 
-/**
- * Description of CommandDaemon
- *
- * @author soliton
- */
 class ScheduleDaemon extends BaseDaemon
 {
     /**

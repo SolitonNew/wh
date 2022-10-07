@@ -83,7 +83,7 @@ class RoomsService
                         break;
                     case 1:
                         $parentTitle = '';
-                        foreach($this->groups as $p_g) {
+                        foreach ($this->groups as $p_g) {
                             if ($p_g->id == $row->parent_id) {
                                 $parentTitle = mb_strtoupper($p_g->name);
                                 break;

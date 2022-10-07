@@ -8,18 +8,14 @@ use App\Models\OwHost;
 use App\Models\Device;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Log;
 
-/**
- * Description of CommandDaemon
- *
- * @author soliton
- */
 class DinDaemon extends BaseDaemon
 {
     /**
      * @var mixed
      */
-    private mixed $portHandle;
+    private mixed $portHandle = false;
 
     /**
      * @var int
@@ -60,6 +56,11 @@ class DinDaemon extends BaseDaemon
      * @var int
      */
     private int $firmwareSpmPageSize = 0;
+
+    /**
+     * @var array
+     */
+    private array $firmwareStatuses = [];
 
     /**
      * @var array
@@ -117,7 +118,9 @@ class DinDaemon extends BaseDaemon
                         if (!$this->checkEvents(false, true)) return;
                 }
 
-                foreach($this->hubs as $controller) {
+                $this->firmwareStatuses = [];
+
+                foreach ($this->hubs as $controller) {
                     switch ($command) {
                         case 'RESET':
                             $this->commandReset($controller);
@@ -143,13 +146,13 @@ class DinDaemon extends BaseDaemon
                         Property::setDinCommandInfo('END_OW_SCAN');
                         break;
                     case 'FIRMWARE':
-                        if (!$loopErrors) {
+                        /*if (!$loopErrors) {
                             Property::setDinCommandInfo('COMPLETE', true);
                             // Reset the firmware change counter
                             Property::setFirmwareChanges(0);
                         } else {
                             Property::setDinCommandInfo('ERROR', true);
-                        }
+                        }*/
                         $this->firmwareHex = false;
                         break;
                     default:
@@ -338,10 +341,12 @@ class DinDaemon extends BaseDaemon
             $this->transmitHEX($controller->rom, $hex);
             $packs++;
             if ($packs % $hexPackStep == 0) {
-                $a = [
-                    $controller->name,
-                    round((($index * 100) + $p) / $count),
-                ];
+                $this->firmwareStatuses[$controller->id] = round($p);
+                // Pack statuses
+                $a = [];
+                foreach ($this->firmwareStatuses as $cId => $cPerc) {
+                    $a[] = $cId.':'.$cPerc;
+                }
                 Property::setDinCommandInfo(implode(';', $a), true);
                 // ------------------------------
                 $this->printProgress(round($p));
@@ -350,18 +355,25 @@ class DinDaemon extends BaseDaemon
             }
             $p += $dp;
         }
-        $a = [
-            $controller->name,
-            round((($index * 100) + $p) / $count),
-        ];
-        Property::setDinCommandInfo(implode(';', $a), true);
 
         usleep($PAGE_STORE_PAUSE);
 
         $this->transmitCMD($controller->rom, 25, count($this->firmwareHex));
         $this->readPacks(750);
 
-        return ($this->inPackCount == count($this->firmwareHex));
+        $ok = ($this->inPackCount == count($this->firmwareHex));
+        $this->inPackCount = 0;
+
+        // Pack statuses
+        $this->firmwareStatuses[$controller->id] = $ok ? 'COMPLETE' : 'BAD';
+        $a = [];
+        foreach ($this->firmwareStatuses as $cId => $cPerc) {
+            $a[] = $cId.':'.$cPerc;
+        }
+
+        Property::setDinCommandInfo(implode(';', $a), true);
+
+        return $ok;
     }
 
     /**
