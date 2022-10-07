@@ -364,8 +364,6 @@ class DinDaemon extends BaseDaemon
         $ok = ($this->inPackCount == count($this->firmwareHex));
         $this->inPackCount = 0;
 
-        Log::info($ok);
-
         // Pack statuses
         $this->firmwareStatuses[$controller->id] = $ok ? 100 : 'ERROR';
         $a = [];
@@ -373,6 +371,8 @@ class DinDaemon extends BaseDaemon
             $a[] = $cId.':'.$cPerc;
         }
         Property::setDinCommandInfo(implode(';', $a), true);
+
+        Log::info(implode(';', $a));
 
         return $ok;
     }
