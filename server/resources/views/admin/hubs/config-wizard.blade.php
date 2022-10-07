@@ -49,7 +49,7 @@
             @foreach($hubs as $hub)
                 <div class="row mt-2 mb-2">
                     <div class="col-sm-5 d-flex full-width justify-content-end">{{ $hub->name }}</div>
-                    <div class="col-sm-7 font-weight-bold" data-typ="{{ $hub->typ }}" data-id="{{ $hub->id }}">
+                    <div class="col-sm-7 d-flex font-weight-bold align-items-center" data-typ="{{ $hub->typ }}" data-id="{{ $hub->id }}">
                         <div class="progress" style="width: 100%; height: 0.75rem;">
                             <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
                         </div>
@@ -178,9 +178,9 @@
                     }
                 });
 
-                //if (data.length > finishedCount) {
+                if (data.length > finishedCount) {
                     setTimeout(configWizardTransmitStatus, transmitStatusInterval);
-                //}
+                }
             },
             error: function (err) {
                 setTimeout(configWizardTransmitStatus, transmitStatusInterval);

@@ -605,7 +605,8 @@ class HubsService
                                 $percent = 100;
                             }
                         } else {
-                            $status = 'ERROR';
+                            $status = 'IN PROGRESS';
+                            $percent = 0;
                         }
                     }
                 }
