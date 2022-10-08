@@ -37,16 +37,20 @@ class Kernel extends ConsoleKernel
         // Checking background processes.
         // If process stopped - to start.
         $schedule->call(function (DaemonManager $daemonManager) {
-            foreach (\App\Models\Property::runningDaemons() as $daemon) {
-                if (count($daemonManager->findDaemonPID($daemon)) == 0) {
-                    try {
-                        Log::channel('daemons')->info("An attempt to launch the '$daemon' demon...");
-                        $daemonManager->start($daemon);
-                        Log::channel('daemons')->info("Daemon '$daemon' has been launched");
-                    } catch (\Exception $ex) {
-                        Log::error($ex->getMessage());
+            try {
+                foreach (\App\Models\Property::runningDaemons() as $daemon) {
+                    if (count($daemonManager->findDaemonPID($daemon)) == 0) {
+                        try {
+                            Log::channel('daemons')->info("An attempt to launch the '$daemon' demon...");
+                            $daemonManager->start($daemon);
+                            Log::channel('daemons')->info("Daemon '$daemon' has been launched");
+                        } catch (\Exception $ex) {
+                            Log::channel('daemons')->error("'$daemon' ".$ex->getMessage());
+                        }
                     }
                 }
+            } catch (\Exception $ex) {
+                Log::channel('daemons')->error($ex->getMessage());
             }
         })->everyMinute();
 
@@ -70,7 +74,9 @@ class Kernel extends ConsoleKernel
             $maxID = DB::select('select max(m.id) mId from core_events_mem m')[0]->mId;
             if ($maxID) {
                 $maxID -= config('settings.admin_log_lines_count');
-                DB::delete('delete from core_events_mem m where m.id < '.$maxID);
+                if ($maxID > 0) {
+                    DB::delete('delete from core_events_mem m where m.id < '.$maxID);
+                }
             }
         })->everyFiveMinutes();
 

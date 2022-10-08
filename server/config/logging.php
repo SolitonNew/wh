@@ -25,6 +25,11 @@ return [
             'days' => 14,
         ],
 
+        'deprecations' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/php-deprecation-warnings.log'),
+        ],
+
         'daemons' => [
             'driver' => 'daily',
             'path' => storage_path('logs/daemons.log'),

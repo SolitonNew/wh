@@ -17,6 +17,7 @@ class I2c
     public static function scan(): array
     {
         $output = shell_exec('i2cdetect -y -a '.self::PORT);
+        if (!$output) return [];
 
         $result = [];
         $num = 0;
@@ -63,7 +64,12 @@ class I2c
      */
     protected function readByte(int $adr): int
     {
-        return hexdec(trim(shell_exec('i2cget -y '.self::PORT.' '.$this->address.' '.$adr)));
+        $res = shell_exec('i2cget -y '.self::PORT.' '.$this->address.' '.$adr);
+        if ($res) {
+            return hexdec(trim($res));
+        } else {
+            return hexdec(0);
+        }
     }
 
     /**
