@@ -72,7 +72,7 @@ class ZigbeeoneDaemon extends BaseDaemon
 
         $this->printInitPrompt([
             Lang::get('admin/daemons/zigbeeone-daemon.description'),
-            '--    PORT: '.$settings->port,
+            '--    PORT: '.$port,
             '--    BAUD: '.config('zigbeeone.baud')
         ]);
 

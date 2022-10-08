@@ -14,6 +14,7 @@ return [
         'extapi-daemon',
         'din-daemon',
         'pyhome-daemon',
+        'zigbeeone-daemon',
         'orangepi-daemon',
         'schedule-daemon',
         'command-daemon',

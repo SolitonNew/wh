@@ -27,6 +27,9 @@ return [
     'pyhome_settings_title' => 'Pyhome Settings',
     'pyhome_settings_port' => 'Port',
 
+    'zigbeeone_settings_title' => 'Zigbeeone Settings',
+    'zigbeeone_settings_port' => 'Port',
+
     'forecast_title' => 'Forecast',
     'forecast_TEMP' => 'Temperature',
     'forecast_P' => 'Pressure',

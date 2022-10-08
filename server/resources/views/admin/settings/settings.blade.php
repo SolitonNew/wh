@@ -21,6 +21,7 @@
             @include('admin.settings.structure-deph')
             @include('admin.settings.din-settings')
             @include('admin.settings.pyhome-settings')
+            @include('admin.settings.zigbeeone-settings')
             @include('admin.settings.forecast')
         </div>
         <div class="col-sm-6">

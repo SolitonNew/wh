@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         Commands\ExtApiDaemon::class,
         Commands\DinDaemon::class,
         Commands\PyhomeDaemon::class,
+        Commands\ZigbeeoneDaemon::class,
         Commands\ScheduleDaemon::class,
         Commands\CommandDaemon::class,
         Commands\ObserverDaemon::class,
