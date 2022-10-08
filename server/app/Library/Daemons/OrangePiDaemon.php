@@ -14,6 +14,11 @@ use App\Library\OrangePi\I2c\I2c;
 class OrangePiDaemon extends BaseDaemon
 {
     /**
+     *
+     */
+    public const PROPERTY_NAME = 'ORANGEPI';
+
+    /**
      * @var int|bool
      */
     private int|bool $prevExecuteHostI2cTime = false;
@@ -49,7 +54,7 @@ class OrangePiDaemon extends BaseDaemon
                 if (!$this->checkEvents()) break;
 
                 // Commands processing
-                $command = Property::getOrangePiCommand(true);
+                $command = static::getCommand(true);
                 switch ($command) {
                     case 'SCAN':
                         $this->scanNetworks();

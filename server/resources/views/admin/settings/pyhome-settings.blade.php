@@ -8,7 +8,7 @@
                         <label class="form-label">@lang('admin/settings.pyhome_settings_port')</label>
                     </div>
                     <div class=" col-sm-8">
-                        <input id="pyhomeSettingsPort" class="form-control" value="{{ App\Models\Property::getPyhomeSettings()->port }}">
+                        <input id="pyhomeSettingsPort" class="form-control" value="{{ App\Library\Daemons\PyhomeDaemon::getSettings('PORT', config('pyhome.default_port')) }}">
                     </div>
                 </div>
             </div>

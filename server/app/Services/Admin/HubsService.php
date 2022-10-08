@@ -2,6 +2,10 @@
 
 namespace App\Services\Admin;
 
+use App\Library\Daemons\DinDaemon;
+use App\Library\Daemons\OrangePiDaemon;
+use App\Library\Daemons\PyhomeDaemon;
+use App\Library\Daemons\ZigbeeoneDaemon;
 use App\Library\Firmware\Pyhome;
 use App\Library\Firmware\ZigbeeOne;
 use App\Models\Hub;
@@ -23,12 +27,12 @@ class HubsService
      */
     public function dinHubsScan(): string
     {
-        Property::setDinCommand('OW SEARCH');
+        DinDaemon::setCommand('OW SEARCH');
         usleep(500000);
         $i = 0;
         while ($i++ < 50) { // 5 sec
             usleep(100000);
-            $text = Property::getDinCommandInfo();
+            $text = DinDaemon::getCommandInfo();
             if ($t = strpos($text, 'END_OW_SCAN')) {
                 $text = substr($text, 0, $t);
                 break;
@@ -42,12 +46,12 @@ class HubsService
      */
     public function orangepiHubScan(): string
     {
-        Property::setOrangePiCommand('SCAN');
+        OrangePiDaemon::setCommand('SCAN');
         usleep(500000);
         $i = 0;
         while ($i++ < 50) { // 5 sec
             usleep(100000);
-            $text = Property::getOrangePiCommandInfo();
+            $text = OrangePiDaemon::getCommandInfo();
             if ($t = strpos($text, 'END_SCAN')) {
                 $text = substr($text, 0, $t);
                 break;
@@ -134,7 +138,7 @@ class HubsService
      */
     private function generateDinDevsByHub(int $hubID): void
     {
-        $din_channels = config('din.'.Property::getDinSettings()->mmcu.'.channels');
+        $din_channels = config('din.mmcu_list.'.DinDaemon::getSettings('MMCU').'.channels');
         $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "din"');
 
         try {
@@ -519,14 +523,14 @@ class HubsService
      */
     public function configWizardTransmit(): void
     {
-        Property::setDinCommand('FIRMWARE');
-        Property::setDinCommandInfo('', true);
+        DinDaemon::setCommand('FIRMWARE');
+        DinDaemon::setCommandInfo('', true);
 
-        Property::setPyhomeCommand('COMFIG UPDATE');
-        Property::setPyhomeCommandInfo('', true);
+        PyhomeDaemon::setCommand('COMFIG UPDATE');
+        PyhomeDaemon::setCommandInfo('', true);
 
-        Property::setZigbeeoneCommand('COMFIG UPDATE');
-        Property::setZigbeeoneCommandInfo('', true);
+        ZigbeeoneDaemon::setCommand('COMFIG UPDATE');
+        ZigbeeoneDaemon::setCommandInfo('', true);
     }
 
     /**
@@ -704,9 +708,10 @@ class HubsService
     public function hubsReset(): string
     {
         try {
-            Property::setDinCommand('RESET');
-            Property::setPyhomeCommand('RESET');
-            Property::setZigbeeoneCommand('RESET');
+            DinDaemon::setCommand('RESET');
+            PyhomeDaemon::setCommand('RESET');
+            ZigbeeoneDaemon::setCommand('RESET');
+            OrangePiDaemon::setCommand('RESET');
             return 'OK';
         } catch (\Exception $ex) {
             return 'ERROR';

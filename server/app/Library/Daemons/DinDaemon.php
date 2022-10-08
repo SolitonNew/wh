@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Log;
 class DinDaemon extends BaseDaemon
 {
     /**
+     *
+     */
+    public const PROPERTY_NAME = 'DIN';
+
+    /**
      * @var mixed
      */
     private mixed $portHandle = false;
@@ -79,39 +84,39 @@ class DinDaemon extends BaseDaemon
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
 
-        $settings = Property::getDinSettings();
+        $port = static::getSettings('PORT', config('din.default_port'));
+        $mmcu = static::getSettings('MMCU', 'atmega16a');
 
         $this->printInitPrompt([
             Lang::get('admin/daemons/din-daemon.description'),
-            '--    PORT: '.$settings->port,
-            '--    BAUD: '.config('din.'.$settings->mmcu.'.baud')
+            '--    PORT: '.$port,
+            '--    BAUD: '.config('din.mmcu_list.'.$mmcu.'.baud')
         ]);
 
         if (!$this->initialization('din')) return ;
 
         try {
-            $settings = Property::getDinSettings();
-            $port = $settings->port;
-            $baud = config('din.'.$settings->mmcu.'.baud');
+            $port = $port;
+            $baud = config('din.mmcu_list.'.$mmcu.'.baud');
             exec("stty -F $port $baud cs8 cstopb -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
             $this->portHandle = fopen($port, 'r+b');
             stream_set_blocking($this->portHandle, false);
             while (!feof($this->portHandle)) {
                 $loopErrors = false;
-                $command = Property::getDinCommand(true);
+                $command = static::getCommand(true);
 
                 $this->devicesLoopChanges = [];
                 // Performing the initial preparation of the iteration
                 // It is the same for all controllers.
                 switch ($command) {
                     case 'RESET':
-                        Property::setDinCommandInfo('', true);
+                        static::setCommandInfo('', true);
                         break;
                     case 'OW SEARCH':
-                        Property::setDinCommandInfo('', true);
+                        static::setCommandInfo('', true);
                         break;
                     case 'FIRMWARE':
-                        Property::setDinCommandInfo('', true);
+                        static::setCommandInfo('', true);
                         $this->firmwareHex = false;
                         break;
                     default:
@@ -143,16 +148,9 @@ class DinDaemon extends BaseDaemon
                         // not records
                         break;
                     case 'OW SEARCH':
-                        Property::setDinCommandInfo('END_OW_SCAN');
+                        static::setCommandInfo('END_OW_SCAN');
                         break;
                     case 'FIRMWARE':
-                        /*if (!$loopErrors) {
-                            Property::setDinCommandInfo('COMPLETE', true);
-                            // Reset the firmware change counter
-                            Property::setFirmwareChanges(0);
-                        } else {
-                            Property::setDinCommandInfo('ERROR', true);
-                        }*/
                         $this->firmwareHex = false;
                         break;
                     default:
@@ -294,7 +292,7 @@ class DinDaemon extends BaseDaemon
         $report[] = str_repeat('-', 35);
         $report[] = '';
 
-        Property::setDinCommandInfo(implode("\n", $report));
+        static::setCommandInfo(implode("\n", $report));
     }
 
     /**
@@ -347,7 +345,7 @@ class DinDaemon extends BaseDaemon
                 foreach ($this->firmwareStatuses as $cId => $cPerc) {
                     $a[] = $cId.':'.$cPerc;
                 }
-                Property::setDinCommandInfo(implode(';', $a), true);
+                static::setCommandInfo(implode(';', $a), true);
                 // ------------------------------
                 $this->printProgress(round($p));
                 // ------------------------------
@@ -371,7 +369,7 @@ class DinDaemon extends BaseDaemon
             $a[] = $cId.':'.$cPerc;
         }
 
-        Property::setDinCommandInfo(implode(';', $a), true);
+        static::setCommandInfo(implode(';', $a), true);
 
         return $ok;
     }

@@ -20,6 +20,11 @@ class BaseDaemon
      */
     protected string $signature = '';
 
+    /**
+     * @var string
+     */
+    public const PROPERTY_NAME = 'DAEMON';
+
     public function __construct($signature)
     {
         $this->signature = $signature;
@@ -49,6 +54,62 @@ class BaseDaemon
      * @var string|bool
      */
     private string|bool $daemonHubTyp = false;
+
+    /**
+     * @param string $attr
+     * @param string $default
+     * @return string
+     */
+    public static function getSettings(string $attr, string $default = ''): string
+    {
+        return Property::getProperty(static::PROPERTY_NAME.'_SETTINGS_'.$attr) ?: $default;
+    }
+
+    /**
+     * @param string $attr
+     * @param string $value
+     * @return void
+     */
+    public static function setSettings(string $attr, string $value): void
+    {
+        Property::setProperty(static::PROPERTY_NAME.'_SETTINGS_'.$attr, $value, false);
+    }
+
+    /**
+     * @param bool $clear
+     * @return string
+     */
+    public static function getCommand(bool $clear = false): string
+    {
+        return Property::getProperty(static::PROPERTY_NAME.'_COMMAND', true);
+    }
+
+    /**
+     * @param string $command
+     * @return void
+     */
+    public static function setCommand(string $command): void
+    {
+        Property::setProperty(static::PROPERTY_NAME.'_COMMAND', $command);
+    }
+
+    /**
+     * @return string
+     */
+    public static function getCommandInfo(): string
+    {
+        return Property::getProperty(static::PROPERTY_NAME.'_COMMAND_INFO');
+    }
+
+    /**
+     * @param string $text
+     * @param bool $first
+     * @return void
+     */
+    public static function setCommandInfo(string $text, bool $first = false)
+    {
+        Property::setProperty(static::PROPERTY_NAME.'_COMMAND_INFO', $text, !$first);
+    }
 
     /**
      * @param string $typ

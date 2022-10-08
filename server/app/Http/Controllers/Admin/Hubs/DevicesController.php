@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Hubs;
 
 use App\Http\Controllers\Controller;
+use App\Library\Daemons\DinDaemon;
 use App\Services\Admin\DevicesService;
 use Illuminate\Http\Request;
 use App\Models\Device;
@@ -193,8 +194,8 @@ class DevicesController extends Controller
         $data = [];
         switch ($typ) {
             case 'din':
-                $settings = Property::getDinSettings();
-                $data = config('din.'.$settings->mmcu.'.channels');
+                $mmcu = DinDaemon::getSettings('MMCU');
+                $data = config('din.mmcu_list.'.$mmcu.'.channels');
                 break;
             case 'pyhome':
                 $data = config('pyhome.channels');

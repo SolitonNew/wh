@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Library\Daemons\DinDaemon;
+use App\Library\Daemons\PyhomeDaemon;
 use App\Services\Admin\SettingsService;
 use Illuminate\Http\Request;
 use App\Models\Property;
@@ -77,7 +79,8 @@ class SettingsController extends Controller
      */
     public function setDinSettings(Request $request): string
     {
-        Property::setDinSettings($request->port, $request->mmcu);
+        DinDaemon::setSettings('PORT', $request->port);
+        DinDaemon::setSettings('MMCU', $request->mmcu);
         return 'OK';
     }
 
@@ -87,7 +90,7 @@ class SettingsController extends Controller
      */
     public function setPyhomeSettings(Request $request): string
     {
-        Property::setPyhomeSettings($request->port);
+        PyhomeDaemon::setSettings('PORT', $request->port);
         return 'OK';
     }
 

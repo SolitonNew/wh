@@ -2,6 +2,7 @@
 
 namespace App\Library\Firmware;
 
+use App\Library\Daemons\DinDaemon;
 use App\Models\OwHost;
 use App\Models\Script;
 use App\Library\Script\TranslateDB;
@@ -61,9 +62,8 @@ class Din
      */
     public function __construct()
     {
-        $settings = Property::getDinSettings();
-        $this->mmcu = $settings->mmcu;
-        $this->spm_pagesize = config('din.'.$settings->mmcu.'.spm_pagesize');
+        $this->mmcu = DinDaemon::getSettings('MMCU');
+        $this->spm_pagesize = config('din.mmcu_list.'.$this->mmcu.'.spm_pagesize');
     }
 
     /**

@@ -8,7 +8,7 @@
                         <label class="form-label">@lang('admin/settings.din_settings_port')</label>
                     </div>
                     <div class=" col-sm-8">
-                        <input id="dinSettingsPort" class="form-control" value="{{ App\Models\Property::getDinSettings()->port }}">
+                        <input id="dinSettingsPort" class="form-control" value="{{ App\Library\Daemons\DinDaemon::getSettings('PORT', config('din.default_port')) }}">
                     </div>
                 </div>
             </div>
@@ -19,8 +19,8 @@
                     </div>
                     <div class="col-sm-8">
                         <select id="dinSettingsMmcu" class="custom-select">
-                            @foreach(config('din') as $key => $val)
-                            <option value="{{ $key }}" {{ App\Models\Property::getDinSettings()->mmcu == $key ? 'selected' : '' }}>{{ $key }}</option>
+                            @foreach(config('din.mmcu_list') as $key => $val)
+                            <option value="{{ $key }}" {{ App\Library\Daemons\DinDaemon::getSettings('MMCU') == $key ? 'selected' : '' }}>{{ $key }}</option>
                             @endforeach
                         </select>
                     </div>

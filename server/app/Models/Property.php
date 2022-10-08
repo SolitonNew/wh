@@ -209,73 +209,6 @@ class Property extends Model
     }
 
     /**
-     * @param bool $clear
-     * @return string
-     */
-    public static function getDinCommand(bool $clear = false): string
-    {
-        $item = self::whereName('DIN_COMMAND')->first();
-        if ($item) {
-            $value = $item->value;
-            if ($clear && $value != '') {
-                $item->value = '';
-                $item->save();
-            }
-            return $value;
-        }
-        return '';
-    }
-
-    /**
-     * @param string $command
-     * @return void
-     */
-    public static function setDinCommand(string $command): void
-    {
-        $item = self::whereName('DIN_COMMAND')->first();
-        if (!$item) {
-            $item = new Property();
-            $item->name = 'DIN_COMMAND';
-            $item->comm = '';
-        }
-        $item->value = $command;
-        $item->save();
-    }
-
-    /**
-     * @return string
-     */
-    public static function getDinCommandInfo(): string
-    {
-        $item = self::whereName('DIN_COMMAND_INFO')->first();
-        if ($item) {
-            return $item->value;
-        }
-        return '';
-    }
-
-    /**
-     * @param string $text
-     * @param bool $first
-     * @return void
-     */
-    public static function setDinCommandInfo(string $text, bool $first = false): void
-    {
-        $item = self::whereName('DIN_COMMAND_INFO')->first();
-        if (!$item) {
-            $item = new Property();
-            $item->name = 'DIN_COMMAND_INFO';
-            $item->comm = '';
-        }
-        if ($first) {
-            $item->value = $text;
-        } else {
-            $item->value .= $text;
-        }
-        $item->save();
-    }
-
-    /**
      * The cache for getFirmwareChanges.
      *
      * @var int|bool
@@ -439,99 +372,6 @@ class Property extends Model
     /**
      * @var object|bool
      */
-    private static object|bool $din_settings = false;
-
-    /**
-     * @return object|bool
-     */
-    public static function getDinSettings(): object|bool
-    {
-        if (self::$din_settings === false) {
-            $item = self::whereName('DIN_SETTINGS')->first();
-            if ($item && $item->value) {
-                self::$din_settings = json_decode($item->value);
-            } else {
-                self::$din_settings = (object)[
-                    'port' => '/dev/ttyUSB0',
-                    'mmcu' => 'atmega16a',
-                ];
-            }
-        }
-
-        return self::$din_settings;
-    }
-
-    /**
-     * @param string $port
-     * @param string $mmcu
-     * @return void
-     */
-    public static function setDinSettings(string $port, string $mmcu): void
-    {
-        $item = self::whereName('DIN_SETTINGS')->first();
-        if (!$item) {
-            $item = new Property();
-            $item->name = 'DIN_SETTINGS';
-            $item->comm = '';
-        }
-
-        self::$din_settings = (object)[
-            'port' => $port,
-            'mmcu' => $mmcu,
-        ];
-
-        $item->value = json_encode(self::$din_settings);
-        $item->save();
-    }
-
-    /**
-     * @var object|bool
-     */
-    private static object|bool $pyhome_settings = false;
-
-    /**
-     * @return object|bool
-     */
-    public static function getPyhomeSettings(): object|bool
-    {
-        if (self::$pyhome_settings === false) {
-            $item = self::whereName('PYHOME_SETTINGS')->first();
-            if ($item && $item->value) {
-                self::$pyhome_settings = json_decode($item->value);
-            } else {
-                self::$pyhome_settings = (object)[
-                    'port' => '/dev/ttyUSB0',
-                ];
-            }
-        }
-
-        return self::$pyhome_settings;
-    }
-
-    /**
-     * @param string $port
-     * @return void
-     */
-    public static function setPyhomeSettings(string $port): void
-    {
-        $item = self::whereName('PYHOME_SETTINGS')->first();
-        if (!$item) {
-            $item = new Property();
-            $item->name = 'PYHOME_SETTINGS';
-            $item->comm = '';
-        }
-
-        self::$pyhome_settings = (object)[
-            'port' => $port,
-        ];
-
-        $item->value = json_encode(self::$pyhome_settings);
-        $item->save();
-    }
-
-    /**
-     * @var object|bool
-     */
     private static object|bool $forecast_settings = false;
 
     /**
@@ -650,12 +490,13 @@ class Property extends Model
     }
 
     /**
+     * @param string $name
      * @param bool $clear
      * @return string
      */
-    public static function getOrangePiCommand(bool $clear = false): string
+    public static function getProperty(string $name, bool $clear = false): string
     {
-        $item = self::whereName('ORANGEPI_COMMAND')->first();
+        $item = self::whereName($name)->first();
         if ($item) {
             $value = $item->value;
             if ($clear && $value != '') {
@@ -668,184 +509,23 @@ class Property extends Model
     }
 
     /**
-     * @param string $command
-     * @return void
-     */
-    public static function setOrangePiCommand(string $command): void
-    {
-        $item = self::whereName('ORANGEPI_COMMAND')->first();
-        if (!$item) {
-            $item = new Property();
-            $item->name = 'ORANGEPI_COMMAND';
-            $item->comm = '';
-        }
-        $item->value = $command;
-        $item->save();
-    }
-
-    /**
-     * @return string
-     */
-    public static function getOrangePiCommandInfo(): string
-    {
-        $item = self::whereName('ORANGEPI_COMMAND_INFO')->first();
-        if ($item) {
-            return $item->value;
-        }
-        return '';
-    }
-
-    /**
+     * @param string $name
      * @param string $text
-     * @param bool $first
+     * @param bool $append
      * @return void
      */
-    public static function setOrangePiCommandInfo(string $text, bool $first = false): void
+    public static function setProperty(string $name, string $text, bool $append = false): void
     {
-        $item = self::whereName('ORANGEPI_COMMAND_INFO')->first();
+        $item = self::whereName($name)->first();
         if (!$item) {
             $item = new Property();
-            $item->name = 'ORANGEPI_COMMAND_INFO';
+            $item->name = $name;
             $item->comm = '';
         }
-        if ($first) {
-            $item->value = $text;
-        } else {
+        if ($append) {
             $item->value .= $text;
-        }
-        $item->save();
-    }
-
-    /**
-     * @param bool $clear
-     * @return string
-     */
-    public static function getPyhomeCommand(bool $clear = false): string
-    {
-        $item = self::whereName('PYHOME_COMMAND')->first();
-        if ($item) {
-            $value = $item->value;
-            if ($clear && $value != '') {
-                $item->value = '';
-                $item->save();
-            }
-            return $value;
-        }
-        return '';
-    }
-
-    /**
-     * @param string $command
-     * @return void
-     */
-    public static function setPyhomeCommand(string $command): void
-    {
-        $item = self::whereName('PYHOME_COMMAND')->first();
-        if (!$item) {
-            $item = new Property();
-            $item->name = 'PYHOME_COMMAND';
-            $item->comm = '';
-        }
-        $item->value = $command;
-        $item->save();
-    }
-
-    /**
-     * @return string
-     */
-    public static function getPyhomeCommandInfo(): string
-    {
-        $item = self::whereName('PYHOME_COMMAND_INFO')->first();
-        if ($item) {
-            return $item->value;
-        }
-        return '';
-    }
-
-    /**
-     * @param string $text
-     * @param bool $first
-     * @return void
-     */
-    public static function setPyhomeCommandInfo(string $text, bool $first = false): void
-    {
-        $item = self::whereName('PYHOME_COMMAND_INFO')->first();
-        if (!$item) {
-            $item = new Property();
-            $item->name = 'PYHOME_COMMAND_INFO';
-            $item->comm = '';
-        }
-        if ($first) {
-            $item->value = $text;
         } else {
-            $item->value .= $text;
-        }
-        $item->save();
-    }
-
-    /**
-     * @param bool $clear
-     * @return string
-     */
-    public static function getZigbeeoneCommand(bool $clear = false): string
-    {
-        $item = self::whereName('ZIGBEEONE_COMMAND')->first();
-        if ($item) {
-            $value = $item->value;
-            if ($clear && $value != '') {
-                $item->value = '';
-                $item->save();
-            }
-            return $value;
-        }
-        return '';
-    }
-
-    /**
-     * @param string $command
-     * @return void
-     */
-    public static function setZigbeeoneCommand(string $command): void
-    {
-        $item = self::whereName('ZIGBEEONE_COMMAND')->first();
-        if (!$item) {
-            $item = new Property();
-            $item->name = 'ZIGBEEONE_COMMAND';
-            $item->comm = '';
-        }
-        $item->value = $command;
-        $item->save();
-    }
-
-    /**
-     * @return string
-     */
-    public static function getZigbeeoneCommandInfo(): string
-    {
-        $item = self::whereName('ZIGBEEONE_COMMAND_INFO')->first();
-        if ($item) {
-            return $item->value;
-        }
-        return '';
-    }
-
-    /**
-     * @param string $text
-     * @param bool $first
-     * @return void
-     */
-    public static function setZigbeeoneCommandInfo(string $text, bool $first = false): void
-    {
-        $item = self::whereName('ZIGBEEONE_COMMAND_INFO')->first();
-        if (!$item) {
-            $item = new Property();
-            $item->name = 'ZIGBEEONE_COMMAND_INFO';
-            $item->comm = '';
-        }
-        if ($first) {
             $item->value = $text;
-        } else {
-            $item->value .= $text;
         }
         $item->save();
     }

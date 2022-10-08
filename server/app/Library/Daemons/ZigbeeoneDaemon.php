@@ -9,12 +9,12 @@ use App\Models\Device;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 
-class PyhomeDaemon extends BaseDaemon
+class ZigbeeoneDaemon extends BaseDaemon
 {
     /**
      *
      */
-    public const PROPERTY_NAME = 'PYHOME';
+    public const PROPERTY_NAME = 'ZIGBEEONE';
 
     /**
      * @var mixed
@@ -68,24 +68,24 @@ class PyhomeDaemon extends BaseDaemon
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
 
-        $port = static::getSettings('PORT', config('pyhome.default_port'));
+        $port = static::getSettings('PORT');
 
         $this->printInitPrompt([
-            Lang::get('admin/daemons/pyhome-daemon.description'),
-            '--    PORT: '.$port,
-            '--    BAUD: '.config('pyhome.baud')
+            Lang::get('admin/daemons/zigbeeone-daemon.description'),
+            '--    PORT: '.$settings->port,
+            '--    BAUD: '.config('zigbeeone.baud')
         ]);
 
-        if (!$this->initialization('pyhome')) return ;
+        if (!$this->initialization('zigbeeone')) return ;
 
         try {
-            $baud = config('pyhome.baud');
+            $baud = config('zigbeeone.baud');
             exec("stty -F $port $baud cs8 cstopb -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
             $this->portHandle = fopen($port, 'r+t');
             stream_set_blocking($this->portHandle, false);
             while (!feof($this->portHandle)) {
                 $loopErrors = false;
-                $command = static::getCommand(true);
+                $command = self::getCommand();
 
                 $this->devicesLoopChanges = [];
                 // Performing the initial preparation of the iteration
@@ -131,6 +131,11 @@ class PyhomeDaemon extends BaseDaemon
                         static::setCommandInfo('END_OW_SCAN');
                         break;
                     case 'CONFIG UPDATE':
+                        if (!$loopErrors) {
+                            static::setCommandInfo('COMPLETE', true);
+                        } else {
+                            static::setCommandInfo('ERROR', true);
+                        }
                         $this->firmwareHex = false;
                         break;
                     default:
