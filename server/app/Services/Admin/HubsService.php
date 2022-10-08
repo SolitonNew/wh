@@ -587,7 +587,7 @@ class HubsService
                 throw new \Exception('NOT POSSIBLE');
             }
 
-            $info = Property::getDinCommandInfo();
+            $info = DinDaemon::getCommandInfo();
             $a = [];
             foreach (explode(';', $info) as $s) {
                 $c = explode(':', $s);
@@ -631,7 +631,7 @@ class HubsService
                 throw new \Exception('NOT POSSIBLE');
             }
 
-            $info = Property::getPyhomeCommandInfo();
+            $info = PyhomeDaemon::getCommandInfo();
             $a = [];
             foreach (explode(';', $info) as $s) {
                 $c = explode(':', $s);
@@ -675,7 +675,7 @@ class HubsService
                 throw new \Exception('NOT POSSIBLE');
             }
 
-            $info = Property::getZigbeeoneCommandInfo();
+            $info = ZigbeeoneDaemon::getCommandInfo();
             $a = [];
             foreach (explode(';', $info) as $s) {
                 $c = explode(':', $s);
