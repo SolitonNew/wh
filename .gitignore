@@ -3,6 +3,7 @@
 Debug
 Release
 devices/din_master/firmware/config
+devices/pyhome/config.py
 *.atsuo
 *.atsln
 server/public/img/cams
