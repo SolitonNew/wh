@@ -281,7 +281,7 @@ class OrangePiDaemon extends BaseDaemon
      */
     private function scanNetworks(): void
     {
-        Property::setOrangePiCommandInfo('', true);
+        OrangePiDaemon::setCommandInfo('', true);
 
         $addresses = I2c::scan();
 
@@ -329,7 +329,7 @@ class OrangePiDaemon extends BaseDaemon
         $report[] = str_repeat('-', 35);
         $report[] = '';
 
-        Property::setOrangePiCommandInfo(implode("\n", $report));
-        Property::setOrangePiCommandInfo('END_SCAN');
+        OrangePiDaemon::setCommandInfo(implode("\n", $report));
+        OrangePiDaemon::setCommandInfo('END_SCAN');
     }
 }
