@@ -307,7 +307,6 @@ class PyhomeDaemon extends BaseDaemon
             $dp = 100 / $count;
             $packs = 0;
             $p = $dp;
-            Log::info($dp);
             for ($i = 0; $i < $count; $i++) {
                 $part = substr($file,$i * $bts, $bts);
                 $this->transmitData($controller->id, self::PACK_COMMAND, ['SET_CONFIG_FILE', $i + 1, $part]);
