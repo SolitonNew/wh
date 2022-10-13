@@ -2,12 +2,14 @@
 
 namespace App\Library\Daemons;
 
+use App\Library\Firmware\Pyhome;
 use App\Models\Hub;
 use App\Models\Property;
 use App\Models\OwHost;
 use App\Models\Device;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Log;
 
 class PyhomeDaemon extends BaseDaemon
 {
@@ -25,11 +27,6 @@ class PyhomeDaemon extends BaseDaemon
      * @var int
      */
     private int $waitCount = 0;
-
-    /**
-     * @var int
-     */
-    private int $inPackCount = 0;
 
     /**
      * @var string
@@ -54,12 +51,21 @@ class PyhomeDaemon extends BaseDaemon
     /**
      * @var array
      */
+    private array $firmwareStatuses = [];
+
+    /**
+     * @var array
+     */
     private array $devicesLoopChanges = [];
 
     /**
      *
      */
     const SLEEP_TIME = 50;
+
+    const PACK_SYNC = 1;
+    const PACK_COMMAND = 2;
+    const PACK_ERROR = 3;
 
     /**
      * @return void
@@ -80,10 +86,10 @@ class PyhomeDaemon extends BaseDaemon
 
         try {
             $baud = config('pyhome.baud');
-            exec("stty -F $port $baud cs8 cstopb -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
-            $this->portHandle = fopen($port, 'r+t');
+            exec("stty -F $port $baud cs8 cstopb parodd -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
+            $this->portHandle = fopen($port, 'r+b');
             stream_set_blocking($this->portHandle, false);
-            while (!feof($this->portHandle)) {
+            while ($this->portHandle) {
                 $loopErrors = false;
                 $command = static::getCommand(true);
 
@@ -99,11 +105,12 @@ class PyhomeDaemon extends BaseDaemon
                         break;
                     case 'FIRMWARE':
                         static::setCommandInfo('', true);
-                        $this->firmwareHex = false;
                         break;
                     default:
                         if (!$this->checkEvents(false, true)) return;
                 }
+
+                $this->firmwareStatuses = [];
 
                 foreach ($this->hubs as $controller) {
                     switch ($command) {
@@ -131,7 +138,6 @@ class PyhomeDaemon extends BaseDaemon
                         static::setCommandInfo('END_OW_SCAN');
                         break;
                     case 'CONFIG UPDATE':
-                        $this->firmwareHex = false;
                         break;
                     default:
 
@@ -142,6 +148,7 @@ class PyhomeDaemon extends BaseDaemon
         } catch (\Exception $ex) {
             $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
+            Log::error($s);
             $this->printLine($s);
         } finally {
             if ($this->portHandle) {
@@ -167,7 +174,8 @@ class PyhomeDaemon extends BaseDaemon
      */
     private function commandReset(Hub $controller): void
     {
-        //
+        $this->transmitData($controller->rom, self::PACK_COMMAND, ['REBOOT_CONTROLLER', '']);
+        $this->readPacks(250);
     }
 
     /**
@@ -178,7 +186,100 @@ class PyhomeDaemon extends BaseDaemon
      */
     private function commandOwSearch(Hub $controller): void
     {
-        //
+        $this->inRooms = [];
+        $this->transmitData($controller->rom, self::PACK_COMMAND, ['SCAN_ONE_WIRE', '']);
+        $this->readPacks(3000);
+        $this->transmitData($controller->rom, self::PACK_COMMAND, ['LOAD_ONE_WIRE_ROMS', '']);
+        $this->readPacks(500);
+
+        // We got the data. You need to combine them with what is already in
+        // the system and issue a report on the operation.
+
+        $new = 0;
+        $lost = 0;
+
+        $owOldList = OwHost::whereHubId($controller->id)->get();
+        // Finding a lost entries
+        foreach ($owOldList as $owOld) {
+            $find = false;
+            foreach ($this->inRooms as $rom) {
+                if ($owOld->rom_1 === $rom[0] &&
+                    $owOld->rom_2 === $rom[1] &&
+                    $owOld->rom_3 === $rom[2] &&
+                    $owOld->rom_4 === $rom[3] &&
+                    $owOld->rom_5 === $rom[4] &&
+                    $owOld->rom_6 === $rom[5] &&
+                    $owOld->rom_7 === $rom[6] &&
+                    $owOld->rom_8 === $rom[7]) {
+                    $find = true;
+                    break;
+                }
+            }
+            if (!$find) {
+                $lost++;
+
+                $owOld->lost = 1;
+            } else {
+                $owOld->lost = 0;
+            }
+            $owOld->save();
+        }
+
+        // Check found entries.
+        foreach ($this->inRooms as $rom) {
+            $find = false;
+            foreach ($owOldList as $owOld) {
+                if ($owOld->rom_1 === $rom[0] &&
+                    $owOld->rom_2 === $rom[1] &&
+                    $owOld->rom_3 === $rom[2] &&
+                    $owOld->rom_4 === $rom[3] &&
+                    $owOld->rom_5 === $rom[4] &&
+                    $owOld->rom_6 === $rom[5] &&
+                    $owOld->rom_7 === $rom[6] &&
+                    $owOld->rom_8 === $rom[7]) {
+                    $find = true;
+                    break;
+                }
+            }
+            if (!$find) {
+                $new++;
+                // Add to the list immediately.
+                $ow = new OwHost();
+                $ow->hub_id = $controller->id;
+                $ow->name = '';
+                $ow->comm = '';
+                $ow->rom_1 = $rom[0];
+                $ow->rom_2 = $rom[1];
+                $ow->rom_3 = $rom[2];
+                $ow->rom_4 = $rom[3];
+                $ow->rom_5 = $rom[4];
+                $ow->rom_6 = $rom[5];
+                $ow->rom_7 = $rom[6];
+                $ow->rom_8 = $rom[7];
+                $ow->save();
+            }
+        }
+
+        $report = [];
+        $s = "OW SEARCH. '$controller->name' [TOTAL: ".count($this->inRooms).", NEW: ".$new.", LOST: ".$lost."] ";
+        $this->printLine($s);
+        $report[] = $s;
+        $report[] = str_repeat('-', 35);
+
+        foreach ($this->inRooms as $rom) {
+            $a = [];
+            foreach ($rom as $b) {
+                $a[] = sprintf("x%'02X", $b);
+            }
+            $s = implode(' ', $a);
+            $this->printLine($s);
+            $report[] = $s;
+        }
+
+        $report[] = str_repeat('-', 35);
+        $report[] = '';
+
+        static::setCommandInfo(implode("\n", $report));
     }
 
     /**
@@ -189,9 +290,61 @@ class PyhomeDaemon extends BaseDaemon
      */
     public function commandConfigUpdate(Hub $controller): bool
     {
-        //
+        $ok = false;
 
-        return true;
+        // ------------------------------
+        $this->printProgress();
+        // ------------------------------
+
+        $firmware = new Pyhome();
+        $file = $firmware->getFile();
+
+        $bts = 1024;
+        $count = ceil(strlen($file) / $bts);
+
+        $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $count, False]);
+        if ($this->readPacks(1000)) {
+            $dp = 100 / $count;
+            $packs = 0;
+            $p = $dp;
+            Log::info($dp);
+            for ($i = 0; $i < $count; $i++) {
+                $part = substr($file,$i * $bts, $bts);
+                $this->transmitData($controller->id, self::PACK_COMMAND, ['SET_CONFIG_FILE', $i + 1, $part]);
+                $this->readPacks(1000);
+
+                $packs++;
+                $this->firmwareStatuses[$controller->id] = round($p);
+                // Pack statuses
+                $a = [];
+                foreach ($this->firmwareStatuses as $cId => $cPerc) {
+                    $a[] = $cId.':'.$cPerc;
+                }
+                static::setCommandInfo(implode(';', $a), true);
+                // ------------------------------
+                $this->printProgress(round($p));
+                // ------------------------------
+
+                $p += $dp;
+            }
+
+            $ok = true;
+        } else {
+            $ok = false;
+        }
+
+        sleep(1);
+
+        // Pack statuses
+        $this->firmwareStatuses[$controller->id] = $ok ? 'COMPLETE' : 'BAD';
+        $a = [];
+        foreach ($this->firmwareStatuses as $cId => $cPerc) {
+            $a[] = $cId.':'.$cPerc;
+        }
+
+        static::setCommandInfo(implode(';', $a), true);
+
+        return $ok;
     }
 
     /**
@@ -221,7 +374,7 @@ class PyhomeDaemon extends BaseDaemon
      */
     private function processingInServerCommands(): void
     {
-        if (count($this->inServerCommands) == 0) return ;
+        if (count($this->inServerCommands) == 0) return;
 
         try {
             for ($i = 0; $i < count($this->inServerCommands);) {
@@ -245,9 +398,9 @@ class PyhomeDaemon extends BaseDaemon
                             break;
                     }
                     if ($command) {
-                        $command .= "('".$string->data."'";
+                        $command .= "('" . $string->data . "'";
                         if (count($params)) {
-                            $command .= ', '.implode(', ', $params);
+                            $command .= ', ' . implode(', ', $params);
                         }
                         $command .= ');';
 
@@ -256,9 +409,9 @@ class PyhomeDaemon extends BaseDaemon
                 }
 
             }
-            $this->printLine('   SC   ['.implode(', ', $this->inServerCommands).']');
+            $this->printLine('   SC   [' . implode(', ', $this->inServerCommands) . ']');
         } catch (\Exception $ex) {
-            $this->printLine('Bad server command data. ['.implode(', ', $this->inServerCommands).']');
+            $this->printLine('Bad server command data. [' . implode(', ', $this->inServerCommands) . ']');
         }
     }
 
@@ -266,27 +419,77 @@ class PyhomeDaemon extends BaseDaemon
      * Reading the queue of the incoming packet.
      * An individual timeout value for receiving data is set.
      *
-     * @param int $utimeout  Allowable waiting time for new data
-     * @return int    -1 - no data received. >= 0 - received something
+     * @param int $utimeout Allowable waiting time for new data
+     * @return bool
      */
-    private function readPacks(int $utimeout = 250): int
+    private function readPacks(int $utimeout = 250): bool
     {
-        //
-        return -1;
+        $result = false;
+        $this->waitCount = 0;
+        while ($this->waitCount < ($utimeout / self::SLEEP_TIME)) {
+            $c = fgetc($this->portHandle);
+            if ($c !== false) {
+                $this->waitCount = 0;
+                $this->inBuffer .= $c;
+                while (($c = fgetc($this->portHandle)) !== false) {
+                    $this->inBuffer .= $c;
+                }
+
+                if ($this->processedInBuffer()) {
+                    $this->waitCount = 0; // Resets the timeout counter
+                    $result = true;
+                    if (strlen($this->inBuffer) == 0) break; // Let's not wait for the timeout. We read everything we needed.
+                }
+            } else {
+                usleep(self::SLEEP_TIME * 1000);
+                $this->waitCount++;
+            }
+        }
+        return $result;
     }
 
     /**
      * The main handler for all incoming packets.
      *
-     * @param integer $returnCmd  the code of the last command processed in this
-     *                            iteration. If there were no commands, there
-     *                            will be 0.
      * @return boolean  true -    at least one packet was processed. false - no
      *                            package was found.
      */
-    private function processedInBuffer(int &$returnCmd): bool
+    private function processedInBuffer(): bool
     {
-        return false;
+        if (!$this->inBuffer) return false;
+
+        $packs = explode(chr(0), $this->inBuffer);
+
+        $result = false;
+        for ($i = 0; $i < count($packs); $i++) {
+            $pack = json_decode($packs[0], true);
+            if (!$pack && $i == 0) return false;
+            $result = true;
+
+            if ($pack) {
+                array_shift($packs);
+
+                switch ($pack[2][0]) {
+                    case 'REBOOT_CONTROLLER':
+                        // REBOOT_CONTROLLER
+                        break;
+                    case 'SCAN_ONE_WIRE':
+                        // SCAN_ONE_WIRE
+                        break;
+                    case 'LOAD_ONE_WIRE_ROMS':
+                        $this->inRooms = $pack[2][1];
+                        break;
+                }
+            }
+        }
+
+        if (count($packs) > 0) {
+            $this->inBuffer = implode(chr(0), $packs);
+        } else {
+            $this->inBuffer = '';
+        }
+
+        return $result;
     }
 
     /**
@@ -311,5 +514,18 @@ class PyhomeDaemon extends BaseDaemon
             $data >>= 1;
         }
         return $crc;
+    }
+
+    /**
+     * @param int $controllerROM
+     * @param int $packType
+     * @param array $packData
+     * @return void
+     */
+    private function transmitData(int $controllerROM, int $packType, array $packData)
+    {
+        $pack = json_encode([$controllerROM, $packType, $packData]);
+        fwrite($this->portHandle, $pack);
+        fflush($this->portHandle);
     }
 }

@@ -114,8 +114,14 @@ class HubsController extends Controller
             case 'din':
                 $text = $this->service->dinHubsScan();
                 break;
+            case 'pyhome':
+                $text = $this->service->pyhomeHubsScan();
+                break;
             case 'orangepi':
                 $text = $this->service->orangepiHubScan();
+                break;
+            case 'zigbeeone':
+                $text = $this->service->zigbeeoneHubsScan();
                 break;
             default:
                 $text = 'It is impossible';

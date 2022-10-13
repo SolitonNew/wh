@@ -44,6 +44,44 @@ class HubsService
     /**
      * @return string
      */
+    public function pyhomeHubsScan(): string
+    {
+        PyhomeDaemon::setCommand('OW SEARCH');
+        usleep(500000);
+        $i = 0;
+        while ($i++ < 50) { // 5 sec
+            usleep(100000);
+            $text = PyhomeDaemon::getCommandInfo();
+            if ($t = strpos($text, 'END_OW_SCAN')) {
+                $text = substr($text, 0, $t);
+                break;
+            }
+        }
+        return $text;
+    }
+
+    /**
+     * @return string
+     */
+    public function zigbeeoneHubsScan(): string
+    {
+        ZigbeeoneDaemon::setCommand('OW SEARCH');
+        usleep(500000);
+        $i = 0;
+        while ($i++ < 50) { // 5 sec
+            usleep(100000);
+            $text = ZigbeeoneDaemon::getCommandInfo();
+            if ($t = strpos($text, 'END_OW_SCAN')) {
+                $text = substr($text, 0, $t);
+                break;
+            }
+        }
+        return $text;
+    }
+
+    /**
+     * @return string
+     */
     public function orangepiHubScan(): string
     {
         OrangePiDaemon::setCommand('SCAN');
@@ -526,10 +564,10 @@ class HubsService
         DinDaemon::setCommand('FIRMWARE');
         DinDaemon::setCommandInfo('', true);
 
-        PyhomeDaemon::setCommand('COMFIG UPDATE');
+        PyhomeDaemon::setCommand('CONFIG UPDATE');
         PyhomeDaemon::setCommandInfo('', true);
 
-        ZigbeeoneDaemon::setCommand('COMFIG UPDATE');
+        ZigbeeoneDaemon::setCommand('CONFIG UPDATE');
         ZigbeeoneDaemon::setCommandInfo('', true);
     }
 

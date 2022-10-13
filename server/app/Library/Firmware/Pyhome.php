@@ -39,10 +39,40 @@ class Pyhome
         // Reading all the necessary data
         $OwHostTyps = config('onewire.types');
         $owList = OwHost::orderBy('id', 'asc')->get();
-        $varList = DB::select("select v.*, c.rom controller_rom
+        $varList = DB::select("select v.*, c.rom controller_rom, '' rom
                                  from core_devices v, core_hubs c
                                 where v.hub_id = c.id
                                order by v.id");
+        foreach ($varList as $var) {
+            if ($var->typ == 'ow') {
+                foreach ($owList as $ow) {
+                    if ($ow->id == $var->host_id) {
+                        $a = [
+                            $ow->rom_1,
+                            $ow->rom_2,
+                            $ow->rom_3,
+                            $ow->rom_4,
+                            $ow->rom_5,
+                            $ow->rom_6,
+                            $ow->rom_7,
+                            $ow->rom_8,
+                        ];
+
+                        foreach ($a as &$v) {
+                            $c = strtoupper(dechex($v));
+                            if (strlen($c) == 2) {
+                                $v = 'x'.$c;
+                            } else {
+                                $v = 'x0'.$c;
+                            }
+                        }
+
+                        $var->rom = implode(', ', $a);
+                        break;
+                    }
+                }
+            }
+        }
         $scriptList = Script::orderBy('id', 'asc')->get();
         $eventList = DB::select('select e.device_id, GROUP_CONCAT(e.script_id) script_ids
                                    from core_device_events e
@@ -57,5 +87,13 @@ class Pyhome
         $fs->put($this->firmwarePath().'/config.py', View::make('admin.firmware.pyhome.config', [
             'varList' => $varList,
         ]));
+    }
+
+    /**
+     * @return false|string
+     */
+    public function getFile()
+    {
+        return file_get_contents($this->firmwarePath().'/config.py');
     }
 }

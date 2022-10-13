@@ -2,7 +2,7 @@
 
 return [
     'default_port' => '/dev/ttyUSB0',
-    'baud' => 9600,
+    'baud' => 57600,
     'channels' => [
         'X1',
         'X2',
