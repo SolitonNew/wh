@@ -61,9 +61,9 @@ class Pyhome
                         foreach ($a as &$v) {
                             $c = strtoupper(dechex($v));
                             if (strlen($c) == 2) {
-                                $v = 'x'.$c;
+                                $v = '0x'.$c;
                             } else {
-                                $v = 'x0'.$c;
+                                $v = '0x0'.$c;
                             }
                         }
 
