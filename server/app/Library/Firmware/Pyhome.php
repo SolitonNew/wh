@@ -59,7 +59,7 @@ class Pyhome
                         ];
 
                         foreach ($a as &$v) {
-                            $c = strtoupper(dechex($v));
+                            $c = strtolower(dechex($v));
                             if (strlen($c) == 2) {
                                 $v = '0x'.$c;
                             } else {
@@ -68,6 +68,10 @@ class Pyhome
                         }
 
                         $var->rom = implode(', ', $a);
+
+                        if ($ow->rom_1 == 0x28) {
+                            $var->channel = '';
+                        }
                         break;
                     }
                 }

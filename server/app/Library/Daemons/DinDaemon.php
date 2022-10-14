@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Log;
 
 class DinDaemon extends BaseDaemon
 {
+    use PrintLineUtilsTrait;
+
     /**
      *
      */
@@ -440,38 +442,16 @@ class DinDaemon extends BaseDaemon
             $errorText = $ex->getMessage();
         }
 
+        // Console output
         $this->printLine("[".parse_datetime(now())."] SYNC. '$controller->name': $stat");
         if ($stat == 'OK') {
-            foreach (array_chunk($vars_out, 15) as $key => $chunk) {
-                if ($key == 0) {
-                    $s = '   >>   ';
-                } else {
-                    $s = '        ';
-                }
-                $this->printLine($s.'['.implode(', ', $chunk).']');
-            }
-            if (!count($vars_out)) {
-                $this->printLine('   >>   []');
-            }
-
             $vars_in = [];
             foreach ($this->inVariables as $variable) {
                 $vars_in[] = "$variable->id: $variable->value";
             }
-
-            $this->printLine("   <<   [".implode(', ', $vars_in)."]");
+            $this->printSyncDevices($vars_out, $vars_in);
         } elseif ($stat == 'INIT') {
-            foreach (array_chunk($vars_out, 15) ?? [] as $key => $chunk) {
-                if ($key == 0) {
-                    $s = '   >>   ';
-                } else {
-                    $s = '        ';
-                }
-                $this->printLine($s.'['.implode(', ', $chunk).']');
-            }
-            if (!count($vars_out)) {
-                $this->printLine('   >>   []');
-            }
+            $this->printSyncDevices($vars_out, null);
         } elseif ($stat == 'ERROR') {
             $this->printLine($errorText);
         } elseif ($stat == 'IN BOOTLOADER') {
