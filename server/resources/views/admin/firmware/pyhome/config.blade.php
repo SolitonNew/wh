@@ -12,8 +12,13 @@ from variables import Variable
 @endforeach
 
 # Scripts
-#def script_49():
-#    pass
+@foreach($scriptList as $script)
+def script_{{ $script->id }}():
+    pass
+
+@endforeach
 
 # Links
-#LIVING_S.set_change_script(script_1)
+@foreach($eventList as $event)
+{{ $event->deviceName }}.set_change_script(script_{{ $event->script_id }})
+@endforeach

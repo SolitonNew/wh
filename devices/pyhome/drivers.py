@@ -26,7 +26,7 @@ class Termometr(DS18B20):
             self.is_started = True
             if res == 85:
                 return None
-            return res
+            return {'TEMP':res}
         else:
             return False
             

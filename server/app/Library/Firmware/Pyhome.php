@@ -68,28 +68,23 @@ class Pyhome
                         }
 
                         $var->rom = implode(', ', $a);
-
-                        if ($ow->rom_1 == 0x28) {
-                            $var->channel = '';
-                        }
                         break;
                     }
                 }
             }
         }
         $scriptList = Script::orderBy('id', 'asc')->get();
-        $eventList = DB::select('select e.device_id, GROUP_CONCAT(e.script_id) script_ids
-                                   from core_device_events e
-                                 group by e.device_id
+        $eventList = DB::select('select d.name deviceName, e.script_id
+                                   from core_device_events e, core_devices d
+                                  where e.device_id = d.id
                                  order by e.device_id');
-
-
-        $devices = [];
 
         // Pack to file config.py
         $fs = new \Illuminate\Filesystem\Filesystem();
         $fs->put($this->firmwarePath().'/config.py', View::make('admin.firmware.pyhome.config', [
             'varList' => $varList,
+            'scriptList' => $scriptList,
+            'eventList' => $eventList,
         ]));
     }
 
