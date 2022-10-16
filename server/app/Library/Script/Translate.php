@@ -2,8 +2,9 @@
 
 namespace App\Library\Script;
 
-use App\Library\Script\Translators\ITranslator;
+use App\Library\Script\Translators\TranslatorBase;
 use Illuminate\Support\Facades\Log;
+use phpDocumentor\Reflection\Types\Callable_;
 
 /**
  * Description of Translate
@@ -165,9 +166,9 @@ class Translate
     public function __construct(string $source)
     {
         $this->source = $source;
-        $this->split();
-        $this->prepareParts();
-        $this->parseParts();
+        $this->splitToParts();
+        $this->garbageDisposal();
+        $this->buildSourceTree();
     }
 
     /**
@@ -175,7 +176,7 @@ class Translate
      *
      * @return void
      */
-    protected function split(): void
+    protected function splitToParts(): void
     {
         // Separator for fragmenting source code.
         $delimeters = [
@@ -242,7 +243,7 @@ class Translate
     /**
      * @return void
      */
-    private function prepareParts(): void
+    private function garbageDisposal(): void
     {
         $result = [];
         for ($i = 0; $i < count($this->parts); $i++) {
@@ -289,7 +290,7 @@ class Translate
     /**
      * @return void
      */
-    private function parseParts(): void
+    private function buildSourceTree(): void
     {
         $this->parsedTree = [];
         $this->parsedFunctions = [];
@@ -302,8 +303,6 @@ class Translate
                 $this->parsedTree[] = $block;
             }
         }
-
-        //Log::info(print_r($this->partsTree, true));
     }
 
     /**
@@ -600,8 +599,26 @@ class Translate
             $args = $this->parseBlockBrackets($index, [','])->children;
         }
 
-        if (!in_array(count($args), $this->functions[$name]['args'])) {
-            throw new \Exception('Invalid number of arguments "'.count($args).'" for "'.$name.'"');
+        $argsCountOk = false;
+        $argsCount = count($args);
+        foreach ($this->functions[$name]['args'] as $a) {
+            if (is_numeric($a)) {
+                if ($a == $argsCount) {
+                    $argsCountOk = true;
+                    break;
+                }
+            } else {
+                $c = substr($a, 0, strlen($a) - 1);
+                if ($c == '') $c = 0;
+                if ($argsCount >= $c) {
+                    $argsCountOk = true;
+                    break;
+                }
+            }
+        }
+
+        if (!$argsCountOk) {
+            throw new \Exception('Invalid number of arguments "'.$argsCount.'" for "'.$name.'"');
         }
 
         // For reports
@@ -672,7 +689,7 @@ class Translate
      * @param array $report
      * @return string
      */
-    public function run(ITranslator $translator, array &$report = null): string
+    public function run(TranslatorBase $translator, array &$report = null): string
     {
         $data = (object)[
             'tree' =>  $this->parsedTree,

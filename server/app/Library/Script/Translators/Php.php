@@ -2,6 +2,7 @@
 
 namespace App\Library\Script\Translators;
 
+use App\Library\Script\ScriptStringManager;
 use App\Library\Script\Translate;
 use Illuminate\Support\Facades\Log;
 
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Log;
  *
  * @author soliton
  */
-class Php implements ITranslator
+class Php extends TranslatorBase
 {
     const TAB_STR = '    ';
 
@@ -38,10 +39,10 @@ class Php implements ITranslator
             2 => '$this->function_toggle',
         ],
         'speech' => [
-            '+' => '$this->function_speech',
+            '1+' => '$this->function_speech',
         ],
         'play' => [
-            '+' => '$this->function_play',
+            '1+' => '$this->function_play',
         ],
         'info' => [
             0 => '$this->function_info',
@@ -78,7 +79,7 @@ class Php implements ITranslator
     private int $tabs = 0;
 
     /**
-     * @param object $prepareData
+     * @param object $data
      * @return string
      */
     public function translate(object $data): string
@@ -123,7 +124,16 @@ class Php implements ITranslator
                     $result[] = $this->blockSub($item);
                     break;
                 case Translate::BLOCK_STRING:
-                    $result[] = "'".$item->value."'";
+                    if ($this->stringManager) {
+                        $key = $this->stringManager->getKeyByString($item->value);
+                        if ($key !== false) {
+                            $result[] = $key;
+                        } else {
+                            $result[] = "'".$item->value."'";
+                        }
+                    } else {
+                        $result[] = "'".$item->value."'";
+                    }
                     break;
                 case Translate::BLOCK_VAR:
                     $result[] = "$".$item->value;
@@ -220,11 +230,26 @@ class Php implements ITranslator
         $argsCount = count($item->args);
 
         $result = [];
-        if (isset($this->functions[$name]) && isset($this->functions[$name][$argsCount])) {
-            $result[] = $this->functions[$name][$argsCount];
+        if (isset($this->functions[$name])) {
+            foreach ($this->functions[$name] as $num => $func) {
+                if (is_numeric($num)) {
+                    if ($num == $argsCount) {
+                        $result[] = $func;
+                        break;
+                    }
+                } else {
+                    $c = substr($num, 0, strlen($num) - 1);
+                    if ($c == '') $c = 0;
+                    if ($argsCount >= $c) {
+                        $result[] = $func;
+                        break;
+                    }
+                }
+            }
         } else {
             $result[] = $name;
         }
+
         $result[] = $this->blockBrackets($item->args, ', ');
 
         return implode('', $result);
