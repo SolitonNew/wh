@@ -9,8 +9,8 @@ namespace App\Library\Script\Translators;
 interface ITranslator
 {
     /**
-     * @param object $prepareData
+     * @param object $data
      * @return string
      */
-     public function translate(object $prepareData): string;
+    public function translate(object $data): string;
 }

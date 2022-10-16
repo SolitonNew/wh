@@ -12,6 +12,19 @@ use Illuminate\Support\Facades\Log;
  */
 class Translate
 {
+    const BLOCK_IF = 'IF';
+    const BLOCK_SWITCH = 'SWITCH';
+    const BLOCK_CASE = 'CASE';
+    const BLOCK_BREAK = 'BREAK';
+    const BLOCK_DEFAULT = 'DEFAULT';
+    const BLOCK_BRACKETS = 'BRACKETS';
+    const BLOCK_SUB = 'BLOCK SUB';
+    const BLOCK_STRING = 'STRING';
+    const BLOCK_VAR = 'VAR';
+    const BLOCK_NUMBER = 'NUMBER';
+    const BLOCK_FUNC = 'FUNC';
+    const BLOCK_SYM = 'SYM';
+
     /**
      * Dictionary of syntactic constructions.
      *
@@ -24,7 +37,6 @@ class Translate
         'switch',
         'case',
         'default',
-        'for',
     ];
 
     /**
@@ -138,13 +150,24 @@ class Translate
     protected array $parts = [];
 
     /**
+     * @var array
+     */
+    protected array $parsedTree = [];
+
+    protected array $parsedFunctions = [];
+    protected array $parsedVariables = [];
+    protected array $parsedNumbers = [];
+    protected array $parsedStrings = [];
+
+    /**
      * @param string $source
      */
     public function __construct(string $source)
     {
         $this->source = $source;
         $this->split();
-        $this->prepare();
+        $this->prepareParts();
+        $this->parseParts();
     }
 
     /**
@@ -157,7 +180,6 @@ class Translate
         // Separator for fragmenting source code.
         $delimeters = [
             ' ' => [],
-            ';' => [],
             ',' => [],
             '"' => [],
             "'" => [],
@@ -217,187 +239,430 @@ class Translate
         }
     }
 
-    private array $prepared_functions = [];
-    private array $prepared_variables = [];
-    private array $prepared_numbers = [];
-    private array $prepared_strings = [];
-
     /**
-     * @param int $from_i
-     * @param int $func_args
-     * @return int
-     * @throws \Exception
+     * @return void
      */
-    private function prepareBlock(int $from_i, int &$func_args): int
+    private function prepareParts(): void
     {
-        $spaces = ['', ' ', chr(9), chr(10), chr(13)];
-
-        switch ($this->parts[$from_i]) {
-            case '(':
-                $to_char = ')';
-                $from_i++;
-                break;
-            case '{':
-                $to_char = '}';
-                $from_i++;
-                break;
-            default:
-                $to_char = chr(0);
-        }
-
-        $empty = 0;
-        for ($i = $from_i; $i < count($this->parts); $i++) {
-            $part = $this->parts[$i];
-            if (in_array($part, $spaces)) continue;
-
-            $empty++;
-
-            if ($part == $to_char) { // End block
-                if ($empty == 1) $func_args = 0;
-                return $i;
-            } else
-            if ($part == '{') { // New block
-                $args = 0;
-                $i = $this->prepareBlock($i, $args);
-            } else
-            if ($part == ',') {
-                $func_args++;
-            } else
-            if (preg_match('/[0-9]/', $part[0])) { // It is a number
-                $this->prepared_numbers[$part] = (isset($this->prepared_numbers[$part]) ? $this->prepared_numbers[$part] + 1 : 1);
-            } else
-            if (preg_match('/[a-zA-Z]/', $part[0])) { // It is a function, phrase or variable
-                if ($i < count($this->parts) - 1) {
-                    $is_keyword = false;
-                    for ($k = $i + 1; $k < count($this->parts); $k++) {
-                        if (in_array($this->parts[$k], $spaces)) continue;
-                        if ($this->parts[$k] == '(') { // It is a function or construction
-                            $args = 1;
-                            $new_i = $this->prepareBlock($k, $args);
-                            if (isset($this->functions[$part])) { // It is a function
-                                // Check the number of arguments
-                                if (strpos($this->functions[$part]['args'][0], '+') !== false) {
-                                    $minArgs = substr($this->functions[$part]['args'][0], 0, strlen($this->functions[$part]['args'][0]) - 1) ?: 0;
-                                    if ($minArgs > $args) {
-                                        throw new \Exception('Invalid number of arguments "'.$args.'" for "'.$part.'"');
-                                    }
-                                } else
-                                if (!in_array($args, $this->functions[$part]['args'])) {
-                                    throw new \Exception('Invalid number of arguments "'.$args.'" for "'.$part.'"');
-                                }
-
-                                // Replace the record string with an object
-                                // with extended information.
-                                $this->parts[$i] = (object)[
-                                    'type' => 'function',
-                                    'name' => $part,
-                                    'args' => $args,
-                                ];
-
-                                if (isset($this->prepared_functions[$part])) {
-                                    if (!in_array($args, $this->prepared_functions[$part])) {
-                                        $this->prepared_functions[$part][] = $args;
-                                    }
-                                } else {
-                                    $this->prepared_functions[$part][] = $args;
-                                }
-                            } else
-                            if (!in_array($part, $this->keywords)) {
-                                throw new \Exception('Unknown function "'.$part.'"');
-                            }
-                            $is_keyword = true;
-
-                            $i = $new_i;
-                        } else
-                        if (in_array($part, $this->keywords)) {
-                            $is_keyword = true;
+        $result = [];
+        for ($i = 0; $i < count($this->parts); $i++) {
+            $p = $this->parts[$i];
+            switch ($p) {
+                case '/*':
+                    $i++;
+                    for (; $i < count($this->parts); $i++) {
+                        if ($this->parts[$i] == '*/') {
+                            break;
                         }
-                        break;
                     }
-                    if (!$is_keyword) {
-                        $this->prepared_variables[$part] = (isset($this->prepared_variables[$part]) ? $this->prepared_variables[$part] + 1 : 1);
+                    break;
+                case '//':
+                    $i++;
+                    for (; $i < count($this->parts); $i++) {
+                        if ($this->parts[$i] == "\n") {
+                            break;
+                        }
                     }
-                } else {
-                    $this->prepared_variables[$part] = (isset($this->prepared_variables[$part]) ? $this->prepared_variables[$part] + 1 : 1);
-                }
+                    break;
+                case "'":
+                    $s = [$p];
+                    $i++;
+                    for (; $i < count($this->parts); $i++) {
+                        $s[] = $this->parts[$i];
+                        if ($this->parts[$i] == "'") {
+                            break;
+                        }
+                    }
+                    $result[] = implode('', $s);
+                    break;
+                case ' ':
+                case "\n":
+                    break;
+                default:
+                    $result[] = $p;
             }
         }
 
-        return count($this->parts) - 1;
+        $this->parts = $result;
     }
 
     /**
      * @return void
-     * @throws \Exception
      */
-    private function prepare(): void
+    private function parseParts(): void
     {
-        $this->prepared_functions = [];
-        $this->prepared_variables = [];
-        $this->prepared_numbers = [];
-        $this->prepared_strings = [];
+        $this->parsedTree = [];
+        $this->parsedFunctions = [];
+        $this->parsedVariables = [];
+        $this->parsedStrings = [];
+        $this->parsedNumbers = [];
 
-        if (count($this->parts) == 0) return ;
+        for ($index = 0; $index < count($this->parts); $index++) {
+            if ($block = $this->parseBlock($index)) {
+                $this->parsedTree[] = $block;
+            }
+        }
 
-        // Deleting comments
-        for ($i = 0; $i < count($this->parts); $i++) {
-            $part = $this->parts[$i];
-            if ($part == '/*') { // Start of a multi-line comment
-                $this->parts[$i] = '';
-                for ($k = $i + 1; $k < count($this->parts); $k++) {
-                    if ($this->parts[$k] == '*/') {
-                        $this->parts[$k] = '';
-                        $i = $k + 1;
-                        break;
+        //Log::info(print_r($this->partsTree, true));
+    }
+
+    /**
+     * @param int $index
+     * @param array $ignoreChars
+     * @return false|object
+     */
+    private function parseBlock(int &$index, array $ignoreChars = []): object|bool
+    {
+        if ($index < count($this->parts)) {
+            if (in_array($this->parts[$index], $ignoreChars)) {
+                return false;
+            }
+
+            switch ($this->parts[$index]) {
+                case 'if':
+                    return $this->parseBlockIf($index);
+                case 'switch':
+                    return $this->parseBlockSwitch($index);
+                case 'case':
+                    return $this->parseBlockCase($index);
+                case 'default':
+                    return $this->parseBlockDefault($index);
+                case 'break':
+                    return $this->parseBlockBreake($index);
+                case '(':
+                    return $this->parseBlockBrackets($index);
+                case '{':
+                    return $this->parseBlockSub($index);
+                default:
+                    $p = $this->parts[$index];
+                    if (isset($this->functions[$p])) { // Function
+                        return $this->parseBlockFunc($index);
+                    } else
+                    if ($p != '' && $p[0] == "'") {  // String or Device Name
+                        return $this->parseBlockString($index);
+                    } else
+                    if (preg_match('/^[A-Za-z]/', $p)) {  // Variable
+                        return $this->parseBlockVariable($index);
+                    } else
+                    if (preg_match('/[0-9]/', $p)) {  // Number constant
+                        return $this->parseBlockNumber($index);
+                    } else {
+                        return (object)[
+                            'typ' => self::BLOCK_SYM,
+                            'value' => $p,
+                        ];
                     }
-                    $this->parts[$k] = '';
-                }
-            } else
-            if ($part == '//') { // Comment in line
-                for ($k = $i; $k < count($this->parts); $k++) {
-                    if ($this->parts[$k] == chr(10) || $this->parts[$k] == chr(13)) {
-                        $i = $k;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param int $index
+     * @return object
+     */
+    private function parseBlockIf(int &$index): object
+    {
+        $condition = false;
+        $trueBlock = false;
+        $falseBlock = false;
+
+        $index++;
+        if ($index < count($this->parts) && $this->parts[$index] == '(') {
+            $condition = $this->parseBlockBrackets($index)->children;
+        }
+
+        $index++;
+        if ($index < count($this->parts) && $this->parts[$index] == '{') {
+            $trueBlock = $this->parseBlockSub($index)->children;
+        }
+
+        $index++;
+        if ($index < count($this->parts) && $this->parts[$index] == 'else') {
+            $index++;
+            if ($index < count($this->parts) && $this->parts[$index] == '{') {
+                $falseBlock = $this->parseBlockSub($index)->children;
+            }
+        } else {
+            $index--;
+        }
+
+        return (object)[
+            'typ' => self::BLOCK_IF,
+            'condition' => $condition,
+            'true' => $trueBlock,
+            'false' => $falseBlock,
+        ];
+    }
+
+    /**
+     * @param int $index
+     * @return object
+     */
+    private function parseBlockSwitch(int &$index): object
+    {
+        $index++;
+        $condition = $this->parseBlockBrackets($index)->children;
+        $children = [];
+
+        $index++;
+        if ($index < count($this->parts) && $this->parts[$index] == '{') {
+            $children = $this->parseBlockSub($index)->children;
+        }
+
+        return (object)[
+            'typ' => self::BLOCK_SWITCH,
+            'condition' => $condition,
+            'children' => $children,
+        ];
+    }
+
+    /**
+     * @param int $index
+     * @return object
+     */
+    private function parseBlockCase(int &$index): object
+    {
+        $index++;
+        $value = false;
+        $children = [];
+        $next = false;
+
+        if ($block = $this->parseBlock($index)) {
+            $value = $block;
+            $index++;
+            if ($index < count($this->parts) && $this->parts[$index] == ':') {
+                $next = true;
+            } else {
+                $index--;
+            }
+        }
+
+        if ($next) {
+            $index++;
+            for (; $index < count($this->parts); $index++) {
+                $block = $this->parseBlock($index, ['case', 'default']);
+
+                if ($block) {
+                    if ($block->typ == self::BLOCK_SYM && $block->value == '}') {
+                        $index--;
+                        break;
+                    } else
+                    if ($block->typ == self::BLOCK_BREAK) {
+                        $children[] = $block;
                         break;
                     } else {
-                        $this->parts[$k] = '';
+                        $children[] = $block;
                     }
+                } else
+                if ($index < count($this->parts) && ($this->parts[$index] == 'case' || $this->parts[$index] == 'default')) {
+                    $index--;
+                    break;
                 }
             }
         }
 
-        // Make strings
-        for ($i = 0; $i < count($this->parts); $i++) {
-            $part = $this->parts[$i];
-            if ($part == '"' || $part == "'") {
-                $from_char = $part;
-                $string = [$part];
-                for ($k = $i + 1; $k < count($this->parts); $k++) {
-                    $string[] = $this->parts[$k];
-                    if ($this->parts[$k] == $from_char) {
-                        $this->parts[$k] = '';
-                        $str = implode('', $string);
-                        $this->prepared_strings[$str] = (isset($this->prepared_strings[$str]) ? $this->prepared_strings[$str] + 1 : 1);
-                        $this->parts[$i] = $str;
-                        $i = $k + 1;
-                        break;
-                    }
-                    $this->parts[$k] = '';
-                }
-            }
-        }
-
-        $args = 0;
-        $this->prepareBlock(0, $args);
+        return (object)[
+            'typ' => self::BLOCK_CASE,
+            'value' => $value,
+            'children' => $children,
+        ];
     }
 
     /**
-     * @param array $parts
-     * @param array $strings
-     * @return void
+     * @param int $index
+     * @return object
      */
-    protected function prepareStrings(array &$parts, array &$strings): void
+    private function parseBlockDefault(int &$index): object
     {
-        //
+        $index++;
+        $children = [];
+        $next = false;
+
+        if ($index < count($this->parts) && $this->parts[$index] == ':') {
+            $next = true;
+        } else {
+            $index--;
+        }
+
+        if ($next) {
+            $index++;
+            for (; $index < count($this->parts); $index++) {
+                $block = $this->parseBlock($index, ['case', 'default']);
+                if ($block) {
+                    if ($block->typ == self::BLOCK_SYM && $block->value == '}') {
+                        $index--;
+                        break;
+                    } else
+                    if ($block->typ == self::BLOCK_BREAK) {
+                        $children[] = $block;
+                        break;
+                    } else {
+                        $children[] = $block;
+                    }
+                } else
+                if ($index < count($this->parts) && ($this->parts[$index] == 'case' || $this->parts[$index] == 'default')) {
+                    $index--;
+                    break;
+                }
+            }
+        }
+
+        return (object)[
+            'typ' => self::BLOCK_DEFAULT,
+            'children' => $children,
+        ];
+    }
+
+    /**
+     * @param $index
+     * @return object
+     */
+    private function parseBlockBreake(&$index): object
+    {
+        $index++;
+        if ($index < count($this->parts) && $this->parts[$index] != ';') {
+            $index--;
+        }
+
+        return (object)[
+            'typ' => self::BLOCK_BREAK,
+        ];
+    }
+
+    /**
+     * @param int $index
+     * @return object
+     */
+    private function parseBlockString(int &$index): object
+    {
+        $value = $this->parts[$index];
+
+        // For reports
+        $this->parsedStrings[$value] = ($this->parsedStrings[$value] ?? 0) + 1;
+        // -------------------
+
+        return (object)[
+            'typ' => self::BLOCK_STRING,
+            'value' => substr($value, 1, strlen($value) - 2),
+        ];
+    }
+
+    /**
+     * @param int $index
+     * @return object
+     */
+    private function parseBlockVariable(int &$index): object
+    {
+        $value = $this->parts[$index];
+
+        // For reports
+        $this->parsedVariables[$value] = ($this->parsedVariables[$value] ?? 0) + 1;
+        // -------------------
+
+        return (object)[
+            'typ' => self::BLOCK_VAR,
+            'value' => $value,
+        ];
+    }
+
+    /**
+     * @param int $index
+     * @return object
+     */
+    private function parseBlockNumber(int &$index): object
+    {
+        $value = $this->parts[$index];
+
+        // For reports
+        $this->parsedNumbers[$value] = ($this->parsedNumbers[$value] ?? 0) + 1;
+        // -------------------
+
+        return (object)[
+            'typ' => self::BLOCK_NUMBER,
+            'value' => $value,
+        ];
+    }
+
+    /**
+     * @param int $index
+     * @return object
+     */
+    private function parseBlockFunc(int &$index): object
+    {
+        $name = $this->parts[$index];
+
+        $index++;
+
+        $args = [];
+        if ($index < count($this->parts) && $this->parts[$index] == '(') {
+            $args = $this->parseBlockBrackets($index, [','])->children;
+        }
+
+        if (!in_array(count($args), $this->functions[$name]['args'])) {
+            throw new \Exception('Invalid number of arguments "'.count($args).'" for "'.$name.'"');
+        }
+
+        // For reports
+        $this->parsedFunctions[$name] = ($this->parsedFunctions[$name] ?? 0) + 1;
+        // -------------------
+        return (object)[
+            'typ' => self::BLOCK_FUNC,
+            'name' => $name,
+            'args' => $args,
+        ];
+    }
+
+    /**
+     * @param int $index
+     * @param array $ignoreChars
+     * @return object
+     */
+    private function parseBlockBrackets(int &$index, array $ignoreChars = []): object
+    {
+        $index++;
+
+        $children = [];
+        for (; $index < count($this->parts); $index++) {
+            if ($this->parts[$index] == ')') {
+                break;
+            }
+
+            if ($block = $this->parseBlock($index, $ignoreChars)) {
+                $children[] = $block;
+            }
+        }
+
+        return (object)[
+            'typ' => self::BLOCK_BRACKETS,
+            'children' => $children,
+        ];
+    }
+
+    /**
+     * @param int $index
+     * @return object
+     */
+    private function parseBlockSub(int &$index): object
+    {
+        $index++;
+
+        $children = [];
+        for (; $index < count($this->parts); $index++) {
+            if ($this->parts[$index] == '}') {
+                break;
+            }
+
+            if ($block = $this->parseBlock($index)) {
+                $children[] = $block;
+            }
+        }
+
+        return (object)[
+            'typ' => self::BLOCK_SUB,
+            'children' => $children,
+        ];
     }
 
     /**
@@ -409,30 +674,21 @@ class Translate
      */
     public function run(ITranslator $translator, array &$report = null): string
     {
-        $parts = [];
-        foreach ($this->parts as $part) {
-            if ($part !== '') {
-                $parts[] = $part;
-            }
-        }
-
-        $this->prepareStrings($parts, $this->prepared_strings);
-
-        $prepareData = (object)[
-            'parts' =>  $parts,
-            'functions' => $this->prepared_functions,
-            'variables' => $this->prepared_variables,
-            'strings' => $this->prepared_strings,
-            'numbers' => $this->prepared_numbers,
+        $data = (object)[
+            'tree' =>  $this->parsedTree,
+            'functions' => $this->parsedFunctions,
+            'variables' => $this->parsedVariables,
+            'strings' => $this->parsedStrings,
+            'numbers' => $this->parsedNumbers,
         ];
 
         if (is_array($report)) {
-            $report['functions'] = $this->prepared_functions;
-            $report['variables'] = $this->prepared_variables;
-            $report['strings'] = $this->prepared_strings;
-            $report['numbers'] = $this->prepared_numbers;
+            $report['functions'] = $this->parsedFunctions;
+            $report['variables'] = $this->parsedVariables;
+            $report['strings'] = $this->parsedStrings;
+            $report['numbers'] = $this->parsedNumbers;
         }
 
-        return $translator->translate($prepareData);
+        return $translator->translate($data);
     }
 }

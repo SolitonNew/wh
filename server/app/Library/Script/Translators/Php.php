@@ -2,6 +2,9 @@
 
 namespace App\Library\Script\Translators;
 
+use App\Library\Script\Translate;
+use Illuminate\Support\Facades\Log;
+
 /**
  * Description of Php$prepareData$prepareData$prepareData
  *
@@ -9,6 +12,8 @@ namespace App\Library\Script\Translators;
  */
 class Php implements ITranslator
 {
+    const TAB_STR = '    ';
+
     /**
      * @var array
      */
@@ -68,31 +73,189 @@ class Php implements ITranslator
     ];
 
     /**
+     * @var int
+     */
+    private int $tabs = 0;
+
+    /**
      * @param object $prepareData
      * @return string
      */
-    public function translate(object $prepareData): string
+    public function translate(object $data): string
     {
-        $parts = $prepareData->parts;
-        $variables = $prepareData->variables;
+        $this->tabs = 0;
+        return $this->makeLevel($data->tree);
+    }
 
-        for ($i = 0; $i < count($parts); $i++) {
-            if (is_object($parts[$i])) {
-                if (isset($this->functions[$parts[$i]->name])) {
-                    if (isset($this->functions[$parts[$i]->name]['+'])) {
-                        $parts[$i] = $this->functions[$parts[$i]->name]['+'];
+    /**
+     * @param array $level
+     * @param $delimiter
+     * @return string
+     */
+    private function makeLevel(array &$level, $delimiter = ''): string
+    {
+        $result = [];
+
+        foreach ($level as $item) {
+            switch ($item->typ) {
+                case Translate::BLOCK_IF:
+                    $result[] = $this->blockIf($item);
+                    break;
+                case Translate::BLOCK_SWITCH:
+                    $result[] = $this->blockSwitch($item);
+                    break;
+                case Translate::BLOCK_CASE:
+                    $result[] = $this->blockCase($item);
+                    break;
+                case Translate::BLOCK_DEFAULT:
+                    $result[] = $this->blockDefault($item);
+                    break;
+                case Translate::BLOCK_BREAK:
+                    $result[] = 'break;'."\n";
+                    break;
+                case Translate::BLOCK_FUNC:
+                    $result[] = $this->blockFunc($item);
+                    break;
+                case Translate::BLOCK_BRACKETS:
+                    $result[] = $this->blockBrackets($item);
+                    break;
+                case Translate::BLOCK_SUB:
+                    $result[] = $this->blockSub($item);
+                    break;
+                case Translate::BLOCK_STRING:
+                    $result[] = "'".$item->value."'";
+                    break;
+                case Translate::BLOCK_VAR:
+                    $result[] = "$".$item->value;
+                    break;
+                case Translate::BLOCK_NUMBER:
+                    $result[] = $item->value;
+                    break;
+                case Translate::BLOCK_SYM:
+                    if ($item->value == ';') {
+                        $result[] = ";\n";
                     } else {
-                        $parts[$i] = $this->functions[$parts[$i]->name][$parts[$i]->args];
+                        $result[] = ' '.$item->value.' ';
                     }
-                } else {
-                    $parts[$i] = $parts[$i]->name;
-                }
-            } else
-            if (isset($variables[$parts[$i]])) {
-                $parts[$i] = '$'.$parts[$i];
+                    break;
             }
         }
 
-        return implode('', $parts);
+        $resultText = implode($delimiter, $result);
+        if (!str_contains($resultText, "\n")) {
+            return $resultText;
+        }
+        $resultList = [];
+        foreach (explode("\n", $resultText) as $line) {
+            if (trim($line)) {
+                $resultList[] = ($this->tabs ? self::TAB_STR : '').$line;
+            }
+        }
+        return implode("\n", $resultList);
+    }
+
+    /**
+     * @param $item
+     * @return string
+     */
+    private function blockIf(&$item): string
+    {
+        $block = 'if '.$this->blockBrackets($item->condition, '').' '
+                    .$this->blockSub($item->true);
+        if ($item->false) {
+            $block .= ' else '.
+                        $this->blockSub($item->false);
+        }
+        return $block."\n";
+    }
+
+    /**
+     * @param $item
+     * @return string
+     */
+    private function blockSwitch(&$item): string
+    {
+        $result = [];
+        $result[] = 'switch '.$this->blockBrackets($item->condition).' '
+                    .$this->blockSub($item->children);
+        return implode("\n", $result);
+    }
+
+    /**
+     * @param $item
+     * @return string
+     */
+    private function blockCase(&$item): string
+    {
+        $caseValue = [$item->value];
+        $result = [];
+        $result[] = "\n".'case '.$this->makeLevel($caseValue).':';
+        $this->tabs++;
+        $result[] = $this->makeLevel($item->children);
+        $this->tabs--;
+        return implode("\n", $result);
+    }
+
+    /**
+     * @param $item
+     * @return string
+     */
+    private function blockDefault(&$item): string
+    {
+        $result = [];
+        $result[] = "\n".'default:';
+        $this->tabs++;
+        $result[] = $this->makeLevel($item->children);
+        $this->tabs--;
+        return implode("\n", $result);
+    }
+
+    /**
+     * @param $item
+     * @return string
+     */
+    private function blockFunc(&$item): string
+    {
+        $name = $item->name;
+        $argsCount = count($item->args);
+
+        $result = [];
+        if (isset($this->functions[$name]) && isset($this->functions[$name][$argsCount])) {
+            $result[] = $this->functions[$name][$argsCount];
+        } else {
+            $result[] = $name;
+        }
+        $result[] = $this->blockBrackets($item->args, ', ');
+
+        return implode('', $result);
+    }
+
+    /**
+     * @param $list
+     * @param $delimiter
+     * @return string
+     */
+    private function blockBrackets(&$list, $delimiter = ''): string
+    {
+        $result = [];
+        $result[] = '(';
+        $result[] = $this->makeLevel($list, $delimiter);
+        $result[] = ')';
+        return implode('', $result);
+    }
+
+    /**
+     * @param $list
+     * @return string
+     */
+    private function blockSub(&$list): string
+    {
+        $result = [];
+        $result[] = '{';
+        $this->tabs++;
+        $result[] = $this->makeLevel($list);
+        $result[] = '}';
+        $this->tabs--;
+        return implode("\n", $result);
     }
 }
