@@ -25,6 +25,7 @@ class Translate
     const BLOCK_NUMBER = 'NUMBER';
     const BLOCK_FUNC = 'FUNC';
     const BLOCK_SYM = 'SYM';
+    const BLOCK_NOT = 'NOT';
 
     /**
      * Dictionary of syntactic constructions.
@@ -332,6 +333,8 @@ class Translate
                     return $this->parseBlockBrackets($index);
                 case '{':
                     return $this->parseBlockSub($index);
+                case '!':
+                    return $this->parseBlockNot($index);
                 default:
                     $p = $this->parts[$index];
                     if (isset($this->functions[$p])) { // Function
@@ -555,6 +558,15 @@ class Translate
     private function parseBlockVariable(int &$index): object
     {
         $value = $this->parts[$index];
+        $action = '';
+        $actionsSym = ['++', '--'];
+
+        $index++;
+        if ($index < count($this->parts) && in_array($this->parts[$index], $actionsSym)) {
+            $action = $this->parts[$index];
+        } else {
+            $index--;
+        }
 
         // For reports
         $this->parsedVariables[$value] = ($this->parsedVariables[$value] ?? 0) + 1;
@@ -563,6 +575,7 @@ class Translate
         return (object)[
             'typ' => self::BLOCK_VAR,
             'value' => $value,
+            'action' => $action,
         ];
     }
 
@@ -679,6 +692,15 @@ class Translate
         return (object)[
             'typ' => self::BLOCK_SUB,
             'children' => $children,
+        ];
+    }
+
+    private function parseBlockNot(int &$index): object
+    {
+        $index++;
+        return (object)[
+            'typ' => self::BLOCK_NOT,
+            'target' => $this->parseBlock($index),
         ];
     }
 

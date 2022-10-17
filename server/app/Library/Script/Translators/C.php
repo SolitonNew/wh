@@ -153,7 +153,7 @@ class C extends TranslatorBase
                     }
                     break;
                 case Translate::BLOCK_VAR:
-                    $result[] = $item->value;
+                    $result[] = $item->value.$item->action;
                     break;
                 case Translate::BLOCK_NUMBER:
                     $result[] = $item->value;
@@ -164,6 +164,9 @@ class C extends TranslatorBase
                     } else {
                         $result[] = ' '.$item->value.' ';
                     }
+                    break;
+                case Translate::BLOCK_NOT:
+                    $result[] = $this->blockNot($item);
                     break;
             }
         }
@@ -303,5 +306,15 @@ class C extends TranslatorBase
         $result[] = '}';
         $this->tabs--;
         return implode("\n", $result);
+    }
+
+    /**
+     * @param $item
+     * @return string
+     */
+    private function blockNot(&$item): string
+    {
+        $target = [$item->target];
+        return '!'.$this->makeLevel($target);
     }
 }

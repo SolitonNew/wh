@@ -67,6 +67,16 @@ class Python extends TranslatorBase
         ],
     ];
 
+    private array $convertSym = [
+        '!' => 'not',
+        '++' => ' += 1',
+        '--' => ' -= 1',
+        '||' => 'or',
+        '&&' => 'and',
+        'true' => 'True',
+        'false' => 'False',
+    ];
+
     /**
      * @var int
      */
@@ -137,7 +147,11 @@ class Python extends TranslatorBase
                     }
                     break;
                 case Translate::BLOCK_VAR:
-                    $result[] = $item->value;
+                    if (isset($this->convertSym[$item->action])) {
+                        $result[] = $item->value.$this->convertSym[$item->action];
+                    } else {
+                        $result[] = $item->value.$item->action;
+                    }
                     break;
                 case Translate::BLOCK_NUMBER:
                     $result[] = $item->value;
@@ -146,8 +160,15 @@ class Python extends TranslatorBase
                     if ($item->value == ';') {
                         $result[] = "\n";
                     } else {
-                        $result[] = ' '.$item->value.' ';
+                        if(isset($this->convertSym[$item->value])) {
+                            $result[] = ' '.$this->convertSym[$item->value].' ';
+                        } else {
+                            $result[] = ' '.$item->value.' ';
+                        }
                     }
+                    break;
+                case Translate::BLOCK_NOT:
+                    $result[] = $this->blockNot($item);
                     break;
             }
         }
@@ -332,5 +353,15 @@ class Python extends TranslatorBase
             $this->tabs--;
         }
         return implode("\n", $result) ?: 'pass';
+    }
+
+    /**
+     * @param $item
+     * @return string
+     */
+    private function blockNot(&$item): string
+    {
+        $target = [$item->target];
+        return 'not '.$this->makeLevel($target);
     }
 }
