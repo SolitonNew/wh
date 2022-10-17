@@ -30,7 +30,8 @@
             @foreach($hubs as $hub)
                 <div class="row mt-2 mb-2">
                     <div class="col-sm-5 d-flex full-width justify-content-end">{{ $hub->name }}</div>
-                    <div class="col-sm-7 d-flex font-weight-bold align-items-center hub_item" data-typ="{{ $hub->typ }}">
+                    <div class="col-sm-7 d-flex font-weight-bold align-items-center justify-content-between hub_item"
+                         data-typ="{{ $hub->typ }}" data-id="{{ $hub->id }}">
                         <div class="progress" style="width: 100%; height: 0.75rem;">
                             <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
                         </div>
@@ -104,7 +105,15 @@
                 url: '{{ route("admin.hubs-config-wizard-make", ["typ" => ""]) }}/' + item,
                 success: function (data) {
                     if (data == 'OK') {
-                        $('#configWizardPage_make .hub_item[data-typ="' + item + '"]').text('OK');
+                        $('#configWizardPage_make .hub_item[data-typ="' + item + '"]').each(function () {
+                            let id = $(this).data('id');
+                            let html = 'OK';
+                            if (item == 'pyhome') {
+                                let url = "{{ route('admin.hubs-config-wizard-download', ['id' => '']) }}/" + id;
+                                html += '<a href="' + url + '" class="font-weight-normal" target="_blank">Download</a>';
+                            }
+                            $(this).html(html);
+                        });
                     } else {
                         $('#configWizardPage_make .hub_item[data-typ="' + item + '"]').text('ERROR');
                         errors.push(data);

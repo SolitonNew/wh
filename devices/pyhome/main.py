@@ -20,7 +20,7 @@ PACK_ERROR = 3
 # Bus Initialization
 ow = OneWire('Y12')
 DS18B20(ow).start_measure()
-rs485 = RS485(3, 'Y11', dev_id=2) # 1-RIGHT, 2-LEFT
+rs485 = RS485(3, 'Y11', dev_id=1) # 1-RIGHT, 2-LEFT
 
 # We create drivers for the OneWire network variables and pass an OW instance to them.
 variables.set_variable_drivers(ow, rs485.dev_id)
