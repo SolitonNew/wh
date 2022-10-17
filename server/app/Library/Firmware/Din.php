@@ -2,13 +2,15 @@
 
 namespace App\Library\Firmware;
 
+use App\Library\Daemons\DinDaemon;
+use App\Library\Script\ScriptStringManager;
 use App\Models\OwHost;
 use App\Models\Script;
-use App\Library\Script\TranslateDB;
+use App\Library\Script\Translate;
 use App\Library\Script\Translators\C as TranslateC;
 use App\Models\Property;
 use Illuminate\Support\Facades\View;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Description of Din
@@ -61,9 +63,8 @@ class Din
      */
     public function __construct()
     {
-        $settings = Property::getDinSettings();
-        $this->mmcu = $settings->mmcu;
-        $this->spm_pagesize = config('din.'.$settings->mmcu.'.spm_pagesize');
+        $this->mmcu = DinDaemon::getSettings('MMCU');
+        $this->spm_pagesize = config('din.mmcu_list.'.$this->mmcu.'.spm_pagesize');
     }
 
     /**
@@ -142,15 +143,16 @@ class Din
             }
         }
 
-        $variableNames = [];
-        foreach ($varList as $row) {
-            $variableNames[] = $row->name;
+        $specialList = [];
+        for ($i = 0; $i < count($varList); $i++) {
+            $v = $varList[$i];
+            $specialList[$v->name] = $i;
         }
 
         foreach ($scriptList as &$row) {
-            $translator = new TranslateDB($row->data);
+            $translator = new Translate($row->data);
             $report = [];
-            $row->data_to_c = $translator->run(new TranslateC($variableNames), $report);
+            $row->data_to_c = $translator->run(new TranslateC(new ScriptStringManager($specialList)), $report);
         }
 
         // Setting indexes for variables in events

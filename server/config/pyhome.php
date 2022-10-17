@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'baud' => 9600,
+    'default_port' => '/dev/ttyUSB0',
+    'baud' => 57600,
     'channels' => [
         'X1',
         'X2',

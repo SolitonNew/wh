@@ -25,7 +25,7 @@ EXAMPLES:
 >>> ow = OneWire('X4')
 >>> ds = DS18B20(ow)
 >>> ds.start_measure()
->>> roms = ds.search()
+>>> roms = ow.search()
 >>> pyb.delay(750)
 >>> temps = []
 >>> for rom in roms:

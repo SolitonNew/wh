@@ -2,16 +2,10 @@
 
 namespace App\Library\Script\Translators;
 
-use App\Library\Script\ScriptStringManager;
 use App\Library\Script\Translate;
 use Illuminate\Support\Facades\Log;
 
-/**
- * Description of Php$prepareData$prepareData$prepareData
- *
- * @author soliton
- */
-class Php extends TranslatorBase
+class Python extends TranslatorBase
 {
     const TAB_STR = '    ';
 
@@ -20,56 +14,56 @@ class Php extends TranslatorBase
      */
     private array $functions = [
         'get' => [
-            1 => '$this->function_get',
+            1 => 'commands.command_get',
         ],
         'set' => [
-            2 => '$this->function_set',
-            3 => '$this->function_set',
+            2 => 'commands.command_set',
+            3 => 'commands.command_set',
         ],
         'on' => [
-            1 => '$this->function_on',
-            2 => '$this->function_on',
+            1 => 'commands.command_on',
+            2 => 'commands.command_on',
         ],
         'off' => [
-            1 => '$this->function_off',
-            2 => '$this->function_off',
+            1 => 'commands.command_off',
+            2 => 'commands.command_off',
         ],
         'toggle' => [
-            1 => '$this->function_toggle',
-            2 => '$this->function_toggle',
+            1 => 'commands.command_toggle',
+            2 => 'commands.command_toggle',
         ],
         'speech' => [
-            '1+' => '$this->function_speech',
+            '1+' => 'commands.command_speech',
         ],
         'play' => [
-            '1+' => '$this->function_play',
+            '1+' => 'commands.command_play',
         ],
         'info' => [
-            0 => '$this->function_info',
+            0 => 'commands.command_info',
         ],
         'print_i' => [
-            1 => '$this->function_print',
+            1 => 'commands.command_print',
         ],
         'print_f' => [
-            1 => '$this->function_print',
+            1 => 'commands.command_print',
         ],
         'print_s' => [
-            1 => '$this->function_print',
+            1 => 'commands.command_print',
         ],
         'abs_i' => [
-            1 => '$this->function_abs_i',
+            1 => 'commands.command_abs',
         ],
         'abs_f' => [
-            1 => '$this->function_abs_f',
+            1 => 'commands.command_abs',
         ],
         'round' => [
-            1 => '$this->function_round',
+            1 => 'commands.command_round',
         ],
         'ceil' => [
-            1 => '$this->function_ceil',
+            1 => 'commands.command_ceil',
         ],
         'floor' => [
-            1 => '$this->function_floor',
+            1 => 'commands.command_floor',
         ],
     ];
 
@@ -78,6 +72,11 @@ class Php extends TranslatorBase
      */
     private int $tabs = 0;
 
+    private int $labelSiquence = 1;
+    private array $breakesStack = [];
+
+    //private array $
+
     /**
      * @param object $data
      * @return string
@@ -85,7 +84,9 @@ class Php extends TranslatorBase
     public function translate(object $data): string
     {
         $this->tabs = 0;
-        return $this->makeLevel($data->tree);
+        $this->labelSiquence = 1;
+        $this->breakesStack = [];
+        return $this->makeLevel($data->tree) ?: 'pass';
     }
 
     /**
@@ -112,7 +113,7 @@ class Php extends TranslatorBase
                     $result[] = $this->blockDefault($item);
                     break;
                 case Translate::BLOCK_BREAK:
-                    $result[] = 'break;'."\n";
+                    $result[] = $this->blockBreake($item);
                     break;
                 case Translate::BLOCK_FUNC:
                     $result[] = $this->blockFunc($item);
@@ -136,14 +137,14 @@ class Php extends TranslatorBase
                     }
                     break;
                 case Translate::BLOCK_VAR:
-                    $result[] = "$".$item->value;
+                    $result[] = $item->value;
                     break;
                 case Translate::BLOCK_NUMBER:
                     $result[] = $item->value;
                     break;
                 case Translate::BLOCK_SYM:
                     if ($item->value == ';') {
-                        $result[] = ";\n";
+                        $result[] = "\n";
                     } else {
                         $result[] = ' '.$item->value.' ';
                     }
@@ -170,11 +171,16 @@ class Php extends TranslatorBase
      */
     private function blockIf(&$item): string
     {
-        $block = 'if '.$this->blockBrackets($item->condition, '').' '
-                    .$this->blockSub($item->true);
+        $block = 'if '.$this->blockBrackets($item->condition, '');
+        if (count($item->true)) {
+            $block .= $this->blockSub($item->true);
+        } else {
+            $block .= ":\n".self::TAB_STR."pass";
+        }
+
         if ($item->false) {
-            $block .= ' else '.
-                        $this->blockSub($item->false);
+            $block .= "\n".'else'.
+                $this->blockSub($item->false);
         }
         return $block."\n";
     }
@@ -185,9 +191,41 @@ class Php extends TranslatorBase
      */
     private function blockSwitch(&$item): string
     {
+        $switchID = $this->labelSiquence++;
+
         $result = [];
-        $result[] = 'switch '.$this->blockBrackets($item->condition).' '
-                    .$this->blockSub($item->children);
+        $result[] = '# Start Switch Block';
+        $result[] = 'switch_condition_'.$switchID.' = '.$this->blockBrackets($item->condition, '', false);
+
+        $labels = [];
+        $this->breakesStack[] = 'breake_'.$switchID;
+        foreach ($item->children as $child) {
+            $labelName = 'label_'.($this->labelSiquence++);
+            $labels[] = $labelName;
+            switch ($child->typ) {
+                case Translate::BLOCK_CASE:
+                    $caseValue = [$child->value];
+                    $result[] = 'if (switch_condition_'.$switchID.' == '.$this->makeLevel($caseValue).'):';
+                    $result[] = self::TAB_STR.'goto '.$labelName;
+                    break;
+                case Translate::BLOCK_DEFAULT:
+                    break;
+            }
+        }
+
+        $i = 0;
+        foreach ($item->children as $child) {
+            $result[] = $labels[$i].':';
+            $result[] = $this->makeLevel($child->children);
+            $i++;
+        }
+
+        if (count($this->breakesStack)) {
+            $result[] = array_pop($this->breakesStack).':';
+        }
+
+        $result[] = '# End Switch Block';
+
         return implode("\n", $result);
     }
 
@@ -197,12 +235,8 @@ class Php extends TranslatorBase
      */
     private function blockCase(&$item): string
     {
-        $caseValue = [$item->value];
         $result = [];
-        $result[] = "\n".'case '.$this->makeLevel($caseValue).':';
-        $this->tabs++;
         $result[] = $this->makeLevel($item->children);
-        $this->tabs--;
         return implode("\n", $result);
     }
 
@@ -213,11 +247,18 @@ class Php extends TranslatorBase
     private function blockDefault(&$item): string
     {
         $result = [];
-        $result[] = "\n".'default:';
-        $this->tabs++;
         $result[] = $this->makeLevel($item->children);
-        $this->tabs--;
         return implode("\n", $result);
+    }
+
+    /**
+     * @param $tem
+     * @return string
+     */
+    private function blockBreake(&$tem): string
+    {
+        if (count($this->breakesStack) == 0) return '';
+        return 'goto '.$this->breakesStack[count($this->breakesStack) - 1].':';
     }
 
     /**
@@ -258,29 +299,38 @@ class Php extends TranslatorBase
     /**
      * @param $list
      * @param $delimiter
+     * @param $withBrackets
      * @return string
      */
-    private function blockBrackets(&$list, $delimiter = ''): string
+    private function blockBrackets(&$list, $delimiter = '', $withBrackets = true): string
     {
         $result = [];
-        $result[] = '(';
+        if ($withBrackets) {
+            $result[] = '(';
+        }
         $result[] = $this->makeLevel($list, $delimiter);
-        $result[] = ')';
+        if ($withBrackets) {
+            $result[] = ')';
+        }
         return implode('', $result);
     }
 
     /**
      * @param $list
+     * @param $withTabs
      * @return string
      */
-    private function blockSub(&$list): string
+    private function blockSub(&$list, $withTabs = true): string
     {
         $result = [];
-        $result[] = '{';
-        $this->tabs++;
+        if ($withTabs) {
+            $result[] = ':';
+            $this->tabs++;
+        }
         $result[] = $this->makeLevel($list);
-        $result[] = '}';
-        $this->tabs--;
-        return implode("\n", $result);
+        if ($withTabs) {
+            $this->tabs--;
+        }
+        return implode("\n", $result) ?: 'pass';
     }
 }

@@ -231,9 +231,9 @@ class Hub extends AffectsFirmwareModel
             'pyhome',
             'ow',
         ],
-        'zigbeeone' => [
+        /*'zigbeeone' => [
             'variable',
-        ],
+        ],*/
     ];
 
     /**
@@ -254,7 +254,9 @@ class Hub extends AffectsFirmwareModel
             if ($hub) {
                 $hubsWithNetworks = [
                     'din',
+                    'pyhome',
                     'orangepi',
+                    'zigbeeone',
                 ];
 
                 self::$withNetworks = in_array($hub->typ, $hubsWithNetworks);

@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Lang;
 class ExtApiDaemon extends BaseDaemon
 {
     /**
+     *
+     */
+    public const PROPERTY_NAME = 'EXT_API';
+
+    /**
      * @var Collection|array
      */
     private Collection|array $providers = [];

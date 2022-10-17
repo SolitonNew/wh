@@ -2,6 +2,9 @@
 
 namespace App\Library\Script;
 
+use App\Models\Device;
+use Illuminate\Support\Facades\Log;
+
 /**
  * Description of PhpExecute
  *
@@ -38,7 +41,7 @@ class PhpExecute
      */
     public function __construct(string $source)
     {
-        $this->translator = new TranslateDB($source);
+        $this->translator = new Translate($source);
     }
 
     /**
@@ -55,7 +58,11 @@ class PhpExecute
     {
         try {
             $this->fake = $fake;
-            $code = $this->translator->run(new Translators\Php(), $report);
+            $specialList = [];
+            foreach (Device::get() as $dev) {
+                $specialList[$dev->name] = false;
+            }
+            $code = $this->translator->run(new Translators\Php(new ScriptStringManager($specialList)), $report);
             eval($code);
         } catch (\ParseError $ex) {
             $this->printLine($ex->getMessage());
