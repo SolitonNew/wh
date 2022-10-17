@@ -3,14 +3,8 @@
 namespace App\Library\Script\Translators;
 
 use App\Library\Script\Translate;
-use Illuminate\Support\Facades\Log;
 
-/**
- * Description of C
- *
- * @author soliton
- */
-class C extends TranslatorBase
+class Python extends TranslatorBase
 {
     const TAB_STR = '    ';
 
@@ -23,19 +17,19 @@ class C extends TranslatorBase
         ],
         'set' => [
             2 => 'command_set',
-            3 => 'command_set_later',
+            3 => 'command_set',
         ],
         'on' => [
             1 => 'command_on',
-            2 => 'command_on_later',
+            2 => 'command_on',
         ],
         'off' => [
             1 => 'command_off',
-            2 => 'command_off_later',
+            2 => 'command_off',
         ],
         'toggle' => [
             1 => 'command_toggle',
-            2 => 'command_toggle_later',
+            2 => 'command_toggle',
         ],
         'speech' => [
             '1+' => 'command_speech',
@@ -47,13 +41,13 @@ class C extends TranslatorBase
             0 => 'command_info',
         ],
         'print_i' => [
-            1 => 'command_print_i',
+            1 => 'command_print',
         ],
         'print_f' => [
-            1 => 'command_print_f',
+            1 => 'command_print',
         ],
         'print_s' => [
-            1 => 'command_print_s',
+            1 => 'command_print',
         ],
         'abs_i' => [
             1 => 'command_abs_i',
@@ -83,26 +77,8 @@ class C extends TranslatorBase
      */
     public function translate(object $data): string
     {
-        $result = [];
-
         $this->tabs = 0;
-        $source = $this->makeLevel($data->tree);
-
-        $variables = [];
-        foreach ($data->variables as $var => $v) {
-            $variables[] = 'int '.$var.";\n";
-        }
-
-        $variablesSource = implode("\n", $variables);
-        if ($variablesSource) {
-            $result[] = $variablesSource;
-        }
-
-        if ($source) {
-            $result[] = $source;
-        }
-
-        return implode("\n", $result);
+        return $this->makeLevel($data->tree);
     }
 
     /**
@@ -160,7 +136,7 @@ class C extends TranslatorBase
                     break;
                 case Translate::BLOCK_SYM:
                     if ($item->value == ';') {
-                        $result[] = ";\n";
+                        $result[] = "\n";
                     } else {
                         $result[] = ' '.$item->value.' ';
                     }
@@ -187,7 +163,7 @@ class C extends TranslatorBase
      */
     private function blockIf(&$item): string
     {
-        $block = 'if '.$this->blockBrackets($item->condition, '').' '
+        $block = 'if '.$this->blockBrackets($item->condition, '')
             .$this->blockSub($item->true);
         if ($item->false) {
             $block .= ' else '.
@@ -259,10 +235,6 @@ class C extends TranslatorBase
                     if ($c == '') $c = 0;
                     if ($argsCount >= $c) {
                         $result[] = $func;
-                        array_unshift($item->args, (object)[
-                            'typ' => Translate::BLOCK_NUMBER,
-                            'value' => $argsCount,
-                        ]);
                         break;
                     }
                 }
@@ -297,10 +269,10 @@ class C extends TranslatorBase
     private function blockSub(&$list): string
     {
         $result = [];
-        $result[] = '{';
+        $result[] = ':';
         $this->tabs++;
         $result[] = $this->makeLevel($list);
-        $result[] = '}';
+        //$result[] = '}';
         $this->tabs--;
         return implode("\n", $result);
     }

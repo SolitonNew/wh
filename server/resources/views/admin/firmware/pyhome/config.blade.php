@@ -1,4 +1,5 @@
 from variables import Variable
+import commands
 
 # Variables
 @foreach($varList as $v)
@@ -14,7 +15,7 @@ from variables import Variable
 # Scripts
 @foreach($scriptList as $script)
 def script_{{ $script->id }}():
-    pass
+{!! $script->data_to_py ?? '    pass' !!}
 
 @endforeach
 
