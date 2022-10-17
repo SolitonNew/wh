@@ -8,6 +8,7 @@ use App\Library\Script\Translators\Python;
 use App\Models\OwHost;
 use App\Models\Script;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use App\Library\Script\Translators\Python as TranslatePython;
 
@@ -117,5 +118,31 @@ class Pyhome
     public function getFile()
     {
         return file_get_contents($this->firmwarePath().'/config.py');
+    }
+
+    /**
+     * @param int $rom
+     * @param string $fileName
+     * @return bool
+     */
+    public function makeFullFirmwareZipByRom(int $rom, string $fileName): bool
+    {
+        try {
+            $zip = new \ZipArchive();
+            $zip->open($fileName, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+            $path = $this->firmwarePath();
+            foreach (scandir($path) as $file) {
+                if ($file == '.' || $file == '..') continue;
+                $data = file_get_contents($path.'/'.$file);
+                if ($file == 'main.py') {
+                    $data = str_replace('dev_id=1', 'dev_id='.$rom, $data);
+                }
+                $zip->addFromString($file, $data);
+            }
+            $zip->close();
+            return true;
+        } catch (\Exception $ex) {
+            return false;
+        }
     }
 }

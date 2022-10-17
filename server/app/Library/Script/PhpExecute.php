@@ -63,7 +63,6 @@ class PhpExecute
                 $specialList[$dev->name] = false;
             }
             $code = $this->translator->run(new Translators\Php(new ScriptStringManager($specialList)), $report);
-            Log::info($code);
             eval($code);
         } catch (\ParseError $ex) {
             $this->printLine($ex->getMessage());

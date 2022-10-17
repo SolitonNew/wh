@@ -48,6 +48,7 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->get('/hubs-config-wizard-transmit', ['as' => 'admin.hubs-config-wizard-transmit', 'uses' => 'HubsController@configWizardTransmit']);
     $router->get('/hubs-config-wizard-status', ['as' => 'admin.hubs-config-wizard-status', 'uses' => 'HubsController@configWizardStatus']);
     $router->get('/hubs-config-complete', ['as' => 'admin.hubs-config-complete', 'uses' => 'HubsController@configWizardComplete']);
+    $router->get('/hubs-config-wizard-download/{id}', ['as' => 'admin.hubs-config-wizard-download', 'uses' => 'HubsController@configWizardDownload']);
 
     /* Hosts management routes */
     $router->get('/hubs/{hubID}/hosts', ['as' => 'admin.hub-hosts', 'uses' => 'Hubs\HostsController@index']);

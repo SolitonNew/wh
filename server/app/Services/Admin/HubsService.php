@@ -17,6 +17,7 @@ use App\Models\CamcorderHost;
 use App\Models\Property;
 use App\Library\DaemonManager;
 use App\Library\Firmware\Din;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -754,5 +755,21 @@ class HubsService
         } catch (\Exception $ex) {
             return 'ERROR';
         }
+    }
+
+    /**
+     * @param int $hubID
+     * @return string|\Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function getFirmwareFullPack(int $hubID)
+    {
+        $hub = Hub::find($hubID);
+        switch ($hub->typ) {
+            case 'pyhome':
+                $fileName = storage_path('app/'.Carbon::now()->format('Y-m-d H-i-s ').$hub->name).'.zip';
+                (new Pyhome())->makeFullFirmwareZipByRom($hub->rom, $fileName);
+                return response()->download($fileName);
+        }
+        return 'ERROR';
     }
 }

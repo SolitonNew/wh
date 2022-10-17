@@ -181,6 +181,15 @@ class HubsController extends Controller
     }
 
     /**
+     * @param int $id
+     * @return null
+     */
+    public function configWizardDownload(int $id)
+    {
+        return $this->service->getFirmwareFullPack($id);
+    }
+
+    /**
      * This route sends the din-daemon command to reboot all hubs.
      *
      * @return string
