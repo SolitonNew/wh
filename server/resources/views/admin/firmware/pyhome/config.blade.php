@@ -15,7 +15,7 @@ import commands
 # Scripts
 @foreach($scriptList as $script)
 def script_{{ $script->id }}():
-{!! $script->data_to_py ?? '    pass' !!}
+{!! $script->data_to_py !!}
 
 @endforeach
 

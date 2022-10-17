@@ -22,9 +22,9 @@ class ScriptStringManager
 
     /**
      * @param string $string
-     * @return int|bool
+     * @return mixed
      */
-    public function getKeyByString(string $string): int|bool
+    public function getKeyByString(string $string): mixed
     {
         if (isset($this->specialList[$string])) {
             return $this->specialList[$string];

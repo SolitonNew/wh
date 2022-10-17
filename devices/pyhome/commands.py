@@ -1,19 +1,21 @@
+import math
+
 def command_get(variable):
-    pass
+    return variable.value()
 
 def command_set(variable, value, delay=0):
-    pass
+    variable.value(value, delay)
 
 def command_on(variable, delay=0):
-    pass
+    variable.value(1, delay)
 
 def command_off(variable, delay=0):
-    pass
+    variable.value(0, delay)
 
 def command_toggle(variable, delay=0):
-    pass
+    variable.value(not variable.value(), delay)
     
-def command_speech(speachID):
+def command_speech(speechID):
     pass
     
 def command_play(mediaID):
@@ -25,17 +27,14 @@ def command_info():
 def command_print(value):
     pass
 
-def command_abs_i(value):
-    pass
-    
-def command_abs_f(value):
-    pass
+def command_abs(value):
+    return math.abs(value)
     
 def command_round(value):
-    pass
+    return round(value)
 
 def command_ceil(value):
-    pass
+    return math.ceil(value)
 
 def command_floor(value):
-    pass
+    return math.floor(value)

@@ -4,6 +4,7 @@ namespace App\Library\Firmware;
 
 use App\Library\Script\ScriptStringManager;
 use App\Library\Script\Translate;
+use App\Library\Script\Translators\Python;
 use App\Models\OwHost;
 use App\Models\Script;
 use Illuminate\Support\Facades\DB;
@@ -86,7 +87,7 @@ class Pyhome
         $specialList = [];
         for ($i = 0; $i < count($varList); $i++) {
             $v = $varList[$i];
-            $specialList[$v->name] = $i;
+            $specialList[$v->name] = $v->name;
         }
 
         foreach ($scriptList as $row) {
@@ -96,7 +97,7 @@ class Pyhome
             $temp = $translator->run(new TranslatePython(new ScriptStringManager($specialList)), $report);
             $code = [];
             foreach (explode("\n", $temp) as $line) {
-                $code[] = '    '.$line;
+                $code[] = Python::TAB_STR.$line;
             }
             $row->data_to_py = implode("\n", $code);
         }
