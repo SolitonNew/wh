@@ -231,9 +231,9 @@ class Hub extends AffectsFirmwareModel
             'pyhome',
             'ow',
         ],
-        'zigbeeone' => [
+        /*'zigbeeone' => [
             'variable',
-        ],
+        ],*/
     ];
 
     /**
