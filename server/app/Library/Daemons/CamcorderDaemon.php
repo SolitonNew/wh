@@ -11,6 +11,10 @@ use App\Models\Device;
 
 class CamcorderDaemon extends BaseDaemon
 {
+    public const SIGNATURE = 'camcorder-daemon';
+
+    public const PROPERTY_NAME = 'CAMCORDER';
+
     /**
      * @var array
      */

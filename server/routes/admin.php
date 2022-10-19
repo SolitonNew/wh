@@ -51,31 +51,10 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->get('/hubs-config-wizard-download/{id}', ['as' => 'admin.hubs-config-wizard-download', 'uses' => 'HubsController@configWizardDownload']);
 
     /* Hosts management routes */
-    $router->get('/hubs/{hubID}/hosts', ['as' => 'admin.hub-hosts', 'uses' => 'Hubs\HostsController@index']);
-    // ExtApi hosts
-    $router->get('/hub-extapihost-edit/{hubID}/{id}', ['as' => 'admin.hub-extapihost-edit', 'uses' => 'Hubs\HostsController@editExtApiShow']);
-    $router->post('/hub-extapihost-edit/{hubID}/{id}', ['as' => 'admin.hub-extapihost-edit', 'uses' => 'Hubs\HostsController@editExtApiPost']);
-    $router->delete('/hub-extapihost-delete/{hubID}/{id}', ['as' => 'admin.hub-extapihost-delete', 'uses' => 'Hubs\HostsController@deleteExtApi']);
-    // Camcorder hosts
-    $router->get('/hub-camcorderhost-edit/{hubID}/{id}', ['as' => 'admin.hub-camcorderhost-edit', 'uses' => 'Hubs\HostsController@editCamcorderShow']);
-    $router->post('/hub-camcorderhost-edit/{hubID}/{id}', ['as' => 'admin.hub-camcorderhost-edit', 'uses' => 'Hubs\HostsController@editCamcorderPost']);
-    $router->delete('/hub-camcorderhost-delete/{hubID}/{id}', ['as' => 'admin.hub-camcorderhost-delete', 'uses' => 'Hubs\HostsController@deleteCamcorder']);
-    // Orange Pi hosts
-    $router->get('/hub-orangehost-edit/{hubID}/{id}', ['as' => 'admin.hub-orangehost-edit', 'uses' => 'Hubs\HostsController@editOrangeShow']);
-    $router->post('/hub-orangehost-edit/{hubID}/{id}', ['as' => 'admin.hub-orangehost-edit', 'uses' => 'Hubs\HostsController@editOrangePost']);
-    $router->delete('/hub-orangehost-delete/{hubID}/{id}', ['as' => 'admin.hub-orangehost-delete', 'uses' => 'Hubs\HostsController@deleteOrange']);
-    // Din hosts
-    $router->get('/hub-dinhost-edit/{hubID}/{id}', ['as' => 'admin.hub-dinhost-edit', 'uses' => 'Hubs\HostsController@editDinShow']);
-    $router->post('/hub-dinhost-edit/{hubID}/{id}', ['as' => 'admin.hub-dinhost-edit', 'uses' => 'Hubs\HostsController@editDinPost']);
-    $router->delete('/hub-dinhost-delete/{hubID}/{id}', ['as' => 'admin.hub-dinhost-delete', 'uses' => 'Hubs\HostsController@deleteDin']);
-    // Pyhome hosts
-    $router->get('/hub-pyhomehost-edit/{hubID}/{id}', ['as' => 'admin.hub-pyhomehost-edit', 'uses' => 'Hubs\HostsController@editPyhomeShow']);
-    $router->post('/hub-pyhomehost-edit/{hubID}/{id}', ['as' => 'admin.hub-pyhomehost-edit', 'uses' => 'Hubs\HostsController@editPyhomePost']);
-    $router->delete('/hub-pyhomehost-delete/{hubID}/{id}', ['as' => 'admin.hub-pyhomehost-delete', 'uses' => 'Hubs\HostsController@deletePyhome']);
-    // Zigbee One hosts
-    $router->get('/hub-zigbeehost-edit/{hubID}/{id}', ['as' => 'admin.hub-zigbeehost-edit', 'uses' => 'Hubs\HostsController@editZigbeeShow']);
-    $router->post('/hub-zigbeehost-edit/{hubID}/{id}', ['as' => 'admin.hub-zigbeehost-edit', 'uses' => 'Hubs\HostsController@editZigbeePost']);
-    $router->delete('/hub-zigbeehost-delete/{hubID}/{id}', ['as' => 'admin.hub-zigbeehost-delete', 'uses' => 'Hubs\HostsController@deleteZigbee']);
+    $router->get('/hubs/{hubID}/hosts[/{group}]', ['as' => 'admin.hub-hosts', 'uses' => 'Hubs\HostsController@index']);
+    $router->get('/hub-host-edit/{hubID}/{group}/{id}', ['as' => 'admin.hub-host-edit', 'uses' => 'Hubs\HostsController@editHostShow']);
+    $router->post('/hub-host-edit/{hubID}/{group}/{id}', ['as' => 'admin.hub-host-edit', 'uses' => 'Hubs\HostsController@editHostPost']);
+    $router->delete('/hub-host-delete/{hubID}/{group}/{id}', ['as' => 'admin.hub-host-delete', 'uses' => 'Hubs\HostsController@deleteHost']);
 
     /* Devices management routes */
     $router->get('/hubs/{hubID}/devices[/{groupID}]', ['as' => 'admin.hub-devices', 'uses' => 'Hubs\DevicesController@index']);

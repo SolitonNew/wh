@@ -468,7 +468,11 @@
     }
 
     function firmware() {
-        dialog("{{ route('admin.hubs-config-wizard') }}");
+        dialog("{{ route('admin.hubs-config-wizard') }}", null, () => {
+            if (window.configWizardSuccess) {
+                reloadWithWaiter();
+            }
+        });
     }
 
     function requestDaemonsState() {

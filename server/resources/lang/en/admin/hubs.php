@@ -72,6 +72,7 @@ return [
     'host_ROM' => 'ROM',
     'host_ADDRESS' => 'Address',
     'host_TYP' => 'Type',
+    'host_COMM' => 'Commentary',
     'host_CHANNELS' => 'Channels',
     'host_DEVICES' => 'Devices',
     'host_NAME' => 'Name',

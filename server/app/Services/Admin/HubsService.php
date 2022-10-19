@@ -110,12 +110,16 @@ class HubsService
         switch ($hub->typ) {
             case 'din':
                 $this->generateDinDevsByHub($hubID);
+                $this->generateOwDevsByHub($hubID);
                 break;
             case 'pyhome':
                 $this->generatePyhomeDevsByHub($hubID);
+                $this->generateOwDevsByHub($hubID);
                 break;
             case 'orangepi':
                 $this->generateOrangePiDevsByHub($hubID);
+                $this->generateOwDevsByHub($hubID);
+                $this->generateI2cDevsByHub($hubID);
                 break;
             case 'camcorder':
                 $this->generateCamcorderDevsByHub($hubID);
@@ -175,39 +179,8 @@ class HubsService
      * @param int $hubID
      * @return void
      */
-    private function generateDinDevsByHub(int $hubID): void
+    private function generateOwDevsByHub(int $hubID): void
     {
-        $din_channels = config('din.mmcu_list.'.DinDaemon::getSettings('MMCU').'.channels');
-        $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "din"');
-
-        try {
-            foreach ($din_channels as $chan) {
-                $find = false;
-                foreach ($devs as $dev) {
-                    if ($dev->hub_id == $hubID && $dev->channel == $chan) {
-                        $find = true;
-                        break;
-                    }
-                }
-                if (!$find) {
-                    $item = new Device();
-                    $item->hub_id = $hubID;
-                    $item->typ = 'din';
-                    $item->name = 'temp for din';
-                    $item->host_id = null;
-                    $item->channel = $chan;
-                    $item->app_control = $this->decodeChannelTyp($chan, 1);
-                    $item->save(['withoutevents']);
-                    $item->name = 'din_'.$item->id.'_'.$chan;
-                    $item->save();
-                }
-            }
-        } catch (\Exception $ex) {
-            Log::info($ex);
-            return ;
-        }
-
-        // Generation of devices for network hubs
         $hosts = OwHost::whereHubId($hubID)->get();
         $devs = Device::whereTyp('ow')->get();
         try {
@@ -233,6 +206,82 @@ class HubsService
                         $item->name = 'ow_'.$item->id.'_'.$chan;
                         $item->save();
                     }
+                }
+            }
+        } catch (\Exception $ex) {
+            Log::info($ex);
+            return ;
+        }
+    }
+
+    /**
+     * @param int $hubID
+     * @return void
+     */
+    private function generateI2cDevsByHub(int $hubID): void
+    {
+        $hosts = I2cHost::whereHubId($hubID)->get();
+        $devs = Device::whereTyp('i2c')->get();
+        try {
+            foreach ($hosts as $host) {
+                foreach ($host->channelsOfType() as $chan) {
+                    $find = false;
+                    foreach ($devs as $dev) {
+                        if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
+                            $find = true;
+                            break;
+                        }
+                    }
+
+                    if (!$find) {
+                        $item = new Device();
+                        $item->hub_id = $host->hub_id;
+                        $item->typ = 'i2c';
+                        $item->name = 'temp for i2c';
+                        $item->host_id = $host->id;
+                        $item->channel = $chan;
+                        $item->app_control = $this->decodeChannelTyp($chan);
+                        $item->save(['withoutevents']);
+                        $item->name = 'i2c_'.$item->id.'_'.$chan;
+                        $item->save();
+                    }
+                }
+            }
+        } catch (\Exception $ex) {
+            Log::info($ex);
+            return ;
+        }
+    }
+
+    /**
+     * @param int $hubID
+     * @return void
+     */
+    private function generateDinDevsByHub(int $hubID): void
+    {
+        $din_channels = config('din.mmcu_list.'.DinDaemon::getSettings('MMCU').'.channels');
+        $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "din"');
+
+        try {
+            foreach ($din_channels as $chan) {
+                $find = false;
+                foreach ($devs as $dev) {
+                    if ($dev->hub_id == $hubID && $dev->channel == $chan) {
+                        $find = true;
+                        break;
+                    }
+                }
+                if (!$find) {
+                    $item = new Device();
+                    $item->hub_id = $hubID;
+                    $item->typ = 'din';
+                    $item->name = 'temp for din';
+                    $item->host_id = null;
+                    $item->channel = $chan;
+                    $item->app_control = $this->decodeChannelTyp($chan, 1);
+                    $item->save(['withoutevents']);
+                    $item->name = 'din_'.$item->id.'_'.$chan;
+                    $item->save();
                 }
             }
         } catch (\Exception $ex) {
@@ -348,38 +397,7 @@ class HubsService
         }
 
         // Generation of devices for network hubs
-        // Generation of devices for network hubs
-        $hosts = I2cHost::whereHubId($hubID)->get();
-        $devs = Device::whereTyp('i2c')->get();
-        try {
-            foreach ($hosts as $host) {
-                foreach ($host->channelsOfType() as $chan) {
-                    $find = false;
-                    foreach ($devs as $dev) {
-                        if ($dev->host_id == $host->id && $dev->channel && $dev->channel == $chan) {
-                            $find = true;
-                            break;
-                        }
-                    }
 
-                    if (!$find) {
-                        $item = new Device();
-                        $item->hub_id = $host->hub_id;
-                        $item->typ = 'i2c';
-                        $item->name = 'temp for i2c';
-                        $item->host_id = $host->id;
-                        $item->channel = $chan;
-                        $item->app_control = $this->decodeChannelTyp($chan);
-                        $item->save(['withoutevents']);
-                        $item->name = 'i2c_'.$item->id.'_'.$chan;
-                        $item->save();
-                    }
-                }
-            }
-        } catch (\Exception $ex) {
-            Log::info($ex);
-            return ;
-        }
     }
 
     /**
@@ -476,33 +494,9 @@ class HubsService
     }
 
     /**
-     * This is the service daemons reboot method.
-     *
-     * @return string|null
+     * @param string $typ
+     * @return string
      */
-    public function restartServiceDaemons(): string|null
-    {
-        $daemons = [
-            'din-daemon',
-            'extapi-daemon',
-            'orangepi-daemon',
-            'camcorder-daemon',
-        ];
-
-        $daemonManager = new DaemonManager();
-        try {
-            foreach ($daemons as $daemon) {
-                Property::setAsRunningDaemon($daemon);
-                $daemonManager->restart($daemon);
-            }
-            return 'OK';
-        } catch (\Exception $ex) {
-            abort(response()->json([
-                'errors' => [$ex->getMessage()],
-            ]), 422);
-        }
-    }
-
     public function firmwareMake(string $typ): string
     {
         try {

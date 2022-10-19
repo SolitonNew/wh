@@ -11,14 +11,14 @@ return [
      * List of processes running in the background
      */
     'list' => [
-        'extapi-daemon',
-        'din-daemon',
-        'pyhome-daemon',
-        'zigbeeone-daemon',
-        'orangepi-daemon',
-        'schedule-daemon',
-        'command-daemon',
-        'observer-daemon',
-        'camcorder-daemon',
+        \App\Library\Daemons\ExtApiDaemon::class,
+        \App\Library\Daemons\DinDaemon::class,
+        \App\Library\Daemons\PyhomeDaemon::class,
+        \App\Library\Daemons\ZigbeeoneDaemon::class,
+        \App\Library\Daemons\OrangePiDaemon::class,
+        \App\Library\Daemons\ScheduleDaemon::class,
+        \App\Library\Daemons\CommandDaemon::class,
+        \App\Library\Daemons\ObserverDaemon::class,
+        \App\Library\Daemons\CamcorderDaemon::class,
     ],
 ];

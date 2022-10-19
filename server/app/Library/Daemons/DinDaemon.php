@@ -14,6 +14,8 @@ class DinDaemon extends BaseDaemon
 {
     use PrintLineUtilsTrait;
 
+    public const SIGNATURE = 'din-daemon';
+
     /**
      *
      */

@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Lang;
 
 class CommandDaemon extends BaseDaemon
 {
+    public const SIGNATURE = 'commands-daemon';
+
+    public const PROPERTY_NAME = 'COMMAND';
+
     /**
      * The overridden method.
      * 1. Clear command log

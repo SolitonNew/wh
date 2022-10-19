@@ -71,6 +71,7 @@
 @section('script')
 <script>
     var transmitStatusInterval = 500;
+    var configWizardSuccess = false;
 
     $(document).ready(function () {
         $('#configWizardMakeBtn').on('click', function () {
@@ -205,11 +206,7 @@
                         configWizardComplete();
                     }
 
-                    alert(message, () => {
-                        dialogHide(() => {
-                            reloadWithWaiter();
-                        });
-                    });
+                    alert(message);
                 }
             },
             error: function (err) {
@@ -222,6 +219,7 @@
         $.ajax({
             url: '{{ route("admin.hubs-config-complete") }}',
             success: function (data) {
+                configWizardSuccess = true;
             },
             error: function (err) {
             }

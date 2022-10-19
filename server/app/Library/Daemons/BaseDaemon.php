@@ -18,17 +18,12 @@ class BaseDaemon
      * Signature (id) of the daemon
      * @var string
      */
-    protected string $signature = '';
+    public const SIGNATURE = 'base-daemon';
 
     /**
      * @var string
      */
     public const PROPERTY_NAME = 'DAEMON';
-
-    public function __construct($signature)
-    {
-        $this->signature = $signature;
-    }
 
     /**
      * @var Collection|array
@@ -109,6 +104,23 @@ class BaseDaemon
     public static function setCommandInfo(string $text, bool $first = false)
     {
         Property::setProperty(static::PROPERTY_NAME.'_COMMAND_INFO', $text, !$first);
+    }
+
+    /**
+     * @param bool $isRunning
+     * @return void
+     */
+    public static function setWorkingState(bool $isRunning)
+    {
+        Property::setProperty(static::PROPERTY_NAME.'_WORKING_STATE', ($isRunning ? 'RUNNING' : 'STOPING'));
+    }
+
+    /**
+     * @return bool
+     */
+    public static function getWorkingState(): bool
+    {
+        return (Property::getProperty(static::PROPERTY_NAME.'_WORKING_STATE') == 'RUNNING');
     }
 
     /**
@@ -283,7 +295,7 @@ class BaseDaemon
     {
         try {
             $item = new WebLogMem();
-            $item->daemon = $this->signature;
+            $item->daemon = static::SIGNATURE;
             $item->data = $text;
             $item->save();
 
@@ -300,7 +312,7 @@ class BaseDaemon
     public function printLineToLast($text): void
     {
         try {
-            $item = WebLogMem::whereDaemon($this->signature)
+            $item = WebLogMem::whereDaemon(static::SIGNATURE)
                 ->orderBy('id', 'desc')
                 ->first();
             if ($item) {
@@ -350,6 +362,6 @@ class BaseDaemon
      */
     public function disableAutorun(): void
     {
-        Property::setAsStoppedDaemon($this->signature);
+        self::setWorkingState(false);
     }
 }

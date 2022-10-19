@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Lang;
 
 class ZigbeeoneDaemon extends BaseDaemon
 {
+    public const SIGNATURE = 'zigbeeone-daemon';
+
     /**
      *
      */

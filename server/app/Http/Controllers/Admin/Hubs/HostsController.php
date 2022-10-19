@@ -11,6 +11,7 @@ use App\Models\OwHost;
 use App\Models\I2cHost;
 use App\Models\Property;
 use App\Models\Hub;
+use Illuminate\Support\Facades\Log;
 
 class HostsController extends Controller
 {
@@ -34,7 +35,7 @@ class HostsController extends Controller
      * @param int $hubID
      * @return type
      */
-    public function index(int $hubID = null)
+    public function index(int $hubID = null, string $group = '')
     {
         // Last view id  --------------------------
         if (!$hubID) {
@@ -62,285 +63,103 @@ class HostsController extends Controller
         Property::setLastViewID('HUB_PAGE', 'hosts');
         // ----------------------------------------
 
-        switch ($this->service->getHostType($hubID)) {
+        $data = $this->service->getIndexList($hubID, $group);
+
+        return view('admin.hubs.hosts.hosts', [
+            'hubID' => $hubID,
+            'page' => 'hosts',
+            'data' => $data,
+            'group' => $group,
+        ]);
+    }
+
+    /**
+     * @param int $hubID
+     * @param string $group
+     * @param int $id
+     * @return mixed
+     */
+    public function editHostShow(int $hubID, string $group, int $id): mixed
+    {
+        switch ($group) {
+            case 'ow':
+                $item = OwHost::findOrCreate($hubID, $id);
+                $hostTypID = $item->rom_1;
+                break;
+            case 'i2c':
+                $item = I2cHost::findOrCreate($hubID, $id);
+                $hostTypID = $item->typ;
+                break;
             case 'extapi':
-                return view('admin.hubs.hosts.extapi.extapi-hosts', [
-                    'hubID' => $hubID,
-                    'page' => 'hosts',
-                    'data' => ExtApiHost::listForIndex($hubID),
-                ]);
-            case 'orangepi':
-                return view('admin.hubs.hosts.orange.orange-hosts', [
-                    'hubID' => $hubID,
-                    'page' => 'hosts',
-                    'data' => I2cHost::listForIndex($hubID),
-                ]);
+                $item = ExtApiHost::findOrCreate($hubID, $id);
+                $hostTypID = $item->typ;
+                break;
             case 'camcorder':
-                return view('admin.hubs.hosts.camcorder.camcorder-hosts', [
-                    'hubID' => $hubID,
-                    'page' => 'hosts',
-                    'data' => CamcorderHost::listForIndex($hubID),
-                ]);
-            case 'din':
-                return view('admin.hubs.hosts.din.din-hosts', [
-                    'hubID' => $hubID,
-                    'page' => 'hosts',
-                    'data' => OwHost::listForIndex($hubID),
-                ]);
-            case 'pyhome':
-                return view('admin.hubs.hosts.pyhome.pyhome-hosts', [
-                    'hubID' => $hubID,
-                    'page' => 'hosts',
-                    'data' => OwHost::listForIndex($hubID),
-                ]);
-            case 'zigbeeone':
-                return view('admin.hubs.hosts.zigbee.zigbee-hosts', [
-                    'hubID' => $hubID,
-                    'page' => 'hosts',
-                    'data' => [],
-                ]);
+                $item = CamcorderHost::findOrCreate($hubID, $id);
+                $hostTypID = $item->typ;
+                break;
             default:
-                return redirect(route('admin.hubs'));
+                $item = (object)[
+                    'id' => -1,
+                    'hub_id' => $hubID,
+                    'comm' => '',
+                ];
+                $hostTypID = '';
         }
 
-        abort(404);
-    }
-
-    /**
-     * Route to show extapi host properties.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return type
-     */
-    public function editExtApiShow(int $hubID, int $id)
-    {
-        $item = ExtApiHost::findOrCreate($hubID, $id);
-
-        return view('admin.hubs.hosts.extapi.extapi-host-edit', [
+        return view('admin.hubs.hosts.host-edit', [
             'item' => $item,
-        ]);
-    }
-
-
-    /**
-     * Route to create or update extapi host properties.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return type
-     */
-    public function editExtApiPost(Request $request, int $hubID, int $id)
-    {
-        return ExtApiHost::storeFromRequest($request, $hubID, $id);
-    }
-
-    /**
-     * Route to delete extapi host by id.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return string
-     */
-    public function deleteExtApi(int $hubID, int $id)
-    {
-        return ExtApiHost::deleteById($id);
-    }
-
-    /**
-     * Route to show orange pi host properties.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return type
-     */
-    public function editOrangeShow(int $hubID, int $id)
-    {
-        $item = I2cHost::findOrCreate($hubID, $id);
-
-        return view('admin.hubs.hosts.orange.orange-host-edit', [
-            'item' => $item,
+            'group' => $group,
+            'hostTypID' => $hostTypID,
+            'hostTypList' => $this->service->getHostTypList($hubID),
+            'hub' => Hub::find($hubID),
         ]);
     }
 
     /**
-     * Route to create or update orange pi host properties.
-     *
+     * @param Request $request
      * @param int $hubID
+     * @param string $group
      * @param int $id
-     * @return type
+     * @return mixed
      */
-    public function editOrangePost(Request $request, int $hubID, int $id)
+    public function editHostPost(Request $request, int $hubID, string $group, int $id): mixed
     {
-        return I2cHost::storeFromRequest($request, $hubID, $id);
-    }
-
-    /**
-     * Route to delete orange pi host by id.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return string
-     */
-    public function deleteOrange(int $hubID, int $id)
-    {
-        return I2cHost::deleteById($id);
-    }
-
-    /**
-     * Route to show camcorder host properties.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return type
-     */
-    public function editCamcorderShow(int $hubID, int $id)
-    {
-        $item = CamcorderHost::findOrCreate($hubID, $id);
-
-        return view('admin.hubs.hosts.camcorder.camcorder-host-edit', [
-            'item' => $item,
-        ]);
-    }
-
-
-    /**
-     * Route to create or update camcorder host properties.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return type
-     */
-    public function editCamcorderPost(Request $request, int $hubID, int $id)
-    {
-        return CamcorderHost::storeFromRequest($request, $hubID, $id);
-    }
-
-    /**
-     * Route to delete camcorder host by id.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return string
-     */
-    public function deleteCamcorder(int $hubID, int $id)
-    {
-        return CamcorderHost::deleteById($id);
-    }
-
-    /**
-     * Route to show din host properties.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return type
-     */
-    public function editDinShow(int $hubID, int $id)
-    {
-        $item = OwHost::findOrCreate($hubID, $id);
-
-        return view('admin.hubs.hosts.din.din-host-edit', [
-            'item' => $item,
+        switch ($group) {
+            case 'ow':
+                return OwHost::storeFromRequest($request, $hubID, $id);
+            case 'i2c':
+                return I2cHost::storeFromRequest($request, $hubID, $id);
+            case 'extapi':
+                return ExtApiHost::storeFromRequest($request, $hubID, $id);
+            case 'camcorder':
+                return CamcorderHost::storeFromRequest($request, $hubID, $id);
+        }
+        return response()->json([
+            'errors' => ['Host Group Not Found'],
         ]);
     }
 
     /**
-     * Route to create or update din host properties.
-     *
      * @param int $hubID
+     * @param string $group
      * @param int $id
-     * @return type
+     * @return mixed
      */
-    public function editDinPost(Request $request, int $hubID, int $id)
+    public function deleteHost(int $hubID, string $group, int $id): mixed
     {
-        return OwHost::storeFromRequest($request, $hubID, $id);
-    }
-
-    /**
-     * Route to delete Din host by id.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return string
-     */
-    public function deleteDin(int $hubID, int $id)
-    {
-        return OwHost::deleteById($id);
-    }
-
-    /**
-     * Route to show pyhome host properties.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return type
-     */
-    public function editPyhomeShow(int $hubID, int $id)
-    {
-        $item = OwHost::findOrCreate($hubID, $id);
-
-        return view('admin.hubs.hosts.pyhome.pyhome-host-edit', [
-            'item' => $item,
+        switch ($group) {
+            case 'ow':
+                return OwHost::deleteById($id);
+            case 'i2c':
+                return I2cHost::deleteById($id);
+            case 'extapi':
+                return ExtApiHost::deleteById($id);
+            case 'camcorder':
+                return CamcorderHost::deleteById($id);
+        }
+        return response()->json([
+            'errors' => ['Host Group Not Found'],
         ]);
-    }
-
-    /**
-     * Route to create or update pyhome host properties.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return type
-     */
-    public function editPyhomePost(Request $request, int $hubID, int $id)
-    {
-        return OwHost::storeFromRequest($request, $hubID, $id);
-    }
-
-    /**
-     * Route to delete Pyhome host by id.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return string
-     */
-    public function deletePyhome(int $hubID, int $id)
-    {
-        return OwHost::deleteById($id);
-    }
-
-    /**
-     * Route to show Zigbee One host properties.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return type
-     */
-    public function editZigbeeShow(int $hubID, int $id)
-    {
-        return 'DEMO';
-    }
-
-    /**
-     * Route to create or update Zigbee One host properties.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return type
-     */
-    public function editZigbeePost(Request $request, int $hubID, int $id)
-    {
-        return 'DEMO';
-    }
-
-    /**
-     * Route to delete Zigbee One host by id.
-     *
-     * @param int $hubID
-     * @param int $id
-     * @return string
-     */
-    public function deleteZigbee(int $hubID, int $id)
-    {
-        return 'DEMO';
     }
 }

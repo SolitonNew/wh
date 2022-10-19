@@ -184,7 +184,7 @@
     <div class="page-jumbotron">
         <div class="jumbotron">
             <h5 class="mb-4">@lang('admin/plan.main_prompt')</h5>
-            <a href="javascript:planMenuAddPart()" class="btn btn-primary">@lang('admin/plan.menu_add_part')</a>
+            <a href="javascript:planAdd()" class="btn btn-primary">@lang('admin/plan.plan_add')</a>
         </div>
     </div>
 </div>

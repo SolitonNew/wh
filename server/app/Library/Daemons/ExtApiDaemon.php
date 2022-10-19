@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Lang;
 
 class ExtApiDaemon extends BaseDaemon
 {
+    public const SIGNATURE = 'extapi-daemon';
+
     /**
      *
      */

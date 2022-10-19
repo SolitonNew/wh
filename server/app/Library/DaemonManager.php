@@ -2,6 +2,8 @@
 
 namespace App\Library;
 
+use Illuminate\Support\Facades\Log;
+
 /**
  * DemonManager Process Manager.
  *
@@ -19,7 +21,9 @@ class DaemonManager
      */
     public function __construct()
     {
-        $this->daemons = config('daemons.list');
+        foreach (config('daemons.list') as $daemonClass) {
+            $this->daemons[] = $daemonClass::SIGNATURE;
+        }
     }
 
     /**
@@ -28,6 +32,20 @@ class DaemonManager
     public function daemons(): array
     {
         return $this->daemons;
+    }
+
+    /**
+     * @param string $id
+     * @return mixed|null
+     */
+    public function getDaemonClass(string $id)
+    {
+        foreach (config('daemons.list') as $daemonClass) {
+            if ($daemonClass::SIGNATURE == $id) {
+                return $daemonClass;
+            }
+        }
+        return null;
     }
 
     /**
@@ -67,7 +85,7 @@ class DaemonManager
     public function start(string $id): void
     {
         if ($this->exists($id)) {
-            exec('php '.base_path().'/artisan '.$id.'>/dev/null &');
+            exec('php '.base_path().'/artisan daemon:run '.$id.'>/dev/null &');
         } else {
             throw new \Exception('Non-existent process ID');
         }
@@ -120,7 +138,7 @@ class DaemonManager
     public function findDaemonPID(string $id): array
     {
         $pids = [];
-        exec("ps ax | grep $id | grep -v grep | grep -v 'sh -c '", $outs);
+        exec("ps axw | grep $id | grep -v grep | grep -v 'sh -c '", $outs);
         foreach ($outs as $out) {
             $a = explode(' ', trim($out));
             if (count($a)) {

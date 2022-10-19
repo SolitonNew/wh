@@ -13,6 +13,8 @@ use App\Library\OrangePi\I2c\I2c;
 
 class OrangePiDaemon extends BaseDaemon
 {
+    public const SIGNATURE = 'orangepi-daemon';
+
     /**
      *
      */

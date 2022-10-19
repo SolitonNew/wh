@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class I2cHost extends AffectsFirmwareModel
 {
@@ -141,7 +142,16 @@ class I2cHost extends AffectsFirmwareModel
         // Validation  ----------------------
         $rules = [
             'typ' => 'string|required',
-            'address' => 'numeric|required|unique:core_i2c_hosts,address,'.($id > 0 ? $id : ''),
+            'address' => [
+                'numeric',
+                'required',
+                Rule::unique('core_i2c_hosts')->where(function ($query) use ($id, $hubID, $request) {
+                    return $query
+                        ->where('hub_id', $hubID)
+                        ->where('address', $request->address)
+                        ->whereNot('id', $id);
+                }),
+            ],
             'comm' => 'string|nullable',
         ];
 

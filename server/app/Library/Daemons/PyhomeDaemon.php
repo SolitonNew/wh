@@ -16,6 +16,8 @@ class PyhomeDaemon extends BaseDaemon
 {
     use PrintLineUtilsTrait;
 
+    public const SIGNATURE = 'pyhome-daemon';
+
     /**
      *
      */
