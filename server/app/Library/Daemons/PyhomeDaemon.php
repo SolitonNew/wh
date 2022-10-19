@@ -96,7 +96,7 @@ class PyhomeDaemon extends BaseDaemon
 
         try {
             $baud = config('pyhome.baud');
-            exec("stty -F $port $baud cs8 cstopb parodd -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
+            exec("stty -F $port $baud cs8 cstopb parodd -icrnl -ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
             $this->portHandle = fopen($port, 'r+b');
             stream_set_blocking($this->portHandle, false);
             while ($this->portHandle) {
@@ -526,8 +526,6 @@ class PyhomeDaemon extends BaseDaemon
     {
         if (!$this->inBuffer) return false;
 
-        Log::info($this->inBuffer);
-
         $packs = explode(chr(0), $this->inBuffer);
 
         $result = false;
@@ -572,8 +570,6 @@ class PyhomeDaemon extends BaseDaemon
                         }
                         break;
                 }
-            } else {
-                break;
             }
         }
 
