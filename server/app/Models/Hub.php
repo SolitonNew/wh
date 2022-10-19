@@ -216,6 +216,7 @@ class Hub extends AffectsFirmwareModel
             'variable',
             'orangepi',
             'i2c',
+            'ow',
         ],
         'camcorder' => [
             'variable',
@@ -231,9 +232,9 @@ class Hub extends AffectsFirmwareModel
             'pyhome',
             'ow',
         ],
-        /*'zigbeeone' => [
+        'zigbeeone' => [
             'variable',
-        ],*/
+        ],
     ];
 
     /**
@@ -263,6 +264,20 @@ class Hub extends AffectsFirmwareModel
             }
         }
         return self::$withNetworks;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHostTypeList()
+    {
+        $result = [];
+        foreach (self::$typs[$this->typ] as $typ) {
+            if (in_array($typ, ['ow', 'i2c', 'extapi', 'camcorder'])) {
+                $result[] = $typ;
+            }
+        }
+        return $result;
     }
 
     /**

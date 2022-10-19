@@ -182,7 +182,7 @@ class CamcorderHost extends AffectsFirmwareModel
             $properties = $item->type()->properties;
             $i = 0;
             foreach ($properties as $key => $val) {
-                $propertiesData[$key] = $request->get($key);
+                $propertiesData[$key] = $request->get('camcorder_'.$key);
             }
             $item->data = json_encode($propertiesData);
             // ---------------------

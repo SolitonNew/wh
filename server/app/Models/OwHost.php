@@ -6,6 +6,7 @@ use App\Library\AffectsFirmwareModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class OwHost extends AffectsFirmwareModel
 {
@@ -136,7 +137,59 @@ class OwHost extends AffectsFirmwareModel
      */
     public static function storeFromRequest(Request $request, int $hubID, int $id)
     {
+        // Validation  ----------------------
+        $rules = [
+            'typ' => 'string|required',
+            'rom_1' => 'string|required|max:2',
+            'rom_2' => 'string|required|max:2',
+            'rom_3' => 'string|required|max:2',
+            'rom_4' => 'string|required|max:2',
+            'rom_5' => 'string|required|max:2',
+            'rom_6' => 'string|required|max:2',
+            'rom_7' => 'string|required|max:2',
+            'rom_8' => 'string|required|max:2',
+            'comm' => 'string|nullable',
+        ];
 
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        // Saving -----------------------
+        try {
+            $item = OwHost::find($id);
+
+            if (!$item) {
+                $item = new OwHost();
+                $item->hub_id = $hubID;
+            }
+            $item->name = $request->typ;
+            $item->comm = $request->comm;
+            $item->rom_1 = hexdec($request->rom_1);
+            $item->rom_2 = hexdec($request->rom_2);
+            $item->rom_3 = hexdec($request->rom_3);
+            $item->rom_4 = hexdec($request->rom_4);
+            $item->rom_5 = hexdec($request->rom_5);
+            $item->rom_6 = hexdec($request->rom_6);
+            $item->rom_7 = hexdec($request->rom_7);
+            $item->rom_8 = hexdec($request->rom_8);
+            $item->lost = 0;
+            $item->save();
+
+            // Store event
+            EventMem::addEvent(EventMem::HOST_LIST_CHANGE, [
+                'id' => $item->id,
+                'hubID' => $item->hub_id,
+            ]);
+            // ------------
+
+            return 'OK';
+        } catch (\Exception $ex) {
+            return response()->json([
+                'errors' => [$ex->getMessage()],
+            ]);
+        }
     }
 
     /**
