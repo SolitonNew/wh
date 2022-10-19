@@ -531,7 +531,7 @@ class PyhomeDaemon extends BaseDaemon
         $result = false;
         for ($i = 0; $i < count($packs); $i++) {
             $pack = json_decode($packs[0], true);
-            Log::info(print_r($pack, true));
+            Log::info(print_r($packs[0], true));
             if (!$pack && $i == 0) return false;
             $result = true;
 
