@@ -536,6 +536,7 @@ class PyhomeDaemon extends BaseDaemon
 
             if ($pack) {
                 array_shift($packs);
+                Log::info('SHIFT '.count($packs));
 
                 switch ($pack[1]) {
                     case self::PACK_SYNC:
