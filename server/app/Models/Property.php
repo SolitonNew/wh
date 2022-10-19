@@ -125,59 +125,6 @@ class Property extends Model
     }
 
     /**
-     * @return array
-     */
-    /*public static function runningDaemons(): array
-    {
-        $item = self::whereName('RUNNING_DAEMONS')->first();
-        if ($item && $item->value) {
-            return explode(';', $item->value);
-        } else {
-            return [];
-        }
-    }*/
-
-    /**
-     * @param string $daemon
-     * @return void
-     */
-    /*public static function setAsRunningDaemon(string $daemon): void
-    {
-        $a = self::runningDaemons();
-        if (!in_array($daemon, $a)) {
-            $a[] = $daemon;
-            $item = self::whereName('RUNNING_DAEMONS')->first();
-            if (!$item) {
-                $item = new Property();
-                $item->name = 'RUNNING_DAEMONS';
-                $item->comm = '';
-            }
-            $item->value = implode(';', $a);
-            $item->save();
-        }
-    } */
-
-    /**
-     * @param string $daemon
-     * @return void
-     */
-    /*public static function setAsStoppedDaemon(string $daemon): void
-    {
-        $a = self::runningDaemons();
-        if (in_array($daemon, $a)) {
-            array_splice($a, array_search($daemon, $a));
-            $item = self::whereName('RUNNING_DAEMONS')->first();
-            if (!$item) {
-                $item = new Property();
-                $item->name = 'RUNNING_DAEMONS';
-                $item->comm = '';
-            }
-            $item->value = implode(';', $a);
-            $item->save();
-        }
-    } */
-
-    /**
      * @return int
      */
     public static function getPlanMaxLevel(): int
