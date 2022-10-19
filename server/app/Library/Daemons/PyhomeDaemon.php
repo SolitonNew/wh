@@ -97,7 +97,7 @@ class PyhomeDaemon extends BaseDaemon
         try {
             $baud = config('pyhome.baud');
             exec("stty -F $port $baud cs8 cstopb parodd -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
-            $this->portHandle = fopen($port, 'r+b');
+            $this->portHandle = fopen($port, 'r+t');
             stream_set_blocking($this->portHandle, false);
             while ($this->portHandle) {
                 $loopErrors = false;
