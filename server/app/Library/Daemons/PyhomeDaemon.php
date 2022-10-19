@@ -526,12 +526,13 @@ class PyhomeDaemon extends BaseDaemon
     {
         if (!$this->inBuffer) return false;
 
+        Log::info($this->inBuffer);
+
         $packs = explode(chr(0), $this->inBuffer);
 
         $result = false;
         for ($i = 0; $i < count($packs); $i++) {
             $pack = json_decode($packs[0], true);
-            Log::info(print_r($packs[0], true));
             if (!$pack && $i == 0) return false;
             $result = true;
 
@@ -571,6 +572,8 @@ class PyhomeDaemon extends BaseDaemon
                         }
                         break;
                 }
+            } else {
+                break;
             }
         }
 
