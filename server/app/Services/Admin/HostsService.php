@@ -56,7 +56,7 @@ class HostsService
                 'comm' => $row->comm,
                 'channels' => implode(', ', $row->type()->channels),
                 'devices' => $row->devices,
-                'lost' => false,
+                'lost' => $row->lost,
             ];
         }
     }
@@ -80,7 +80,7 @@ class HostsService
                 'comm' => $row->comm,
                 'channels' => implode(', ', $row->type()->channels),
                 'devices' => $row->devices,
-                'lost' => false,
+                'lost' => $row->lost,
             ];
         }
     }
