@@ -36,7 +36,6 @@ class OpenWeather extends ExtApiHostDriverBase
      */
     public array $properties = [
         'api_id' => 'large',
-        'test' => 'small',
     ];
 
     /**
