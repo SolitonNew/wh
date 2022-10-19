@@ -531,12 +531,12 @@ class PyhomeDaemon extends BaseDaemon
         $result = false;
         for ($i = 0; $i < count($packs); $i++) {
             $pack = json_decode($packs[0], true);
+            Log::info(print_r($pack, true));
             if (!$pack && $i == 0) return false;
             $result = true;
 
             if ($pack) {
                 array_shift($packs);
-                Log::info('SHIFT '.count($packs));
 
                 switch ($pack[1]) {
                     case self::PACK_SYNC:
