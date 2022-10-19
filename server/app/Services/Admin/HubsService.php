@@ -494,33 +494,9 @@ class HubsService
     }
 
     /**
-     * This is the service daemons reboot method.
-     *
-     * @return string|null
+     * @param string $typ
+     * @return string
      */
-    public function restartServiceDaemons(): string|null
-    {
-        $daemons = [
-            'din-daemon',
-            'extapi-daemon',
-            'orangepi-daemon',
-            'camcorder-daemon',
-        ];
-
-        $daemonManager = new DaemonManager();
-        try {
-            foreach ($daemons as $daemon) {
-                Property::setAsRunningDaemon($daemon);
-                $daemonManager->restart($daemon);
-            }
-            return 'OK';
-        } catch (\Exception $ex) {
-            abort(response()->json([
-                'errors' => [$ex->getMessage()],
-            ]), 422);
-        }
-    }
-
     public function firmwareMake(string $typ): string
     {
         try {

@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Lang;
 
 class ObserverDaemon extends BaseDaemon
 {
+    public const SIGNATURE = 'observer-daemon';
+
+    public const PROPERTY_NAME = 'OBSERVER';
+
     /**
      * @return void
      */

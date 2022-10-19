@@ -127,7 +127,7 @@ class Property extends Model
     /**
      * @return array
      */
-    public static function runningDaemons(): array
+    /*public static function runningDaemons(): array
     {
         $item = self::whereName('RUNNING_DAEMONS')->first();
         if ($item && $item->value) {
@@ -135,13 +135,13 @@ class Property extends Model
         } else {
             return [];
         }
-    }
+    }*/
 
     /**
      * @param string $daemon
      * @return void
      */
-    public static function setAsRunningDaemon(string $daemon): void
+    /*public static function setAsRunningDaemon(string $daemon): void
     {
         $a = self::runningDaemons();
         if (!in_array($daemon, $a)) {
@@ -155,13 +155,13 @@ class Property extends Model
             $item->value = implode(';', $a);
             $item->save();
         }
-    }
+    } */
 
     /**
      * @param string $daemon
      * @return void
      */
-    public static function setAsStoppedDaemon(string $daemon): void
+    /*public static function setAsStoppedDaemon(string $daemon): void
     {
         $a = self::runningDaemons();
         if (in_array($daemon, $a)) {
@@ -175,7 +175,7 @@ class Property extends Model
             $item->value = implode(';', $a);
             $item->save();
         }
-    }
+    } */
 
     /**
      * @return int

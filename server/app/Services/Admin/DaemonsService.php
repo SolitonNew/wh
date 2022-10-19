@@ -7,11 +7,11 @@ use App\Models\Property;
 
 class DaemonsService
 {
-    private $_daemonManager;
+    private DaemonManager $daemonManager;
 
     public function __construct()
     {
-        $this->_daemonManager = new DaemonManager();
+        $this->daemonManager = new DaemonManager();
     }
 
     /**
@@ -21,12 +21,12 @@ class DaemonsService
     public function daemonsList(): array
     {
         $daemons = [];
-        foreach ($this->_daemonManager->daemons() as $dem) {
-            $stat = $this->_daemonManager->isStarted($dem);
+        foreach ($this->daemonManager->daemons() as $daemonId) {
+            $stat = $this->daemonManager->isStarted($daemonId);
             $daemons[] = (object)[
-                'id' => $dem,
+                'id' => $daemonId,
                 'stat' => $stat,
-                'idName' => $this->makeDaemonName($dem),
+                'idName' => $this->makeDaemonName($daemonId),
             ];
         }
 
@@ -40,7 +40,7 @@ class DaemonsService
      */
     public function isStarted(string $id): bool
     {
-        return $this->_daemonManager->isStarted($id);
+        return $this->daemonManager->isStarted($id);
     }
 
     /**
@@ -49,57 +49,57 @@ class DaemonsService
      */
     public function existsDaemon(string $id): bool
     {
-        return $this->_daemonManager->exists($id);
+        return $this->daemonManager->exists($id);
     }
 
     /**
      * @param string $id
-     * @return void
+     * @return string
      */
-    public function daemonStart(string $id): void
+    public function daemonStart(string $id): string
     {
         try {
-            Property::setAsRunningDaemon($id);
-            $this->_daemonManager->start($id);
+            $daemon = $this->daemonManager->getDaemonClass($id);
+            $daemon::setWorkingState(true);
+            $this->daemonManager->start($id);
             usleep(250000);
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
-                'errors' => [$ex->getMessage()],
-            ]), 422);
+            return 'ERROR: '.$ex->getMessage();
         }
     }
 
     /**
      * @param string $id
-     * @return void
+     * @return string
      */
-    public function daemonStop(string $id): void
+    public function daemonStop(string $id): string
     {
         try {
-            Property::setAsStoppedDaemon($id);
-            $this->_daemonManager->stop($id);
+            $daemon = $this->daemonManager->getDaemonClass($id);
+            $daemon::setWorkingState(false);
+            $this->daemonManager->stop($id);
             usleep(250000);
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
-                'errors' => [$ex->getMessage()],
-            ]), 422);
+            return 'ERROR: '.$ex->getMessage();
         }
     }
 
     /**
      * @param string $id
-     * @return void
+     * @return string
      */
-    public function daemonRestart(string $id): void
+    public function daemonRestart(string $id): string
     {
         try {
-            Property::setAsRunningDaemon($id);
-            $this->_daemonManager->restart($id);
+            $daemon = $this->daemonManager->getDaemonClass($id);
+            $daemon::setWorkingState(true);
+            $this->daemonManager->restart($id);
             usleep(250000);
+            return 'OK';
         } catch (\Exception $ex) {
-            abort(response()->json([
-                'errors' => [$ex->getMessage()],
-            ]), 422);
+            return 'ERROR: '.$ex->getMessage();
         }
     }
 

@@ -7,6 +7,7 @@ use App\Services\Admin\DaemonsService;
 use App\Models\WebLogMem;
 use App\Models\Property;
 use App\Library\DaemonManager;
+use Illuminate\Support\Facades\Log;
 
 class DaemonsController extends Controller
 {
@@ -82,9 +83,7 @@ class DaemonsController extends Controller
      */
     public function daemonStart(string $id)
     {
-        $this->service->daemonStart($id);
-
-        return 'OK';
+        return $this->service->daemonStart($id);
     }
 
     /**
@@ -95,9 +94,7 @@ class DaemonsController extends Controller
      */
     public function daemonStop(string $id)
     {
-        $this->service->daemonStop($id);
-
-        return 'OK';
+        return $this->service->daemonStop($id);
     }
 
     /**
@@ -108,9 +105,7 @@ class DaemonsController extends Controller
      */
     public function daemonRestart(string $id)
     {
-        $this->service->daemonRestart($id);
-
-        return 'OK';
+        return $this->service->daemonRestart($id);
     }
 
     /**

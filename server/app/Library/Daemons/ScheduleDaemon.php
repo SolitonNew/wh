@@ -10,6 +10,10 @@ use DB;
 
 class ScheduleDaemon extends BaseDaemon
 {
+    public const SIGNATURE = 'schedule-daemon';
+
+    public const PROPERTY_NAME = 'SCHEDULE';
+
     /**
      * @return void
      */

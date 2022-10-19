@@ -54,13 +54,16 @@ class AddedEventMemListener
             'extapi' => 'extapi-daemon',
             'orangepi' => 'orangepi-daemon',
             'din' => 'din-daemon',
+            'pyhome' => 'pyhome-daemon',
             'camcorder' => 'camcorder-daemon',
+            'zigbeeone' => 'zigbeeone-daemon',
         ];
 
         if (isset($cross[$typ])) {
             $manager = new \App\Library\DaemonManager();
             if (!$manager->isStarted($cross[$typ])) {
-                Property::setAsRunningDaemon($cross[$typ]);
+                $daemonClass = $manager->getDaemonClass($cross[$typ]);
+                $daemonClass::setWorkingState(true);
                 $manager->start($cross[$typ]);
             }
         }
