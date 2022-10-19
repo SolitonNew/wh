@@ -500,7 +500,9 @@ class PyhomeDaemon extends BaseDaemon
                 $this->waitCount = 0;
                 $this->inBuffer .= $c;
                 while (($c = fgetc($this->portHandle)) !== false) {
-                    $this->inBuffer .= $c;
+                    if (ord($c) < 255) {
+                        $this->inBuffer .= $c;
+                    }
                 }
 
                 if ($this->processedInBuffer()) {
