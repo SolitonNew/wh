@@ -389,7 +389,7 @@ class PyhomeDaemon extends BaseDaemon
 
         if (!$this->readPacks(250)) {
             $stat = 'ERROR';
-            $errorText = 'Sync Error '.strlen($this->inBuffer);
+            $errorText = 'Sync Error '.explode(chr(0), $this->inBuffer);
         } else
         if ($this->initQuery) {
             $stat = 'INIT';
