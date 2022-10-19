@@ -68,7 +68,7 @@ class Hub extends AffectsFirmwareModel
             case 'extapi':
                 return $this->extapiHosts->count();
             case 'orangepi':
-                return $this->i2cHosts->count();
+                return $this->i2cHosts->count() + $this->owHosts->count();
             case 'camcorder':
                 return $this->camcorderHosts->count();
             case 'din':
@@ -232,9 +232,9 @@ class Hub extends AffectsFirmwareModel
             'pyhome',
             'ow',
         ],
-        'zigbeeone' => [
+        /*'zigbeeone' => [
             'variable',
-        ],
+        ],*/
     ];
 
     /**
