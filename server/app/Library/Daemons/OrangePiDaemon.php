@@ -3,6 +3,7 @@
 namespace App\Library\Daemons;
 
 use App\Models\Device;
+use App\Models\Hub;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,14 @@ class OrangePiDaemon extends BaseDaemon
      * @var array
      */
     private array $i2cDrivers = [];
+
+    /**
+     * @return bool
+     */
+    public static function canRun(): bool
+    {
+        return (Hub::whereTyp('orangepi')->count() > 0);
+    }
 
     /**
      * @return void

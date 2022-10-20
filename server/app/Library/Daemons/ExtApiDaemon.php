@@ -4,6 +4,7 @@ namespace App\Library\Daemons;
 
 use App\Models\Device;
 use App\Models\ExtApiHost;
+use App\Models\Hub;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
@@ -26,6 +27,14 @@ class ExtApiDaemon extends BaseDaemon
      * @var int|bool
      */
     private int|bool $prevExecuteHostProviderTime = false;
+
+    /**
+     * @return bool
+     */
+    public static function canRun(): bool
+    {
+        return (Hub::whereTyp('extapi')->count() > 0);
+    }
 
     /**
      * @return void

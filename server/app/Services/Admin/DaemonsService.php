@@ -22,12 +22,14 @@ class DaemonsService
     {
         $daemons = [];
         $started = $this->daemonManager->findAllStartedDaemons();
-        foreach ($this->daemonManager->daemons() as $daemonId) {
-            $daemons[] = (object)[
-                'id' => $daemonId,
-                'stat' => in_array($daemonId, $started),
-                'idName' => $this->makeDaemonName($daemonId),
-            ];
+        foreach (config('daemons.list') as $daemonClass) {
+            if ($daemonClass::canRun()) {
+                $daemons[] = (object)[
+                    'id' => $daemonClass::SIGNATURE,
+                    'stat' => in_array($daemonClass::SIGNATURE, $started),
+                    'idName' => $this->makeDaemonName($daemonClass::SIGNATURE),
+                ];
+            }
         }
         return $daemons;
     }

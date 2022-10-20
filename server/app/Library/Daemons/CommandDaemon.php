@@ -12,6 +12,14 @@ class CommandDaemon extends BaseDaemon
     public const PROPERTY_NAME = 'COMMAND';
 
     /**
+     * @return bool
+     */
+    public static function canRun(): bool
+    {
+        return true;
+    }
+
+    /**
      * The overridden method.
      * 1. Clear command log
      * 2. Start infinity loop

@@ -78,6 +78,14 @@ class PyhomeDaemon extends BaseDaemon
     const PACK_ERROR = 3;
 
     /**
+     * @return bool
+     */
+    public static function canRun(): bool
+    {
+        return (Hub::whereTyp('pyhome')->count() > 0);
+    }
+
+    /**
      * @return void
      */
     public function execute(): void
