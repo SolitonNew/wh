@@ -13,9 +13,10 @@ class DaemonObserve extends Command
 
     public function handle(DaemonManager $daemonManager)
     {
+        $started = $daemonManager->findAllStartedDaemons();
         foreach (config('daemons.list') as $daemonClass) {
             try {
-                if (!$daemonManager->isStarted($daemonClass::SIGNATURE)) {
+                if (!in_array($daemonClass::SIGNATURE, $started)) {
                     if ($daemonClass::getWorkingState()) {
                         $daemonManager->start($daemonClass::SIGNATURE);
                     }
