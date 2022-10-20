@@ -323,11 +323,8 @@ class PyhomeDaemon extends BaseDaemon
         $bts = 1024;
         $count = ceil(strlen($file) / $bts);
 
-        usleep(250000);
-        $this->readPacks(250); // Clear buff
-
-        $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $count, False]);
-        usleep(500000); // Pause for pyboard
+        $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $count, false]);
+        sleep(1); // Pause for pyboard
         if ($this->readPacks(1000)) {
             $dp = 100 / $count;
             $packs = 0;
