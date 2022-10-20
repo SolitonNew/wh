@@ -88,7 +88,7 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'jurnal') }}" href="{{ route('admin.jurnal') }}">
                             <img src="/img/menus/bar-chart-2x.png">
                             <span class="label">@lang('admin/jurnal.menu')</span>
-                            <span id="daemonsState" class="badge badge-primary badge-pill">{{ \App\Models\Property::getRunedDaemons() }} / {{ \App\Models\Property::getTotalDaemons() }}</span>
+                            <span id="daemonsState" class="badge badge-primary badge-pill">0 / 0</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'users') }}" href="{{ route('admin.users') }}">
                             <img src="/img/menus/people-2x.png">
