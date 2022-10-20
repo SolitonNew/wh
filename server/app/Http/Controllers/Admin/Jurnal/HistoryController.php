@@ -48,7 +48,7 @@ class HistoryController extends Controller
 
         $this->service->storeFilterDataFromRequest($request);
 
-        list($data, $errors) = $this->service->getFilteringData($id);
+        list($data, $count, $limit, $errors) = $this->service->getFilteringData($id);
 
         $devices = Device::orderBy('name', 'asc')->get();
 
@@ -56,6 +56,8 @@ class HistoryController extends Controller
             'id' => $id,
             'devices' => $devices,
             'data' => $data,
+            'count' => $count,
+            'limit' => $limit,
         ])->withErrors($errors);
     }
 

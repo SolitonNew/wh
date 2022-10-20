@@ -55,7 +55,7 @@
                             <th scope="col" style="width: 100px;">
                                 <span>
                                     <span>@lang('admin/jurnal.history_ID')</span>
-                                    <span class="text-primary">({{ count($data) }})</span>
+                                    <span class="text-primary">({{ count($data).($count > $limit ? ' / '.$count : '') }})</span>
                                 </span>
                             </th>
                             <th scope="col" style="width: 180px;"><span>@lang('admin/jurnal.history_CREATED_AT')</span></th>
