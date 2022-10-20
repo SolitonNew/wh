@@ -323,15 +323,15 @@ class PyhomeDaemon extends BaseDaemon
         $bts = 1024;
         $count = ceil(strlen($file) / $bts);
 
-        $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $count, False]);
-        if ($this->readPacks(1000)) {
+        $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $count, false]);
+        if ($this->readPacks(2000)) {
             $dp = 100 / $count;
             $packs = 0;
             $p = $dp;
             for ($i = 0; $i < $count; $i++) {
                 $part = substr($file,$i * $bts, $bts);
                 $this->transmitData($controller->id, self::PACK_COMMAND, ['SET_CONFIG_FILE', $i + 1, $part]);
-                $this->readPacks(1000);
+                $this->readPacks(2000);
 
                 $packs++;
                 $this->firmwareStatuses[$controller->id] = round($p);
@@ -503,18 +503,13 @@ class PyhomeDaemon extends BaseDaemon
         $result = false;
         $this->waitCount = 0;
         while ($this->waitCount < ($utimeout / self::SLEEP_TIME)) {
-            $c = fgetc($this->portHandle);
-            if ($c !== false) {
-                $this->waitCount = 0;
-                $this->inBuffer .= $c;
-                while (($c = fgetc($this->portHandle)) !== false) {
-                    $this->inBuffer .= $c;
-                }
-
-                if ($this->processedInBuffer()) {
-                    $this->waitCount = 0; // Resets the timeout counter
-                    $result = true;
-                    if (strlen($this->inBuffer) == 0) break; // Let's not wait for the timeout. We read everything we needed.
+            if (($s = fgets($this->portHandle)) !== false) {
+                $this->inBuffer .= $s;
+                if (str_contains($s, chr(0))) {
+                    if ($this->processedInBuffer()) {
+                        $result = true;
+                        break;
+                    }
                 }
             } else {
                 usleep(self::SLEEP_TIME * 1000);
@@ -532,7 +527,7 @@ class PyhomeDaemon extends BaseDaemon
      */
     private function processedInBuffer(): bool
     {
-        if (!$this->inBuffer) return false;
+        if ($this->inBuffer == '') return false;
 
         $packs = explode(chr(0), $this->inBuffer);
 
