@@ -8,7 +8,7 @@ class RS485(object):
     def __init__(self, uart_num, pin_rw, dev_id):
         self.error = []
         self.uart = UART(uart_num)
-        self.uart.init(57600, bits=8, parity=0, timeout=10, read_buf_len=64)
+        self.uart.init(57600, bits=8, parity=None, stop=2, timeout=10, read_buf_len=64)
         self.pin_rw = Pin(pin_rw)
         self.pin_rw.init(Pin.OUT_PP)
         self.pin_rw.value(0)
