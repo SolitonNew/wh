@@ -324,6 +324,7 @@ class PyhomeDaemon extends BaseDaemon
         $count = ceil(strlen($file) / $bts);
 
         $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $count, false]);
+        sleep(1);
         if ($this->readPacks(1000)) {
             $dp = 100 / $count;
             $packs = 0;
@@ -331,6 +332,7 @@ class PyhomeDaemon extends BaseDaemon
             for ($i = 0; $i < $count; $i++) {
                 $part = substr($file,$i * $bts, $bts);
                 $this->transmitData($controller->id, self::PACK_COMMAND, ['SET_CONFIG_FILE', $i + 1, $part]);
+                sleep(1);
                 $this->readPacks(1000);
 
                 $packs++;
