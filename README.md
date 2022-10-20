@@ -13,6 +13,7 @@ An example of installing the system on OrangePi Light with the Armbian operating
 sudo apt update
 sudo apt install apache2
 sudo apt install php libapache2-mod-php
+sudo apt install libzip-dev php-zip
 cd /var/www
 sudo rm -r html
 sudo chgrp www-data .

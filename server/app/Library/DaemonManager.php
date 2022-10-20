@@ -147,4 +147,22 @@ class DaemonManager
         }
         return $pids;
     }
+
+    /**
+     * @return array
+     */
+    public function findAllStartedDaemons(): array
+    {
+        $result = [];
+        exec("ps axw | grep daemon | grep -v grep | grep -v 'sh -c '", $outs);
+        foreach ($outs as $out) {
+            $a = explode(' ', trim($out));
+            foreach ($this->daemons as $signature) {
+                if (in_array($signature, $a) && !in_array($signature, $result)) {
+                    $result[] = $signature;
+                }
+            }
+        }
+        return $result;
+    }
 }
