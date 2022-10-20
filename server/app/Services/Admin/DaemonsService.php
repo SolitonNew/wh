@@ -21,15 +21,14 @@ class DaemonsService
     public function daemonsList(): array
     {
         $daemons = [];
+        $started = $this->daemonManager->findAllStartedDaemons();
         foreach ($this->daemonManager->daemons() as $daemonId) {
-            $stat = $this->daemonManager->isStarted($daemonId);
             $daemons[] = (object)[
                 'id' => $daemonId,
-                'stat' => $stat,
+                'stat' => in_array($daemonId, $started),
                 'idName' => $this->makeDaemonName($daemonId),
             ];
         }
-
         return $daemons;
     }
 
