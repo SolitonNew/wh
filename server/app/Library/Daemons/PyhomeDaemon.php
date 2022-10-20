@@ -324,10 +324,7 @@ class PyhomeDaemon extends BaseDaemon
         $count = ceil(strlen($file) / $bts);
 
         $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $count, false]);
-        sleep(1); // Pause for pyboard
-        Log::info('START SEND CONFIG');
         if ($this->readPacks(1000)) {
-            Log::info('SEND CONFIG');
             $dp = 100 / $count;
             $packs = 0;
             $p = $dp;
@@ -510,11 +507,15 @@ class PyhomeDaemon extends BaseDaemon
             if ($c !== false) {
                 $this->waitCount = 0;
                 $this->inBuffer .= $c;
+                $containEnd = false;
                 while (($c = fgetc($this->portHandle)) !== false) {
                     $this->inBuffer .= $c;
+                    if ($c == chr(0)) {
+                        $containEnd = true;
+                    }
                 }
 
-                if ($this->processedInBuffer()) {
+                if ($containEnd && $this->processedInBuffer()) {
                     $this->waitCount = 0; // Resets the timeout counter
                     $result = true;
                     if (strlen($this->inBuffer) == 0) break; // Let's not wait for the timeout. We read everything we needed.
@@ -535,7 +536,7 @@ class PyhomeDaemon extends BaseDaemon
      */
     private function processedInBuffer(): bool
     {
-        if (!$this->inBuffer) return false;
+        if ($this->inBuffer == '') return false;
 
         $packs = explode(chr(0), $this->inBuffer);
 
