@@ -32,6 +32,8 @@ class HistoryService
         $sql = isset($_COOKIE[self::FILTER_SQL]) ? $_COOKIE[self::FILTER_SQL] : '';
         $errors = [];
         $data = [];
+        $count = 0;
+        $limit = config('settings.admin_history_lines_limit');
 
         if ($date) {
             $query = DeviceChange::whereDeviceId($deviceID);
@@ -44,7 +46,10 @@ class HistoryService
             }
 
             try {
-                $data = $query->orderBy('id', 'asc')->get();
+                $data = $query->orderBy('id', 'asc')
+                    ->limit($limit)
+                    ->get();
+                $count = $query->count();
             } catch (\Exception $ex) {
                 $errors['sql'] = $ex->getMessage();
                 $data = [];
@@ -53,6 +58,8 @@ class HistoryService
 
         return [
             $data,
+            $count,
+            $limit,
             $errors
         ];
     }
