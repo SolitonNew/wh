@@ -96,8 +96,8 @@ class PyhomeDaemon extends BaseDaemon
 
         try {
             $baud = config('pyhome.baud');
-            exec("stty -F $port $baud cs8 cstopb parodd -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
-            $this->portHandle = fopen($port, 'r+t');
+            exec("stty -F $port $baud cs8 cstopb -parodd -icrnl ignbrk -brkint -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts");
+            $this->portHandle = fopen($port, 'r+b');
             stream_set_blocking($this->portHandle, false);
             while ($this->portHandle) {
                 $loopErrors = false;
@@ -389,7 +389,7 @@ class PyhomeDaemon extends BaseDaemon
 
         if (!$this->readPacks(250)) {
             $stat = 'ERROR';
-            $errorText = 'Sync Error ['.$this->inBuffer.']';
+            $errorText = 'Sync Error. Buf Size: '.strlen($this->inBuffer);
         } else
         if ($this->initQuery) {
             $stat = 'INIT';
