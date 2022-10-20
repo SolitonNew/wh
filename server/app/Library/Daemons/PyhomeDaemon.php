@@ -325,7 +325,9 @@ class PyhomeDaemon extends BaseDaemon
 
         $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $count, false]);
         sleep(1); // Pause for pyboard
+        Log::info('START SEND CONFIG');
         if ($this->readPacks(1000)) {
+            Log::info('SEND CONFIG');
             $dp = 100 / $count;
             $packs = 0;
             $p = $dp;
