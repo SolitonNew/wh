@@ -504,7 +504,6 @@ class PyhomeDaemon extends BaseDaemon
         $this->waitCount = 0;
         while ($this->waitCount < ($utimeout / self::SLEEP_TIME)) {
             if (($s = fgets($this->portHandle)) !== false) {
-                Log::info($s);
                 $this->inBuffer .= $s;
                 if (str_contains($s, chr(0))) {
                     if ($this->processedInBuffer()) {
