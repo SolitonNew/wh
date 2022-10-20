@@ -324,16 +324,14 @@ class PyhomeDaemon extends BaseDaemon
         $count = ceil(strlen($file) / $bts);
 
         $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $count, false]);
-        sleep(1);
-        if ($this->readPacks(1000)) {
+        if ($this->readPacks(2000)) {
             $dp = 100 / $count;
             $packs = 0;
             $p = $dp;
             for ($i = 0; $i < $count; $i++) {
                 $part = substr($file,$i * $bts, $bts);
                 $this->transmitData($controller->id, self::PACK_COMMAND, ['SET_CONFIG_FILE', $i + 1, $part]);
-                sleep(1);
-                $this->readPacks(1000);
+                $this->readPacks(2000);
 
                 $packs++;
                 $this->firmwareStatuses[$controller->id] = round($p);
@@ -505,22 +503,14 @@ class PyhomeDaemon extends BaseDaemon
         $result = false;
         $this->waitCount = 0;
         while ($this->waitCount < ($utimeout / self::SLEEP_TIME)) {
-            $c = fgetc($this->portHandle);
-            if ($c !== false) {
-                $this->waitCount = 0;
-                $this->inBuffer .= $c;
-                $containEnd = false;
-                while (($c = fgetc($this->portHandle)) !== false) {
-                    $this->inBuffer .= $c;
-                    if ($c == chr(0)) {
-                        $containEnd = true;
+            if (($s = fgets($this->portHandle)) !== false) {
+                Log::info($s);
+                $this->inBuffer .= $s;
+                if (str_contains($s, chr(0))) {
+                    if ($this->processedInBuffer()) {
+                        $result = true;
+                        break;
                     }
-                }
-
-                if ($containEnd && $this->processedInBuffer()) {
-                    $this->waitCount = 0; // Resets the timeout counter
-                    $result = true;
-                    if (strlen($this->inBuffer) == 0) break; // Let's not wait for the timeout. We read everything we needed.
                 }
             } else {
                 usleep(self::SLEEP_TIME * 1000);
