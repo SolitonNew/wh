@@ -50,21 +50,13 @@ class AddedEventMemListener
      */
     private function checkDaemonState(string $typ): void
     {
-        $cross = [
-            'extapi' => 'extapi-daemon',
-            'orangepi' => 'orangepi-daemon',
-            'din' => 'din-daemon',
-            'pyhome' => 'pyhome-daemon',
-            'camcorder' => 'camcorder-daemon',
-            'zigbeeone' => 'zigbeeone-daemon',
-        ];
-
-        if (isset($cross[$typ])) {
-            $manager = new \App\Library\DaemonManager();
-            if (!$manager->isStarted($cross[$typ])) {
-                $daemonClass = $manager->getDaemonClass($cross[$typ]);
-                $daemonClass::setWorkingState(true);
-                $manager->start($cross[$typ]);
+        foreach (config('daemons.list') as $daemonClass) {
+            if ($daemonClass::SIGNATURE == $typ.'-daemon') {
+                $manager = new \App\Library\DaemonManager();
+                if (!$manager->isStarted($daemonClass::SIGNATURE)) {
+                    $daemonClass::setWorkingState(true);
+                    $manager->start($daemonClass::SIGNATURE);
+                }
             }
         }
     }

@@ -124,6 +124,14 @@ class BaseDaemon
     }
 
     /**
+     * @return bool
+     */
+    public static function canRun(): bool
+    {
+        return false;
+    }
+
+    /**
      * @param string $typ
      * @return bool
      */

@@ -82,6 +82,14 @@ class DinDaemon extends BaseDaemon
     const SLEEP_TIME = 50;
 
     /**
+     * @return bool
+     */
+    public static function canRun(): bool
+    {
+        return (Hub::whereTyp('din')->count() > 0);
+    }
+
+    /**
      * @return void
      */
     public function execute(): void

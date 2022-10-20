@@ -13,6 +13,14 @@ class ObserverDaemon extends BaseDaemon
     public const PROPERTY_NAME = 'OBSERVER';
 
     /**
+     * @return bool
+     */
+    public static function canRun(): bool
+    {
+        return true;
+    }
+
+    /**
      * @return void
      */
     public function execute(): void

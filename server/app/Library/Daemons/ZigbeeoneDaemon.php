@@ -64,6 +64,14 @@ class ZigbeeoneDaemon extends BaseDaemon
     const SLEEP_TIME = 50;
 
     /**
+     * @return bool
+     */
+    public static function canRun(): bool
+    {
+        return false;
+    }
+
+    /**
      * @return void
      */
     public function execute(): void
