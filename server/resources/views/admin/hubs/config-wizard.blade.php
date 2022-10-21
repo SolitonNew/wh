@@ -134,6 +134,7 @@
                 if (errors.length == 0) {
                     $('#configWizardTransmitBtn').show();
                 } else {
+                    console.log(errors);
                     alert(errors.join('\n'));
                 }
             }
