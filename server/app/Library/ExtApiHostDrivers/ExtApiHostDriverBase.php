@@ -68,7 +68,7 @@ class ExtApiHostDriverBase
      */
     public function assignData(mixed $data): void
     {
-        $this->data = json_decode($data);
+        $this->data = json_decode($data ?? '');
     }
 
     /**

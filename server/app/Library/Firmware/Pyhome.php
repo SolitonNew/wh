@@ -44,7 +44,7 @@ class Pyhome
         // Reading all the necessary data
         $OwHostTyps = config('onewire.types');
         $owList = OwHost::orderBy('id', 'asc')->get();
-        $varList = DB::select("select v.*, c.rom controller_rom, '' rom
+        $varList = DB::select("select v.*, IF(c.typ = 'pyhome', c.rom, 0) hub_rom, '' rom
                                  from core_devices v, core_hubs c
                                 where v.hub_id = c.id
                                order by v.id");
@@ -55,7 +55,7 @@ class Pyhome
                                  order by e.device_id');
 
         foreach ($varList as $var) {
-            if ($var->typ == 'ow') {
+            if ($var->hub_rom > 0 && $var->typ == 'ow') {
                 foreach ($owList as $ow) {
                     if ($ow->id == $var->host_id) {
                         $a = [
