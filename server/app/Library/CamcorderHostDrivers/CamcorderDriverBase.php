@@ -78,7 +78,7 @@ class CamcorderDriverBase
      */
     public function assignData(string|null $data): void
     {
-        $this->data = json_decode($data);
+        $this->data = json_decode($data ?? '');
     }
 
     /**
