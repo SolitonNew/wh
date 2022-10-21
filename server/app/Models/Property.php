@@ -202,32 +202,6 @@ class Property extends Model
     }
 
     /**
-     * @return int
-     */
-    public static function getTotalDaemons(): int
-    {
-        $manager = new \App\Library\DaemonManager();
-        return count($manager->daemons());
-    }
-
-    /**
-     * @return int
-     */
-    public static function getRunedDaemons(): int
-    {
-        $service = new \App\Services\Admin\DaemonsService();
-
-        $count = 0;
-        foreach ($service->daemonsList() as $daemon) {
-            if ($daemon->stat) {
-                $count++;
-            }
-        }
-
-        return $count;
-    }
-
-    /**
      * @var string|bool
      */
     private static string|bool $timezone = false;
