@@ -352,7 +352,7 @@ class PyhomeDaemon extends BaseDaemon
         sleep(1);
 
         // Pack statuses
-        $this->firmwareStatuses[$controller->id] = $complete ? 'COMPLETE' : 'BAD';
+        $this->firmwareStatuses[$controller->id] = $complete ? 'COMPLETE' : 'ERROR';
         $a = [];
         foreach ($this->firmwareStatuses as $cId => $cPerc) {
             $a[] = $cId.':'.$cPerc;
