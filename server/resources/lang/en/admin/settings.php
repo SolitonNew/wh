@@ -40,4 +40,7 @@ return [
     'forecast_WD' => 'Wind Direction',
     'forecast_WS' => 'Wind Speed',
     'forecast_MP' => 'Mean Precipitation',
+
+    'check_update_title' => 'System Updates',
+    'check_update_btn' => 'Download Updates...',
 ];

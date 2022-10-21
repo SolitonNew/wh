@@ -34,6 +34,7 @@
         </div>
         <div class="col-sm-6">
             @include('admin.settings.location')
+            @include('admin.settings.check-update')
         </div>
     </div>
 </div>

@@ -132,4 +132,14 @@ class SettingsController extends Controller
 
         return 'OK';
     }
+
+    /**
+     * @return string
+     */
+    public function checkUpdates()
+    {
+        return view('admin.settings.check-update-dialog', [
+            'response' => $this->service->checkUpdates(),
+        ]);
+    }
 }
