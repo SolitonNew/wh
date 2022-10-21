@@ -531,13 +531,9 @@ class PyhomeDaemon extends BaseDaemon
 
         $result = false;
         for ($i = 0; $i < count($packs); $i++) {
-            $pack = json_decode($packs[0], true);
-            if (!$pack && $i == 0) return false;
-            $result = true;
-
+            $pack = json_decode(array_shift($packs), true);
             if ($pack) {
-                array_shift($packs);
-
+                $result = true;
                 switch ($pack[1]) {
                     case self::PACK_SYNC:
                         if ($pack[2] == 'RESET') {
