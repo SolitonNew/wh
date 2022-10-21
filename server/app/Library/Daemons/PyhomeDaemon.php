@@ -311,7 +311,7 @@ class PyhomeDaemon extends BaseDaemon
      */
     public function commandConfigUpdate(Hub $controller): bool
     {
-        $ok = false;
+        $complete = false;
 
         // ------------------------------
         $this->printProgress();
@@ -326,14 +326,12 @@ class PyhomeDaemon extends BaseDaemon
         $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $count, false]);
         if ($this->readPacks(2000)) {
             $dp = 100 / $count;
-            $packs = 0;
             $p = $dp;
             for ($i = 0; $i < $count; $i++) {
                 $part = substr($file,$i * $bts, $bts);
-                $this->transmitData($controller->id, self::PACK_COMMAND, ['SET_CONFIG_FILE', $i + 1, $part]);
+                $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $i + 1, $part]);
                 if (!$this->readPacks(2000)) break;
 
-                $packs++;
                 $this->firmwareStatuses[$controller->id] = round($p);
                 // Pack statuses
                 $a = [];
@@ -348,15 +346,13 @@ class PyhomeDaemon extends BaseDaemon
                 $p += $dp;
             }
 
-            $ok = true;
-        } else {
-            $ok = false;
+            $complete = true;
         }
 
         sleep(1);
 
         // Pack statuses
-        $this->firmwareStatuses[$controller->id] = $ok ? 'COMPLETE' : 'BAD';
+        $this->firmwareStatuses[$controller->id] = $complete ? 'COMPLETE' : 'BAD';
         $a = [];
         foreach ($this->firmwareStatuses as $cId => $cPerc) {
             $a[] = $cId.':'.$cPerc;
@@ -364,7 +360,7 @@ class PyhomeDaemon extends BaseDaemon
 
         static::setCommandInfo(implode(';', $a), true);
 
-        return $ok;
+        return $complete;
     }
 
     /**
