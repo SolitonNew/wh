@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
+use \Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class CoreExecuteClear extends \Illuminate\Console\Command
+class CoreExecuteClear extends Command
 {
     protected $signature = 'coreexecute:clear';
     protected $description = 'coreexecute:clear';

@@ -6,6 +6,7 @@ use App\Console\Commands\CoreEventsClear;
 use App\Console\Commands\CoreExecuteClear;
 use App\Console\Commands\DaemonObserve;
 use App\Console\Commands\DaemonRun;
+use App\Console\Commands\HistoryClear;
 use App\Console\Commands\WebLogsClear;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
@@ -26,6 +27,7 @@ class Kernel extends ConsoleKernel
         WebLogsClear::class,
         CoreEventsClear::class,
         CoreExecuteClear::class,
+        HistoryClear::class,
     ];
 
     /**
@@ -48,6 +50,9 @@ class Kernel extends ConsoleKernel
 
         // Clearing "core_execute"
         $schedule->command(CoreExecuteClear::class)->dailyAt('4:00');
+
+        // Clear Deleted Devices
+        $schedule->command(HistoryClear::class)->dailyAt('4:10');
     }
 
     /**
