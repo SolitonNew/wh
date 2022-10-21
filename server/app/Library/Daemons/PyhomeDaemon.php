@@ -527,7 +527,7 @@ class PyhomeDaemon extends BaseDaemon
      */
     private function processedInBuffer(): bool
     {
-        if ($this->inBuffer == '') return false;
+        if ($this->inBuffer === '') return false;
 
         $packs = explode(chr(0), $this->inBuffer);
 
