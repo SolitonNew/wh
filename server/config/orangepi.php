@@ -27,6 +27,8 @@ return [
         'PG8' => 200,
         'PG9' => 201,
         'PROC_TEMP' => -1,
+        'MEM_TOTAL' => -1,
+        'MEM_FREE' => -1,
     ],
     'drivers' => [
         'bmp280' => [

@@ -138,6 +138,7 @@ class HubsService
     private function decodeChannelTyp(string $channel, int $default = 0): int
     {
         $channelControl = [
+            0 => ['MEM_TOTAL', 'MEM_FREE'],
             1 => [
                 'R1', 'R2', 'R3', 'R4',
                 'X1', 'X2', 'X3', 'X4',
