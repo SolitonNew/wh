@@ -331,7 +331,7 @@ class PyhomeDaemon extends BaseDaemon
             for ($i = 0; $i < $count; $i++) {
                 $part = substr($file,$i * $bts, $bts);
                 $this->transmitData($controller->id, self::PACK_COMMAND, ['SET_CONFIG_FILE', $i + 1, $part]);
-                $this->readPacks(2000);
+                if (!$this->readPacks(2000)) break;
 
                 $packs++;
                 $this->firmwareStatuses[$controller->id] = round($p);
