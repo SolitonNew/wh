@@ -387,6 +387,9 @@ class HubsService
                     $item->host_id = null;
                     $item->channel = $chan;
                     $item->app_control = $this->decodeChannelTyp($chan, 1);
+                    if ($item->app_control === 0) {
+                        $item->comm = str_replace('_', ' ', $chan);
+                    }
                     $item->save(['withoutevents']);
                     $item->name = 'orangepi_'.$item->id.'_'.$chan;
                     $item->save();
