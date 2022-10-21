@@ -10,7 +10,7 @@ class Property extends Model
     protected $table = 'core_properties';
     public $timestamps = false;
 
-    const VERSION = '2.17.7 alpha';
+    const VERSION = '2.17.8 alpha';
 
     /**
      * @return array
@@ -199,32 +199,6 @@ class Property extends Model
         $item->save();
 
         self::$firmwareChanges = $count;
-    }
-
-    /**
-     * @return int
-     */
-    public static function getTotalDaemons(): int
-    {
-        $manager = new \App\Library\DaemonManager();
-        return count($manager->daemons());
-    }
-
-    /**
-     * @return int
-     */
-    public static function getRunedDaemons(): int
-    {
-        $service = new \App\Services\Admin\DaemonsService();
-
-        $count = 0;
-        foreach ($service->daemonsList() as $daemon) {
-            if ($daemon->stat) {
-                $count++;
-            }
-        }
-
-        return $count;
     }
 
     /**

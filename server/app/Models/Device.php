@@ -236,7 +236,7 @@ class Device extends AffectsFirmwareModel
             if (!$item) abort(404);
 
             // Clear relations
-            DeviceChange::whereDeviceId($id)->delete();
+            //DeviceChange::whereDeviceId($id)->delete();
             EventMem::whereDeviceId($id)->delete();
             DeviceEvent::whereDeviceId($id)->delete();
             // ----------------------

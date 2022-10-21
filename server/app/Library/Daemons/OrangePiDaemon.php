@@ -11,6 +11,7 @@ use App\Models\I2cHost;
 use \Cron\CronExpression;
 use App\Models\Property;
 use App\Library\OrangePi\I2c\I2c;
+use Illuminate\Support\Facades\Log;
 
 class OrangePiDaemon extends BaseDaemon
 {
@@ -78,7 +79,8 @@ class OrangePiDaemon extends BaseDaemon
                 // Get Orange Pi system info
                 $minute = \Carbon\Carbon::now()->startOfMinute();
                 if ($minute->gt($lastMinute)) {
-                    $this->getSystemInfo();
+                    $this->loadProcessorTemperature();
+                    $this->loadMemoryState();
                 }
                 $lastMinute = $minute;
                 // -----------------------------
@@ -152,13 +154,11 @@ class OrangePiDaemon extends BaseDaemon
     }
 
     /**
-     *
      * @param string $chan
-     * @param int $value
+     * @param float $value
      * @return void
-     * @throws \Exception
      */
-    private function setValueGPIO(string $chan, int $value): void
+    private function setValueGPIO(string $chan, float $value): void
     {
         try {
             $channels = config('orangepi.channels');
@@ -201,6 +201,34 @@ class OrangePiDaemon extends BaseDaemon
     private function getSystemInfo(): void
     {
         try {
+
+        } catch (\Exception $ex) {
+            $s = "[".parse_datetime(now())."] ERROR\n";
+            $s .= $ex->getMessage();
+            $this->printLine($s);
+        }
+    }
+
+    private function setOrangePiDeviceValueByChannel(string $channel, float $value)
+    {
+        $roundValue = round($value);
+
+        foreach ($this->devices as $dev) {
+            if ($dev->typ == 'orangepi' && $dev->channel === $channel) {
+                if (round($dev->value) != $roundValue) {
+                    Device::setValue($dev->id, $value);
+                }
+                break;
+            }
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function loadProcessorTemperature()
+    {
+        try {
             $val = file_get_contents('/sys/devices/virtual/thermal/thermal_zone0/temp');
             $temp = preg_replace("/[^0-9]/", "", $val);
 
@@ -210,12 +238,29 @@ class OrangePiDaemon extends BaseDaemon
                 $temp = round($temp);
             }
 
-            foreach ($this->devices as $dev) {
-                if ($dev->typ == 'orangepi' && $dev->channel == 'PROC_TEMP') {
-                    if (round($dev->value) != $temp) {
-                        Device::setValue($dev->id, $temp);
-                    }
-                    break;
+            $this->setOrangePiDeviceValueByChannel('PROC_TEMP', $temp);
+        } catch (\Exception $ex) {
+            $s = "[".parse_datetime(now())."] ERROR\n";
+            $s .= $ex->getMessage();
+            $this->printLine($s);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function loadMemoryState()
+    {
+        try {
+            $info = file_get_contents('/proc/meminfo');
+            foreach (explode("\n", $info) as $line) {
+                if (str_starts_with($line, 'MemTotal:')) {
+                    $value = preg_replace("/[^0-9]/", "", $line);
+                    $this->setOrangePiDeviceValueByChannel('MEM_TOTAL', round($value / 1024));
+                } else
+                if (str_starts_with($line, 'MemFree:')) {
+                    $value = preg_replace("/[^0-9]/", "", $line);
+                    $this->setOrangePiDeviceValueByChannel('MEM_FREE', round($value / 1024));
                 }
             }
         } catch (\Exception $ex) {

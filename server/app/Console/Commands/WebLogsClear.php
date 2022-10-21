@@ -3,9 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Library\DaemonManager;
+use \Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class WebLogsClear extends \Illuminate\Console\Command
+class WebLogsClear extends Command
 {
     protected $signature = 'weblogs:clear';
     protected $description = 'weblogs:clear';

@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
+use \Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class CoreEventsClear extends \Illuminate\Console\Command
+class CoreEventsClear extends Command
 {
     protected $signature = 'coreevents:clear';
     protected $description = 'coreevents:clear';

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Library\DaemonManager;
 use App\Library\Daemons\DinDaemon;
 use App\Library\Daemons\PyhomeDaemon;
 use App\Library\Daemons\ZigbeeoneDaemon;
@@ -78,10 +79,12 @@ class SettingsController extends Controller
      * @param Request $request
      * @return string
      */
-    public function setDinSettings(Request $request): string
+    public function setDinSettings(Request $request, DaemonManager $daemonManager): string
     {
         DinDaemon::setSettings('PORT', $request->port);
         DinDaemon::setSettings('MMCU', $request->mmcu);
+        // Reboot Daemon With New Settings
+        $daemonManager->restart(DinDaemon::SIGNATURE);
         return 'OK';
     }
 
@@ -89,9 +92,11 @@ class SettingsController extends Controller
      * @param Request $request
      * @return string
      */
-    public function setPyhomeSettings(Request $request): string
+    public function setPyhomeSettings(Request $request, DaemonManager $daemonManager): string
     {
         PyhomeDaemon::setSettings('PORT', $request->port);
+        // Reboot Daemon With New Settings
+        $daemonManager->restart(PyhomeDaemon::SIGNATURE);
         return 'OK';
     }
 
@@ -99,9 +104,11 @@ class SettingsController extends Controller
      * @param Request $request
      * @return string
      */
-    public function setZigbeeoneSettings(Request $request): string
+    public function setZigbeeoneSettings(Request $request, DaemonManager $daemonManager): string
     {
         ZigbeeoneDaemon::setSettings('PORT', $request->port);
+        // Reboot Daemon With New Settings
+        $daemonManager->restart(ZigbeeoneDaemon::SIGNATURE);
         return 'OK';
     }
 
