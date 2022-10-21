@@ -19,10 +19,18 @@
         <div class="col-sm-6">
             @include('admin.settings.timezone')
             @include('admin.settings.structure-deph')
+            @if(App\Library\Daemons\DinDaemon::canRun())
             @include('admin.settings.din-settings')
+            @endif
+            @if(App\Library\Daemons\PyhomeDaemon::canRun())
             @include('admin.settings.pyhome-settings')
+            @endif
+            @if(App\Library\Daemons\ZigbeeoneDaemon::canRun())
             @include('admin.settings.zigbeeone-settings')
+            @endif
+            @if(App\Library\Daemons\ExtApiDaemon::canRun())
             @include('admin.settings.forecast')
+            @endif
         </div>
         <div class="col-sm-6">
             @include('admin.settings.location')
