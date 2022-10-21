@@ -8,6 +8,7 @@ use App\Library\Daemons\PyhomeDaemon;
 use App\Library\Daemons\ZigbeeoneDaemon;
 use App\Library\Firmware\Pyhome;
 use App\Library\Firmware\ZigbeeOne;
+use App\Models\EventMem;
 use App\Models\Hub;
 use App\Models\Device;
 use App\Models\OwHost;
@@ -128,6 +129,13 @@ class HubsService
                 $this->generateExtApiDevsByHub($hubID);
                 break;
         }
+
+        // Store event
+        EventMem::addEvent(EventMem::DEVICE_LIST_CHANGE, [
+            'id' => null,
+            'hubID' => $hubID,
+        ]);
+        // ------------
     }
 
     /**
