@@ -54,4 +54,12 @@ class SettingsService
             ]), 422);
         }
     }
+
+    /**
+     * @return false|string|null
+     */
+    public function checkUpdates()
+    {
+        return shell_exec('git pull');
+    }
 }

@@ -128,6 +128,7 @@ $router->group(['middleware' => 'auth.admin'], function ($router) {
     $router->post('/settings-set-pyhome-settings', ['as' => 'admin.settings-set-pyhome-settings', 'uses' => 'SettingsController@setPyhomeSettings']);
     $router->post('/settings-set-zigbeeone-settings', ['as' => 'admin.settings-set-zigbeeone-settings', 'uses' => 'SettingsController@setZigbeeoneSettings']);
     $router->post('/settings-set-forecast', ['as' => 'admin.settings-set-forecast', 'uses' => 'SettingsController@setForecast']);
+    $router->get('/settings-check-updates', ['as' => 'admin.settings-check-updates', 'uses' => 'SettingsController@checkUpdates']);
     /* Metadata backup system */
     $router->get('/backup-meta-import-show', ['as' => 'admin.backup-meta-import-show', 'uses' => 'BackupMetaController@importShow']);
     $router->post('/backup-meta-import-post', ['as' => 'admin.backup-meta-import-post', 'uses' => 'BackupMetaController@importPost']);

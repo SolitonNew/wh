@@ -2,6 +2,7 @@
 
 return [
     'default_port' => '/dev/ttyUSB0',
+    'default_mmcu' => 'atmega16a',
     'mmcu_list' => [
         'atmega328' => [
             'baud' => 9600,

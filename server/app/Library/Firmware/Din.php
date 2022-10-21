@@ -63,7 +63,7 @@ class Din
      */
     public function __construct()
     {
-        $this->mmcu = DinDaemon::getSettings('MMCU');
+        $this->mmcu = DinDaemon::getSettings('MMCU') ?: config('din.default_mmcu');
         $this->spm_pagesize = config('din.mmcu_list.'.$this->mmcu.'.spm_pagesize');
     }
 

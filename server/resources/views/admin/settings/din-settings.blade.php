@@ -20,7 +20,7 @@
                     <div class="col-sm-8">
                         <select id="dinSettingsMmcu" class="custom-select">
                             @foreach(config('din.mmcu_list') as $key => $val)
-                            <option value="{{ $key }}" {{ App\Library\Daemons\DinDaemon::getSettings('MMCU') == $key ? 'selected' : '' }}>{{ $key }}</option>
+                            <option value="{{ $key }}" {{ (App\Library\Daemons\DinDaemon::getSettings('MMCU') ?: config('din.default_mmcu')) == $key ? 'selected' : '' }}>{{ $key }}</option>
                             @endforeach
                         </select>
                     </div>
