@@ -325,12 +325,16 @@ class PyhomeDaemon extends BaseDaemon
 
         $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $count, false]);
         if ($this->readPacks(2000)) {
+            $complete = true;
             $dp = 100 / $count;
             $p = $dp;
             for ($i = 0; $i < $count; $i++) {
                 $part = substr($file,$i * $bts, $bts);
                 $this->transmitData($controller->rom, self::PACK_COMMAND, ['SET_CONFIG_FILE', $i + 1, $part]);
-                if (!$this->readPacks(2000)) break;
+                if (!$this->readPacks(2000)) {
+                    $complete = false;
+                    break;
+                }
 
                 $this->firmwareStatuses[$controller->id] = round($p);
                 // Pack statuses
@@ -345,14 +349,12 @@ class PyhomeDaemon extends BaseDaemon
 
                 $p += $dp;
             }
-
-            $complete = true;
         }
 
         sleep(1);
 
         // Pack statuses
-        $this->firmwareStatuses[$controller->id] = $complete ? 'COMPLETE' : 'ERROR';
+        $this->firmwareStatuses[$controller->id] = $complete ? 'COMPLETE' : 'BAD';
         $a = [];
         foreach ($this->firmwareStatuses as $cId => $cPerc) {
             $a[] = $cId.':'.$cPerc;
