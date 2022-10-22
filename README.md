@@ -1,27 +1,30 @@
 # WATCH HOUSE
-<p>
-<img src="docs/images/img_1.png" width="30%">
-<img src="docs/images/img_2.png" width="30%">
-<img src="docs/images/img_3.png" width="30%">
-</p>
 
-<p>Watch House is a powerful system for home automation that includes a 
+<img src="docs/images/img_1.png" width="32%">
+<img src="docs/images/img_2.png" width="32%">
+<img src="docs/images/img_3.png" width="32%"
+
+Watch House is a powerful system for home automation that includes a 
 flexible architecture that allows you to connect to it even devices 
 not intended for this purpose. It is absolutely free and is developed 
-exclusively under the [MIT license](https://opensource.org/licenses/MIT).</p>
-<p>The basis of the system can be a low-power microcomputer such as 
+exclusively under the [MIT license](https://opensource.org/licenses/MIT).
+
+The basis of the system can be a low-power microcomputer such as 
 RaspberryPi or OrangePi, and a flexible and at the same time powerful 
 administration system will allow you to quickly configure the necessary 
-configuration of the system.</p>
-<p>The system does not use any cloud technologies, however, with 
+configuration of the system.
+
+The system does not use any cloud technologies, however, with 
 appropriate settings, it can use third-party services such as weather 
-forecast services.</p>
-<p>Together with the software, the repository contains the necessary 
+forecast services.
+
+Together with the software, the repository contains the necessary 
 materials for the reproduction of some exclusive devices, such as a 
-touch switch or a Din controller.</p>
-<p>For simple control or management of devices, a web page with an 
+touch switch or a Din controller.
+
+For simple control or management of devices, a web page with an 
 adaptive design is used, which is equally convenient to use on any 
-device.</p>
+device.
 
 ## Short installation guide
 
