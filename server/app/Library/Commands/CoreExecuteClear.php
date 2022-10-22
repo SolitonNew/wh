@@ -1,16 +1,12 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Library\Commands;
 
-use \Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class CoreExecuteClear extends Command
+class CoreExecuteClear
 {
-    protected $signature = 'coreexecute:clear';
-    protected $description = 'coreexecute:clear';
-
-    public function handle()
+    public function execute()
     {
         DB::delete('delete from core_execute
                          where id < (select a.maxID

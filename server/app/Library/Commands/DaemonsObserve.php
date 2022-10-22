@@ -1,18 +1,15 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Library\Commands;
 
 use App\Library\DaemonManager;
-use \Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class DaemonObserve extends Command
+class DaemonsObserve
 {
-    protected $signature = 'daemon:observe';
-    protected $description = 'daemon:observe';
-
-    public function handle(DaemonManager $daemonManager)
+    public function execute()
     {
+        $daemonManager = new DaemonManager();
         $started = $daemonManager->findAllStartedDaemons();
         foreach (config('daemons.list') as $daemonClass) {
             try {

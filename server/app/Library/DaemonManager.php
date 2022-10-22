@@ -85,7 +85,7 @@ class DaemonManager
     public function start(string $id): void
     {
         if ($this->exists($id)) {
-            exec('php '.base_path().'/artisan daemon:run '.$id.'>/dev/null &');
+            exec('php '.base_path().'/artisan daemon:run '.$id);
         } else {
             throw new \Exception('Non-existent process ID');
         }
