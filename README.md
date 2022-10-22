@@ -20,9 +20,22 @@ The system does not use any cloud technologies, however, with
 appropriate settings, it can use third-party services such as weather 
 forecast services.
 
+The architecture of the system is designed in such a way as to 
+distribute the execution of scripts among the responsible devices. 
+Thus, to perform most of the actions, the server may not take any 
+part other than transferring the processed data.
+
 Together with the software, the repository contains the necessary 
 materials for the reproduction of some exclusive devices, such as a 
 touch switch or a Din controller.
+
+The system includes support for devices whose configuration is 
+fundamentally different, so the system includes the necessary tools 
+for translating scripts into different languages for different 
+platforms. At the moment, there are the following translators:
+- Python. For PyHome System (pyboard v1.0)
+- C. For avr microcontrollers (atmega16, atmega238)
+- Php. For execute server commands (RaspberryPi, OrangePi etc.).
 
 For simple control or management of devices, a web page with an 
 adaptive design is used, which is equally convenient to use on any 
