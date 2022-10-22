@@ -133,9 +133,9 @@ class OrangePiDaemon extends BaseDaemon
                     foreach ($this->devices as $device) {
                         if (in_array($device->hub_id, $this->hubIds) && $device->channel == $chan) {
                             if ($device->value) {
-                                $res = shell_exec('gpioset '.$gpio.' '.$num.'=1 2>1');
+                                $res = shell_exec('gpioset '.$gpio.' '.$num.'=1 2>&1');
                             } else {
-                                $res = shell_exec('gpioset '.$gpio.' '.$num.'=0 2>1');
+                                $res = shell_exec('gpioset '.$gpio.' '.$num.'=0 2>&1');
                             }
                             break;
                         }
@@ -179,9 +179,9 @@ class OrangePiDaemon extends BaseDaemon
             if ($num == -1) return ;
 
             if ($value) {
-                $res = shell_exec('gpioset '.$gpio.' '.$num.'=1 2>1');
+                $res = shell_exec('gpioset '.$gpio.' '.$num.'=1 2>&1');
             } else {
-                $res = shell_exec('gpioset '.$gpio.' '.$num.'=0 2>1');
+                $res = shell_exec('gpioset '.$gpio.' '.$num.'=0 2>&1');
             }
             if ($res) {
                 throw new \Exception($res);

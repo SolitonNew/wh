@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Library\Commands\DaemonRun;
 use \Illuminate\Console\Command;
 
 class DaemonRunCommand extends Command
@@ -10,8 +9,15 @@ class DaemonRunCommand extends Command
     protected $signature = 'daemon:run {daemonId}';
     protected $description = 'daemon:run';
 
-    public function handle(DaemonRun $command)
+    public function handle()
     {
-        $command->execute($this->argument('daemonId'));
+        $daemonId = $this->argument('daemonId');
+        foreach (config('daemons.list') as $class) {
+            if ($class::SIGNATURE == $daemonId) {
+                $daemon = new $class();
+                $daemon->execute();
+                break;
+            }
+        }
     }
 }

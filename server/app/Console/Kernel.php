@@ -42,9 +42,9 @@ class Kernel extends ConsoleKernel
     {
         // Checking background processes.
         // If process stopped - to start.
-        $schedule->call(function (DaemonsObserve $command) {
-            $command->execute();
-        })->everyMinute();
+        $schedule->command(DaemonsObserveCommand::class)
+            ->everyMinute()
+            ->runInBackground();
 
         // Reading "web_logs_mem"
         $schedule->call(function (WebLogsClear $command) {
