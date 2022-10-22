@@ -57,7 +57,10 @@ class OrangePiDaemon extends BaseDaemon
         if (!$this->initialization('orangepi')) return ;
 
         // Init GPIO pins
-        $this->initGPIO();
+        if (!$this->initGPIO()) {
+            $this->printLine(Lang::get('admin/daemons/orangepi-daemon.gpio_disabled_message'));
+            return ;
+        }
         // ------------------------
 
         $lastMinute = \Carbon\Carbon::now()->startOfMinute();
@@ -108,10 +111,16 @@ class OrangePiDaemon extends BaseDaemon
     }
 
     /**
-     * @return void
+     * @return bool
+     * @throws \Exception
      */
-    private function initGPIO(): void
+    private function initGPIO(): bool
     {
+        if (!file_exists('/bin/gpioset')) {
+            return false;
+        }
+
+        $gpio = config('orangepi.gpio');
         $channels = config('orangepi.channels');
 
         $enabled = [];
@@ -124,9 +133,9 @@ class OrangePiDaemon extends BaseDaemon
                     foreach ($this->devices as $device) {
                         if (in_array($device->hub_id, $this->hubIds) && $device->channel == $chan) {
                             if ($device->value) {
-                                $res = shell_exec('gpioset 0 '.$num.'=1 2>&1');
+                                $res = shell_exec('gpioset '.$gpio.' '.$num.'=1 2>1');
                             } else {
-                                $res = shell_exec('gpioset 0 '.$num.'=0 2>&1');
+                                $res = shell_exec('gpioset '.$gpio.' '.$num.'=0 2>1');
                             }
                             break;
                         }
@@ -151,6 +160,8 @@ class OrangePiDaemon extends BaseDaemon
         }
 
         $this->printLine(str_repeat('-', 100));
+
+        return true;
     }
 
     /**
@@ -161,19 +172,19 @@ class OrangePiDaemon extends BaseDaemon
     private function setValueGPIO(string $chan, float $value): void
     {
         try {
+            $gpio = config('orangepi.gpio');
             $channels = config('orangepi.channels');
             $num = $channels[$chan];
 
             if ($num == -1) return ;
 
-            $res = [];
             if ($value) {
-                exec('gpioset 0 '.$num.'=1 2>&1', $res);
+                $res = shell_exec('gpioset '.$gpio.' '.$num.'=1 2>1');
             } else {
-                exec('gpioset 0 '.$num.'=0 2>&1', $res);
+                $res = shell_exec('gpioset '.$gpio.' '.$num.'=0 2>1');
             }
-            if (count($res)) {
-                throw new \Exception(implode('; ', $res));
+            if ($res) {
+                throw new \Exception($res);
             }
             $this->printLine('['.parse_datetime(now()).'] GPIO ['.$chan.'] SET VALUE: '.($value ? 'ON' : 'OFF'));
         } catch (\Exception $ex) {
