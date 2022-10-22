@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use \Illuminate\Console\Command;
 
-class DaemonRun extends Command
+class DaemonRunCommand extends Command
 {
     protected $signature = 'daemon:run {daemonId}';
     protected $description = 'daemon:run';
@@ -18,6 +18,6 @@ class DaemonRun extends Command
                 $daemon->execute();
                 break;
             }
-        };
+        }
     }
 }

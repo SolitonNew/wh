@@ -45,6 +45,7 @@ sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
 ```
 skip-log-bin
 innodb_buffer_pool_size = 24M
+performance_schema = OFF
 ```
 ```
 sudo mysql

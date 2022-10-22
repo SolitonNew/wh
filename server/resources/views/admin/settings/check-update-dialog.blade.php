@@ -8,7 +8,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <div class="form-control" style="height: auto; white-space: pre; overflow-x: auto;">
+                <div class="form-control" style="height: auto; font-family: monospace; white-space: pre; overflow-x: auto;">
                     {!! $response !!}
                 </div>
             </div>

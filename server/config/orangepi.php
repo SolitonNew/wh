@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'gpio' => 0,
     'channels' => [   // CHANNEL => GPIO
         //'PA0' => 0,
         //'PA1' => 1,

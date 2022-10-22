@@ -1,18 +1,15 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Library\Commands;
 
 use App\Library\DaemonManager;
-use \Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class WebLogsClear extends Command
+class WebLogsClear
 {
-    protected $signature = 'weblogs:clear';
-    protected $description = 'weblogs:clear';
-
-    public function handle(DaemonManager $daemonManager)
+    public function execute()
     {
+        $daemonManager = new DaemonManager();
         foreach ($daemonManager->daemons() as $daemon) {
             $rows = DB::select('select id
                                       from web_logs_mem

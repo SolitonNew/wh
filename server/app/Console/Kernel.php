@@ -2,17 +2,19 @@
 
 namespace App\Console;
 
-use App\Console\Commands\CoreEventsClear;
-use App\Console\Commands\CoreExecuteClear;
-use App\Console\Commands\DaemonObserve;
-use App\Console\Commands\DaemonRun;
-use App\Console\Commands\HistoryClear;
-use App\Console\Commands\WebLogsClear;
+use App\Console\Commands\CoreEventsClearCommand;
+use App\Console\Commands\CoreExecuteClearCommand;
+use App\Console\Commands\DaemonsObserveCommand;
+use App\Console\Commands\DaemonRunCommand;
+use App\Console\Commands\HistoryClearCommand;
+use App\Console\Commands\WebLogsClearCommand;
+use App\Library\Commands\CoreEventsClear;
+use App\Library\Commands\CoreExecuteClear;
+use App\Library\Commands\DaemonsObserve;
+use App\Library\Commands\HistoryClear;
+use App\Library\Commands\WebLogsClear;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
-use App\Library\DaemonManager;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -22,12 +24,12 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        DaemonRun::class,
-        DaemonObserve::class,
-        WebLogsClear::class,
-        CoreEventsClear::class,
-        CoreExecuteClear::class,
-        HistoryClear::class,
+        DaemonRunCommand::class,
+        DaemonsObserveCommand::class,
+        WebLogsClearCommand::class,
+        CoreEventsClearCommand::class,
+        CoreExecuteClearCommand::class,
+        HistoryClearCommand::class,
     ];
 
     /**
@@ -40,19 +42,29 @@ class Kernel extends ConsoleKernel
     {
         // Checking background processes.
         // If process stopped - to start.
-        $schedule->command(DaemonObserve::class)->everyMinute();
+        $schedule->command(DaemonsObserveCommand::class)
+            ->everyMinute()
+            ->runInBackground();
 
         // Reading "web_logs_mem"
-        $schedule->command(WebLogsClear::class)->everyMinute();
+        $schedule->call(function (WebLogsClear $command) {
+            $command->execute();
+        })->everyMinute();
 
         // Clearing "core_events_mem"
-        $schedule->command(CoreEventsClear::class)->everyFiveMinutes();
+        $schedule->call(function (CoreEventsClear $command) {
+            $command->execute();
+        })->everyFiveMinutes();
 
         // Clearing "core_execute"
-        $schedule->command(CoreExecuteClear::class)->dailyAt('4:00');
+        $schedule->call(function (CoreExecuteClear $command) {
+            $command->execute();;
+        })->dailyAt('4:00');
 
         // Clear Deleted Devices
-        $schedule->command(HistoryClear::class)->dailyAt('4:10');
+        $schedule->call(function (HistoryClear $command) {
+            $command->execute();
+        })->dailyAt('4:10');
     }
 
     /**

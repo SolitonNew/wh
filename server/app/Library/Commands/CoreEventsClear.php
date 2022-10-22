@@ -1,16 +1,12 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Library\Commands;
 
-use \Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class CoreEventsClear extends Command
+class CoreEventsClear
 {
-    protected $signature = 'coreevents:clear';
-    protected $description = 'coreevents:clear';
-
-    public function handle()
+    public function execute()
     {
         $maxID = DB::select('select max(m.id) maxID from core_events_mem m')[0]->maxID ?? 0;
         if ($maxID) {
