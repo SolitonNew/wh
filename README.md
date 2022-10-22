@@ -1,8 +1,10 @@
 # WATCH HOUSE
 
+<p>
 <img src="docs/images/img_1.png" width="32%">
 <img src="docs/images/img_2.png" width="32%">
 <img src="docs/images/img_3.png" width="32%"
+</p>
 
 Watch House is a powerful system for home automation that includes a 
 flexible architecture that allows you to connect to it even devices 
