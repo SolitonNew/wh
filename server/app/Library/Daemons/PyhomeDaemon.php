@@ -458,7 +458,6 @@ class PyhomeDaemon extends BaseDaemon
             try {
                 $command = Execute::executeRawCommand($data);
                 $this->printLine('   SC   ['.$command.']');
-                Log::info($command);
             } catch (\Exception $ex) {
                 $this->printLine('Bad server command data. [' . implode(', ', $data) . ']');
             }
