@@ -39,6 +39,8 @@ class Translate
         'switch',
         'case',
         'default',
+        'true',
+        'false',
     ];
 
     /**
@@ -82,28 +84,16 @@ class Translate
             'args' => [1, 2],
         ],
         'speech' => [
-            'helper' => 'function (phrase, args)',
-            'args' => ['1+'],
+            'helper' => 'function (target, phrase, args)',
+            'args' => ['2+'],
         ],
         'play' => [
-            'helper' => 'function (media, args)',
+            'helper' => 'function (target, media, args)',
+            'args' => ['2+'],
+        ],
+        'print' => [
+            'helper' => 'function (text, args)',
             'args' => ['1+'],
-        ],
-        'info' => [
-            'helper' => 'function ()',
-            'args' => [0],
-        ],
-        'print_i' => [
-            'helper' => 'function (int)',
-            'args' => [1],
-        ],
-        'print_f' => [
-            'helper' => 'function (float)',
-            'args' => [1],
-        ],
-        'print_s' => [
-            'helper' => 'function (text)',
-            'args' => [1],
         ],
         'abs_i' => [
             'helper' => 'function (int)',

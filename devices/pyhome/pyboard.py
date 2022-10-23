@@ -30,10 +30,7 @@ class Pyboard(object):
             if self._find_channel(channel):
                 return ;
             pin = Pin(channel)
-            if direction:
-                pin.init(Pin.OUT_PP)
-            else:
-                pin.init(Pin.IN, Pin.PULL_UP)
+            pin.init(Pin.OUT_PP)
             self.channels += [pin]
         except:
             pass

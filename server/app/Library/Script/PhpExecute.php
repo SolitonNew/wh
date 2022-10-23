@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Log;
 class PhpExecute
 {
     use PhpFunctions\FunctionGet,
-        PhpFunctions\FunctionInfo,
         PhpFunctions\FunctionOff,
         PhpFunctions\FunctionOn,
         PhpFunctions\FunctionPlay,

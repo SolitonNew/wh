@@ -20,6 +20,7 @@ try:
 except:
     pyb.LED(4).on()
 import devices
+import commands
 
 IS_START = True
 
@@ -103,8 +104,9 @@ while True:
                     IS_START = False
                 else:
                     devices.set_sync_change_devices(pack[2])
-                    pack_data = devices.get_sync_change_devices()
-                    rs485.send_pack(PACK_SYNC, pack_data)
+                    devicesData = devices.get_sync_change_devices()
+                    rs485.send_pack(PACK_SYNC, [devicesData, commands.commandList])
+                    commands.commandList = []
             elif pack[1] == PACK_COMMAND:
                 read_config_file = False
                 comm_data = pack[2]

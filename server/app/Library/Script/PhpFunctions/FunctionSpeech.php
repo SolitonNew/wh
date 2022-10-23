@@ -8,19 +8,21 @@ use App\Library\Speech;
 trait FunctionSpeech
 {
     /**
+     * @param int $targetID
      * @param int $phraseID
      * @param int ...$args
      * @return void
      */
-    public function function_speech(int $phraseID, int ...$args): void
+    public function function_speech(int $targetID, int $phraseID, float ...$args): void
     {
-        $string = ScriptString::find($phraseID);
+        $target = ScriptString::getStringById($targetID);
+        $phrase = ScriptString::getStringById($phraseID);
 
-        if ($string) {
-            $phrase = vsprintf($string->data, $args);
+        if ($phrase) {
+            $phraseText = vsprintf($phrase, $args);
 
             if ($this->fake) {
-                $this->printLine('>>> '.$phrase);
+                $this->printLine('>>> for '.$target.' speech phrase: '.$phraseText);
             } else {
                 (new Speech())->turn($phrase);
             }

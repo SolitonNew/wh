@@ -38,22 +38,13 @@ class C extends TranslatorBase
             2 => 'command_toggle_later',
         ],
         'speech' => [
-            '1+' => 'command_speech',
+            '2+' => 'command_speech',
         ],
         'play' => [
-            '1+' => 'command_play',
+            '2+' => 'command_play',
         ],
-        'info' => [
-            0 => 'command_info',
-        ],
-        'print_i' => [
-            1 => 'command_print_i',
-        ],
-        'print_f' => [
-            1 => 'command_print_f',
-        ],
-        'print_s' => [
-            1 => 'command_print_s',
+        'print' => [
+            '2+' => 'command_print',
         ],
         'abs_i' => [
             1 => 'command_abs_i',

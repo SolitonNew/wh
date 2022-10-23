@@ -206,7 +206,7 @@ class Device(object):
                 except:
                     pass
                 self.isChange = changeFlag
-                if self.dev_id == self.curr_dev_id or self.dev_id == 100:
+                if self.pyhome_rom == self.curr_pyhome_rom:
                     for script in self.changeScripts:
                         try:
                             script()
