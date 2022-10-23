@@ -34,8 +34,7 @@
 <div id="daemonListCompact" class="navbar navbar-page" style="display: none;">
     <select id="daemonListCombobox" class="nav-link custom-select select-tree" style="width: 100%;">
         @foreach($daemons as $row)
-        <option value="{{ $row->id }}"
-                {{ $row->id == $id ? 'selected' : '' }}></option>
+        <option value="{{ $row->id }}" {{ $row->id == $id ? 'selected' : '' }}></option>
         @endforeach
     </select>
 </div>

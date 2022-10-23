@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Lang;
 
 class CommandDaemon extends BaseDaemon
 {
-    public const SIGNATURE = 'commands-daemon';
+    public const SIGNATURE = 'command-daemon';
 
     public const PROPERTY_NAME = 'COMMAND';
 
