@@ -1,14 +1,22 @@
-class PinControl(object):
+"""
+
+    Pyhome component v2
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+"""
+
+class PC(object):
     CMD_READ_DATA = 0xA0
     CMD_WRITE_PROP = 0xB1
     
-    def __init__(self, onewire):
+    def __init__(self, onewire, rom = False):
         self.ow = onewire
-        self.roms = []
+        self.rom = rom
 
     def _match_rom(self, rom = False):
-        #if not self.ow.reset():
-        #    return False
         if not rom:
             roms = self.ow.dev_list(0xF2)
             if len(roms) > 0:
@@ -40,3 +48,14 @@ class PinControl(object):
             else:
                 res[i] = 0
         return res
+        
+    def value(self, val = None, channel = ''):
+        if val == None:
+            d = self.get_data(self.rom)
+
+            if d:
+                self.data = d
+                return {'P1':self.data[0], 'P2':self.data[1], 'P3':self.data[2], 'P4':self.data[3]}
+            
+            return None
+        

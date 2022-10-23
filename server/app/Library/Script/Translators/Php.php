@@ -39,22 +39,13 @@ class Php extends TranslatorBase
             2 => '$this->function_toggle',
         ],
         'speech' => [
-            '1+' => '$this->function_speech',
+            '2+' => '$this->function_speech',
         ],
         'play' => [
-            '1+' => '$this->function_play',
+            '2+' => '$this->function_play',
         ],
-        'info' => [
-            0 => '$this->function_info',
-        ],
-        'print_i' => [
-            1 => '$this->function_print',
-        ],
-        'print_f' => [
-            1 => '$this->function_print',
-        ],
-        'print_s' => [
-            1 => '$this->function_print',
+        'print' => [
+            '2+' => '$this->function_print',
         ],
         'abs_i' => [
             1 => '$this->function_abs_i',

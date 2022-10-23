@@ -33,22 +33,13 @@ class Python extends TranslatorBase
             2 => 'commands.command_toggle',
         ],
         'speech' => [
-            '1+' => 'commands.command_speech',
+            '2+' => 'commands.command_speech',
         ],
         'play' => [
-            '1+' => 'commands.command_play',
+            '2+' => 'commands.command_play',
         ],
-        'info' => [
-            0 => 'commands.command_info',
-        ],
-        'print_i' => [
-            1 => 'commands.command_print',
-        ],
-        'print_f' => [
-            1 => 'commands.command_print',
-        ],
-        'print_s' => [
-            1 => 'commands.command_print',
+        'print' => [
+            '2+' => 'commands.command_print',
         ],
         'abs_i' => [
             1 => 'commands.command_abs',

@@ -37,6 +37,8 @@ class OrangePiDaemon extends BaseDaemon
      */
     private array $i2cDrivers = [];
 
+    private bool $gpioEnabled = false;
+
     /**
      * @return bool
      */
@@ -57,9 +59,9 @@ class OrangePiDaemon extends BaseDaemon
         if (!$this->initialization('orangepi')) return ;
 
         // Init GPIO pins
-        if (!$this->initGPIO()) {
+        $this->gpioEnabled = $this->initGPIO();
+        if (!$this->gpioEnabled) {
             $this->printLine(Lang::get('admin/daemons/orangepi-daemon.gpio_disabled_message'));
-            return ;
         }
         // ------------------------
 
@@ -171,6 +173,10 @@ class OrangePiDaemon extends BaseDaemon
      */
     private function setValueGPIO(string $chan, float $value): void
     {
+        if (!$this->gpioEnabled) {
+            return ;
+        }
+
         try {
             $gpio = config('orangepi.gpio');
             $channels = config('orangepi.channels');
@@ -203,20 +209,6 @@ class OrangePiDaemon extends BaseDaemon
     {
         if (in_array($device->hub_id, $this->hubIds) && $device->typ == 'orangepi') {
             $this->setValueGPIO($device->channel, $device->value);
-        }
-    }
-
-    /**
-     * @return void
-     */
-    private function getSystemInfo(): void
-    {
-        try {
-
-        } catch (\Exception $ex) {
-            $s = "[".parse_datetime(now())."] ERROR\n";
-            $s .= $ex->getMessage();
-            $this->printLine($s);
         }
     }
 
@@ -286,6 +278,8 @@ class OrangePiDaemon extends BaseDaemon
      */
     private function processingI2cHosts(): void
     {
+        if (!$this->gpioEnabled) return ;
+
         $now = floor(\Carbon\Carbon::now()->timestamp / 60);
 
         // Checking for execute after daemon restart.
@@ -349,6 +343,12 @@ class OrangePiDaemon extends BaseDaemon
     private function scanNetworks(): void
     {
         OrangePiDaemon::setCommandInfo('', true);
+
+        if (!$this->gpioEnabled) {
+            OrangePiDaemon::setCommandInfo(Lang::get('admin/daemons/orangepi-daemon.gpio_disabled_message'));
+            OrangePiDaemon::setCommandInfo('END_SCAN');
+            return ;
+        }
 
         $addresses = I2c::scan();
 

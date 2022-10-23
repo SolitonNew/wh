@@ -2,6 +2,7 @@
 
 namespace App\Library\Daemons;
 
+use App\Models\Execute;
 use App\Models\Hub;
 use App\Models\Property;
 use App\Models\OwHost;
@@ -493,42 +494,27 @@ class DinDaemon extends BaseDaemon
     {
         if (count($this->inServerCommands) == 0) return ;
 
-        try {
-            for ($i = 0; $i < count($this->inServerCommands);) {
+        $cmdList = [
+            1 => 'play',
+            2 => 'speech',
+            3 => 'print',
+        ];
+
+        for ($i = 0; $i < count($this->inServerCommands);) {
+            try {
                 $w = $this->inServerCommands[$i++];
                 $cmd = $w & 0xff;
+                $commandData = [$cmdList[$cmd]];
                 $args = (($w & 0xff00) >> 8) - 1;
                 $id = $this->inServerCommands[$i++];
-                $params = [];
                 for ($p = 0; $p < $args; $p++) {
-                    $params[] = $this->inServerCommands[$i++];
+                    $commandData[] = $this->inServerCommands[$i++];
                 }
-                $string = \App\Models\ScriptString::find($id);
-                if ($string) {
-                    $command = '';
-                    switch ($cmd) {
-                        case 1:
-                            $command = "play";
-                            break;
-                        case 2:
-                            $command = "speech";
-                            break;
-                    }
-                    if ($command) {
-                        $command .= "('".$string->data."'";
-                        if (count($params)) {
-                            $command .= ', '.implode(', ', $params);
-                        }
-                        $command .= ');';
-
-                        \App\Models\Execute::command($command);
-                    }
-                }
-
+                $command = Execute::executeRawCommand($commandData);
+                $this->printLine('   SC   ['.$command.']');
+            } catch (\Exception $ex) {
+                $this->printLine('Bad server command data. ['.implode(', ', $this->inServerCommands).']');
             }
-            $this->printLine('   SC   ['.implode(', ', $this->inServerCommands).']');
-        } catch (\Exception $ex) {
-            $this->printLine('Bad server command data. ['.implode(', ', $this->inServerCommands).']');
         }
     }
 

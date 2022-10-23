@@ -2,14 +2,18 @@
 
 namespace App\Library\Script\PhpFunctions;
 
+use App\Models\ScriptString;
+
 trait FunctionPrint
 {
     /**
      * @param string $text
      * @return void
      */
-    public function function_print(string $text): void
+    public function function_print(int $textID, float ...$args): void
     {
-        $this->printLine('>>> '.$text);
+        $text = ScriptString::getStringById($textID);
+        $textText = vsprintf($text, $args);
+        $this->printLine('>>> '.$textText);
     }
 }

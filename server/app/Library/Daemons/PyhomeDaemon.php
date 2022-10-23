@@ -3,6 +3,7 @@
 namespace App\Library\Daemons;
 
 use App\Library\Firmware\Pyhome;
+use App\Models\Execute;
 use App\Models\Hub;
 use App\Models\Property;
 use App\Models\OwHost;
@@ -379,6 +380,7 @@ class PyhomeDaemon extends BaseDaemon
         ];
 
         $this->inVariables = [];
+        $this->inServerCommands = [];
 
         $stat = 'OK';
         $vars_out = [implode(': ', $varDateTime)];
@@ -413,7 +415,8 @@ class PyhomeDaemon extends BaseDaemon
             // Saving variables data
             $this->processingInVariables($controller);
 
-
+            // Processing server commands
+            $this->processingInServerCommands();
         } elseif ($stat == 'INIT') {
             $initData = [$varDateTime];
             $vars_out = [implode(': ', $varDateTime)];
@@ -450,42 +453,14 @@ class PyhomeDaemon extends BaseDaemon
     {
         if (count($this->inServerCommands) == 0) return;
 
-        try {
-            for ($i = 0; $i < count($this->inServerCommands);) {
-                $w = $this->inServerCommands[$i++];
-                $cmd = $w & 0xff;
-                $args = (($w & 0xff00) >> 8) - 1;
-                $id = $this->inServerCommands[$i++];
-                $params = [];
-                for ($p = 0; $p < $args; $p++) {
-                    $params[] = $this->inServerCommands[$i++];
-                }
-                $string = \App\Models\ScriptString::find($id);
-                if ($string) {
-                    $command = '';
-                    switch ($cmd) {
-                        case 1:
-                            $command = "play";
-                            break;
-                        case 2:
-                            $command = "speech";
-                            break;
-                    }
-                    if ($command) {
-                        $command .= "('" . $string->data . "'";
-                        if (count($params)) {
-                            $command .= ', ' . implode(', ', $params);
-                        }
-                        $command .= ');';
-
-                        \App\Models\Execute::command($command);
-                    }
-                }
-
+        $commands = [];
+        foreach ($this->inServerCommands as $data) {
+            try {
+                $command = Execute::executeRawCommand($data);
+                $this->printLine('   SC   ['.$command.']');
+            } catch (\Exception $ex) {
+                $this->printLine('Bad server command data. [' . implode(', ', $data) . ']');
             }
-            $this->printLine('   SC   [' . implode(', ', $this->inServerCommands) . ']');
-        } catch (\Exception $ex) {
-            $this->printLine('Bad server command data. [' . implode(', ', $this->inServerCommands) . ']');
         }
     }
 
@@ -538,13 +513,16 @@ class PyhomeDaemon extends BaseDaemon
                     case self::PACK_SYNC:
                         if ($pack[2] == 'RESET') {
                             $this->initQuery = true;
-                        } else
-                        if (count($pack[2])) {
-                            foreach ($pack[2] as $row) {
+                        } else {
+                            foreach ($pack[2][0] as $row) {
                                 $this->inVariables[] = (object)[
                                     'id' => $row[0],
                                     'value' => $row[1],
                                 ];
+                            }
+
+                            foreach ($pack[2][1] as $row) {
+                                $this->inServerCommands[] = $row;
                             }
                         }
                         break;

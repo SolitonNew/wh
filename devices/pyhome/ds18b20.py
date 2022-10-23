@@ -1,7 +1,14 @@
 """
-DS18B20 temperature sensor driver for MicroPython.
-Copyright (c) 2015, Moklyak Alexandr.
---------------------------------------------------------------------------
+
+    Pyhome component v2
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+"""
+
+"""
 This class uses the OneWire driver to control DS18B20 temperature sensors.
 It supports multiple devices on the same 1-wire bus. The following example
 assumes the ground of your DS18B20 is connected to VCC and GND and the data
@@ -40,9 +47,11 @@ class DS18B20(object):
     THERM_CMD_CSCRATCHPAD = 0x48
     THERM_CMD_ESCRATCHPAD = 0xb8
     
-    def __init__(self, onewire):
+    def __init__(self, onewire, rom = False):
         self.ow = onewire
         self.buff = bytearray(9)
+        self.rom = rom
+        self.is_started = False
         
     def _match_rom(self, rom = False):
         # The method checks if the tire is ready to work, defines which 
@@ -189,3 +198,20 @@ class DS18B20(object):
             self.ow.write_byte(self.THERM_CMD_ESCRATCHPAD)
         else:
             return False
+            
+    def value(self, val = None, channel = ''):
+        if val == None:
+            if self.is_started:
+                res = self.get_temp(self.rom)
+                if res:
+                    res = ((res * 10)//1)/10
+            else:
+                res = None
+            self.start_measure()
+            self.is_started = True
+            if res == 85:
+                return None
+            return {'TEMP':res}
+        else:
+            return False
+            
