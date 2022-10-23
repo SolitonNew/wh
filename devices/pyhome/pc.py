@@ -1,3 +1,13 @@
+"""
+
+    Pyhome component v2
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+"""
+
 class PC(object):
     CMD_READ_DATA = 0xA0
     CMD_WRITE_PROP = 0xB1

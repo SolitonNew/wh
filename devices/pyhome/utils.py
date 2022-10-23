@@ -1,3 +1,13 @@
+"""
+
+    Pyhome component v2
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+"""
+
 def rom_to_string(rom):
     res = []
     for r in rom:

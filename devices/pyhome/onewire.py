@@ -1,6 +1,11 @@
 """
-OneWire library.
-Copyright (c) 2015, Moklyak Alexandr.
+
+    Pyhome component v2
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
 """
 
 import pyb

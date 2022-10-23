@@ -1,7 +1,14 @@
 """
-DS18B20 temperature sensor driver for MicroPython.
-Copyright (c) 2015, Moklyak Alexandr.
---------------------------------------------------------------------------
+
+    Pyhome component v2
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+"""
+
+"""
 This class uses the OneWire driver to control DS18B20 temperature sensors.
 It supports multiple devices on the same 1-wire bus. The following example
 assumes the ground of your DS18B20 is connected to VCC and GND and the data

@@ -1,3 +1,13 @@
+"""
+
+    Pyhome component v2
+    Part of the Watch House system
+    https://github.com/SolitonNew/wh
+
+    Author: Moklyak Alexandr
+
+"""
+
 from devices import Device
 import commands
 
