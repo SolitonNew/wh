@@ -48,11 +48,11 @@
                     <img src="/img/menus/account-logout-2x.png">
                     <span class="btn-label">@lang('admin/admin.menu_logout')</span>
                 </a>
-                <a id="showLog" class="btn btn-primary" href="#" style="margin-right: 0;">
+                <a id="showLog" class="btn btn-success" href="#" style="margin-right: 0;">
                     <img src="/img/menus/list-2x.png">
                     <span class="btn-label">@lang('admin/admin.menu_show_log')</span>
                 </a>
-                <a id="hideLog" class="btn btn-primary" href="#" style="margin-right: 0;">
+                <a id="hideLog" class="btn btn-success" href="#" style="margin-right: 0;">
                     <img src="/img/menus/list-2x.png">
                     <span class="btn-label">@lang('admin/admin.menu_hide_log')</span>
                 </a>

@@ -1,7 +1,7 @@
 <div class="card">
     <div id="dinSettings" class="card-body">
         <h5 class="card-title">@lang('admin/settings.din_settings_title')</h5>
-        <div class="row mb-3">
+        <div class="row">
             <div class="col-lg-6 mb-3">
                 <div class="row">
                     <div class="col-sm-4">

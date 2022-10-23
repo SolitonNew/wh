@@ -42,5 +42,6 @@ return [
     'forecast_MP' => 'Mean Precipitation',
 
     'check_update_title' => 'System Updates',
+    'current_version' => 'Current Version',
     'check_update_btn' => 'Download Updates...',
 ];

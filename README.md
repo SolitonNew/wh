@@ -34,7 +34,7 @@ fundamentally different, so the system includes the necessary tools
 for translating scripts into different languages for different 
 platforms. At the moment, there are the following translators:
 - Python. For PyHome System (pyboard v1.0)
-- C. For avr microcontrollers (atmega16, atmega238)
+- C. For avr microcontrollers (atmega16, atmega328)
 - Php. For execute server commands (RaspberryPi, OrangePi etc.).
 
 For simple control or management of devices, a web page with an 
