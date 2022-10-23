@@ -39,3 +39,11 @@ class MQ7(object):
             return math.exp((math.log(adc_k / 1.18) - 3.38) / -0.77)
         except:
             return False
+        
+    def value(self, val = None, channel = ''):
+        if val == None:
+            res = self.get_data(self.rom)
+            if res:
+                res = ((res * 10)//1)/10
+            return res
+    

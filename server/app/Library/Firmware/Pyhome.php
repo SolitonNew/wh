@@ -135,7 +135,7 @@ class Pyhome
                 if ($file == '.' || $file == '..') continue;
                 $data = file_get_contents($path.'/'.$file);
                 if ($file == 'main.py') {
-                    $data = str_replace('dev_id=1', 'dev_id='.$rom, $data);
+                    $data = str_replace('pyhome_rom=1', 'pyhome_rom='.$rom, $data);
                 }
                 $zip->addFromString($file, $data);
             }

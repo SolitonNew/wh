@@ -1,13 +1,11 @@
 class DHT11(object):
     CMD_READ_DATA = 0xA0
     
-    def __init__(self, onewire):
+    def __init__(self, onewire, rom = False):
         self.ow = onewire
-        self.roms = []
+        self.rom = rom
 
     def _match_rom(self, rom = False):
-        #if not self.ow.reset():
-        #    return False
         if not rom:
             roms = self.ow.dev_list(0xF3)
             if len(roms) > 0:
@@ -32,3 +30,16 @@ class DHT11(object):
             return False
 
         return buff[:2:]
+        
+    def value(self, val = None, channel = ''):
+        if val == None:
+            resH = 0
+            resT = 0
+            
+            d = self.get_data(self.rom)
+
+            if d != None:
+                resH = d[0]
+                resT = d[1]
+            return {'H':resH, 'T':resT}
+        

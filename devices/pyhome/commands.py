@@ -1,19 +1,19 @@
 import math
 
-def command_get(variable):
-    return variable.value()
+def command_get(device):
+    return device.value()
 
-def command_set(variable, value, delay=0):
-    variable.value(value, delay)
+def command_set(device, value, delay=0):
+    device.value(value, delay)
 
-def command_on(variable, delay=0):
-    variable.value(1, delay)
+def command_on(device, delay=0):
+    device.value(1, delay)
 
-def command_off(variable, delay=0):
-    variable.value(0, delay)
+def command_off(device, delay=0):
+    device.value(0, delay)
 
-def command_toggle(variable, delay=0):
-    variable.value(not variable.value(), delay)
+def command_toggle(device, delay=0):
+    device.value(not device.value(), delay)
     
 def command_speech(speechID):
     pass

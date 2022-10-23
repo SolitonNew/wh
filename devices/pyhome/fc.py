@@ -1,14 +1,12 @@
-class FanControl(object):
+class FC(object):
     CMD_READ_DATA = 0xA0
     CMD_WRITE_DATA = 0xB0
     
-    def __init__(self, onewire):
+    def __init__(self, onewire, rom = False):
         self.ow = onewire
-        self.roms = []
+        self.rom = rom
 
     def _match_rom(self, rom = False):
-        #if not self.ow.reset():
-        #    return False
         if not rom:
             roms = self.ow.dev_list(0xF0)
             if len(roms) > 0:
@@ -44,3 +42,24 @@ class FanControl(object):
             self.ow.write_byte(b)
 
         self.ow.write_byte(self.ow.crc8(buff))
+    
+    def value(self, val = None, channel = ''):
+        if val == None:
+            d = self.get_data(self.rom)
+
+            if d != None:
+                self.data = bytearray(d)
+
+            return {'F1':self.data[0], 'F2':self.data[1], 'F3':self.data[2], 'F4':self.data[3]}
+        else:
+            if channel == 'F1':
+                self.data[0] = int(val)
+            elif channel == 'F2':
+                self.data[1] = int(val)
+            elif channel == 'F3':
+                self.data[2] = int(val)
+            elif channel == 'F4':
+                self.data[3] = int(val)
+            
+            self.set_data(self.data, self.rom)
+            

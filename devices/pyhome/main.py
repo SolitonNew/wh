@@ -9,7 +9,7 @@ try:
     import config
 except:
     pyb.LED(4).on()
-import variables
+import devices
 
 IS_START = True
 
@@ -20,14 +20,14 @@ PACK_ERROR = 3
 # Bus Initialization
 ow = OneWire('Y12')
 DS18B20(ow).start_measure()
-rs485 = RS485(3, 'Y11', dev_id=1) # 1-RIGHT, 2-LEFT
+rs485 = RS485(3, 'Y11', pyhome_rom=1)
 
-# We create drivers for the OneWire network variables and pass an OW instance to them.
-variables.set_variable_drivers(ow, rs485.dev_id)
+# We create drivers for the OneWire network devices and pass an OW instance to them.
+devices.set_device_drivers(ow, rs485.pyhome_rom)
 
 # We select a separate list of thermometers
 termometrs = []
-for driver in variables.driverList:
+for driver in devices.driverList:
     if driver and driver.rom and (driver.rom[0] == 0x28):
         termometrs += [driver]
 
@@ -57,7 +57,7 @@ def onewire_alarms():
             ds.set_config(a, 125, -55, 12)
             ds.save_config()
         else:
-            variables.check_driver_value(a)
+            devices.check_driver_value(a)
 
 curr_termometr_index = -1
 def onewire_termometrs():
@@ -73,7 +73,7 @@ def onewire_termometrs():
         curr_termometr_index += 1
         if curr_termometr_index > (len(termometrs) - 1):
             curr_termometr_index = 0
-        variables.check_driver_value(termometrs[curr_termometr_index].rom)
+        devices.check_driver_value(termometrs[curr_termometr_index].rom)
 
 def swch():
     pyb.LED(1).off()
@@ -92,8 +92,8 @@ while True:
                     rs485.send_pack(PACK_SYNC, "RESET")
                     IS_START = False
                 else:
-                    variables.set_sync_change_variables(pack[2])
-                    pack_data = variables.get_sync_change_variables()
+                    devices.set_sync_change_devices(pack[2])
+                    pack_data = devices.get_sync_change_devices()
                     rs485.send_pack(PACK_SYNC, pack_data)
             elif pack[1] == PACK_COMMAND:
                 read_config_file = False
@@ -113,7 +113,6 @@ while True:
                     pyb.LED(3).off()
                 elif comm_data[0] == "SET_CONFIG_FILE":
                     read_config_file = True
-                    #pyb.LED(3).toggle()
                     rs485.send_pack(PACK_COMMAND, [comm_data[0], rs485.file_parts_i])
                 elif comm_data[0] == "REBOOT_CONTROLLER":
                     rs485.send_pack(PACK_COMMAND, [comm_data[0], False])
@@ -125,3 +124,4 @@ while True:
     if not read_config_file:
         onewire_alarms()
         onewire_termometrs()
+    
