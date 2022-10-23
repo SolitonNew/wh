@@ -1,13 +1,13 @@
 <div class="card">
     <div id="pyhomeSettings" class="card-body">
         <h5 class="card-title">@lang('admin/settings.pyhome_settings_title')</h5>
-        <div class="row mb-3">
+        <div class="row">
             <div class="col-lg-6 mb-3">
                 <div class="row">
                     <div class="col-sm-4">
                         <label class="form-label">@lang('admin/settings.pyhome_settings_port')</label>
                     </div>
-                    <div class=" col-sm-8">
+                    <div class="col-sm-8">
                         <input id="pyhomeSettingsPort" class="form-control" value="{{ App\Library\Daemons\PyhomeDaemon::getSettings('PORT', config('pyhome.default_port')) }}">
                     </div>
                 </div>
