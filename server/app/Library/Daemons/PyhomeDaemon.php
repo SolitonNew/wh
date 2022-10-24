@@ -456,8 +456,9 @@ class PyhomeDaemon extends BaseDaemon
         $commands = [];
         foreach ($this->inServerCommands as $data) {
             try {
-                $command = Execute::executeRawCommand($data);
-                $this->printLine('   SC   ['.$command.']');
+                $command = array_shift($data);
+                $response = Execute::executeRawCommand($command, $data);
+                $this->printLine('   SC   ['.$response.']');
             } catch (\Exception $ex) {
                 $this->printLine('Bad server command data. [' . implode(', ', $data) . ']');
             }
