@@ -9,13 +9,23 @@
     .configWizardHidePage {
         display: none;
     }
+    
+    .sm-justify-hub {
+        justify-content: start;
+    }
+    
+    @media(min-width:576px) {
+        .sm-justify-hub {
+            justify-content: end;
+        }
+    }
 </style>
 <div class="content">
     <div id="configWizardPage_begin" class="">
         <div class="form-control mb-4" style="height: auto;">
             @foreach($hubs as $hub)
                 <div class="row mt-2 mb-2">
-                    <div class="col-sm-5 d-flex full-width justify-content-end">{{ $hub->name }}</div>
+                    <div class="col-sm-5 d-flex full-width sm-justify-hub">{{ $hub->name }}</div>
                 </div>
             @endforeach
         </div>
@@ -29,7 +39,7 @@
         <div class="form-control mb-4" style="height: auto;">
             @foreach($hubs as $hub)
                 <div class="row mt-2 mb-2">
-                    <div class="col-sm-5 d-flex full-width justify-content-end">{{ $hub->name }}</div>
+                    <div class="col-sm-5 d-flex full-width sm-justify-hub">{{ $hub->name }}</div>
                     <div class="col-sm-7 d-flex font-weight-bold align-items-center justify-content-between hub_item"
                          data-typ="{{ $hub->typ }}" data-id="{{ $hub->id }}">
                         <div class="progress" style="width: 100%; height: 0.75rem;">
@@ -49,7 +59,7 @@
         <div class="form-control mb-4" style="height: auto;">
             @foreach($hubs as $hub)
                 <div class="row mt-2 mb-2">
-                    <div class="col-sm-5 d-flex full-width justify-content-end">{{ $hub->name }}</div>
+                    <div class="col-sm-5 d-flex full-width sm-justify-hub">{{ $hub->name }}</div>
                     <div class="col-sm-7 d-flex font-weight-bold align-items-center" data-typ="{{ $hub->typ }}" data-id="{{ $hub->id }}">
                         <div class="progress" style="width: 100%; height: 0.75rem;">
                             <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
@@ -108,7 +118,7 @@
                     if (data == 'OK') {
                         $('#configWizardPage_make .hub_item[data-typ="' + item + '"]').each(function () {
                             let id = $(this).data('id');
-                            let html = 'OK';
+                            let html = '<span class="text-success">OK</span>';
                             if (item == 'pyhome') {
                                 let url = "{{ route('admin.hubs-config-wizard-download', ['id' => '']) }}/" + id;
                                 html += '<a href="' + url + '" class="font-weight-normal" target="_blank">Download</a>';
@@ -116,7 +126,7 @@
                             $(this).html(html);
                         });
                     } else {
-                        $('#configWizardPage_make .hub_item[data-typ="' + item + '"]').text('ERROR');
+                        $('#configWizardPage_make .hub_item[data-typ="' + item + '"]').html('<span class="text-danger">ERROR</span>');
                         errors.push(data);
                     }
                     refreshPage();
@@ -173,11 +183,11 @@
                     switch (item.status) {
                         case 'PENDING':
                             $('.progress', row).hide();
-                            $('.transmit_info', row).show().text('PENDING');
+                            $('.transmit_info', row).show().html('<span class="text-secondary">PENDING</span>');
                             break;
                         case 'ERROR':
                             $('.progress', row).hide();
-                            $('.transmit_info', row).show().text('ERROR');
+                            $('.transmit_info', row).show().html('<span class="text-danger">ERROR</span>');
                             finishedCount++;
                             hasErrors = true;
                             break;
@@ -188,7 +198,7 @@
                             break;
                         case 'COMPLETE':
                             $('.progress', row).hide();
-                            $('.transmit_info', row).show().text('COMPLETE');
+                            $('.transmit_info', row).show().html('<span class="text-success">COMPLETE</span>');
                             finishedCount++;
                             break;
                     }
