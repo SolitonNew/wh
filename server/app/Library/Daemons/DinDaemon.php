@@ -504,13 +504,13 @@ class DinDaemon extends BaseDaemon
             try {
                 $w = $this->inServerCommands[$i++];
                 $cmd = $w & 0xff;
-                $commandData = [$cmdList[$cmd]];
+                $commandData = [];
                 $args = (($w & 0xff00) >> 8) - 1;
                 $id = $this->inServerCommands[$i++];
                 for ($p = 0; $p < $args; $p++) {
                     $commandData[] = $this->inServerCommands[$i++];
                 }
-                $command = Execute::executeRawCommand($commandData);
+                $command = Execute::executeRawCommand($cmdList[$cmd], $commandData);
                 $this->printLine('   SC   ['.$command.']');
             } catch (\Exception $ex) {
                 $this->printLine('Bad server command data. ['.implode(', ', $this->inServerCommands).']');
