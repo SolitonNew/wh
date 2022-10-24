@@ -69,7 +69,7 @@ class CommandDaemon extends BaseDaemon
      */
     private function executeCommand(string $command): string
     {
-        $execute = new \App\Library\Script\PhpExecute($row->command);
+        $execute = new \App\Library\Script\PhpExecute($command);
         $res = $execute->run();
         if ($res) {
             $this->printLine($res);
