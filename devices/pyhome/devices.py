@@ -110,16 +110,20 @@ def set_sync_change_devices(data):
     global DATE_TIME
     
     for dev in data:
-        for vl in deviceList:
-            if vl.id == dev[0]:
+        if dev[0] == -100:
+            if DATE_TIME != dev[1]:
+                DATE_TIME = dev[1]
                 try:
-                    vl.value(dev[1], changeFlag=False)
-                    if vl.id == -100:
-                        if DATE_TIME != vl.value():
-                            DATE_TIME = vl.value()
-                            check_delays()
+                    check_delays()
                 except:
                     pass
+        else:
+            for vl in deviceList:
+                if vl.id == dev[0]:
+                    try:
+                        vl.value(dev[1], changeFlag=False)
+                    except:
+                        pass
 
 def check_delays():
     """
