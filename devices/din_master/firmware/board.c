@@ -7,6 +7,7 @@
   
 */
 
+#include "config/mmcu.h"
 #include "board.h"
 #include <avr/io.h>
 #include "control.h"
@@ -15,7 +16,10 @@ uint8_t controller_id;
 uint8_t controller_initialized = 0;
 
 void board_reset(void) {
+    #if MMCU == MMCU_ATMEGA16A
     WDTCR |= 1<<WDE;
+    #elif MMCU == MMCU_ATMEGA328
+    #endif
     while (1) ;
 }
 

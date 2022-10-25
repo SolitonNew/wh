@@ -7,6 +7,7 @@
   
 */
 
+#include "config/mmcu.h"
 #include "board.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -40,8 +41,13 @@ uint8_t core_server_commands_count;
 
 uint8_t rs485_in_buff_lock = 0;
 
+#if MMCU == MMCU_ATMEGA16A
 ISR(USARTRXC_vect) {
     uint8_t c = UDR;
+#elif MMCU == MMCU_ATMEGA328
+ISR(USART_RX_vect) {
+    uint8_t c = UDR0;
+#endif
     
     if (rs485_in_buff_lock) {
         if (rs485_in_buff_size <= RS485_BUFF_MAX_SIZE / 2) {
@@ -67,15 +73,23 @@ ISR(USARTRXC_vect) {
 void rs485_init(void) {
     unsigned int ubrr = RS485_UBRR;
     
+#if MMCU == MMCU_ATMEGA16A
     // Frequency
     UBRRH = (uint8_t)(ubrr>>8);
     UBRRL = (uint8_t)ubrr;
-    
     // Enable
     UCSRB = (1<<RXCIE) | (1<<RXEN) | (1<<TXEN);
-    
     // 8bit  2 stop bits 
     UCSRC = (1<<URSEL) | (1<<UCSZ0) | (1<<UCSZ1) | (1<<USBS);
+#elif MMCU == MMCU_ATMEGA328
+    // Frequency
+    UBRR0H = (uint8_t)(ubrr>>8);
+    UBRR0L = (uint8_t)ubrr;
+    // Enable
+    UCSR0B = (1<<RXCIE0) | (1<<RXEN0) | (1<<TXEN0);
+    // 8bit  2 stop bits 
+    UCSR0C = /*(1<<URSEL) |*/ (1<<UCSZ00) | (1<<UCSZ01) | (1<<USBS0);
+#endif
 }
 
 /**
@@ -101,12 +115,21 @@ uint8_t rs485_crc_table(uint8_t data) {
 }
 
 void rs485_write_byte(uint8_t c) {
+    #if MMCU == MMCU_ATMEGA16A
     while (!(UCSRA & (1<<UDRE))) ;
     UDR = c;
+    #elif MMCU == MMCU_ATMEGA328
+    while (!(UCSR0A & (1<<UDRE0))) ;
+    UDR0 = c;
+    #endif
 }
 
 void rs485_flush(void) {
+    #if MMCU == MMCU_ATMEGA16A
     while (!(UCSRA & (1<<UDRE))) ;
+    #elif MMCU == MMCU_ATMEGA328
+    while (!(UCSR0A & (1<<UDRE0))) ;
+    #endif
 }
 
 void rs485_transmit_CMD(uint8_t cmd, int tag) {

@@ -8,7 +8,6 @@ use App\Models\OwHost;
 use App\Models\Script;
 use App\Library\Script\Translate;
 use App\Library\Script\Translators\C as TranslateC;
-use App\Models\Property;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\DB;
 
@@ -171,6 +170,12 @@ class Din
         if (!file_exists($this->firmwarePath().'/config')) {
             mkdir($this->firmwarePath().'/config');
         }
+        
+        // Pack to file mmcu.h
+        $fs = new \Illuminate\Filesystem\Filesystem();
+        $fs->put($this->firmwarePath().'/config/mmcu.h', View::make('admin.firmware.din.mmcu_h', [
+            'mmcu' => DinDaemon::getSettings('MMCU') ?: config('din.default_mmcu'),
+        ]));
 
         // Pack to file devs.c
         $fs = new \Illuminate\Filesystem\Filesystem();

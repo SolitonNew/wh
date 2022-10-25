@@ -7,6 +7,7 @@
   
 */
 
+#include "config/mmcu.h"
 #include "board.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>

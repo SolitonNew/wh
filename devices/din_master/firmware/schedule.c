@@ -7,6 +7,7 @@
   
 */
 
+#include "config/mmcu.h"
 #include "board.h"
 #include "schedule.h"
 #include <avr/io.h>
@@ -31,8 +32,12 @@ ISR(TIMER0_OVF_vect) {
 }
 
 void schedule_init(void) {
+    #if MMCU == MMCU_ATMEGA16A
     TCCR0 = (1<<CS02);  // 256
     TIMSK = (1<<TOIE0);
+    #elif MMCU == MMCU_ATMEGA328
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    #endif
 }
 
 /**
