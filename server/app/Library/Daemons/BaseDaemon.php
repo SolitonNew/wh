@@ -10,8 +10,6 @@ use App\Models\EventMem;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Library\Script\PhpExecute;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\Log;
 
 class BaseDaemon
 {

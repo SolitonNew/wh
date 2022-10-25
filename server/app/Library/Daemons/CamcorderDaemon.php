@@ -5,7 +5,6 @@ namespace App\Library\Daemons;
 use App\Models\CamcorderHost;
 use App\Models\Hub;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use App\Models\Device;

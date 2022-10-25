@@ -22,9 +22,9 @@ trait FunctionSet
                 //
             } else {
                 if ($time == 0) {
-                    Device::setValue($device->id, $value);
+                    Device::setValue($device->id, $value, 0);
                 } else {
-                    $datetime = now()->addMinute($time);
+                    $datetime = now()->addSecond($time);
                     Schedule::appendFastRecord("set('$name', $value, $time)", "set('$name', $value);", $datetime, $device->id);
                 }
             }

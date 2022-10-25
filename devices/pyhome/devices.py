@@ -107,33 +107,13 @@ def get_sync_change_devices():
     return res
 
 def set_sync_change_devices(data):
-    global DATE_TIME
-    
     for dev in data:
-        for vl in deviceList:
-            if vl.id == dev[0]:
+        for dl in deviceList:
+            if dl.id == dev[0]:
                 try:
-                    vl.value(dev[1], changeFlag=False)
-                    if vl.id == -100:
-                        if DATE_TIME != vl.value():
-                            DATE_TIME = vl.value()
-                            check_delays()
+                    dl.value(dev[1], changeFlag=False)
                 except:
                     pass
-
-def check_delays():
-    """
-    The function is called whenever a time change signal arrives. 
-    When called, performs a check on all deferred devices and, 
-    if the execution time has expired, assigns the deferred value 
-    to the device.
-    """
-    global DATE_TIME
-    
-    for dl in deviceList:
-        if dl.delayTime:
-            if dl.delayTime <= DATE_TIME:
-                dl.value(vl.delayValue)
 
 class Device(object):
     """
@@ -156,7 +136,7 @@ class Device(object):
         self.val = False
         self.isChange = False
         self.changeScripts = []
-        self.delayTime = False
+        self.delayTime = None
         self.delayValue = None
 
     def _set_driver_value(self, value):
@@ -191,10 +171,10 @@ class Device(object):
             if delay > 0:
                 global DATE_TIME
                 self.delayValue = val
-                self.delayTime = DATE_TIME + delay
+                self.delayTime = delay
                 return
             else:
-                self.delayTime = False
+                self.delayTime = None
             
             # We make sure that the device belongs to the current controller 
             # or is a system device

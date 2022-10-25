@@ -68,19 +68,19 @@ class Translate
             'args' => [1],
         ],
         'set' => [
-            'helper' => 'function (name, value, later = 0)',
+            'helper' => 'function (name, value, delay = 0)',
             'args' => [2, 3],
         ],
         'on' => [
-            'helper' => 'function (name, later = 0)',
+            'helper' => 'function (name, delay = 0)',
             'args' => [1, 2],
         ],
         'off' => [
-            'helper' => 'function (name, later = 0)',
+            'helper' => 'function (name, delay = 0)',
             'args' => [1, 2],
         ],
         'toggle' => [
-            'helper' => 'function (name, later = 0)',
+            'helper' => 'function (name, delay = 0)',
             'args' => [1, 2],
         ],
         'speech' => [

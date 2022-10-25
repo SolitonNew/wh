@@ -10,7 +10,6 @@ use App\Console\Commands\HistoryClearCommand;
 use App\Console\Commands\WebLogsClearCommand;
 use App\Library\Commands\CoreEventsClear;
 use App\Library\Commands\CoreExecuteClear;
-use App\Library\Commands\DaemonsObserve;
 use App\Library\Commands\HistoryClear;
 use App\Library\Commands\WebLogsClear;
 use Illuminate\Console\Scheduling\Schedule;

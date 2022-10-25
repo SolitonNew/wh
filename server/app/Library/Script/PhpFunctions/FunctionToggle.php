@@ -3,6 +3,7 @@
 namespace App\Library\Script\PhpFunctions;
 
 use App\Models\Device;
+use App\Models\Schedule;
 
 trait FunctionToggle
 {
@@ -19,10 +20,15 @@ trait FunctionToggle
             if ($this->fake) {
                 //
             } else {
-                if ($device->value) {
-                    Device::setValue($device->id, 0);
+                if ($time == 0) {
+                    if ($device->value) {
+                        Device::setValue($device->id, 0, 0);
+                    } else {
+                        Device::setValue($device->id, 1, 0);
+                    }
                 } else {
-                    Device::setValue($device->id, 1);
+                    $datetime = now()->addSeconds($time);
+                    Schedule::appendFastRecord("toggle('$name', value, $time)", "toggle('$name');", $datetime, $device->id);
                 }
             }
         } else {

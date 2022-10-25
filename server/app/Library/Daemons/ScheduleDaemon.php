@@ -6,7 +6,7 @@ use App\Models\Schedule;
 use App\Models\Execute;
 use \Carbon\Carbon;
 use Illuminate\Support\Facades\Lang;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class ScheduleDaemon extends BaseDaemon
 {
@@ -71,6 +71,7 @@ class ScheduleDaemon extends BaseDaemon
                     $row->save();
                 }
             }
+            
             sleep(1);
         }
     }

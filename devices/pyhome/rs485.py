@@ -42,7 +42,7 @@ class RS485(object):
                             data = False
                             data = loads(pack)
                             if len(data) > 0 and data[0] == self.pyhome_rom:
-                                if data[2][0] == "SET_CONFIG_FILE":
+                                if len(data[2]) > 0 and data[2][0] == "SET_CONFIG_FILE":
                                     res = [data]
                                     if data[2][2] == False:
                                         self.file_parts = data[2][1]
