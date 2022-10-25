@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
 use App\Models\I2cHost;
 use \Cron\CronExpression;
-use App\Models\Property;
 use App\Library\OrangePi\I2c\I2c;
-use Illuminate\Support\Facades\Log;
 
 class OrangePiDaemon extends BaseDaemon
 {

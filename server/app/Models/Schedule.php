@@ -137,7 +137,7 @@ class Schedule extends Model
      * @return void
      */
     public static function appendFastRecord(string $comm, string $action, $datetime, int|null $variableID): void
-    {
+    {        
         $item = new Schedule();
         $item->comm = $comm;
         $item->action = $action;
