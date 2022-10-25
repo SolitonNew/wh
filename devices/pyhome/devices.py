@@ -108,10 +108,10 @@ def get_sync_change_devices():
 
 def set_sync_change_devices(data):
     for dev in data:
-        for vl in deviceList:
-            if vl.id == dev[0]:
+        for dl in deviceList:
+            if dl.id == dev[0]:
                 try:
-                    vl.value(dev[1], changeFlag=False)
+                    dl.value(dev[1], changeFlag=False)
                 except:
                     pass
 
