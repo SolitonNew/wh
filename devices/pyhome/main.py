@@ -56,6 +56,13 @@ def timer_2_handler(timer):
     timer_2_flag = True
 Timer(2, freq=500).callback(timer_2_handler)
 
+# We create a special timer for delayed changes
+timer_3_flag = False
+def timer_3_handler(timer):
+    global timer_3_flag
+    timer_3_flag = True
+Timer(3, freq=1).callback(timer_3_handler)
+
 def onewire_alarms():
     global timer_2_flag
     if timer_2_flag == False:
@@ -85,6 +92,22 @@ def onewire_termometrs():
         if curr_termometr_index > (len(termometrs) - 1):
             curr_termometr_index = 0
         devices.check_driver_value(termometrs[curr_termometr_index].rom)
+
+def delayed_changes():
+    global timer_3_flag
+    if timer_3_flag == False:
+        return
+    timer_3_flag = False
+
+    global deviceList
+
+    for dl in deviceList:
+        if dl.delayTime:
+            if dl.delayTime != None:
+                if dl.delayTime > 0:
+                    dl.delayTime -= 1
+                else:
+                    dl.value(dl.delayValue)
 
 def swch():
     pyb.LED(1).off()
