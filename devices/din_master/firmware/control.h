@@ -1,6 +1,11 @@
 /*
- *  Author: Moklyak Alexandr
- */ 
+
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+*/
 
 #define CONTROL_LED_R_DDR  DDRA
 #define CONTROL_LED_R_PORT PORTA

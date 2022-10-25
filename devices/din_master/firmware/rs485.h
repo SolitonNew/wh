@@ -1,6 +1,11 @@
 /*
- *  Author: Moklyak Alexandr
- */ 
+
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+*/
 
 #define RS485_BAUD 9600
 #define RS485_UBRR F_CPU/16/RS485_BAUD-1

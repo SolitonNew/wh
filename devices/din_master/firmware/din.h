@@ -1,6 +1,11 @@
 /*
- *  Author: Moklyak Alexandr
- */ 
+
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+*/
 
 #define DIN_R1_DDR  DDRC
 #define DIN_R1_PORT PORTC

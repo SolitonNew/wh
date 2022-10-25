@@ -1,6 +1,11 @@
 /*
- *  Author: Moklyak Alexandr
- */
+
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+*/
 
 #include "board.h"
 #include "schedule.h"
@@ -15,7 +20,7 @@
 typedef struct _schedule {
     int index;
     int value_int;
-    int duration;
+    int delay;
 } schedule_t;
 
 schedule_t schedule_list[SCHEDULE_LIST_MAX];
@@ -40,9 +45,9 @@ void schedule_processing(void) {
     
     for (uint8_t i = 0; i < SCHEDULE_LIST_MAX; i++) {
         schedule_t *rec = &schedule_list[i];
-        if (rec->duration > 0) {
-            rec->duration--;
-            if (rec->duration == 0) {
+        if (rec->delay > 0) {
+            rec->delay--;
+            if (rec->delay == 0) {
                 core_set_variable_value_int(rec->index, 3, rec->value_int);
             }
         }
@@ -52,22 +57,22 @@ void schedule_processing(void) {
 /**
  * Registering a delayed assignment of a variable value.
  */
-void schedule_variable_value(int index, float value, int duration) {
+void schedule_variable_value(int index, float value, int delay) {
     for (uint8_t i = 0; i < SCHEDULE_LIST_MAX; i++) {
         schedule_t *rec = &schedule_list[i];
-        if (rec->duration > 0 && rec->index == index) {
+        if (rec->delay > 0 && rec->index == index) {
             rec->value_int = ceil(value * 10);
-            rec->duration = duration;
+            rec->delay = delay;
             return ;
         }
     }
     
     for (uint8_t i = 0; i < SCHEDULE_LIST_MAX; i++) {
         schedule_t *rec = &schedule_list[i];
-        if (rec->duration == 0) {
+        if (rec->delay == 0) {
             rec->index = index;
             rec->value_int = ceil(value * 10);
-            rec->duration = duration;
+            rec->delay = delay;
             return ;
         }
     }
