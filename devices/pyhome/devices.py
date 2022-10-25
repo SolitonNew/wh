@@ -137,7 +137,7 @@ def check_delays():
     for dl in deviceList:
         if dl.delayTime:
             if dl.delayTime <= DATE_TIME:
-                dl.value(vl.delayValue)
+                dl.value(dl.delayValue)
 
 class Device(object):
     """
