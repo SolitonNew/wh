@@ -374,18 +374,13 @@ class PyhomeDaemon extends BaseDaemon
      */
     private function syncVariables(Hub $controller): void
     {
-        $varDateTime = [
-            -100,
-            Carbon::now('UTC')->getTimestamp() - Carbon::create(2000, 1, 1, 0, 0, 0, 'UTC')->getTimestamp(),
-        ];
-
         $this->inVariables = [];
         $this->inServerCommands = [];
 
         $stat = 'OK';
-        $vars_out = [implode(': ', $varDateTime)];
+        $vars_out = [];
         $errorText = '';
-        $packData = [$varDateTime];
+        $packData = [];
         // Send device values
         foreach ($this->devicesLoopChanges as $device) {
             if ($device->valueFromID !== $controller->id) {
@@ -418,8 +413,8 @@ class PyhomeDaemon extends BaseDaemon
             // Processing server commands
             $this->processingInServerCommands();
         } elseif ($stat == 'INIT') {
-            $initData = [$varDateTime];
-            $vars_out = [implode(': ', $varDateTime)];
+            $initData = [];
+            $vars_out = [];
             foreach ($this->devices as $device) {
                 $initData[] = [$device->id, $device->value];
                 $vars_out[] = "$device->id: $device->value";
