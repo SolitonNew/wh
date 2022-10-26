@@ -34,7 +34,7 @@ return [
     'drivers' => [
         'bmp280' => [
             'cron' => '* * * * *',
-            'class' => App\Library\OrangePi\I2c\Bmp280::class,
+            'class' => App\Library\Server\I2c\Bmp280::class,
         ],
     ]
 ];

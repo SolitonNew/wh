@@ -117,8 +117,8 @@ class HubsController extends Controller
             case 'pyhome':
                 $text = $this->service->pyhomeHubsScan();
                 break;
-            case 'orangepi':
-                $text = $this->service->orangepiHubScan();
+            case 'server':
+                $text = $this->service->serverHubScan();
                 break;
             case 'zigbeeone':
                 $text = $this->service->zigbeeoneHubsScan();
