@@ -67,7 +67,7 @@ class Hub extends AffectsFirmwareModel
         switch ($this->typ) {
             case 'extapi':
                 return $this->extapiHosts->count();
-            case 'orangepi':
+            case 'server':
                 return $this->i2cHosts->count() + $this->owHosts->count();
             case 'camcorder':
                 return $this->camcorderHosts->count();
@@ -212,9 +212,9 @@ class Hub extends AffectsFirmwareModel
             'variable',
             'extapi',
         ],
-        'orangepi' => [
+        'server' => [
             'variable',
-            'orangepi',
+            'server',
             'i2c',
             'ow',
         ],
@@ -256,7 +256,7 @@ class Hub extends AffectsFirmwareModel
                 $hubsWithNetworks = [
                     'din',
                     'pyhome',
-                    'orangepi',
+                    'server',
                     'zigbeeone',
                 ];
 
@@ -305,7 +305,7 @@ class Hub extends AffectsFirmwareModel
      */
     public static function isFirstSingleHub(string $typ): bool
     {
-        $single = ['orangepi', 'zigbeeone'];
+        $single = ['server', 'zigbeeone'];
         if (in_array($typ, $single)) {
             return (self::whereTyp($typ)->count() === 0);
         }

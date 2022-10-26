@@ -9,18 +9,18 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
 use App\Models\I2cHost;
 use \Cron\CronExpression;
-use App\Library\OrangePi\I2c\I2c;
-use App\Library\OrangePi\Gpio;
-use App\Library\OrangePi\System;
+use App\Library\Server\I2c\I2c;
+use App\Library\Server\Gpio;
+use App\Library\Server\System;
 
-class OrangePiDaemon extends BaseDaemon
+class ServerDaemon extends BaseDaemon
 {
-    public const SIGNATURE = 'orangepi-daemon';
+    public const SIGNATURE = 'server-daemon';
 
     /**
      *
      */
-    public const PROPERTY_NAME = 'ORANGEPI';
+    public const PROPERTY_NAME = 'SERVER';
 
     /**
      * @var int|bool
@@ -58,7 +58,7 @@ class OrangePiDaemon extends BaseDaemon
      */
     public static function canRun(): bool
     {
-        return (Hub::whereTyp('orangepi')->count() > 0);
+        return (Hub::whereTyp('server')->count() > 0);
     }
 
     /**
@@ -68,16 +68,16 @@ class OrangePiDaemon extends BaseDaemon
     {
         DB::select('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED');
 
-        $this->printInitPrompt(Lang::get('admin/daemons/orangepi-daemon.description'));
+        $this->printInitPrompt(Lang::get('admin/daemons/server-daemon.description'));
 
-        if (!$this->initialization('orangepi')) return ;
+        if (!$this->initialization('server')) return ;
         
         // Init GPIO driver
         try {
-            $this->gpio = new Gpio(config('orangepi.gpio'), config('orangepi.channels'));
+            $this->gpio = new Gpio(config('server.gpio'), config('server.channels'));
             $this->initGpioDevices();
         } catch (\Exception $ex) {
-            $this->printLine(Lang::get('admin/daemons/orangepi-daemon.gpio_disabled_message'));
+            $this->printLine(Lang::get('admin/daemons/server-daemon.gpio_disabled_message'));
         }
         
         // Init System Control driver
@@ -87,7 +87,7 @@ class OrangePiDaemon extends BaseDaemon
                 $this->printLine($line);
             }
         } catch (\Exception $ex) {
-            $this->printLine(Lang::get('admin/daemons/orangepi-daemon.system_disabled_message'));
+            $this->printLine(Lang::get('admin/daemons/server-daemon.system_disabled_message'));
         }
 
         $lastMinute = \Carbon\Carbon::now()->startOfMinute();
@@ -106,7 +106,7 @@ class OrangePiDaemon extends BaseDaemon
                 // I2c hosts
                 $this->processingI2cHosts();
 
-                // Get Orange Pi system info
+                // Get Server system info
                 $minute = \Carbon\Carbon::now()->startOfMinute();
                 if ($minute->gt($lastMinute)) {
                     $this->processingSystem();
@@ -130,7 +130,7 @@ class OrangePiDaemon extends BaseDaemon
      */
     protected function initializationHosts(): void
     {
-        $this->i2cDrivers = config('orangepi.drivers');
+        $this->i2cDrivers = config('server.drivers');
 
         $this->i2cHosts = I2cHost::whereIn('hub_id', $this->hubIds)
             ->get();
@@ -162,7 +162,7 @@ class OrangePiDaemon extends BaseDaemon
         try {
             $temp = $this->system->getProcessorTemperature();
             if ($temp > 0) {
-                $this->setOrangePiDeviceValueByChannel('PROC_TEMP', $temp);
+                $this->setServerDeviceValueByChannel('PROC_TEMP', $temp);
             }
         } catch (\Exception $ex) {
             $s = "[".parse_datetime(now())."] ERROR\n";
@@ -173,8 +173,8 @@ class OrangePiDaemon extends BaseDaemon
         // Memory Status        
         try {
             list($total, $free) = $this->system->getMemoryStatus();
-            $this->setOrangePiDeviceValueByChannel('MEM_TOTAL', $total);
-            $this->setOrangePiDeviceValueByChannel('MEM_FREE', $free);
+            $this->setServerDeviceValueByChannel('MEM_TOTAL', $total);
+            $this->setServerDeviceValueByChannel('MEM_FREE', $free);
         } catch (\Exception $ex) {
             $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
@@ -189,7 +189,7 @@ class OrangePiDaemon extends BaseDaemon
      */
     protected function deviceChangeValue(Device $device): void
     {
-        if (in_array($device->hub_id, $this->hubIds) && ($device->typ == 'orangepi')) {
+        if (in_array($device->hub_id, $this->hubIds) && ($device->typ == 'server')) {
             if ($this->gpio && $this->gpio->isPinChannel($device->channel)) {
                 try {
                     $this->gpio->set($device->channel, $device->value);
@@ -207,12 +207,12 @@ class OrangePiDaemon extends BaseDaemon
      * @param string $channel
      * @param float $value
      */
-    private function setOrangePiDeviceValueByChannel(string $channel, float $value)
+    private function setServerDeviceValueByChannel(string $channel, float $value)
     {
         $roundValue = round($value);
 
         foreach ($this->devices as $device) {
-            if ($device->typ == 'orangepi' && $device->channel === $channel) {
+            if ($device->typ == 'server' && $device->channel === $channel) {
                 if (round($device->value) != $roundValue) {
                     Device::setValue($device->id, $value);
                     if ($this->gpio && $this->gpio->isPinChannel($device->channel)) {
@@ -293,11 +293,11 @@ class OrangePiDaemon extends BaseDaemon
      */
     private function scanNetworks(): void
     {
-        OrangePiDaemon::setCommandInfo('', true);
+        ServerDaemon::setCommandInfo('', true);
 
         if (!$this->gpio) {
-            OrangePiDaemon::setCommandInfo(Lang::get('admin/daemons/orangepi-daemon.gpio_disabled_message'));
-            OrangePiDaemon::setCommandInfo('END_SCAN');
+            ServerDaemon::setCommandInfo(Lang::get('admin/daemons/server-daemon.gpio_disabled_message'));
+            ServerDaemon::setCommandInfo('END_SCAN');
             return ;
         }
 
@@ -347,7 +347,7 @@ class OrangePiDaemon extends BaseDaemon
         $report[] = str_repeat('-', 35);
         $report[] = '';
 
-        OrangePiDaemon::setCommandInfo(implode("\n", $report));
-        OrangePiDaemon::setCommandInfo('END_SCAN');
+        ServerDaemon::setCommandInfo(implode("\n", $report));
+        ServerDaemon::setCommandInfo('END_SCAN');
     }
 }

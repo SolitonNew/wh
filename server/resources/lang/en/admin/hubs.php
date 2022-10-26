@@ -23,7 +23,7 @@ return [
     'hub_COMM' => 'Description',
     'hub_types' => [
         'extapi' => 'External Api hub',
-        'orangepi' => 'Orange Pi hub',
+        'server' => 'Server hub',
         'camcorder' => 'Video Cameras Hub',
         'din' => 'Din hub',
         'pyhome' => 'Pyhome hub',
@@ -79,7 +79,7 @@ return [
 
     'host_add' => 'Add new host...',
     'extapi_host_add' => 'Add External Api host...',
-    'orange_host_add' => 'Add Orange Pi host...',
+    'server_host_add' => 'Add Server host...',
     'camcorder_host_add' => 'Add Camcorder host...',
     'zigbee_host_add' => 'Add Zigbee One host...',
 

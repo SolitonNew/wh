@@ -235,7 +235,7 @@
         $.ajax('{{ route("admin.hub-device-host-channel-list", ["typ" => "", "hostID" => ""]) }}/' + typ + '/' + host_id).done((data) => {
             let rom = $('#device_edit_form select[name="typ"]').val();
             if (((rom == 'ow' || rom == 'extapi' || rom == 'i2c' || rom == 'camcorder') && (host_id > 0))
-             || (rom == 'din') || (rom == 'pyhome') || (rom == 'orangepi')) {
+             || (rom == 'din') || (rom == 'pyhome') || (rom == 'server')) {
                 let chanList = $('#device_edit_form select[name="channel"]');
                 let selValue = chanList.attr('data-value');
                 chanList.html('');

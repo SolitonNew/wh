@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Library\OrangePi\I2c;
+namespace App\Library\Server\I2c;
 
 class Bmp280 extends I2c
 {

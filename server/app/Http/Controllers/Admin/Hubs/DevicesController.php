@@ -141,7 +141,7 @@ class DevicesController extends Controller
                     ];
                 }
                 break;
-            case 'orangepi':
+            case 'server':
                 foreach ($hub->i2cHosts as $host) {
                     $data[] = (object)[
                         'id' => $host->id,
@@ -212,8 +212,8 @@ class DevicesController extends Controller
                     $data = $host->channelsOfType();
                 }
                 break;
-            case 'orangepi':
-                $data = array_keys(config('orangepi.channels'));
+            case 'server':
+                $data = array_keys(config('server.channels'));
                 break;
             case 'i2c':
                 $host = I2cHost::find($hostID);

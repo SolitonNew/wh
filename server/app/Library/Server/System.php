@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Library\OrangePi;
+namespace App\Library\Server;
 
 class System 
 {

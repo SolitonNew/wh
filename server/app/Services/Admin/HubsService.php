@@ -3,7 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Library\Daemons\DinDaemon;
-use App\Library\Daemons\OrangePiDaemon;
+use App\Library\Daemons\ServerDaemon;
 use App\Library\Daemons\PyhomeDaemon;
 use App\Library\Daemons\ZigbeeoneDaemon;
 use App\Library\Firmware\Pyhome;
@@ -84,14 +84,14 @@ class HubsService
     /**
      * @return string
      */
-    public function orangepiHubScan(): string
+    public function serverHubScan(): string
     {
-        OrangePiDaemon::setCommand('SCAN');
+        ServerDaemon::setCommand('SCAN');
         usleep(500000);
         $i = 0;
         while ($i++ < 50) { // 5 sec
             usleep(100000);
-            $text = OrangePiDaemon::getCommandInfo();
+            $text = ServerDaemon::getCommandInfo();
             if ($t = strpos($text, 'END_SCAN')) {
                 $text = substr($text, 0, $t);
                 break;
@@ -117,8 +117,8 @@ class HubsService
                 $this->generatePyhomeDevsByHub($hubID);
                 $this->generateOwDevsByHub($hubID);
                 break;
-            case 'orangepi':
-                $this->generateOrangePiDevsByHub($hubID);
+            case 'server':
+                $this->generateServerDevsByHub($hubID);
                 $this->generateOwDevsByHub($hubID);
                 $this->generateI2cDevsByHub($hubID);
                 break;
@@ -373,10 +373,10 @@ class HubsService
      * @param int $hubID
      * @return void
      */
-    private function generateOrangePiDevsByHub(int $hubID): void
+    private function generateServerDevsByHub(int $hubID): void
     {
-        $channels = config('orangepi.channels');
-        $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "orangepi"');
+        $channels = config('server.channels');
+        $devs = DB::select('select hub_id, channel from core_devices where hub_id = '.$hubID.' and typ = "server"');
 
         try {
             foreach ($channels as $chan => $num) {
@@ -390,7 +390,7 @@ class HubsService
                 if (!$find) {
                     $item = new Device();
                     $item->hub_id = $hubID;
-                    $item->typ = 'orangepi';
+                    $item->typ = 'server';
                     $item->name = 'temp for din';
                     $item->host_id = null;
                     $item->channel = $chan;
@@ -399,7 +399,7 @@ class HubsService
                         $item->comm = str_replace('_', ' ', $chan);
                     }
                     $item->save(['withoutevents']);
-                    $item->name = 'orangepi_'.$item->id.'_'.$chan;
+                    $item->name = 'server_'.$item->id.'_'.$chan;
                     $item->save();
                 }
             }
@@ -756,7 +756,7 @@ class HubsService
             DinDaemon::setCommand('RESET');
             PyhomeDaemon::setCommand('RESET');
             ZigbeeoneDaemon::setCommand('RESET');
-            OrangePiDaemon::setCommand('RESET');
+            ServerDaemon::setCommand('RESET');
             return 'OK';
         } catch (\Exception $ex) {
             return 'ERROR';

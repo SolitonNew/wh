@@ -15,7 +15,7 @@ return [
         \App\Library\Daemons\DinDaemon::class,
         \App\Library\Daemons\PyhomeDaemon::class,
         \App\Library\Daemons\ZigbeeoneDaemon::class,
-        \App\Library\Daemons\OrangePiDaemon::class,
+        \App\Library\Daemons\ServerDaemon::class,
         \App\Library\Daemons\ScheduleDaemon::class,
         \App\Library\Daemons\CommandDaemon::class,
         \App\Library\Daemons\ObserverDaemon::class,
