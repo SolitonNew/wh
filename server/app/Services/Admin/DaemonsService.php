@@ -24,10 +24,12 @@ class DaemonsService
         $started = $this->daemonManager->findAllStartedDaemons();
         foreach (config('daemons.list') as $daemonClass) {
             if ($daemonClass::canRun()) {
+                $stat = in_array($daemonClass::SIGNATURE, $started);
                 $daemons[] = (object)[
                     'id' => $daemonClass::SIGNATURE,
-                    'stat' => in_array($daemonClass::SIGNATURE, $started),
+                    'stat' => $stat,
                     'idName' => $this->makeDaemonName($daemonClass::SIGNATURE),
+                    'workingState' => $daemonClass::getWorkingState(),
                 ];
             }
         }
