@@ -450,4 +450,38 @@ class Property extends Model
         }
         $item->save();
     }
+    
+    /**
+     * @param int $count
+     * @return void
+     */
+    public static function setScriptAutotestFailure(int $count): void
+    {
+        self::setProperty('SCRIPT_AUTOTEST_FAILURE', $count);
+    }
+    
+    /**
+     * @return int
+     */
+    public static function getScriptAutotestFailure(): int
+    {
+        return self::getProperty('SCRIPT_AUTOTEST_FAILURE') ?: 0;
+    }
+    
+    /**
+     * @param int $count
+     * @return void
+     */
+    public static function setScheduleAutotestFailure(int $count): void
+    {
+        self::setProperty('SCHEDULE_AUTOTEST_FAILURE', $count);
+    }
+    
+    /**
+     * @return int
+     */
+    public static function getScheduleAutotestFailure(): int
+    {
+        return self::getProperty('SCHEDULE_AUTOTEST_FAILURE') ?: 0;
+    }
 }

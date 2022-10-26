@@ -78,11 +78,21 @@
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'scripts') }}" href="{{ route('admin.scripts') }}">
                             <img src="/img/menus/document-2x.png">
                             <span class="label">@lang('admin/scripts.menu')</span>
+                            @foreach([\App\Models\Property::getScriptAutotestFailure()] as $failure)
+                            @if($failure > 0)
+                            <span class="badge badge-danger badge-pill mr-1">{{ $failure }}</span>
+                            @endif
+                            @endforeach
                             <span class="badge badge-primary badge-pill">{{ \App\Models\Script::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'schedule') }}" href="{{ route('admin.schedule') }}">
                             <img src="/img/menus/calendar-2x.png">
                             <span class="label">@lang('admin/schedule.menu')</span>
+                            @foreach([\App\Models\Property::getScheduleAutotestFailure()] as $failure)
+                            @if($failure > 0)
+                            <span class="badge badge-danger badge-pill mr-1">{{ $failure }}</span>
+                            @endif
+                            @endforeach
                             <span class="badge badge-primary badge-pill">{{ \App\Models\Schedule::count() }}</span>
                         </a>
                         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ active_segment(2, 'jurnal') }}" href="{{ route('admin.jurnal') }}">

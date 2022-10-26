@@ -8,9 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class TestController extends Controller
 {
-    public function test()
+    public function test(\App\Services\Admin\Autotest $autotest)
     {
-        DB::delete('delete from web_logs_mem');
+        //DB::delete('delete from web_logs_mem');
+        
+        $autotest->runForAllScripts();
+        
         return 'OK';
     }
 }

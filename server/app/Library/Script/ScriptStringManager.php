@@ -3,7 +3,6 @@
 namespace App\Library\Script;
 
 use App\Models\ScriptString;
-use Illuminate\Support\Facades\Log;
 
 class ScriptStringManager
 {

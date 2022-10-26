@@ -8,7 +8,6 @@ use App\Library\Script\Translators\Python;
 use App\Models\OwHost;
 use App\Models\Script;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use App\Library\Script\Translators\Python as TranslatePython;
 

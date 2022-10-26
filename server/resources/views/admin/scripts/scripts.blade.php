@@ -21,14 +21,22 @@
     <div id="scriptList" class="tree" style="width: 320px;min-width:320px; border-right: 1px solid rgba(0,0,0,0.125);" scroll-store="scriptsList">
         @foreach($list as $row)
         <a href="{{ route('admin.scripts', ['id' => $row->id]) }}"
-           class="tree-item {{ $row->id == $scriptID ? 'active' : '' }}" style="white-space: normal; justify-content: space-between;">
-            {{ $row->comm }}
-            <div class="d-flex align-items-center">
-                @if($row->var_count > 0)
-                <div class="badge badge-pill badge-warning">{{ $row->var_count }}</div>
-                @endif
-                <button class="only-small btn btn-primary btn-sm ml-2 script_edit_btn" data-id="{{ $row->id }}">Edit</button>
+           class="tree-item {{ $row->id == $scriptID ? 'active' : '' }}" style="flex-direction: column; align-items: start">
+            <div class="d-flex align-items-baseline" style="white-space: normal; justify-content: space-between; width: 100%;">
+                <div class="flex-grow-1">{{ $row->comm }}</div>
+                <div class="d-flex align-items-center">
+                    @if($row->var_count > 0)
+                    <div class="badge badge-pill badge-warning">{{ $row->var_count }}</div>
+                    @endif
+                    <button class="only-small btn btn-primary btn-sm ml-2 script_edit_btn" data-id="{{ $row->id }}">Edit</button>
+                </div>
             </div>
+            @if(isset($autotestFailures[$row->id]))
+            <div class="d-flex align-items-baseline">
+                <div class="badge badge-pill badge-danger mr-1">!</div>
+                <small class="">{{ $autotestFailures[$row->id] }}</small>
+            </div>
+            @endif
         </a>
         @endforeach
     </div>

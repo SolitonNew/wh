@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Lang;
+use App\Services\Admin\Autotest;
 
 class ScheduleController extends Controller
 {
@@ -14,12 +15,13 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\View\View|\Laravel\Lumen\Application
      */
-    public function index()
+    public function index(Autotest $autotest)
     {
         $data = Schedule::listAll();
 
         return view('admin.schedule.schedule', [
             'data' => $data,
+            'autotestFailures' => $autotest->runForAllSchedules(),
         ]);
     }
 
