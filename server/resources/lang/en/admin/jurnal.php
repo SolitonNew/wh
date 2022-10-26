@@ -16,6 +16,7 @@ return [
     'history_CREATED_AT' => 'Date/Time',
     'history_VALUE' => 'Value',
     'history_value_delete_confirm' => 'Delete this recotrd?',
+    'history_lines_limit' => 'The query returned :total records. Only :limit shown',
     
     'daemons' => 'Processes',
     'daemon_run' => 'Start the current process',

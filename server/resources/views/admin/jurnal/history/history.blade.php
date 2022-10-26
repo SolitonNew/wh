@@ -51,11 +51,16 @@
             <div id="historyBody" class="content-body" scroll-store="statisticsTabVarValues">
                 <table id="jurnal_history_List" class="table table-sm table-hover table-bordered table-fixed-header">
                     <thead>
+                        @if($count > $limit)
+                        <tr>
+                            <th scope="col" colspan="3" class="alert alert-warning p-2">@lang('admin/jurnal.history_lines_limit', ['total' => $count, 'limit' => $limit])</th>
+                        </tr>
+                        @endif
                         <tr>
                             <th scope="col" style="width: 100px;">
                                 <span>
                                     <span>@lang('admin/jurnal.history_ID')</span>
-                                    <span class="text-primary">({{ count($data).($count > $limit ? ' / '.$count : '') }})</span>
+                                    <span class="text-primary">({{ $count }})</span>
                                 </span>
                             </th>
                             <th scope="col" style="width: 180px;"><span>@lang('admin/jurnal.history_CREATED_AT')</span></th>
