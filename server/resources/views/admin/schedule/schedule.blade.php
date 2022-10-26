@@ -36,7 +36,15 @@
                     @lang('admin/schedule.action_datetime_calc')
                     @endif
                 </td>
-                <td style="padding: 0;"><div class="scheduleActionViewer" data-source="{!! addslashes($row->action) !!}"></div></td>
+                <td style="padding: 0;">
+                    <div class="scheduleActionViewer" data-source="{!! addslashes($row->action) !!}"></div>
+                    @if(isset($autotestFailures[$row->id]))
+                    <div class="d-flex p-2 align-items-baseline">
+                        <div class="badge badge-danger badge-pill mr-1">!</div>
+                        <small>{{ $autotestFailures[$row->id] }}</small>
+                    </div>
+                    @endif
+                </td>
                 <td>{!! $row->interval_text !!}</td>
                 <td>@lang('admin/schedule.enable_list.'.$row->enable)</td>
             </tr>

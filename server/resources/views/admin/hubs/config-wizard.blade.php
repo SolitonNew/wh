@@ -21,6 +21,7 @@
     }
 </style>
 <div class="content">
+    @if(App\Models\Property::getScriptAutotestFailure() == 0)
     <div id="configWizardPage_begin" class="">
         <div class="form-control mb-4" style="height: auto;">
             @foreach($hubs as $hub)
@@ -70,6 +71,9 @@
             @endforeach
         </div>
     </div>
+    @else
+    <div class="alert alert-danger">@lang('admin/hubs.config_wizard_autotest_error')</div>
+    @endif
 </div>
 @endsection
 

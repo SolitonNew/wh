@@ -3,12 +3,10 @@
 namespace App\Models;
 
 use App\Library\AffectsFirmwareModel;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Models\DeviceEvent;
 use App\Events\FirmwareChangedEvent;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class Script extends AffectsFirmwareModel
 {

@@ -36,6 +36,7 @@ return [
     'config_wizard_transmit_btn' => 'Transmit Config Files',
     'config_wizard_complete' => 'Update Completed Successfully',
     'config_wizard_complete_error' => 'Update Completed With Errors',
+    'config_wizard_autotest_error' => 'Self-testing of scripts found errors. To perform a configuration update, you need to correct the errors and repeat the operation.',
 
     'firmware_title' => 'Apply hubs configuration',
     'firmware_make_title' => 'Report of the make',

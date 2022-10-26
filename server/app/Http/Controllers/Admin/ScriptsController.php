@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Admin\ScriptsService;
 use App\Models\Script;
 use App\Models\Property;
+use App\Services\Admin\Autotest;
 
 class ScriptsController extends Controller
 {
@@ -29,7 +30,7 @@ class ScriptsController extends Controller
      * @param int|null $id
      * @return type
      */
-    public function index(int $id = null)
+    public function index(Autotest $autotest, int $id = null)
     {
         // Last view id  --------------------------
         if (!$id) {
@@ -57,6 +58,7 @@ class ScriptsController extends Controller
             'scriptID' => $id,
             'list' => $list,
             'data' => $item,
+            'autotestFailures' => $autotest->runForAllScripts(),
         ]);
     }
 

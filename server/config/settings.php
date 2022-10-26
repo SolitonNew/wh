@@ -34,5 +34,5 @@ return [
     /**
      * Number of lines in history table
      */
-    'admin_history_lines_limit' => 500,
+    'admin_history_lines_limit' => 1000,
 ];

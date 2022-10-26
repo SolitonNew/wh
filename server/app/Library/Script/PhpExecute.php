@@ -64,8 +64,10 @@ class PhpExecute
             $code = $this->translator->run(new Translators\Php(new ScriptStringManager($specialList)), $report);
             eval($code);
         } catch (\ParseError $ex) {
+            $report['error'] = str_replace('$', '', $ex->getMessage());
             $this->printLine($ex->getMessage());
         } catch (\Throwable $ex) {
+            $report['error'] = str_replace('$', '', $ex->getMessage());
             $this->printLine($ex->getMessage());
         }
 
