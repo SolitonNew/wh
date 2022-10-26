@@ -203,14 +203,21 @@ class OrangePiDaemon extends BaseDaemon
         }
     }
 
+    /**
+     * @param string $channel
+     * @param float $value
+     */
     private function setOrangePiDeviceValueByChannel(string $channel, float $value)
     {
         $roundValue = round($value);
 
-        foreach ($this->devices as $dev) {
-            if ($dev->typ == 'orangepi' && $dev->channel === $channel) {
-                if (round($dev->value) != $roundValue) {
-                    Device::setValue($dev->id, $value);
+        foreach ($this->devices as $device) {
+            if ($device->typ == 'orangepi' && $device->channel === $channel) {
+                if (round($device->value) != $roundValue) {
+                    Device::setValue($device->id, $value);
+                    if ($this->gpio && $this->gpio->isPinChannel($device->channel)) {
+                        $this->printLine('['.parse_datetime(now()).'] GPIO ['.($channel.'] SET VALUE: '.($value ? 'ON' : 'OFF')));
+                    }
                 }
                 break;
             }
