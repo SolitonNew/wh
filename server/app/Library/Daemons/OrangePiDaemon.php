@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\I2cHost;
 use \Cron\CronExpression;
 use App\Library\OrangePi\I2c\I2c;
+use App\Library\OrangePi\Gpio;
+use App\Library\OrangePi\System;
 
 class OrangePiDaemon extends BaseDaemon
 {
@@ -31,11 +33,25 @@ class OrangePiDaemon extends BaseDaemon
     private Collection|array $i2cHosts = [];
 
     /**
+     * I2c Drivers
+     * 
      * @var array
      */
     private array $i2cDrivers = [];
-
-    private bool $gpioEnabled = false;
+    
+    /**
+     * Gpio Driver
+     * 
+     * @var Gpio
+     */
+    private null|Gpio $gpio = null;
+    
+    /**
+     * System Control Driver
+     * 
+     * @var System
+     */
+    private null|System $system = null;
 
     /**
      * @return bool
@@ -55,13 +71,24 @@ class OrangePiDaemon extends BaseDaemon
         $this->printInitPrompt(Lang::get('admin/daemons/orangepi-daemon.description'));
 
         if (!$this->initialization('orangepi')) return ;
-
-        // Init GPIO pins
-        $this->gpioEnabled = $this->initGPIO();
-        if (!$this->gpioEnabled) {
+        
+        // Init GPIO driver
+        try {
+            $this->gpio = new Gpio(config('orangepi.gpio'), config('orangepi.channels'));
+            $this->initGpioDevices();
+        } catch (\Exception $ex) {
             $this->printLine(Lang::get('admin/daemons/orangepi-daemon.gpio_disabled_message'));
         }
-        // ------------------------
+        
+        // Init System Control driver
+        try {
+            $this->system = new System();
+            foreach ($this->system->checkSources() as $line) {
+                $this->printLine($line);
+            }
+        } catch (\Exception $ex) {
+            $this->printLine(Lang::get('admin/daemons/orangepi-daemon.system_disabled_message'));
+        }
 
         $lastMinute = \Carbon\Carbon::now()->startOfMinute();
         try {
@@ -82,8 +109,7 @@ class OrangePiDaemon extends BaseDaemon
                 // Get Orange Pi system info
                 $minute = \Carbon\Carbon::now()->startOfMinute();
                 if ($minute->gt($lastMinute)) {
-                    $this->loadProcessorTemperature();
-                    $this->loadMemoryState();
+                    $this->processingSystem();
                 }
                 $lastMinute = $minute;
                 // -----------------------------
@@ -109,88 +135,46 @@ class OrangePiDaemon extends BaseDaemon
         $this->i2cHosts = I2cHost::whereIn('hub_id', $this->hubIds)
             ->get();
     }
-
+    
     /**
-     * @return bool
-     * @throws \Exception
-     */
-    private function initGPIO(): bool
-    {
-        if (!file_exists('/bin/gpioset')) {
-            return false;
-        }
-
-        $gpio = config('orangepi.gpio');
-        $channels = config('orangepi.channels');
-
-        $enabled = [];
-        $errors = [];
-
-        foreach ($channels as $chan => $num) {
-            if ($num > -1) {
-                try {
-                    $res = '';
-                    foreach ($this->devices as $device) {
-                        if (in_array($device->hub_id, $this->hubIds) && $device->channel == $chan) {
-                            if ($device->value) {
-                                $res = shell_exec('gpioset '.$gpio.' '.$num.'=1 2>&1');
-                            } else {
-                                $res = shell_exec('gpioset '.$gpio.' '.$num.'=0 2>&1');
-                            }
-                            break;
-                        }
-                    }
-
-                    if ($res) {
-                        throw new \Exception($res);
-                    }
-
-                    $enabled[] = $chan;
-                } catch (\Exception $ex) {
-                    $errors[$chan] = $ex->getMessage();
-                }
-            }
-        }
-
-        $this->printLine('GPIO ['.implode(', ', $enabled).'] ENABLED');
-        if (count($errors)) {
-            foreach ($errors as $chan => $error) {
-                $this->printLine('GPIO ['.$chan.'] INIT ERROR: '.$error);
-            }
-        }
-
-        $this->printLine(str_repeat('-', 100));
-
-        return true;
-    }
-
-    /**
-     * @param string $chan
-     * @param float $value
      * @return void
      */
-    private function setValueGPIO(string $chan, float $value): void
+    private function initGpioDevices(): void
     {
-        if (!$this->gpioEnabled) {
-            return ;
+        $values = [];
+        foreach ($this->devices as $device) {
+            if (in_array($device->hub_id, $this->hubIds)) {
+                $values[$device->channel] = $device->value;
+            }
         }
-
+        $this->gpio->init($values);
+        $this->printLine('GPIO ENABLED');
+    }
+    
+    /**
+     * @return void
+     */
+    private function processingSystem(): void
+    {
+        if (!$this->system) return ;
+        
+        // Processor Temperature
         try {
-            $gpio = config('orangepi.gpio');
-            $channels = config('orangepi.channels');
-            $num = $channels[$chan];
-
-            if ($num == -1) return ;
-
-            if ($value) {
-                $res = shell_exec('gpioset '.$gpio.' '.$num.'=1 2>&1');
-            } else {
-                $res = shell_exec('gpioset '.$gpio.' '.$num.'=0 2>&1');
+            $temp = $this->system->getProcessorTemperature();
+            if ($temp > 0) {
+                $this->setOrangePiDeviceValueByChannel('PROC_TEMP', $temp);
             }
-            if ($res) {
-                throw new \Exception($res);
-            }
-            $this->printLine('['.parse_datetime(now()).'] GPIO ['.$chan.'] SET VALUE: '.($value ? 'ON' : 'OFF'));
+        } catch (\Exception $ex) {
+            $s = "[".parse_datetime(now())."] ERROR\n";
+            $s .= $ex->getMessage();
+            $this->printLine($s);
+        }
+        
+        // Memory Status        
+        try {
+            list($total, $free) = $this->system->getMemoryStatus();
+            $this->setOrangePiDeviceValueByChannel('MEM_TOTAL', $total);
+            $this->setOrangePiDeviceValueByChannel('MEM_FREE', $free);
         } catch (\Exception $ex) {
             $s = "[".parse_datetime(now())."] ERROR\n";
             $s .= $ex->getMessage();
@@ -205,8 +189,17 @@ class OrangePiDaemon extends BaseDaemon
      */
     protected function deviceChangeValue(Device $device): void
     {
-        if (in_array($device->hub_id, $this->hubIds) && $device->typ == 'orangepi') {
-            $this->setValueGPIO($device->channel, $device->value);
+        if (in_array($device->hub_id, $this->hubIds) && ($device->typ == 'orangepi')) {
+            if ($this->gpio && $this->gpio->isPinChannel($device->channel)) {
+                try {
+                    $this->gpio->set($device->channel, $device->value);
+                    $this->printLine('['.parse_datetime(now()).'] GPIO ['.($device->channel.'] SET VALUE: '.($device->value ? 'ON' : 'OFF')));
+                } catch (\Exception $ex) {
+                    $s = "[".parse_datetime(now())."] ERROR\n";
+                    $s .= $ex->getMessage();
+                    $this->printLine($s);
+                }
+            }
         }
     }
 
@@ -227,56 +220,9 @@ class OrangePiDaemon extends BaseDaemon
     /**
      * @return void
      */
-    private function loadProcessorTemperature()
-    {
-        try {
-            $val = file_get_contents('/sys/devices/virtual/thermal/thermal_zone0/temp');
-            $temp = preg_replace("/[^0-9]/", "", $val);
-
-            if ($temp > 200) {
-                $temp = round($temp / 1000);
-            } else {
-                $temp = round($temp);
-            }
-
-            $this->setOrangePiDeviceValueByChannel('PROC_TEMP', $temp);
-        } catch (\Exception $ex) {
-            $s = "[".parse_datetime(now())."] ERROR\n";
-            $s .= $ex->getMessage();
-            $this->printLine($s);
-        }
-    }
-
-    /**
-     * @return void
-     */
-    private function loadMemoryState()
-    {
-        try {
-            $info = file_get_contents('/proc/meminfo');
-            foreach (explode("\n", $info) as $line) {
-                if (str_starts_with($line, 'MemTotal:')) {
-                    $value = preg_replace("/[^0-9]/", "", $line);
-                    $this->setOrangePiDeviceValueByChannel('MEM_TOTAL', round($value / 1024));
-                } else
-                if (str_starts_with($line, 'MemFree:')) {
-                    $value = preg_replace("/[^0-9]/", "", $line);
-                    $this->setOrangePiDeviceValueByChannel('MEM_FREE', round($value / 1024));
-                }
-            }
-        } catch (\Exception $ex) {
-            $s = "[".parse_datetime(now())."] ERROR\n";
-            $s .= $ex->getMessage();
-            $this->printLine($s);
-        }
-    }
-
-    /**
-     * @return void
-     */
     private function processingI2cHosts(): void
     {
-        if (!$this->gpioEnabled) return ;
+        if (!$this->gpio) return ;
 
         $now = floor(\Carbon\Carbon::now()->timestamp / 60);
 
@@ -342,7 +288,7 @@ class OrangePiDaemon extends BaseDaemon
     {
         OrangePiDaemon::setCommandInfo('', true);
 
-        if (!$this->gpioEnabled) {
+        if (!$this->gpio) {
             OrangePiDaemon::setCommandInfo(Lang::get('admin/daemons/orangepi-daemon.gpio_disabled_message'));
             OrangePiDaemon::setCommandInfo('END_SCAN');
             return ;
