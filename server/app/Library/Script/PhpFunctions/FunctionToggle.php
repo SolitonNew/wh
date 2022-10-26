@@ -22,9 +22,9 @@ trait FunctionToggle
             } else {
                 if ($time == 0) {
                     if ($device->value) {
-                        Device::setValue($device->id, 0, 0);
+                        Device::setValue($device->id, 0);
                     } else {
-                        Device::setValue($device->id, 1, 0);
+                        Device::setValue($device->id, 1);
                     }
                 } else {
                     $datetime = now()->addSeconds($time);

@@ -138,6 +138,8 @@ class Schedule extends Model
      */
     public static function appendFastRecord(string $comm, string $action, $datetime, int|null $variableID): void
     {        
+        Schedule::whereTempDeviceId($variableID)->delete();
+        
         $item = new Schedule();
         $item->comm = $comm;
         $item->action = $action;
