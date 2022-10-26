@@ -1,7 +1,13 @@
 /*
- *  Author: Moklyak Alexandr
- */  
 
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+*/
+
+#include "config/mmcu.h"
 #include "board.h"
 #include <avr/io.h>
 #include <string.h>

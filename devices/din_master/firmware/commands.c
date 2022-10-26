@@ -1,6 +1,11 @@
 /*
- *  Author: Moklyak Alexandr
- */ 
+
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+*/
 
 #include "core.h"
 #include "schedule.h"
@@ -16,8 +21,8 @@ void command_set(int index, float value) {
     core_set_variable_value(index, 3, value);
 }
 
-void command_set_later(int index, float value, int duration) {
-    schedule_variable_value(index, value, duration);
+void command_set_later(int index, float value, int delay) {
+    schedule_variable_value(index, value, delay);
 }
 
 void command_toggle(int index) {
@@ -28,11 +33,11 @@ void command_toggle(int index) {
     }
 }
 
-void command_toggle_later(int index, int duration) {
+void command_toggle_later(int index, int delay) {
     if (command_get(index)) {
-        command_set_later(index, 0, duration);
+        command_set_later(index, 0, delay);
     } else {
-        command_set_later(index, 1, duration);
+        command_set_later(index, 1, delay);
     }
 }
 
@@ -40,16 +45,16 @@ void command_on(int index) {
     command_set(index, 1);
 }
 
-void command_on_later(int index, int duration) {
-    command_set_later(index, 1, duration);
+void command_on_later(int index, int delay) {
+    command_set_later(index, 1, delay);
 }
 
 void command_off(int index) {
     command_set(index, 0);
 }
 
-void command_off_later(int index, int duration) {
-    command_set_later(index, 0, duration);
+void command_off_later(int index, int delay) {
+    command_set_later(index, 0, delay);
 }
 
 void command_info(void) {

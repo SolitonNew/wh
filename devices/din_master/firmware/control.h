@@ -1,6 +1,13 @@
 /*
- *  Author: Moklyak Alexandr
- */ 
+
+    Part of the Watch House system     
+    https://github.com/SolitonNew/wh
+    
+    Author: Moklyak Alexandr
+  
+*/
+
+#if MMCU == MMCU_ATMEGA16A
 
 #define CONTROL_LED_R_DDR  DDRA
 #define CONTROL_LED_R_PORT PORTA
@@ -37,6 +44,46 @@
 #define CONTROL_BTN_4_PORT PORTA
 #define CONTROL_BTN_4_PIN  PINA
 #define CONTROL_BTN_4_BIT  6
+
+#elif MMCU == MMCU_ATMEGA328
+
+#define CONTROL_LED_R_DDR  DDRC
+#define CONTROL_LED_R_PORT PORTC
+#define CONTROL_LED_R_BIT  4
+
+#define CONTROL_LED_G_DDR  DDRC
+#define CONTROL_LED_G_PORT PORTC
+#define CONTROL_LED_G_BIT  3
+
+#define CONTROL_LED_Y_DDR  DDRB
+#define CONTROL_LED_Y_PORT PORTB
+#define CONTROL_LED_Y_BIT  2
+
+#define CONTROL_LED_B_DDR  DDRB
+#define CONTROL_LED_B_PORT PORTB
+#define CONTROL_LED_B_BIT  3
+
+#define CONTROL_BTN_1_DDR  DDRC
+#define CONTROL_BTN_1_PORT PORTC
+#define CONTROL_BTN_1_PIN  PINC
+#define CONTROL_BTN_1_BIT  2
+
+#define CONTROL_BTN_2_DDR  DDRC
+#define CONTROL_BTN_2_PORT PORTC
+#define CONTROL_BTN_2_PIN  PINC
+#define CONTROL_BTN_2_BIT  1
+
+#define CONTROL_BTN_3_DDR  DDRC
+#define CONTROL_BTN_3_PORT PORTC
+#define CONTROL_BTN_3_PIN  PINC
+#define CONTROL_BTN_3_BIT  0
+
+#define CONTROL_BTN_4_DDR  DDRB
+#define CONTROL_BTN_4_PORT PORTB
+#define CONTROL_BTN_4_PIN  PINB
+#define CONTROL_BTN_4_BIT  4
+
+#endif
 
 typedef struct _control_btn_states {
     uint8_t btn_1_down;
