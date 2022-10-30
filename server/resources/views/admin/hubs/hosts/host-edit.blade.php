@@ -14,6 +14,7 @@
         position: relative;
         display: inline-block;
         margin: 0px 2px;
+        min-width: calc(100% / 8 - 0.375rem)
     }
 
     .ow_rom .invalid-feedback {
@@ -23,6 +24,13 @@
     .ow_rom .form-control.is-invalid {
         background-image: none!important;
         padding: .375rem .75rem!important;
+    }
+    
+    @media(max-width: 576px) {
+        .ow_rom > * {
+            padding-left: 2px;
+            padding-right: 2px;
+        }
     }
 
 </style>
