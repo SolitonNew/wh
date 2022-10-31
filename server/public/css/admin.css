@@ -900,7 +900,14 @@ select.select-tree option {
     .form-label {
         margin-bottom: 0px;
     }
-
+    
+    .modal {
+        padding: 0px!important;
+    }
+    
+    .modal-dialog {
+        margin: 0px;
+    }
 }
 
 @media(min-width: 769px) {
