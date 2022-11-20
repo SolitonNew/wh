@@ -18,7 +18,6 @@ return [
         \App\Library\Daemons\ServerDaemon::class,
         \App\Library\Daemons\ScheduleDaemon::class,
         \App\Library\Daemons\CommandDaemon::class,
-        \App\Library\Daemons\ObserverDaemon::class,
         \App\Library\Daemons\CamcorderDaemon::class,
     ],
 ];

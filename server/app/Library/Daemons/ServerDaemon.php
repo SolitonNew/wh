@@ -238,7 +238,7 @@ class ServerDaemon extends BaseDaemon
      */
     private function processingI2cHosts(): void
     {
-        if (!$this->gpio) return ;
+        //if (!$this->gpio) return ;
 
         $now = floor(\Carbon\Carbon::now()->timestamp / 60);
 
@@ -263,6 +263,7 @@ class ServerDaemon extends BaseDaemon
 
             $cron = $this->i2cDrivers[$host->typ]['cron'];
             if (CronExpression::factory($cron)->isDue()) {
+                $this->printLine('REQUEST FOR I2C');
                 $class = $this->i2cDrivers[$host->typ]['class'];
                 try {
                     $driver = new $class($host->address);
