@@ -316,7 +316,7 @@
     
     function dialogLg(url, beforeHandler, afterHandler) {
         dialog(url, beforeHandler, afterHandler);
-        $('#dialog_window .modal-dialog').addClass('modal-md');
+        $('#dialog_window .modal-dialog').addClass('modal-lg');
     }
 
     var confirmHandler = false;
