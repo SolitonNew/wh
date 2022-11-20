@@ -14,7 +14,7 @@
 <script>
     $(document).ready(function () {
         $('#checkUpdate button').on('click', function () {
-            dialog('{{ route("admin.settings-check-updates") }}');
+            dialogMD('{{ route("admin.settings-check-updates") }}');
         });
     });
 </script>

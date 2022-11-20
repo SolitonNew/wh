@@ -293,6 +293,7 @@
         startGlobalWaiter();
         dialogAfterHandler = afterHandler;
         $('#dialog_window .modal-sm').removeClass('modal-sm');
+        $('#dialog_window .modal-md').removeClass('modal-md');
         $.ajax({url:url}).done(function (data) {
             stopGlobalWaiter();
             if (beforeHandler)
@@ -305,6 +306,11 @@
     function dialogHide(afterHandler) {
         dialogAfterHandler = afterHandler;
         $('#dialog_window').modal('hide');
+    }
+    
+    function dialogMD(url, beforeHandler, afterHandler) {
+        dialog(url, beforeHandler, afterHandler);
+        $('#dialog_window').addClass('modal-md');
     }
 
     var confirmHandler = false;
