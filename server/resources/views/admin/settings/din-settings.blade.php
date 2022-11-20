@@ -12,7 +12,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6 mb-3">
                 <div class="row">
                     <div class="col-sm-4">
                         <label class="form-label">@lang('admin/settings.din_settings_mmcu')</label>
