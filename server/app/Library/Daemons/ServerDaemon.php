@@ -268,7 +268,7 @@ class ServerDaemon extends BaseDaemon
                     $driver = new $class($host->address);
                     $result = $driver->getData();
                     
-                    Log::info($result);
+                    \Illuminate\Support\Facades\Log::info($result);
 
                     if ($result) {
                         foreach ($result as $chan => $val) {
