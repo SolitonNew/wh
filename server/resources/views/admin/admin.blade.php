@@ -293,6 +293,8 @@
         startGlobalWaiter();
         dialogAfterHandler = afterHandler;
         $('#dialog_window .modal-sm').removeClass('modal-sm');
+        $('#dialog_window .modal-md').removeClass('modal-md');
+        $('#dialog_window .modal-lg').removeClass('modal-lg');
         $.ajax({url:url}).done(function (data) {
             stopGlobalWaiter();
             if (beforeHandler)
@@ -305,6 +307,16 @@
     function dialogHide(afterHandler) {
         dialogAfterHandler = afterHandler;
         $('#dialog_window').modal('hide');
+    }
+    
+    function dialogMd(url, beforeHandler, afterHandler) {
+        dialog(url, beforeHandler, afterHandler);
+        $('#dialog_window .modal-dialog').addClass('modal-md');
+    }
+    
+    function dialogLg(url, beforeHandler, afterHandler) {
+        dialog(url, beforeHandler, afterHandler);
+        $('#dialog_window .modal-dialog').addClass('modal-lg');
     }
 
     var confirmHandler = false;

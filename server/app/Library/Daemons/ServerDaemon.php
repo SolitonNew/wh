@@ -134,6 +134,15 @@ class ServerDaemon extends BaseDaemon
 
         $this->i2cHosts = I2cHost::whereIn('hub_id', $this->hubIds)
             ->get();
+        
+        $hosts = [];
+        foreach ($this->i2cHosts as $host) {
+            $hosts[] = $host->typ.' (x'.dechex($host->address).')';
+        }
+        
+        if (count($hosts)) {
+            $this->printLine('REGISTERED I2C HOSTS: '.implode(', ', $hosts));
+        }
     }
     
     /**
