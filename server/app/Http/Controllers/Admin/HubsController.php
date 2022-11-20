@@ -3,9 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Library\Firmware\Din;
-use App\Library\Firmware\Pyhome;
-use App\Library\Firmware\ZigbeeOne;
 use Illuminate\Http\Request;
 use App\Services\Admin\HubsService;
 use App\Models\Hub;
