@@ -38,7 +38,7 @@ class HistoryService
         if ($date) {
             $query = DeviceChange::whereDeviceId($deviceID);
 
-            $d = Carbon::parse($date, \App\Models\Property::getTimezone())->startOfDay()->timezone('UTC');
+            $d = Carbon::parse($date, 'UTC')->startOfDay()->timezone(\App\Models\Property::getTimezone());
             $query->whereBetween('created_at', [$d, $d->copy()->addDay()]);
 
             if ($sql) {
