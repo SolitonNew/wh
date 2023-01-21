@@ -15,8 +15,8 @@
         border-bottom: 2px solid #0000ff;
     }
 </style>
-<div class="content-body">
-    <table id="forecast_list" class="table table-sm table-bordered table-fixed-header">
+<div class="content-body" scroll-store="forecastList">
+    <table id="forecast_list" class="table table-sm table-hover table-bordered table-fixed-header">
         <thead>
             <tr>
                 <th scope="col" style="width: 60px;"><span>@lang('admin/jurnal.forecast_TIME')</span></th>
@@ -54,8 +54,18 @@
     </table>
 </div>
 <script>
+    var forecastFields = [@foreach($fields as $id) '{{ $id }}', @endforeach];
+    
     $(document).ready(function () {
         forecastColors();
+        
+        $('#forecast_list td').on('click', function () {
+            let id = forecastFields[$(this).index() - 1];
+            if (id) {
+                window.location = '{{ route("admin.jurnal-history", ["id" => ""]) }}/' + id;
+            }
+            return false;
+        });
     });
 
     function forecastClearAll() {

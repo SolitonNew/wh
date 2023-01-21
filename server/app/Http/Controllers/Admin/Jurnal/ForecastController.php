@@ -42,8 +42,11 @@ class ForecastController extends Controller
         Property::setLastViewID('JURNAL_PAGE', 'forecast');
         // ----------------------------------------
 
+        $fields = $this->service->getFields();
+        
         return view('admin.jurnal.forecast.forecast', [
-            'data' => $this->service->getData(),
+            'fields' => $fields,
+            'data' => $this->service->getData($fields),
         ]);
     }
 
