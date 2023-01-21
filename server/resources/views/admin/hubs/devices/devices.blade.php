@@ -102,6 +102,14 @@
             dialog('{{ route("admin.hub-device-edit", ["hubID" => $hubID, "id" => ""]) }}/' + $(this).data('id'));
         });
         
+        $('#devices_table td.device-value').on('click', function () {
+            let id = $(this).parent().data('id');
+            if (id) {
+                window.location = '{{ route("admin.jurnal-history", ["id" => ""]) }}/' + id;
+            }
+            return false;
+        });
+        
         setInterval(function () {
             deviceUpdateActuality();
         }, 3000);

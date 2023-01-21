@@ -8,25 +8,29 @@ use App\Models\ExtApiHost;
 
 class ForecastService
 {
-    /**
-     * @return array
-     */
-    public function getData(): array
+    public function getFields(): array
     {
         $settings = Property::getForecastSettings();
 
-        $fields = [
+        return [
             'TEMP' => $settings->TEMP,
             'P' => $settings->P,
             'CC' => $settings->CC,
-            'G' => $settings->G,
             'H' => $settings->H,
             'V' => $settings->V,
             'WD' => $settings->WD,
             'WS' => $settings->WS,
+            'G' => $settings->G,
             'MP' => $settings->MP,
         ];
-
+    }
+    
+    /**
+     * @param array $fields
+     * @return array
+     */
+    public function getData($fields): array
+    {                
         $ids = [];
         foreach ($fields as $key => $val) {
             if ($val) {
