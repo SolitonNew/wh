@@ -908,6 +908,37 @@ select.select-tree option {
     .modal-dialog {
         margin: 0px;
     }
+    
+    
+    .main-container {
+        flex-direction: column-reverse;
+    }
+    
+    .main-left-panel {
+        width: 100%!important;
+    }
+    
+    .main-left-panel-container {
+        width: 100%;
+    }
+    
+    .main-left-panel-container .list-group {
+        display: flex;
+        flex-direction: row;
+        width: 100%!important;
+        align-items: stretch;
+    }
+    
+    .main-left-panel-container .list-group > a {
+        display: flex!important;
+        align-items: center!important;
+        justify-content: center!important;
+        border-top: 1px solid rgba(0,0,0,.125);
+    }
+    
+    .main-left-panel-container .list-group > a > span {
+        visibility: hidden;
+    }
 }
 
 @media(min-width: 769px) {
