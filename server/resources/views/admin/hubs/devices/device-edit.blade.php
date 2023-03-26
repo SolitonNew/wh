@@ -44,7 +44,7 @@
             @foreach(\App\Models\Hub::orderBy('name', 'asc')->get() as $row)
             <option value="{{ $row->id }}"
                     {{ $row->id == $item->hub_id ? 'selected' : '' }}
-                    data-typs="{{ implode('|', \App\Models\Hub::$typs[$row->typ] ?? '') }}">{{ $row->name }}</option>
+                    data-typs="{{ implode('|', \App\Models\Hub::$typs[$row->typ] ?? []) }}">{{ $row->name }}</option>
             @endforeach
             </select>
             <div class="invalid-feedback"></div>
